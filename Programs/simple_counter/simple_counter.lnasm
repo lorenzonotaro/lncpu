@@ -1,0 +1,29 @@
+; Simple counter
+
+
+; Segment definitions
+%define CODE0 			0x0
+
+; Program definitions
+%define 	INCREMENT		1
+%define		START			0
+%define 	STOP			127
+
+
+.segment CODE0
+
+start:
+	mov				START, RA				; RA will be the counter
+	mov 			INCREMENT, RB			; RB will be the increment
+	mov 			STOP, RC				; RC will be the stop value
+
+loop:
+	add 			RA, RB					; increment RA
+	cmp				RC, RA					; compare RC and RA
+	jz				end						; exit loop if RC - RA <= 0 (i.e. RC <= RA -> RA > RC)
+	jn				end
+	goto 			loop					; otherwise, loop again
+
+end:
+	hlt										; halt the CPU
+	tsm 			[ROM 0x1]

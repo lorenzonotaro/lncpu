@@ -1,0 +1,13 @@
+.segment 0x0
+	mov			0, RB
+start:
+	mov			1, RA
+loop:
+	shl 		RA
+	cmp 		RA, RB
+	jz			exit
+	goto		loop
+
+exit:
+	rfl
+	hlt

@@ -1,0 +1,8 @@
+.segment 0x0
+
+call 0x1:target
+
+.segment 0x1
+
+target:
+	mov			0x0f, RA

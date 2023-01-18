@@ -1,0 +1,12 @@
+Computer8Bit	KEYWORD1
+serialPrintf	KEYWORD2
+clock	KEYWORD2
+clockPulse	KEYWORD2
+writeToBus	KEYWORD2
+readFromBus	KEYWORD2
+busMode	KEYWORD2
+tobinary	KEYWORD2
+tobyte	KEYWORD2
+serialFlush	KEYWORD2
+setClockPin	KEYWORD2
+setBusPins	KEYWORD2

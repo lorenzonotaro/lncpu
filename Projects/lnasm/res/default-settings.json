@@ -1,0 +1,24 @@
+{
+  "-o": {
+    "help": "Specify the output file's name. ",
+    "value": "a.out"
+  },
+  "-f": {
+    "help": "Specify the output format. One of:\n - 'binary': raw binary to be executed by the LNCPU\n  - 'hexdump': hex dump for visualizing opcodes\n - 'immediate': compile into immediate assembly code\n - 'esl': for visualizing in eeprom-serial-loader",
+    "value": "binary"
+  },
+
+  "--version": {
+    "help": "Prints the program version and quits.",
+    "value": false
+  },
+
+  "--help": {
+    "help": "Displays help text",
+    "value": false
+  },
+  "-s": {
+    "help": "Syntax check only (no output). ",
+    "value": false
+  }
+}
