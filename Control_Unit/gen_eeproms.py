@@ -11,35 +11,21 @@ OPCODES_TSV = 'opcodes.tsv'
 EEPROM_FILES = []
 EEPROM_HASHES = []
 
-SIGNALS = {
-    "NOT_RA_IN": 1, "NOT_RA_OUT": 1, "NOT_RA_SL": 1, "NOT_RA_SR": 1, "NOT_RB_IN": 1, "NOT_RB_OUT": 1, "NOT_RC_IN": 1,
-    "NOT_RC_OUT": 1,
-    "NOT_RD_IN": 1, "NOT_RD_OUT": 1, "NOT_MDS_IN": 1, "NOT_MAR_IN": 1, "NOT_SS_IN": 1, "NOT_SP_IN": 1, "NOT_SP_CT": 1,
-    "SP_DIR": 0,
-    "NOT_SDS_IN": 1, "NOT_SAR_IN": 1, "NOT_RT_IN": 1, "NOT_RT_OUT": 1, "X_SEL0": 0, "X_SEL1": 0, "Y_SEL0": 0, "Y_SEL1": 0, "OP_SEL0": 0, "OP_SEL1": 0,
-    "OP_SEL2": 0, "NOT_RAM_IN": 1, "NOT_RAM_OUT": 1, "RAM_AS": 0, "NOT_ROM_OUT": 1, "ROM_AS": 0, "NOT_CS_IN": 1, "NOT_PC_IN": 1,
-    "NOT_PC_INC": 1,
-    "NOT_CS_OUT": 1, "NOT_PC_OUT": 1, "NOT_IR_IN": 1, "LCD_EN": 0, "LCD_RS": 0, "LCD_R_NW": 0,
-    "NOT_FI": 1, "NOT_FLAGS_RS": 1, "J": 0,
-    "JC": 0, "JZ": 0, "JN": 0, "JA": 0, "NOT_PASS": 1, "NOT_HLT" : 1, "I0_POLL": 0, "I0_TR": 0, "I1_POLL": 0, "I1_TR": 0, "I2_POLL": 0, "I2_TR": 0,
-}
+with open('signals.json') as file:
+    SIGNALS = json.load(file)
 
 EEPROM_COUNT = ceil(len(SIGNALS) / 8)
 for i in range(0, EEPROM_COUNT):
     EEPROM_FILES.append([])
 
 if len(SIGNALS) != EEPROM_COUNT * 8:
-    raise RuntimeError("invalid signal count")
+    toadd = EEPROM_COUNT * 8 - len(SIGNALS)
+    print(f"Warning: signals do fit perfectly into EEPROMs. Adding {toadd} unused signal(s).")
+    for i in range(toadd):
+        SIGNALS[f'_UNUSED{i}_'] = 0
 
-# micro-instructions to be executed before every instruction
-I_START = [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_IR_IN": 0},
-    {"NOT_PC_INC": 0}
-]
-# micro-instructions to be executed after every instruction
-I_END = [
-    {"NOT_PASS": 0}
-]
+# micro-instructions to be executed after every instruction to pass to the next
+I_END = {"NOT_PASS": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
 
 #merges the default signal states with the given modifications made by each microinstruction
 def make_microinstruction(edits=None):
@@ -73,14 +59,27 @@ with open('instructions.json') as file:
                 if signal not in SIGNALS:
                     raise NameError(f"Invalid signal '{signal}' in instruction '{name}'")
 
-        # opcodes.tsv
+        # determine where the instruction needs an extra clock cycle to fetch the
+        # next one or if we can optimize by fetching during the last microinstruction
+        # We also check for NOT_PC_IN, low during jump instructions, because we cannot optimize
+        # PC incrementation during jumps.
+        all_steps = None
+        keys = instr[-1].keys()
+        if "NOT_PC_INC" in keys or "NOT_FETCH" in keys or "NOT_PC_IN" in keys:
+            all_steps = instr + [I_END]
+        else:
+            all_steps = instr
+            all_steps[-1] = {**(all_steps[-1]), **I_END}
+
+        # store the instruction in opcodes.tsv
         codesize = 1 + sum(
             1 for step in instr if "NOT_PC_INC" in step)  # count how many times the instruction increments PC
-        string = hex(opcode) + '\t' + name + '\t' + str(codesize) + '\t' + str(len(I_START) + len(instr) + len(I_END)) + '\n'
+        string = hex(opcode) + '\t' + name + '\t' + str(codesize) + '\t' + str(len(all_steps)) + '\n'
         opcodes_tsv.write(string)
 
-        all_steps = I_START + instr + I_END
-
+        # pad the clock cycles with the default signals
+        # this isn't needed, it's just in case the instruction fails to pass
+        # and runs through the remaining clock cycles
         while len(all_steps) < 16:
             all_steps = all_steps + [SIGNALS]
 

@@ -1,8 +1,28 @@
 {
-  "hlt": [
-    {"NOT_HLT":  0}
+  "nop": [
+    {}
   ],
-  "nop": [],
+  "hlt": [
+    {"NOT_HLT" : 0}
+  ],
+  "mov_cst_ra": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_RA_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
+  "mov_cst_rb": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_RB_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
+  "mov_cst_rc": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_RC_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
+  "mov_cst_rd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_RD_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
+  "mov_cst_sp": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_RD_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
+  "mov_cst_ss": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_RD_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
   "mov_ra_rb": [
     {"NOT_RA_OUT": 0, "NOT_RB_IN" : 0}
   ],
@@ -42,244 +62,314 @@
   "mov_rd_ss": [
     {"NOT_RD_OUT": 0, "NOT_SS_IN" : 0}
   ],
-  "mov_rd_mds": [
-    {"NOT_RD_OUT": 0, "NOT_MDS_IN" : 0}
-  ],
-  "mov_rd_sds": [
-    {"NOT_RD_OUT": 0, "NOT_SDS_IN" : 0}
-  ],
   "mov_rd_sp": [
     {"NOT_RD_OUT": 0, "NOT_SP_IN" : 0}
   ],
-  "mov_ra_rb_deref": [
-    {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RA_OUT": 0}
+  "mov_ra_page0": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RA_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
   ],
-  "mov_ra_rc_deref": [
-        {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RA_OUT": 0}
+  "mov_rb_page0": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RB_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
   ],
-  "mov_ra_rd_deref": [
-        {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RA_OUT": 0}
+  "mov_rc_page0": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RC_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
   ],
-  "mov_rb_ra_deref": [
-        {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RB_OUT": 0}
+  "mov_rd_page0": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RD_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
   ],
-  "mov_rb_rc_deref": [
-        {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RB_OUT": 0}
+  "mov_page0_ra": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RA_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rb_rd_deref": [
-        {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RB_OUT": 0}
+  "mov_page0_rb": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RB_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rc_ra_deref": [
-        {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RC_OUT": 0}
+  "mov_page0_rc": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RC_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rc_rb_deref": [
-        {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RC_OUT": 0}
+  "mov_page0_rd": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_RD_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rc_rd_deref": [
-        {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RC_OUT": 0}
+  "mov_cst_page0": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABL_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_DATA_LATCH_OUT": 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0, "NOT_FETCH" : 0, "NOT_PC_INC" : 0}
   ],
-  "mov_rd_ra_deref": [
-        {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RD_OUT": 0}
+  "mov_ra_ipage0rd": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RA_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
   ],
-  "mov_rd_rb_deref": [
-    {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RD_OUT": 0}
+  "mov_rb_ipage0rd": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RB_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
   ],
-  "mov_rd_rc_deref": [
-    {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RD_OUT": 0}
+  "mov_rc_ipage0rd": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RC_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
   ],
-  "mov_ra_ram": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RA_OUT": 0, "NOT_PC_INC":  0}
+  "mov_rd_ipage0rd": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
   ],
-  "mov_rb_ram": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RB_OUT": 0, "NOT_PC_INC":  0}
+  "mov_ipage0rd_ra": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RA_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rc_ram": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RC_OUT": 0, "NOT_PC_INC":  0}
+  "mov_ipage0rd_rb": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RB_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rd_ram": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_RD_OUT": 0, "NOT_PC_INC":  0}
+  "mov_ipage0rd_rc": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RC_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rom_ra": [
-        {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SAR_IN": 0},
-    {"NOT_ROM_OUT": 0, "ROM_AS": 1, "NOT_RA_IN": 0, "NOT_PC_INC":  0}
+  "mov_ipage0rd_rd": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RD_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
   ],
-  "mov_rom_rb": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SAR_IN": 0},
-    {"NOT_ROM_OUT": 0, "ROM_AS": 1, "NOT_RB_IN": 0, "NOT_PC_INC":  0}
+  "mov_cst_ipage0rd": [
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_PC_INC" : 0, "NOT_FETCH" : 0, "NOT_DATA_LATCH_OUT" : 0,"PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
   ],
-  "mov_rom_rc": [
-        {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SAR_IN": 0},
-    {"NOT_ROM_OUT": 0, "ROM_AS": 1, "NOT_RC_IN": 0, "NOT_PC_INC":  0}
+  "mov_ra_ipagedrd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RA_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_rom_rd": [
-        {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SAR_IN": 0},
-    {"NOT_ROM_OUT": 0, "ROM_AS": 1, "NOT_RD_IN": 0, "NOT_PC_INC":  0}
+  "mov_rb_ipagedrd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RB_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_ram_ra": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_OUT": 0, "RAM_AS": 0, "NOT_RA_IN": 0, "NOT_PC_INC":  0}
+  "mov_rc_ipagedrd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RC_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_ram_rb": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_OUT": 0, "RAM_AS": 0, "NOT_RB_IN": 0, "NOT_PC_INC":  0}
+  "mov_rd_ipagedrd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_ram_rc": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_OUT": 0, "RAM_AS": 0, "NOT_RC_IN": 0, "NOT_PC_INC":  0}
+  "mov_ipagedrd_ra": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RA_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_ram_rd": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MAR_IN": 0},
-    {"NOT_RAM_OUT": 0, "RAM_AS": 0, "NOT_RD_IN": 0, "NOT_PC_INC":  0}
+  "mov_ipagedrd_rb": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RB_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_ra_deref_ra": [
-    {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RA_IN" : 0, "RAM_AS" : 0}
+  "mov_ipagedrd_rc": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RC_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_ra_deref_rb": [
-    {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RB_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_ra_deref_rc": [
-    {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RC_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_ra_deref_rd": [
-    {"NOT_RA_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RD_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rb_deref_ra": [
-    {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RA_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rb_deref_rb": [
-    {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RA_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rb_deref_rc": [
-    {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RC_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rb_deref_rd": [
-    {"NOT_RB_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RD_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rc_deref_ra": [
-    {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RA_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rc_deref_rb": [
-    {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RB_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rc_deref_rc": [
-    {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RB_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rc_deref_rd": [
-    {"NOT_RC_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RD_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rd_deref_ra": [
-    {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RA_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rd_deref_rb": [
-    {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RB_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rd_deref_rc": [
-    {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RC_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_rd_deref_rd": [
-    {"NOT_RD_OUT": 0, "NOT_MAR_IN" : 0},
-    {"NOT_RAM_OUT" : 0, "NOT_RC_IN" : 0, "RAM_AS" : 0}  ],
-  "mov_cst_ra": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_RA_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_ipagedrd_rd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RD_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_rb": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_RB_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_cst_ipagedrd": [
+    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_DEVICE_IN": 0, "PAGE_0" : 0, "NOT_DATA_LATCH_OUT": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
   ],
-  "mov_cst_rc": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_RC_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_ra_ifullrcrd": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RA_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_rd": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_RD_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_rb_ifullrcrd": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RB_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_ss": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SS_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_rc_ifullrcrd": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RC_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_mds": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_MDS_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_rd_ifullrcrd": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_sds": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SDS_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_ifullrcrd_ra": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RA_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_sp": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_SP_IN": 0},
-    {"NOT_PC_INC": 0}
+  "mov_ifullrcrd_rb": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RB_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_cst_ram": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_RAM_IN": 0, "RAM_AS": 0},
-    {"NOT_PC_INC": 0}
+  "mov_ifullrcrd_rc": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RC_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
   ],
-  "mov_rom_ram": [
-    {"NOT_SAR_IN": 0, "NOT_ROM_OUT": 0, "ROM_AS": 0},
-    {"NOT_PC_INC": 0},
-    {"NOT_MAR_IN": 0, "NOT_ROM_OUT": 0, "ROM_AS": 0},
-    {"NOT_ROM_OUT": 0, "ROM_AS": 1, "NOT_RAM_IN": 0, "RAM_AS": 0, "NOT_PC_INC": 0}
+  "mov_ifullrcrd_rd": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RD_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
+  ],
+  "mov_cst_ifullrcrd": [
+    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_DEVICE_IN": 0, "PAGE_0" : 0, "NOT_DATA_LATCH_OUT": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
+  ],
+  "mov_ra_abs": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RA_OUT" : 0}
+  ],
+  "mov_rb_abs": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RB_OUT" : 0}
+  ],
+  "mov_rc_abs": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RC_OUT" : 0}
+  ],
+  "mov_rd_abs": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RD_OUT" : 0}
+  ],
+  "mov_abs_ra": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RA_IN" : 0}
+  ],
+  "mov_abs_rb": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RB_IN" : 0}
+  ],
+  "mov_abs_rc": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RC_IN" : 0}
+  ],
+  "mov_abs_rd": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RD_IN" : 0}
+  ],
+  "mov_cst_abs": [
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0}
   ],
   "push_ra": [
-    {"NOT_RA_OUT" : 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
+    {"NOT_RA_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "push_rb": [
-    {"NOT_RB_OUT" : 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
+    {"NOT_RB_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "push_rc": [
-    {"NOT_RC_OUT" : 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
+    {"NOT_RC_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "push_rd": [
-    {"NOT_RD_OUT" : 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
+    {"NOT_RD_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1}
+  ],
+  "push_page0": [
+    {"NOT_ABL_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 1, "NOT_RT_IN" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1}
+  ],
+  "push_ipage0rd": [
+    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 1, "NOT_RT_IN" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1}
+  ],
+  "push_ipagedrd": [
+    {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RT_IN" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1}
+  ],
+  "push_ifullrcrd": [
+    {"NOT_ABH_IN" : 0, "NOT_RC_OUT" :  0},
+    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RT_IN" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1}
+  ],
+  "push_abs": [
+    {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
+    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RT_IN" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "push_cst": [
-    {"NOT_ROM_OUT": 0, "ROM_AS": 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
-    {"NOT_SP_CT": 0, "NOT_PC_INC": 0, "SP_DIR": 1}
-  ],
-  "push_rom": [
-    {"NOT_ROM_OUT": 0, "NOT_SAR_IN" : 0, "ROM_AS": 0},
-    {"NOT_ROM_OUT": 0, "ROM_AS": 1, "NOT_RAM_IN": 0, "RAM_AS": 1, "NOT_PC_INC": 0},
+    {"NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "pop_ra": [
     {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RA_IN": 0, "NOT_RAM_OUT" : 0, "RAM_AS": 1}
+    {"NOT_RA_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_rb": [
     {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RB_IN": 0, "NOT_RAM_OUT" : 0, "RAM_AS": 1}
+    {"NOT_RB_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_rc": [
     {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RC_IN": 0, "NOT_RAM_OUT" : 0, "RAM_AS": 1}
+    {"NOT_RC_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_rd": [
     {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RD_IN": 0, "NOT_RAM_OUT" : 0, "RAM_AS": 1}
+    {"NOT_RD_IN" : 0, "NOT_POP" : 0}
   ],
-  "add_ra_ra": [
+  "pop_page0": [
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_FETCH" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
+  ],
+  "pop_ipage0rd": [
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
+    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
+  ],
+  "pop_ipagedrd" : [
+    {"NOT_PC_INC" : 0, "NOT_FETCH" : 0,"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
+    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
+  ],
+  "pop_ifullrcrd" : [
+    {"NOT_RC_OUT": 0, "NOT_ABH_IN" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
+    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
+  ],
+  "pop_abs" : [
+    {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0, "NOT_SP_CT": 0, "SP_DIR" : 0},
+    {"NOT_POP" : 0, "NOT_RT_IN" : 0},
+    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
+  ],
+    "add_ra_ra": [
     {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "NOT_RT_IN" : 0, "NOT_FI": 0},
     {"NOT_RT_OUT" : 0, "NOT_RA_IN": 0}
   ],
@@ -610,168 +700,53 @@
     {"NOT_RA_SR" : 0}
   ],
   "jc": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" :  0},
-    {"JC" : 1, "NOT_PC_IN" : 0, "NOT_RT_OUT" :  0}
-  ],
-  "jz": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" :  0},
-    {"JZ" : 1, "NOT_PC_IN" : 0, "NOT_RT_OUT" :  0}
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"JC" : 1, "NOT_PC_IN" : 0}
   ],
   "jn": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" :  0},
-    {"JN" : 1, "NOT_PC_IN" : 0, "NOT_RT_OUT" :  0}
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"JN" : 1, "NOT_PC_IN" : 0}
   ],
-  "ja": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" :  0},
-    {"JA" : 1, "NOT_PC_IN" : 0, "NOT_RT_OUT" :  0}
+  "jz": [
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"JZ" : 1, "NOT_PC_IN" : 0}
   ],
   "goto": [
-    {"J" : 1, "NOT_PC_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0}
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    { "J" : 1, "NOT_PC_IN" : 0}
   ],
   "ljc": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0},
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "JC" : 1, "NOT_PC_IN" : 0},
-    {"JC" : 1, "NOT_CS_IN" : 0, "NOT_RT_OUT" : 0}
-  ],
-  "ljz": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0},
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "JZ" : 1, "NOT_PC_IN" : 0},
-    {"JZ" : 1, "NOT_CS_IN" : 0, "NOT_RT_OUT" : 0}
+    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"JC" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
   ],
   "ljn": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0},
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "JN" : 1, "NOT_PC_IN" : 0},
-    {"JN" : 1, "NOT_CS_IN" : 0, "NOT_RT_OUT" : 0}
+    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"JN" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
   ],
-  "lja": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0},
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "JA" : 1, "NOT_PC_IN" : 0},
-    {"JA" : 1, "NOT_CS_IN" : 0, "NOT_RT_OUT" : 0}
+  "ljz": [
+    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"JC" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
   ],
   "lgoto": [
-    {"NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0},
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "J" : 1, "NOT_PC_IN" : 0},
-    {"J" : 1, "NOT_CS_IN" : 0, "NOT_RT_OUT" : 0}
+    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
+    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0}
   ],
   "lcall": [
-    {"NOT_CS_OUT" : 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
-    {"NOT_SP_CT": 0, "SP_DIR": 1},
-    {"NOT_PC_OUT" : 0, "NOT_RAM_IN" : 0, "RAM_AS": 1},
-    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_RT_IN" : 0, "NOT_ROM_OUT" :  0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0},
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "J" : 1, "NOT_PC_IN" : 0},
-    {"J" : 1, "NOT_CS_IN" : 0, "NOT_RT_OUT" : 0}
+    {"NOT_CS_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_PC_OUT" : 0, "NOT_PUSH" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN" : 0},
+    {"NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABL_IN" : 0},
+    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0}
   ],
   "ret": [
     {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"J" : 1, "NOT_PC_IN": 0, "NOT_RAM_OUT" : 0, "RAM_AS": 1},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_PC_INC" : 0},
-    {"J" : 1, "NOT_CS_IN": 0, "NOT_RAM_OUT" : 0, "RAM_AS": 1, "NOT_PC_INC" : 0}
-  ],
-  "poll0_ra": [
-    {"I0_POLL" : 1, "NOT_RA_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll0_rb": [
-    {"I0_POLL" : 1, "NOT_RB_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll0_rc": [
-    {"I0_POLL" : 1, "NOT_RC_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll0_rd": [
-    {"I0_POLL" : 1, "NOT_RD_IN" : 0, "NOT_FI" :  0}
-  ],
-  "tsm0_ra": [
-    {"I0_TR": 1, "NOT_RA_OUT" : 0}
-  ],
-  "tsm0_rb": [
-    {"I0_TR": 1, "NOT_RB_OUT" : 0}
-  ],
-  "tsm0_rc": [
-    {"I0_TR": 1, "NOT_RC_OUT" : 0}
-  ],
-  "tsm0_rd": [
-    {"I0_TR": 1, "NOT_RD_OUT" : 0}
-  ],
-  "tsm0_ram": [
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "NOT_MAR_IN" : 0},
-    {"NOT_PC_INC": 0, "I0_TR" : 1, "NOT_RAM_OUT" : 1, "RAM_AS" : 0}
-  ],
-  "tsm0_rom": [
-    {"NOT_SAR_IN" : 0, "NOT_ROM_OUT" : 0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0, "NOT_ROM_OUT" : 0, "ROM_AS" : 1, "I0_TR" : 1}
-  ],
-  "poll1_ra": [
-    {"I1_POLL" : 1, "NOT_RA_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll1_rb": [
-    {"I1_POLL" : 1, "NOT_RB_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll1_rc": [
-    {"I1_POLL" : 1, "NOT_RC_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll1_rd": [
-    {"I1_POLL" : 1, "NOT_RD_IN" : 0, "NOT_FI" :  0}
-  ],
-  "tsm1_ra": [
-    {"I1_TR": 1, "NOT_RA_OUT" : 0}
-  ],
-  "tsm1_rb": [
-    {"I1_TR": 1, "NOT_RB_OUT" : 0}
-  ],
-  "tsm1_rc": [
-    {"I1_TR": 1, "NOT_RC_OUT" : 0}
-  ],
-  "tsm1_rd": [
-    {"I1_TR": 1, "NOT_RD_OUT" : 0}
-  ],
-  "tsm1_ram": [
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "NOT_MAR_IN" : 0},
-    {"NOT_PC_INC": 0, "I1_TR" : 1, "NOT_RAM_OUT" : 1, "RAM_AS" : 0}
-  ],
-  "tsm1_rom": [
-    {"NOT_SAR_IN" : 0, "NOT_ROM_OUT" : 0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0, "NOT_ROM_OUT" : 0, "ROM_AS" : 1, "I1_TR" : 1}
-  ],
-  "poll2_ra": [
-    {"I2_POLL" : 1, "NOT_RA_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll2_rb": [
-    {"I2_POLL" : 1, "NOT_RB_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll2_rc": [
-    {"I2_POLL" : 1, "NOT_RC_IN" : 0, "NOT_FI" :  0}
-  ],
-  "poll2_rd": [
-    {"I2_POLL" : 1, "NOT_RD_IN" : 0, "NOT_FI" :  0}
-  ],
-  "tsm2_ra": [
-    {"I2_TR": 1, "NOT_RA_OUT" : 0}
-  ],
-  "tsm2_rb": [
-    {"I2_TR": 1, "NOT_RB_OUT" : 0}
-  ],
-  "tsm2_rc": [
-    {"I2_TR": 1, "NOT_RC_OUT" : 0}
-  ],
-  "tsm2_rd": [
-    {"I2_TR": 1, "NOT_RD_OUT" : 0}
-  ],
-  "tsm2_ram": [
-    {"NOT_ROM_OUT" : 0, "ROM_AS" : 0, "NOT_MAR_IN" : 0},
-    {"NOT_PC_INC": 0, "I2_TR" : 1, "NOT_RAM_OUT" : 1, "RAM_AS" : 0}
-  ],
-  "tsm2_rom": [
-    {"NOT_SAR_IN" : 0, "NOT_ROM_OUT" : 0, "ROM_AS" : 0},
-    {"NOT_PC_INC" : 0, "NOT_ROM_OUT" : 0, "ROM_AS" : 1, "I2_TR" : 1}
+    {"NOT_ABL_IN" : 0, "NOT_POP" : 0, "NOT_SP_CT": 0, "SP_DIR": 0},
+    {"NOT_ABH_IN" : 0, "NOT_POP" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "J" : 1, "NOT_PC_IN": 0, "NOT_CS_IN": 0}
   ],
   "rfl": [
     {"NOT_FLAGS_RS" : 0}
