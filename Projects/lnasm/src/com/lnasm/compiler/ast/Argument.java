@@ -1,6 +1,7 @@
 package com.lnasm.compiler.ast;
 
 import com.lnasm.compiler.Parser;
+import com.lnasm.compiler.RegisterId;
 import com.lnasm.compiler.Token;
 
 public abstract class Argument{
@@ -13,45 +14,21 @@ public abstract class Argument{
     }
 
     public static class Register extends Argument{
-        final ID reg;
+        final RegisterId reg;
 
         public Register(Token token) {
             super(token, Type.REGISTER);
-            this.reg = ID.fromString(token.lexeme);
+            this.reg = RegisterId.fromString(token.lexeme);
         }
 
-        enum ID{
-            RA(true), RB(true), RC(true), RD(true), MDS(false), SS(false), SP(false), SDS(false);
-
-            private final boolean generalPurpose;
-
-            ID(boolean generalPurpose) {
-                this.generalPurpose = generalPurpose;
-            }
-
-            @Override
-            public String toString() {
-                return super.toString().toLowerCase();
-            }
-
-            public static ID fromString(String str){
-                return ID.valueOf(str.toUpperCase());
-            }
-
-            public boolean isGeneralPurpose() {
-                return generalPurpose;
-            }
-        }
     }
 
     public static class Dereference extends Argument{
 
-        final AddressSource source;
         final Argument value;
 
-        public Dereference(AddressSource source, Argument value) {
+        public Dereference(Argument value) {
             super(value.token, Type.DEREFERENCE);
-            this.source = source;
             this.value = value;
         }
 
@@ -68,11 +45,19 @@ public abstract class Argument{
 
     }
 
-    public static class Constant extends Argument{
+    public static class Word extends Argument{
+        final short value;
+
+        public Word(Token token) {
+            super(token, Type.WORD);
+            this.value = Parser.ensureShort(token, (Integer) token.literal);
+        }
+    }
+    public static class Byte extends Argument{
         final byte value;
 
-        public Constant(Token token) {
-            super(token, Type.CONSTANT);
+        public Byte(Token token) {
+            super(token, Type.BYTE);
             this.value = Parser.ensureByte(token, (Integer) token.literal);
         }
 
@@ -92,7 +77,8 @@ public abstract class Argument{
         REGISTER,
         DEREFERENCE,
         L_ADDRESS,
-        CONSTANT,
+        WORD,
+        BYTE,
         LABEL
     }
 

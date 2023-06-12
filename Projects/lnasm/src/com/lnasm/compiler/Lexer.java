@@ -155,18 +155,10 @@ public class Lexer {
                 return token(Token.Type.RC);
             case "rd":
                 return token(Token.Type.RD);
-            case "mds":
-                return token(Token.Type.MDS);
             case "ss":
                 return token(Token.Type.SS);
             case "sp":
                 return token(Token.Type.SP);
-            case "sds":
-                return token(Token.Type.SDS);
-            case "ram":
-                return token(Token.Type.RAM);
-            case "rom":
-                return token(Token.Type.ROM);
             default:
                 return token(Token.Type.IDENTIFIER, ident);
         }

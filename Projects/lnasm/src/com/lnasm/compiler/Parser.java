@@ -1,6 +1,5 @@
 package com.lnasm.compiler;
 
-import com.lnasm.compiler.ast.AddressSource;
 import com.lnasm.compiler.ast.Argument;
 import com.lnasm.compiler.ast.Matcher;
 
@@ -100,31 +99,25 @@ public class Parser {
     }
 
     private Argument argument() {
-        return longAddress();
-    }
-
-    private Argument longAddress() {
-        Argument cs = dereference();
-        if (match(Token.Type.COLON)) {
-            return new Argument.LongAddress(cs, dereference());
-        }
-        return cs;
+        return dereference();
     }
 
     private Argument dereference() {
         if (match(Token.Type.L_SQUARE_BRACKET)) {
-            AddressSource src = AddressSource.IMPLICIT;
-            if (match(Token.Type.RAM))
-                src = AddressSource.RAM;
-            else if (match(Token.Type.ROM))
-                src = AddressSource.ROM;
-
-            Argument arg = register();
+            Argument arg = longAddress();
             consume("expected closing ']'", Token.Type.R_SQUARE_BRACKET);
-            return new Argument.Dereference(src, arg);
+            return new Argument.Dereference(arg);
         }
 
-        return register();
+        return longAddress();
+    }
+
+    private Argument longAddress() {
+        Argument cs = register();
+        if (match(Token.Type.COLON)) {
+            return new Argument.LongAddress(cs, register());
+        }
+        return cs;
     }
 
     private Argument register() {
@@ -134,10 +127,8 @@ public class Parser {
             case RB:
             case RC:
             case RD:
-            case MDS:
             case SP:
             case SS:
-            case SDS:
                 advance();
                 return new Argument.Register(t);
         }
@@ -146,12 +137,15 @@ public class Parser {
 
     private Argument literal() {
         if (match(Token.Type.INTEGER)) {
-            return new Argument.Constant(previous());
+            Token prev = previous();
+            if(inByteRange((Integer) prev.literal))
+                return new Argument.Byte(prev);
+            else if(inShortRange((Integer) prev.literal)) return new Argument.Word(prev);
+            throw new CompileException("constant value out of range", prev);
         } else if (match(Token.Type.IDENTIFIER))
             return new Argument.LabelRef(previous());
         throw new CompileException("unexpected token", peek());
     }
-
     private void reset(List<Token[]> lines) {
         this.lines = lines;
         this.index = 0;
@@ -216,10 +210,26 @@ public class Parser {
     }
 
     public static byte ensureByte(Token t, int i) {
-        if (i < -128 || i > 255)
-            throw new CompileException("Argument out of range (expected byte)", t);
+        if (!inByteRange(i))
+            throw new CompileException("Argument out of range (expected 1-byte integer)", t);
         return (byte) i;
     }
+
+    private static boolean inByteRange(int i) {
+        return i >= -128 && i < 256;
+    }
+
+
+    public static short ensureShort(Token t, int i) {
+        if (!inShortRange(i))
+            throw new CompileException("Argument out of range (expected 2-byte integer)", t);
+        return (short) i;
+    }
+
+    private static boolean inShortRange(int i) {
+        return i >= -32768 && i < 65536;
+    }
+
 
     public Set<Segment> getSegments() {
         return segments;

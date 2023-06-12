@@ -13,8 +13,8 @@ class ShortJump implements Encodeable {
 
     @Override
     public byte[] encode(Linker linker, Segment currentCs) {
-        if (address.type == Argument.Type.CONSTANT){
-            return new byte[]{OpcodeMap.getOpcode(instruction), ((Argument.Constant)address).value};
+        if (address.type == Argument.Type.BYTE){
+            return new byte[]{OpcodeMap.getOpcode(instruction), ((Argument.Byte)address).value};
         }else if(address.type == Argument.Type.LABEL){
             byte labelTo = currentCs.resolveLabel(((Argument.LabelRef)address).labelName, address.token);
             return new byte[]{OpcodeMap.getOpcode(instruction), labelTo};
@@ -41,7 +41,7 @@ class ShortJump implements Encodeable {
         @Override
         public boolean matches(Argument... arguments) {
             return arguments.length == 1 &&
-                    (arguments[0].type == Argument.Type.CONSTANT ||
+                    (arguments[0].type == Argument.Type.BYTE ||
                             (arguments[0].type == Argument.Type.LABEL));
         }
 

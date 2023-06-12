@@ -26,6 +26,7 @@ public interface Matcher {
     Encodeable make(Argument... arguments);
 
     static void init(){
+        //ADD
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -44,6 +45,7 @@ public interface Matcher {
                 return new AddRxRx(arguments[0], arguments[1]);
             }
         });
+        //AND
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -62,6 +64,7 @@ public interface Matcher {
                 return new AndRxRx(arguments[0], arguments[1]);
             }
         });
+        //NOT
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -79,6 +82,7 @@ public interface Matcher {
                 return new NotRx(arguments[0]);
             }
         });
+        //OR
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -97,23 +101,7 @@ public interface Matcher {
                 return new OrRxRx(arguments[0], arguments[1]);
             }
         });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.POLL;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new PollRx(arguments[0]);
-            }
-        });
+        //POP RX
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -131,6 +119,25 @@ public interface Matcher {
                 return new PopRx(arguments[0]);
             }
         });
+        //POP [X]
+        Matcher.addMatcher(new Matcher() {
+            @Override
+            public Token.Type getKeyword() {
+                return Token.Type.POP;
+            }
+
+            @Override
+            public boolean matches(Argument... arguments) {
+                return arguments.length == 1 &&
+                        arguments[0].type == Argument.Type.REGISTER;
+            }
+
+            @Override
+            public Encodeable make(Argument... arguments) {
+                return new PopIndirect(arguments[0]);
+            }
+        });
+        //PUSH RX
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -147,6 +154,7 @@ public interface Matcher {
                 return new PushRx(arguments[0]);
             }
         });
+        //PUSH [X]
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -156,16 +164,15 @@ public interface Matcher {
             @Override
             public boolean matches(Argument... arguments) {
                 return arguments.length == 1
-                        && arguments[0].type == Argument.Type.DEREFERENCE
-                        && ((Argument.Dereference)arguments[0]).source == AddressSource.ROM
-                        && ((Argument.Dereference)arguments[0]).value.type == Argument.Type.CONSTANT;
+                        && arguments[0].type == Argument.Type.DEREFERENCE;
             }
 
             @Override
             public Encodeable make(Argument... arguments) {
-                return new PushDeref(arguments[0]);
+                return new PushIndirect(((Argument.Dereference) arguments[0]).value);
             }
         });
+        //PUSH X
         Matcher.addMatcher(new Matcher() {
                 @Override
                 public Token.Type getKeyword() {
@@ -175,7 +182,7 @@ public interface Matcher {
                 @Override
                 public boolean matches(Argument... arguments) {
                     return arguments.length == 1
-                            && arguments[0].type == Argument.Type.CONSTANT;
+                            && arguments[0].type == Argument.Type.BYTE;
                 }
 
                 @Override
@@ -183,6 +190,7 @@ public interface Matcher {
                     return new PushConstant(arguments[0]);
                 }
             });
+        //SHL
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -200,6 +208,7 @@ public interface Matcher {
                 return new Shl(arguments[0]);
             }
         });
+        //SHR
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -217,6 +226,7 @@ public interface Matcher {
                 return new Shr(arguments[0]);
             }
         });
+        //MOV X, RX
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -226,67 +236,7 @@ public interface Matcher {
             @Override
             public boolean matches(Argument... arguments) {
                 return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER
-                        && (((Argument.Register)arguments[0]).reg != ((Argument.Register)arguments[1]).reg);
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new MovRxRx(arguments[0], arguments[1]);
-            }
-        });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.MOV;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.DEREFERENCE
-                        && arguments[1].type == Argument.Type.DEREFERENCE
-                        && ((Argument.Dereference)arguments[0]).value.type == Argument.Type.CONSTANT
-                        && ((Argument.Dereference)arguments[1]).value.type == Argument.Type.CONSTANT
-                        && ((Argument.Dereference)arguments[0]).source == AddressSource.ROM
-                        && ((Argument.Dereference)arguments[1]).source != AddressSource.ROM;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new MovConstantDerefConstantDeref(arguments[0], arguments[1]);
-            }
-        });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.MOV;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.DEREFERENCE
-                        && arguments[1].type == Argument.Type.REGISTER
-                        && ((Argument.Dereference)arguments[0]).value.type == Argument.Type.CONSTANT;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new MovConstantDerefRx(arguments[0], arguments[1]);
-            }
-        });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.MOV;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.CONSTANT
+                        && arguments[0].type == Argument.Type.BYTE
                         && arguments[1].type == Argument.Type.REGISTER;
             }
 
@@ -295,6 +245,7 @@ public interface Matcher {
                 return new MovConstantRx(arguments[0], arguments[1]);
             }
         });
+        //MOV RX, RX
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -305,16 +256,15 @@ public interface Matcher {
             public boolean matches(Argument... arguments) {
                 return arguments.length == 2
                         && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.DEREFERENCE
-                        && ((Argument.Dereference)arguments[1]).source != AddressSource.ROM
-                        && ((Argument.Dereference)arguments[1]).value.type == Argument.Type.CONSTANT;
+                        && arguments[1].type == Argument.Type.REGISTER;
             }
 
             @Override
             public Encodeable make(Argument... arguments) {
-                return new MovRxConstantDeref(arguments[0], arguments[1]);
+                return new MovRxRx(arguments[0], arguments[1]);
             }
         });
+        //MOV with any indirect addressing
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -324,38 +274,16 @@ public interface Matcher {
             @Override
             public boolean matches(Argument... arguments) {
                 return arguments.length == 2
-                        && arguments[0].type == Argument.Type.DEREFERENCE
-                        && arguments[1].type == Argument.Type.REGISTER
-                        && ((Argument.Dereference)arguments[0]).value.type == Argument.Type.REGISTER
-                        && ((Argument.Dereference)arguments[1]).source != AddressSource.ROM;
+                        && (arguments[0].type == Argument.Type.DEREFERENCE || arguments[1].type == Argument.Type.DEREFERENCE);
             }
 
             @Override
             public Encodeable make(Argument... arguments) {
-                return new MovRxDerefRx(arguments[0], arguments[1]);
+                return new MovIndirect(arguments[0], arguments[1]);
             }
         });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.MOV;
-            }
 
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.DEREFERENCE
-                        && ((Argument.Dereference)arguments[1]).value.type == Argument.Type.REGISTER
-                        && ((Argument.Dereference)arguments[1]).source != AddressSource.ROM
-                        && ((Argument.Register)arguments[0]).reg != ((Argument.Register)((Argument.Dereference)arguments[1]).value).reg;
-            }
 
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new MovRxRxDeref(arguments[0], arguments[1]);
-            }
-        });
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JC));
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JN));
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JZ));
@@ -367,6 +295,7 @@ public interface Matcher {
         Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.JA));
         Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.GOTO));
         Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.CALL));
+        //SUB
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -385,6 +314,7 @@ public interface Matcher {
                 return new SubRxRx(arguments[0], arguments[1]);
             }
         });
+        //CMP
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -403,23 +333,7 @@ public interface Matcher {
                 return new Cmp(arguments[0], arguments[1]);
             }
         });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.TSM;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.CONSTANT;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new TsmConstant(arguments[0]);
-            }
-        });
+        //XOR
         Matcher.addMatcher(new Matcher() {
             @Override
             public Token.Type getKeyword() {
@@ -438,41 +352,7 @@ public interface Matcher {
                 return new XorRxRx(arguments[0], arguments[1]);
             }
         });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.TSM;
-            }
 
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.DEREFERENCE &&
-                        ((Argument.Dereference)arguments[0]).value.type == Argument.Type.CONSTANT;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new TsmConstantDeref(arguments[0]);
-            }
-        });
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.TSM;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new TsmRx(arguments[0]);
-            }
-        });
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.NOP));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.HLT));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.RET));

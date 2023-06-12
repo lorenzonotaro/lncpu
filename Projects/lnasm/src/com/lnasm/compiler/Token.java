@@ -56,13 +56,8 @@ public class Token {
         RB,
         RC,
         RD,
-        MDS,
         SS,
-        SP,
-        SDS,
-        //other keywords
-        RAM,
-        ROM;
+        SP
     }
 
     public Token(Token macroSub, Type type, String lexeme, Object literal, String file, int line, int col) {

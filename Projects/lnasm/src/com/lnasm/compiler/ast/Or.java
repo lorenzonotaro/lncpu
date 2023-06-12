@@ -6,8 +6,8 @@ class OrRxRx implements Encodeable {
     private final byte[] encoding;
 
     public OrRxRx(Argument a, Argument b) {
-        Argument.Register.ID aReg = ((Argument.Register) a).reg;
-        Argument.Register.ID bReg = ((Argument.Register) b).reg;
+        RegisterId aReg = ((Argument.Register) a).reg;
+        RegisterId bReg = ((Argument.Register) b).reg;
 
         String instrName = "or_" + aReg + "_" + bReg;
         if(!OpcodeMap.isValid(instrName))

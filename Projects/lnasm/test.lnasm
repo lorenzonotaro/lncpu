@@ -1,8 +1,13 @@
 .segment 0x0
 
-call 0x1:target
-
-.segment 0x1
-
-target:
-	mov			0x0f, RA
+startup:
+	mov					0, 		RD
+	mov					1, 		RC
+	mov					0xff, 	RB
+loop:
+	add					RD, 	RC
+	cmp					RD,		RB
+	jz					end
+	goto				loop
+end:
+	hlt					

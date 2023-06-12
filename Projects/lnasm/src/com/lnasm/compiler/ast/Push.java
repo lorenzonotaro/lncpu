@@ -9,7 +9,7 @@ class PushRx implements Encodeable{
 
     public PushRx(Argument src) {
 
-        Argument.Register.ID srcReg = ((Argument.Register)src).reg;
+        RegisterId srcReg = ((Argument.Register)src).reg;
         String instrName = "push_" + srcReg;
         if(!OpcodeMap.isValid(instrName))
             throw new CompileException("invalid push source register", src.token);
@@ -29,16 +29,22 @@ class PushRx implements Encodeable{
     }
 }
 
-class PushDeref implements Encodeable{
+class PushIndirect implements Encodeable{
     private final byte[] encoded;
 
-    public PushDeref(Argument src) {
+    public PushIndirect(Argument arg) {
+ImmediateParamEncoding src = new ImmediateParamEncoding(arg);
 
-        String instrName = "push_rom";
-        if(!OpcodeMap.isValid(instrName))
-            throw new CompileException("invalid push source register", src.token);
+        //concatenate args and opcode
+        this.encoded = new byte[1 + src.args.length];
 
-        this.encoded = new byte[]{OpcodeMap.getOpcode(instrName), ((Argument.Constant)((Argument.Dereference)src).value).value};
+        String immediateInstruction = "push_" + src.immediateName;
+
+        if(!OpcodeMap.isValid(immediateInstruction))
+            throw new CompileException("invalid push source", arg.token);
+
+        encoded[0] = OpcodeMap.getOpcode(immediateInstruction);
+        System.arraycopy(src.args, 0, encoded, 1, src.args.length);
     }
 
 
@@ -63,7 +69,8 @@ class PushConstant implements Encodeable{
         if(!OpcodeMap.isValid(instrName))
             throw new CompileException("invalid push source register", src.token);
 
-        this.encoded = new byte[]{OpcodeMap.getOpcode(instrName), ((Argument.Constant)src).value};
+
+        this.encoded = new byte[]{OpcodeMap.getOpcode(instrName), ((Argument.Byte)src).value};
     }
 
 

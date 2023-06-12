@@ -14,10 +14,10 @@ class LongJump implements Encodeable {
 
     @Override
     public byte[] encode(Linker linker, Segment currentCs) {
-        if (address.high.type != Argument.Type.CONSTANT || !(address.low.type == Argument.Type.CONSTANT || address.low.type == Argument.Type.LABEL)){
+        if (address.high.type != Argument.Type.BYTE || !(address.low.type == Argument.Type.BYTE || address.low.type == Argument.Type.LABEL)){
             throw new CompileException("invalid cs:pc combination", address.token);
         }else {
-            byte cs = ((Argument.Constant)address.high).value;
+            byte cs = ((Argument.Byte)address.high).value;
             if (address.low.type == Argument.Type.LABEL) {
                 byte labelTo = linker.resolveLabel(cs, ((Argument.LabelRef) address.low).labelName, address.token);
                 return new byte[]{OpcodeMap.getOpcode(instruction), cs, labelTo};
