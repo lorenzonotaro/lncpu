@@ -80,7 +80,7 @@ public class Parser {
                 return matcher.make(arguments);
             }
         }
-        throw new CompileException("invalid syntax", previous());
+        throw new CompileException("invalid syntax", t);
     }
 
     private void label() {
