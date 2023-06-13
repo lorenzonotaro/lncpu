@@ -43,7 +43,13 @@ contexts:
       scope: keyword.control.import
 
     # Numbers
-    - match: '\b(0x|0b)?(-)?[0-9]+\b'
+    - match: '\b(-)?[0-9]+\b'
+      scope: constant.numeric.lnasm
+
+    - match: '\b(0b)[01]+\b'
+      scope: constant.numeric.lnasm
+
+    - match: '\b(0x)[0-9abcdefABCDEF]+\b'
       scope: constant.numeric.lnasm
 
   double_quoted_string:
