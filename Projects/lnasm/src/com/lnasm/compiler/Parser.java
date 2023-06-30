@@ -7,15 +7,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Parser {
-    private final Set<Segment> segments;
+    private final Set<Block> blocks;
     private List<Token[]> lines;
     private Token[] currentLine;
     private int index;
 
-    private Segment currentSegment;
+    private Block currentBlock;
+
+    private final Map<String, Short> labels;
 
     Parser() {
-        segments = new HashSet<>();
+        blocks = new HashSet<>();
+        labels = new HashMap<>();
     }
 
     boolean parse(List<Token[]> tokens) {
@@ -30,8 +33,8 @@ public class Parser {
                 index = 0;
                 Encodeable instr;
                 if ((instr = parseLine()) != null) {
-                    if (!currentSegment.addInstruction(instr)) {
-                        throw new CompileException("exceeded code segment size", previous());
+                    if (!currentBlock.addInstruction(instr)) {
+                        throw new CompileException("exceeded maximum code size (65536)", previous());
                     }
                 }
             } catch (CompileException e) {
@@ -39,17 +42,17 @@ public class Parser {
                 success = false;
             }
         }
-        segments.add(currentSegment);
+        blocks.add(currentBlock);
 
         return success;
     }
 
     private Encodeable parseLine() {
-        if (match(Token.Type.DIR_SEGMENT)) {
-            newCodeSegment(consume("expected number", Token.Type.INTEGER));
+        if (match(Token.Type.DIR_ORG)) {
+            newBlock(consume("expected number", Token.Type.INTEGER));
             return null;
-        } else if (currentSegment == null)
-            throw new CompileException("code segment not specified", previous());
+        } else if (currentBlock == null)
+            throw new CompileException("inital code segment not specified", previous());
         else if (match(Token.Type.DIR_DATA)) {
             byte[] bytes = null;
             while (!isAtEnd()) {
@@ -86,7 +89,10 @@ public class Parser {
     private void label() {
         Token label = previous();
         consume("expected ':' after label name", Token.Type.COLON);
-        currentSegment.addLabel(label);
+
+        if(labels.containsKey(label.lexeme))
+            throw new CompileException("Duplicate label '" + label.lexeme + "'", label);
+        labels.put(label.lexeme, (short) (currentBlock.startAddress + currentBlock.codeSize));
     }
 
     private Argument[] arguments() {
@@ -149,19 +155,14 @@ public class Parser {
     private void reset(List<Token[]> lines) {
         this.lines = lines;
         this.index = 0;
-        segments.clear();
+        blocks.clear();
     }
 
-    private void newCodeSegment(Token t) {
-        Integer newCsIndex = (Integer) t.literal;
-        if (newCsIndex < 0 || newCsIndex > 31) {
-            throw new CompileException("code segment out of range [0-31]", t);
-        } else if (segments.stream().anyMatch(cs -> cs.csIndex == newCsIndex)) {
-            throw new CompileException("duplicate code segment " + newCsIndex, t);
-        }
-        if (currentSegment != null)
-            segments.add(currentSegment);
-        currentSegment = new Segment(newCsIndex.byteValue());
+    private void newBlock(Token t) {
+        short startAddress = ensureShort(t, (Integer) t.literal);
+        if (currentBlock != null)
+            blocks.add(currentBlock);
+        currentBlock = new Block(previous(), startAddress);
     }
 
     private boolean isAtEnd() {
@@ -231,7 +232,12 @@ public class Parser {
     }
 
 
-    public Set<Segment> getSegments() {
-        return segments;
+    public Set<Block> getBlocks() {
+        return blocks;
+    }
+
+
+    public Map<String, Short> getLabels() {
+        return labels;
     }
 }

@@ -76,10 +76,10 @@ Opcode	Name	Data length	Clock cycles
 0x4a	push_ifullrcrd	2	5
 0x4b	push_abs	3	5
 0x4c	push_cst	3	2
-0x4d	pop_ra	2	2
-0x4e	pop_rb	2	2
-0x4f	pop_rc	2	2
-0x50	pop_rd	2	2
+0x4d	pop_ra	2	1
+0x4e	pop_rb	2	1
+0x4f	pop_rc	2	1
+0x50	pop_rd	2	1
 0x51	pop_page0	3	3
 0x52	pop_ipage0rd	2	3
 0x53	pop_ipagedrd	3	4
@@ -196,5 +196,5 @@ Opcode	Name	Data length	Clock cycles
 0xc2	ljz	3	4
 0xc3	lgoto	3	4
 0xc4	lcall	3	6
-0xc5	ret	1	5
+0xc5	ret	1	4
 0xc6	rfl	2	1

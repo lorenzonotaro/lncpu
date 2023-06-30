@@ -21,7 +21,7 @@ class MovRxRx implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
+    public byte[] encode(Linker linker, short addr) {
         return encoding;
     }
 
@@ -70,7 +70,7 @@ class MovIndirect implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
+    public byte[] encode(Linker linker, short addr) {
         return encoding;
     }
 
@@ -101,7 +101,7 @@ class MovConstantRx implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
+    public byte[] encode(Linker linker, short addr) {
         return encoding;
     }
 }

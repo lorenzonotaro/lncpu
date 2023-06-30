@@ -6,8 +6,8 @@ public class Token {
     final Type type;
     public final String lexeme;
     public final Object literal;
-    final int line;
-    final int col;
+    public final int line;
+    public final int col;
 
     public Token(Type type, String lexeme, Object literal, String file, int line, int col) {
         this(null, type, lexeme, literal, file, line, col);
@@ -17,7 +17,7 @@ public class Token {
         MACRO_DEFINE,
         MACRO_UNDEFINE,
         MACRO_INCLUDE,
-        DIR_SEGMENT,
+        DIR_ORG,
         DIR_DATA,
         L_SQUARE_BRACKET,
         R_SQUARE_BRACKET,
@@ -44,9 +44,12 @@ public class Token {
         JC,
         JZ,
         JN,
-        JA,
         GOTO,
-        CALL,
+        LJC,
+        LJZ,
+        LJN,
+        LGOTO,
+        LCALL,
         RET,
         POLL,
         TSM,
@@ -83,5 +86,9 @@ public class Token {
                 ", line=" + line +
                 ", col=" + col +
                 '}';
+    }
+
+    public String formatLocation(){
+        return String.format("%s:%d:%d", this.file, this.line, this.col);
     }
 }

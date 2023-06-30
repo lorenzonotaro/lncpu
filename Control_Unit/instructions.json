@@ -326,47 +326,43 @@
     {"NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "pop_ra": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RA_IN" : 0, "NOT_POP" : 0}
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RA_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_rb": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RB_IN" : 0, "NOT_POP" : 0}
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RB_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_rc": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RC_IN" : 0, "NOT_POP" : 0}
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RC_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_rd": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_RD_IN" : 0, "NOT_POP" : 0}
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_IN" : 0, "NOT_POP" : 0}
   ],
   "pop_page0": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_FETCH" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_FETCH" : 0, "NOT_ABL_IN" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
     {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
   ],
   "pop_ipage0rd": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
-    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
     {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
   ],
   "pop_ipagedrd" : [
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
     {"NOT_PC_INC" : 0, "NOT_FETCH" : 0,"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
-    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
     {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
   "pop_ifullrcrd" : [
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
     {"NOT_RC_OUT": 0, "NOT_ABH_IN" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
-    {"NOT_RT_IN" : 0, "NOT_POP" : 0},
+    {"NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
     {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
   "pop_abs" : [
+    {"NOT_SP_CT": 0, "SP_DIR" : 0,"NOT_POP" : 0, "NOT_RT_IN" : 0},
     {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0, "NOT_SP_CT": 0, "SP_DIR" : 0},
-    {"NOT_POP" : 0, "NOT_RT_IN" : 0},
+    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
     {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
   ],
     "add_ra_ra": [
@@ -728,7 +724,7 @@
   "ljz": [
     {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
     {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JC" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
+    {"JZ" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
   ],
   "lgoto": [
     {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
@@ -736,17 +732,16 @@
     {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0}
   ],
   "lcall": [
+    {"NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN" : 0},
+    {"NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABL_IN" : 0},
     {"NOT_CS_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_PC_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN" : 0},
-    {"NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABL_IN" : 0},
-    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0}
+    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0, "NOT_SP_CT": 0, "SP_DIR": 1}
   ],
   "ret": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_ABL_IN" : 0, "NOT_POP" : 0, "NOT_SP_CT": 0, "SP_DIR": 0},
-    {"NOT_ABH_IN" : 0, "NOT_POP" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "J" : 1, "NOT_PC_IN": 0, "NOT_CS_IN": 0}
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_ABL_IN" : 0, "NOT_POP" : 0},
+    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_ABH_IN" : 0, "NOT_POP" : 0},
+    {"J" : 1, "NOT_PC_IN": 0, "NOT_CS_IN": 0}
   ],
   "rfl": [
     {"NOT_FLAGS_RS" : 0}

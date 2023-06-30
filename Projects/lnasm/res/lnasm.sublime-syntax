@@ -23,7 +23,7 @@ contexts:
       push: line_comment
 
     # Keywords
-    - match: '\b(nop|hlt|mov|push|pop|add|sub|cmp|and|or|xor|not|shl|shr|jc|jz|jn|ja|goto|call|ret|poll|tsm|din|dda|rfl)\b'
+    - match: '\b(nop|hlt|mov|push|pop|add|sub|cmp|and|or|xor|not|shl|shr|l?jc|l?jz|l?jn|l?goto|lcall|ret|rfl)\b'
       scope: keyword.control.lnasm
 
     # Reserved words
@@ -35,7 +35,7 @@ contexts:
       scope: variable.other
 
     # Directives
-    - match: '\.(segment|data)\b'
+    - match: '\.(org|data)\b'
       scope: storage.type.class.lnasm
 
     # Preprocessor

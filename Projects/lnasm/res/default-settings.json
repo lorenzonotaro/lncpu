@@ -20,5 +20,15 @@
   "-s": {
     "help": "Syntax check only (no output). ",
     "value": false
+  },
+
+  "-Wshort-jump-out-of-range": {
+    "help": "Disables short jump out of range compile warning.",
+    "value": false
+  },
+
+  "-Woptimizable-long-jump": {
+    "help": "Disables long jump used on label in current segment compile warning.",
+    "value": false
   }
 }

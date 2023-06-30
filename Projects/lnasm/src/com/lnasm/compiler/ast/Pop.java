@@ -7,7 +7,7 @@ class PopRx implements Encodeable {
     private final byte[] encoded;
 
     PopRx(Argument dest) {
-        String instrName = "pop_" + ((Argument.Register) dest).reg;
+        String instrName = "pop_" + ((Argument.Register) dest).reg.toString().toLowerCase();
 
         if(!OpcodeMap.isValid(instrName))
             throw new CompileException("invalid pop dest register", dest.token);
@@ -22,7 +22,7 @@ class PopRx implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
+    public byte[] encode(Linker linker, short addr) {
         return encoded;
     }
 }
@@ -52,7 +52,7 @@ class PopIndirect implements Encodeable{
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
+    public byte[] encode(Linker linker, short addr) {
         return encoded;
     }
 }

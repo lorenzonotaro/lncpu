@@ -133,12 +133,18 @@ public class Lexer {
                 return token(Token.Type.JZ);
             case "jn":
                 return token(Token.Type.JN);
-            case "ja":
-                return token(Token.Type.JA);
             case "goto":
                 return token(Token.Type.GOTO);
-            case "call":
-                return token(Token.Type.CALL);
+            case "ljc":
+                return token(Token.Type.LJC);
+            case "ljz":
+                return token(Token.Type.LJZ);
+            case "ljn":
+                return token(Token.Type.LJN);
+            case "lgoto":
+                return token(Token.Type.LGOTO);
+            case "lcall":
+                return token(Token.Type.LCALL);
             case "ret":
                 return token(Token.Type.RET);
             case "poll":
@@ -212,8 +218,8 @@ public class Lexer {
     private Token directive() {
         String ident = identifier();
 
-        if (".segment".equalsIgnoreCase(ident))
-            return token(Token.Type.DIR_SEGMENT);
+        if (".org".equalsIgnoreCase(ident))
+            return token(Token.Type.DIR_ORG);
         else if (".data".equalsIgnoreCase(ident))
             return token(Token.Type.DIR_DATA);
         throw error("invalid directive", ident);

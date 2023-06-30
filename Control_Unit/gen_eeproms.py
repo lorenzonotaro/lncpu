@@ -20,7 +20,7 @@ for i in range(0, EEPROM_COUNT):
 
 if len(SIGNALS) != EEPROM_COUNT * 8:
     toadd = EEPROM_COUNT * 8 - len(SIGNALS)
-    print(f"Warning: signals do fit perfectly into EEPROMs. Adding {toadd} unused signal(s).")
+    print(f"Warning: signals do not fit perfectly into EEPROMs. Adding {toadd} unused signal(s).")
     for i in range(toadd):
         SIGNALS[f'_UNUSED{i}_'] = 0
 

@@ -1,24 +1,40 @@
 package com.lnasm.compiler.ast;
 
+import com.lnasm.LNASM;
+import com.lnasm.Logger;
 import com.lnasm.compiler.*;
 
-class ShortJump implements Encodeable {
-    private final String instruction;
-    private final Argument address;
+public class ShortJump implements Encodeable {
 
-    ShortJump(String instruction, Argument address) {
-        this.instruction = instruction;
-        this.address = address;
+    private final String jumpInstr;
+    private final Argument target;
+
+    ShortJump(String jumpInstr, Argument target) {
+        this.jumpInstr = jumpInstr;
+        this.target = target;
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
-        if (address.type == Argument.Type.BYTE){
-            return new byte[]{OpcodeMap.getOpcode(instruction), ((Argument.Byte)address).value};
-        }else if(address.type == Argument.Type.LABEL){
-            byte labelTo = currentCs.resolveLabel(((Argument.LabelRef)address).labelName, address.token);
-            return new byte[]{OpcodeMap.getOpcode(instruction), labelTo};
-        }else throw new Error("invalid case");
+    public byte[] encode(Linker linker, short currentAddr) {
+        byte low = 0;
+        switch (target.type) {
+            case LABEL -> {
+                Argument.LabelRef lr = (Argument.LabelRef) target;
+                short targetAddr = linker.resolveLabel(lr.labelName, lr.token);
+                byte high = (byte) (targetAddr >> 8);
+
+                if ((targetAddr & 0xFF00) != (currentAddr & 0xFF00) && !LNASM.settings.get("-Wshort-jump-out-of-range", Boolean.class))
+                    Logger.compileWarning("referenced label in short jump is outside of code segment. Use 'l" + jumpInstr + "' instead (-Wshort-jump-out-of-range)", target.token);
+
+                low = (byte) targetAddr;
+            }
+            case BYTE -> {
+                Argument.Byte b = (Argument.Byte) target;
+                low = b.value;
+            }
+            default -> throw new CompileException("invalid jump target", target.token);
+        }
+        return new byte[]{OpcodeMap.getOpcode(jumpInstr), low};
     }
 
     @Override
@@ -42,7 +58,7 @@ class ShortJump implements Encodeable {
         public boolean matches(Argument... arguments) {
             return arguments.length == 1 &&
                     (arguments[0].type == Argument.Type.BYTE ||
-                            (arguments[0].type == Argument.Type.LABEL));
+                            arguments[0].type == Argument.Type.LABEL);
         }
 
         @Override

@@ -1,28 +1,47 @@
 package com.lnasm.compiler.ast;
 
+import com.lnasm.Logger;
 import com.lnasm.compiler.*;
 
 class LongJump implements Encodeable {
 
-    private final String instruction;
-    private final Argument.LongAddress address;
+    private final String jumpInstr;
+    private final Argument target;
 
-    LongJump(String instruction, Argument address) {
-        this.instruction = instruction;
-        this.address = (Argument.LongAddress) address;
+    LongJump(String jumpInstr, Argument target) {
+        this.jumpInstr = jumpInstr;
+        this.target = target;
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
-        if (address.high.type != Argument.Type.BYTE || !(address.low.type == Argument.Type.BYTE || address.low.type == Argument.Type.LABEL)){
-            throw new CompileException("invalid cs:pc combination", address.token);
-        }else {
-            byte cs = ((Argument.Byte)address.high).value;
-            if (address.low.type == Argument.Type.LABEL) {
-                byte labelTo = linker.resolveLabel(cs, ((Argument.LabelRef) address.low).labelName, address.token);
-                return new byte[]{OpcodeMap.getOpcode(instruction), cs, labelTo};
-            }else throw new Error("invalid case");
+    public byte[] encode(Linker linker, short currentAddr) {
+        byte high = 0, low = 0;
+        switch (target.type){
+            case L_ADDRESS -> {
+                Argument.LongAddress la = (Argument.LongAddress) target;
+                if(la.high.type == Argument.Type.BYTE && la.low.type == Argument.Type.BYTE){
+                    high = ((Argument.Byte) la.high).value;
+                    low = ((Argument.Byte) la.low).value;
+                }else throw new CompileException("invalid jump target", target.token);
+            }
+            case LABEL -> {
+                Argument.LabelRef lr = (Argument.LabelRef) target;
+                short targetAddr = linker.resolveLabel(lr.labelName, lr.token);
+                high = (byte) (targetAddr >> 8);
+                low = (byte) targetAddr;
+            }
+            case WORD -> {
+                Argument.Word w = (Argument.Word) target;
+                high = (byte) (w.value >> 8);
+                low = (byte) (w.value & 0xFF);
+            }
+            default -> throw new CompileException("invalid jump target", target.token);
         }
+
+        if(high == (byte) (currentAddr >> 8) && !jumpInstr.equals("lcall"))
+            Logger.compileWarning("A long jump is performed to an address in the same code block. Consider using '" + jumpInstr.substring(1) + "' instead (-Woptimizable-long-jump)", target.token);
+
+        return new byte[]{OpcodeMap.getOpcode(jumpInstr), high, low};
     }
 
     @Override
@@ -45,12 +64,14 @@ class LongJump implements Encodeable {
         @Override
         public boolean matches(Argument... arguments) {
             return arguments.length == 1 &&
-                    (arguments[0].type == Argument.Type.L_ADDRESS);
+                    (arguments[0].type == Argument.Type.L_ADDRESS ||
+                            arguments[0].type == Argument.Type.LABEL ||
+                            arguments[0].type == Argument.Type.WORD);
         }
 
         @Override
         public Encodeable make(Argument... arguments) {
-            return new LongJump("l" + jInstr.toString().toLowerCase(), arguments[0]);
+            return new LongJump(jInstr.toString().toLowerCase(), arguments[0]);
         }
     }
 }

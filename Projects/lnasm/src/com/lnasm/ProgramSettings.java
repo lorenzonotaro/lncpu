@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.*;
 
-class ProgramSettings {
+public class ProgramSettings {
     private static final GsonBuilder gsonBuilder = new GsonBuilder();
 
     private final Map<String, Entry> entries;

@@ -36,11 +36,11 @@ public class Compiler {
         Parser parser = new Parser();
         if(!parser.parse(preprocessedLines))
             return false;
-        Set<Segment> segments = parser.getSegments();
+        Set<Block> blocks = parser.getBlocks();
 
         Logger.setProgramState("linker");
-        Linker linker = new Linker();
-        if(!linker.link(segments))
+        Linker linker = new Linker(parser.getLabels());
+        if(!linker.link(blocks))
             return false;
 
         this.output = linker.getOutput();

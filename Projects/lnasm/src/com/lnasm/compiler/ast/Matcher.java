@@ -129,7 +129,7 @@ public interface Matcher {
             @Override
             public boolean matches(Argument... arguments) {
                 return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.REGISTER;
+                        arguments[0].type == Argument.Type.DEREFERENCE;
             }
 
             @Override
@@ -283,18 +283,18 @@ public interface Matcher {
             }
         });
 
-
+        //Long jumps
+        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.LJC));
+        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.LJN));
+        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.LJZ));
+        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.LGOTO));
+        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.LCALL));
+        //Short jumps
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JC));
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JN));
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JZ));
-        Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JA));
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.GOTO));
-        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.JC));
-        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.JN));
-        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.JZ));
-        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.JA));
-        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.GOTO));
-        Matcher.addMatcher(new LongJump.LJumpInstrMatcher(Token.Type.CALL));
+
         //SUB
         Matcher.addMatcher(new Matcher() {
             @Override

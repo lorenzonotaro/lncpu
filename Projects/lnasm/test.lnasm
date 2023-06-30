@@ -1,13 +1,36 @@
-.segment 0x0
+.org 0x0
 
 startup:
-	mov					0, 		RD
-	mov					1, 		RC
-	mov					0xff, 	RB
-loop:
-	add					RD, 	RC
-	cmp					RD,		RB
-	jz					end
-	goto				loop
-end:
-	hlt					
+	mov				0x3,	RD ; RD will contain the target number
+	mov				RD, RB
+	lcall			fibonacci
+	hlt
+
+.org 0x0100
+; this function returns in RA the Nth number of the fibonacci sequence, where RB is N.
+fibonacci:
+	push 			RB
+	push			RC
+	push			RD
+	mov 		2,  RD
+	cmp			RB, RD
+	jz			_ret1
+	jc			_ret1
+	mov			1, 	RD
+	sub 		RB, RD
+	lcall		fibonacci
+	mov			RA, RC
+	sub			RB, RD
+	lcall		fibonacci
+	add			RA, RC
+_ret:
+	pop				RD
+	pop				RC
+	pop 			RB
+	ret
+_ret1:
+	pop				RD
+	pop				RC
+	pop 			RB
+	mov			1, RA
+	ret

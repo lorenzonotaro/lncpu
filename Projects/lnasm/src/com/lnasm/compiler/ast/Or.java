@@ -23,7 +23,7 @@ class OrRxRx implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, Segment currentCs) {
+    public byte[] encode(Linker linker, short addr) {
         return encoding;
     }
 }
