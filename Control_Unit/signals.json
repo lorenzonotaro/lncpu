@@ -33,8 +33,6 @@
   "NOT_CS_OUT": 1,
   "NOT_PC_OUT": 1,
   "NOT_FETCH": 1,
-  "NOT_FI": 1,
-  "NOT_FLAGS_RS": 1,
   "J": 0,
   "JC": 0,
   "JZ": 0,
@@ -45,5 +43,11 @@
   "PAGE_0": 0,
   "NOT_PUSH" : 1,
   "NOT_POP" : 1,
-  "NOT_DATA_LATCH_OUT" : 1
+  "NOT_DATA_LATCH_OUT" : 1,
+  "NOT_IVH_OUT" : 1,
+  "NOT_IVL_OUT" : 1,
+  "I_VAL": 0,
+  "FLAGS_MODE_SEL0": 1,
+  "FLAGS_MODE_SEL1": 1,
+  "NOT_FLAGS_OUT": 1
 }

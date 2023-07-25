@@ -51,9 +51,14 @@ public class Token {
         LGOTO,
         LCALL,
         RET,
-        POLL,
-        TSM,
-        RFL,
+
+        IRET,
+
+        SID,
+
+        CID,
+
+        BRK,
         //registers
         RA,
         RB,

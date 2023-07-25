@@ -147,12 +147,14 @@ public class Lexer {
                 return token(Token.Type.LCALL);
             case "ret":
                 return token(Token.Type.RET);
-            case "poll":
-                return token(Token.Type.POLL);
-            case "tsm":
-                return token(Token.Type.TSM);
-            case "rfl":
-                return token(Token.Type.RFL);
+            case "iret":
+                return token(Token.Type.IRET);
+            case "sid":
+                return token(Token.Type.SID);
+            case "cid":
+                return token(Token.Type.CID);
+            case "brk":
+                return token(Token.Type.CID);
             case "ra":
                 return token(Token.Type.RA);
             case "rb":

@@ -356,6 +356,9 @@ public interface Matcher {
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.NOP));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.HLT));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.RET));
-        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.RFL));
+        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.IRET));
+        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.SID));
+        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.CID));
+        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.BRK));
     }
 }
