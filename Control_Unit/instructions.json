@@ -11,7 +11,7 @@
     {"NOT_CS_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_PC_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_FLAGS_OUT": 0, "NOT_PUSH": 0},
-    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0, "NOT_SP_CT": 0, "SP_DIR": 1}
+    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0, "NOT_SP_CT": 0, "SP_DIR": 1, "FLAGS_MODE_SEL0" : 1, "FLAGS_MODE_SEL1": 0, "I_VAL": 1}
   ],
   "mov_cst_ra": [
     {"NOT_DATA_LATCH_OUT": 0, "NOT_RA_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
