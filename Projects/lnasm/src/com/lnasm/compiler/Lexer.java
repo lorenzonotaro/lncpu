@@ -154,7 +154,7 @@ public class Lexer {
             case "cid":
                 return token(Token.Type.CID);
             case "brk":
-                return token(Token.Type.CID);
+                return token(Token.Type.BRK);
             case "ra":
                 return token(Token.Type.RA);
             case "rb":

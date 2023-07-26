@@ -1,6 +1,13 @@
 .org 0x0
 
 startup:
-    sid
     cid
-    goto startup
+    cmp     RA, RB
+    brk
+    mov     0x29, RB
+    hlt
+
+.org 0x1f00
+    mov 0x42, RA
+    cmp RA, RB
+    iret

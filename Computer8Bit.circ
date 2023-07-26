@@ -399,7 +399,7 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(1730,1140)" name="Constant">
       <a name="facing" val="west"/>
-      <a name="value" val="0x1fff"/>
+      <a name="value" val="0x1f00"/>
       <a name="width" val="16"/>
     </comp>
     <comp lib="0" loc="(1730,850)" name="Tunnel">
@@ -3001,7 +3001,8 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-c9 c8 c0
+c8 2 4 29 1 7931*0 3 42
+c7
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
@@ -4524,55 +4525,55 @@ e d 14*f e d 14*f e d
     <comp lib="1" loc="(440,240)" name="OR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="8" loc="(121,252)" name="Text">
+    <comp lib="8" loc="(120,250)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="nothing"/>
     </comp>
-    <comp lib="8" loc="(146,233)" name="Text">
-      <a name="font" val="SansSerif plain 12"/>
-      <a name="text" val="load I"/>
-    </comp>
-    <comp lib="8" loc="(147,198)" name="Text">
+    <comp lib="8" loc="(145,195)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="load from bus"/>
     </comp>
-    <comp lib="8" loc="(147,218)" name="Text">
+    <comp lib="8" loc="(145,215)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="load from ALU"/>
     </comp>
-    <comp lib="8" loc="(38,256)" name="Text">
+    <comp lib="8" loc="(145,230)" name="Text">
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="text" val="load I"/>
+    </comp>
+    <comp lib="8" loc="(35,255)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(41,236)" name="Text">
+    <comp lib="8" loc="(40,200)" name="Text">
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="text" val="0"/>
+    </comp>
+    <comp lib="8" loc="(40,215)" name="Text">
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="text" val="0"/>
+    </comp>
+    <comp lib="8" loc="(40,235)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(42,201)" name="Text">
-      <a name="font" val="SansSerif plain 12"/>
-      <a name="text" val="0"/>
-    </comp>
-    <comp lib="8" loc="(42,219)" name="Text">
-      <a name="font" val="SansSerif plain 12"/>
-      <a name="text" val="0"/>
-    </comp>
-    <comp lib="8" loc="(67,257)" name="Text">
+    <comp lib="8" loc="(65,255)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(71,235)" name="Text">
+    <comp lib="8" loc="(70,195)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="0"/>
     </comp>
-    <comp lib="8" loc="(73,199)" name="Text">
-      <a name="font" val="SansSerif plain 12"/>
-      <a name="text" val="0"/>
-    </comp>
-    <comp lib="8" loc="(74,217)" name="Text">
+    <comp lib="8" loc="(70,215)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(80,183)" name="Text">
+    <comp lib="8" loc="(70,235)" name="Text">
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="text" val="0"/>
+    </comp>
+    <comp lib="8" loc="(80,180)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="SEL0 SEL1 MODE"/>
     </comp>
