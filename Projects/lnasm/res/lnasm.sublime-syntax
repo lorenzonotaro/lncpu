@@ -23,11 +23,11 @@ contexts:
       push: line_comment
 
     # Keywords
-    - match: '\b(nop|hlt|mov|push|pop|add|sub|cmp|and|or|xor|not|shl|shr|l?jc|l?jz|l?jn|l?goto|lcall|ret|rfl)\b'
+    - match: '\b(nop|hlt|mov|push|pop|add|sub|cmp|and|or|xor|not|shl|shr|l?jc|l?jz|l?jn|l?goto|lcall|ret|iret|sid|cid|brk)\b'
       scope: keyword.control.lnasm
 
     # Reserved words
-    - match: '\b(RA|RB|RC|RD|MDS|SS|SP|SDS|RAM|ROM)\b'
+    - match: '\b(RA|RB|RC|RD|MDS|SS|SP)\b'
       scope: constant.language.lnasm
 
     # Labels
