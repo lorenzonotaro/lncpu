@@ -1,13 +1,21 @@
 .org 0x0
 
 startup:
+    sid
+    mov 0, RA
+    mov 1, RB
+    mov 0x42, RC
     cid
-    cmp     RA, RB
-    brk
-    mov     0x29, RB
+loop:
+    cmp RA, RC
+    jz  end
+    goto loop
+end:
     hlt
 
+
 .org 0x1f00
-    mov 0x42, RA
-    cmp RA, RB
+    add RA, RB
+    mov 0x01, [0x4000]
     iret
+    

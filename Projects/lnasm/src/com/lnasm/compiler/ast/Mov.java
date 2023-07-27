@@ -59,8 +59,14 @@ class MovIndirect implements Encodeable {
             throw new CompileException("invalid mov src/dest combination", srcArg.token);
 
         this.encoding[0] = OpcodeMap.getOpcode(immediateInstruction);
-        System.arraycopy(src.args, 0, this.encoding, 1, src.args.length);
-        System.arraycopy(dest.args, 0, this.encoding, 1 + src.args.length, dest.args.length);
+
+        if(srcArg.type == Argument.Type.DEREFERENCE) {
+            System.arraycopy(src.args, 0, this.encoding, 1, src.args.length);
+            System.arraycopy(dest.args, 0, this.encoding, 1 + src.args.length, dest.args.length);
+        }else{
+            System.arraycopy(dest.args, 0, this.encoding, 1, dest.args.length);
+            System.arraycopy(src.args, 0, this.encoding, 1 + dest.args.length, src.args.length);
+        }
     }
 
 

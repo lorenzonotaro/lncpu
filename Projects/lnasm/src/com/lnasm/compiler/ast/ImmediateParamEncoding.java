@@ -14,7 +14,7 @@ class ImmediateParamEncoding {
                 this.immediateName = "cst";
                 break;
             case DEREFERENCE:
-                dereference(arg);
+                dereference(((Argument.Dereference) arg).value);
                 break;
             case L_ADDRESS:
                 throw new CompileException("invalid argument", arg.token);
@@ -35,7 +35,6 @@ class ImmediateParamEncoding {
                     throw new CompileException("Indirect page 0 mode is only permitted with RD", arg.token);
                 this.immediateName = "ipage0rd";
                 this.args = new byte[0];
-                return;
             }
             case L_ADDRESS -> {
                 //pop [page:adr], [page:rd] or [rc:rd]
@@ -74,6 +73,5 @@ class ImmediateParamEncoding {
             }
             default -> throw new CompileException("invalid indirect argument", arg.token);
         }
-        throw new CompileException("invalid indirect argument", arg.token);
     }
 }
