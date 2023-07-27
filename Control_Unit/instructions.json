@@ -6,7 +6,7 @@
     {"NOT_HLT" : 0}
   ],
   "brk": [
-    {"NOT_IVH_OUT" : 0,"NOT_ABH_IN" : 0},
+    {"NOT_IVH_OUT" : 0,"NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "CSPC_DIR" : 0},
     {"NOT_IVL_OUT" : 0, "NOT_ABL_IN" : 0},
     {"NOT_CS_OUT" : 0, "NOT_PUSH" : 0},
     {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_PC_OUT" : 0, "NOT_PUSH" : 0},

@@ -72,8 +72,8 @@ with open('instructions.json') as file:
             all_steps[-1] = {**(all_steps[-1]), **I_END}
 
         # store the instruction in opcodes.tsv
-        codesize = 1 + sum(
-            1 for step in instr if "NOT_PC_INC" in step)  # count how many times the instruction increments PC
+        codesize = sum(
+            1 for step in all_steps if "NOT_PC_INC" in step and "CSPC_DIR" not in step)  # count how many times the instruction increments PC
         string = hex(opcode) + '\t' + name + '\t' + str(codesize) + '\t' + str(len(all_steps)) + '\n'
         opcodes_tsv.write(string)
 

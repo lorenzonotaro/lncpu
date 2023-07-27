@@ -49,5 +49,6 @@
   "I_VAL": 0,
   "FLAGS_MODE_SEL0": 1,
   "FLAGS_MODE_SEL1": 1,
-  "NOT_FLAGS_OUT": 1
+  "NOT_FLAGS_OUT": 1,
+  "CSPC_DIR": 1
 }

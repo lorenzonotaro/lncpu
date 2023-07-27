@@ -20,7 +20,7 @@ class ImmediateParamEncoding {
                 throw new CompileException("invalid argument", arg.token);
             case REGISTER:
                 this.args = new byte[0];
-                this.immediateName = arg.token.toString().toLowerCase();
+                this.immediateName = arg.token.lexeme.toLowerCase();
                 break;
             default:
                 throw new Error("invalid argument");

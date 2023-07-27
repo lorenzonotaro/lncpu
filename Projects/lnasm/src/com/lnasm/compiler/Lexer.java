@@ -115,7 +115,7 @@ public class Lexer {
                 return token(Token.Type.SUB);
             case "cmp":
                 return token(Token.Type.CMP);
-            case "AND":
+            case "and":
                 return token(Token.Type.AND);
             case "or":
                 return token(Token.Type.OR);
