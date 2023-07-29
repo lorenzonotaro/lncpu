@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.8.0" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.8.0(https://github.com/logisim-evolution/).
+<project source="3.9.0dev" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.9.0dev(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -692,20 +692,25 @@ end TCL_Generic;
       <a name="label" val="NOT_FLAGS_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(280,1450)" name="Pull Resistor">
-      <a name="pull" val="1"/>
-    </comp>
-    <comp lib="0" loc="(280,1740)" name="Tunnel">
+    <comp lib="0" loc="(250,2020)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="NOT_DEVICE_SEL_3"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(280,1760)" name="Tunnel">
+    <comp lib="0" loc="(250,2040)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="NOT_DEVICE_IN"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(280,1450)" name="Pull Resistor">
+      <a name="pull" val="1"/>
+    </comp>
+    <comp lib="0" loc="(280,1900)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="NOT_DEVICE_SEL_4"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(280,1780)" name="Tunnel">
+    <comp lib="0" loc="(280,1920)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="NOT_DEVICE_SEL_5"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -721,6 +726,18 @@ end TCL_Generic;
       <a name="bit7" val="1"/>
       <a name="facing" val="north"/>
       <a name="incoming" val="8"/>
+    </comp>
+    <comp lib="0" loc="(330,2060)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="ABUS"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+      <a name="width" val="16"/>
+    </comp>
+    <comp lib="0" loc="(330,2080)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="DBUS"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+      <a name="width" val="8"/>
     </comp>
     <comp lib="0" loc="(340,1000)" name="Tunnel">
       <a name="label" val="J"/>
@@ -797,6 +814,11 @@ end TCL_Generic;
     <comp lib="0" loc="(340,1610)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="NOT_DEVICE_SEL_0"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(340,2010)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="C4"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(340,320)" name="Tunnel">
@@ -969,6 +991,24 @@ end TCL_Generic;
       <a name="label" val="ABUS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
       <a name="width" val="16"/>
+    </comp>
+    <comp lib="0" loc="(500,2060)" name="Splitter">
+      <a name="bit1" val="0"/>
+      <a name="bit10" val="1"/>
+      <a name="bit11" val="1"/>
+      <a name="bit12" val="none"/>
+      <a name="bit13" val="none"/>
+      <a name="bit14" val="none"/>
+      <a name="bit15" val="none"/>
+      <a name="bit2" val="0"/>
+      <a name="bit3" val="0"/>
+      <a name="bit4" val="0"/>
+      <a name="bit5" val="0"/>
+      <a name="bit6" val="1"/>
+      <a name="bit7" val="1"/>
+      <a name="bit8" val="1"/>
+      <a name="bit9" val="1"/>
+      <a name="incoming" val="16"/>
     </comp>
     <comp lib="0" loc="(520,230)" name="Splitter">
       <a name="appear" val="center"/>
@@ -1250,6 +1290,10 @@ end TCL_Generic;
       <a name="facing" val="west"/>
       <a name="size" val="20"/>
     </comp>
+    <comp lib="1" loc="(280,2030)" name="OR Gate">
+      <a name="size" val="30"/>
+    </comp>
+    <comp lib="1" loc="(340,2030)" name="NOT Gate"/>
     <comp lib="1" loc="(400,1620)" name="OR Gate">
       <a name="size" val="30"/>
     </comp>
@@ -1514,6 +1558,11 @@ end TCL_Generic;
     <comp lib="5" loc="(410,1550)" name="Button"/>
     <comp lib="5" loc="(440,170)" name="Hex Digit Display"/>
     <comp lib="5" loc="(490,170)" name="Hex Digit Display"/>
+    <comp lib="5" loc="(510,2000)" name="RGB Video">
+      <a name="color" val="XTerm256 (8 bit)"/>
+      <a name="height" val="64"/>
+      <a name="width" val="64"/>
+    </comp>
     <comp lib="5" loc="(540,170)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
@@ -1854,6 +1903,7 @@ end TCL_Generic;
     <wire from="(2380,1240)" to="(2390,1240)"/>
     <wire from="(2410,1240)" to="(2420,1240)"/>
     <wire from="(280,1450)" to="(660,1450)"/>
+    <wire from="(280,2030)" to="(310,2030)"/>
     <wire from="(300,170)" to="(300,180)"/>
     <wire from="(300,180)" to="(320,180)"/>
     <wire from="(320,1000)" to="(340,1000)"/>
@@ -1910,7 +1960,11 @@ end TCL_Generic;
     <wire from="(320,980)" to="(340,980)"/>
     <wire from="(330,180)" to="(350,180)"/>
     <wire from="(330,200)" to="(330,210)"/>
+    <wire from="(330,2060)" to="(500,2060)"/>
+    <wire from="(330,2080)" to="(570,2080)"/>
     <wire from="(340,1610)" to="(360,1610)"/>
+    <wire from="(340,2010)" to="(520,2010)"/>
+    <wire from="(340,2030)" to="(530,2030)"/>
     <wire from="(350,170)" to="(350,180)"/>
     <wire from="(360,1610)" to="(360,1650)"/>
     <wire from="(360,1610)" to="(370,1610)"/>
@@ -1932,11 +1986,18 @@ end TCL_Generic;
     <wire from="(470,210)" to="(510,210)"/>
     <wire from="(470,230)" to="(520,230)"/>
     <wire from="(490,170)" to="(490,180)"/>
+    <wire from="(520,2000)" to="(520,2010)"/>
+    <wire from="(520,2040)" to="(550,2040)"/>
+    <wire from="(520,2050)" to="(560,2050)"/>
     <wire from="(520,210)" to="(570,210)"/>
+    <wire from="(530,2000)" to="(530,2030)"/>
     <wire from="(540,170)" to="(540,180)"/>
     <wire from="(540,180)" to="(560,180)"/>
+    <wire from="(550,2000)" to="(550,2040)"/>
+    <wire from="(560,2000)" to="(560,2050)"/>
     <wire from="(570,180)" to="(590,180)"/>
     <wire from="(570,200)" to="(570,210)"/>
+    <wire from="(570,2000)" to="(570,2080)"/>
     <wire from="(590,170)" to="(590,180)"/>
     <wire from="(60,300)" to="(60,380)"/>
     <wire from="(60,380)" to="(100,380)"/>
@@ -2810,7 +2871,7 @@ end TCL_Generic;
     <a name="simulationFrequency" val="32.0"/>
     <comp lib="0" loc="(190,360)" name="Clock">
       <a name="highDuration" val="2"/>
-      <a name="label" val="CLK90_GEN"/>
+      <a name="label" val="sysclk"/>
       <a name="lowDuration" val="2"/>
     </comp>
     <comp lib="0" loc="(200,260)" name="Clock">

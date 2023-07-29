@@ -52,7 +52,7 @@ public class Parser {
             newBlock(consume("expected number", Token.Type.INTEGER));
             return null;
         } else if (currentBlock == null)
-            throw new CompileException("inital code segment not specified", previous());
+            throw new CompileException("initial code segment not specified", peek());
         else if (match(Token.Type.DIR_DATA)) {
             byte[] bytes = null;
             while (!isAtEnd()) {

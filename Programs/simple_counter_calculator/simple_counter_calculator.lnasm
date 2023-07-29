@@ -1,0 +1,57 @@
+
+; Connect:
+; a button adapter to devices 0, 1 and 2
+; a hex display adapter to device 3
+
+%define     BTN1    0x4000
+%define     BTN2    0x6000
+%define     BTN3    0x8000
+%define     DISPLAY 0xA000
+.org 0x0
+
+startup:
+    sid                         ; initialization
+    mov     0,          SS
+    mov     0,          SP
+    mov     0,          RA
+    mov     RA,         RB
+    cid
+loop:                           ; stay in loop; everything will happen in the interrupt handler
+    nop
+    goto    loop
+end:
+    hlt
+
+
+.org 0x1f00
+    push    RC                 ; since we'll be using both RC and RD, we push  them onto the stack
+    push    RD
+    mov     1,          RC
+    mov     [BTN1],     RD     ; check if button 1 was pressed
+    and     RD,         RD     ; test the value
+    jz      not_btn1
+    mov     1,          [BTN1]  ; write to the button adapter to aknowledge the IRQ
+    add     RA,         RC     ; increment RA
+
+not_btn1:
+    mov     [BTN2],     RD     ; check if button 2 was pressed
+    and     RD,         RD     ; test the value
+    jz      not_btn2
+    mov     1,          [BTN2]  ; write to the button adapter to aknowledge the IRQ
+    add     RB,         RC     ; increment RB
+
+not_btn2:
+    mov     [BTN3],     RD     ; check if button 3 was pressed
+    and     RD,         RD     ; test the value
+    jz      not_btn3
+    mov     1,          [BTN3] ; write to the button adapter to aknowledge the IRQ
+    add     RA,         RB     ; add RA and RB...
+    mov     RA,         [DISPLAY] ; send the result to the Hex Display Adapter...
+    mov     0,          RA     ; then reset their values
+    mov     RA,         RB
+
+not_btn3:
+    pop     RD                 ; restore RD and RC
+    pop     RC
+    iret
+    
