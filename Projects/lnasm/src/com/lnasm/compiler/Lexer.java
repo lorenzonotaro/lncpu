@@ -185,7 +185,13 @@ public class Lexer {
 
         advance();
 
-        return token(Token.Type.STRING, line.code.substring(start, index), line.code.substring(start + 1, index - 1));
+        String lexeme = line.code.substring(start, index);
+        String val = line.code.substring(start + 1, index - 1);
+
+        if(val.length() == 1)
+            return token(Token.Type.INTEGER, lexeme, (int) val.charAt(0) & 0xFF);
+
+        return token(Token.Type.STRING, lexeme, val);
     }
 
     private Token integer(int base) {
