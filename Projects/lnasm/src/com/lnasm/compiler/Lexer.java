@@ -121,6 +121,8 @@ public class Lexer {
                 return token(Token.Type.OR);
             case "xor":
                 return token(Token.Type.XOR);
+            case "swap":
+                return token(Token.Type.SWAP);
             case "not":
                 return token(Token.Type.NOT);
             case "dec":

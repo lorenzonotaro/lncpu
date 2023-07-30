@@ -4422,14 +4422,16 @@ ea 60 14*e0 ea 60 14*e0 ea 60
 14*e0 ec 60 14*e0 6c 15*e0 6c 15*e0
 6c 15*e0 e3 60 14*e0 63 15*e0 63
 15*e0 63 15*e0 e5 60 14*e0 65 15*e0
-65 15*e0 65 15*e0 60 15*e0 60 15*e0
+65 15*e0 65 15*e0 60 15*e0 60 17*e0
+60 15*e0 60 15*e0 60 15*e0 60 15*e0
+60 15*e0 60 13*e0 60 a0 60 13*e0
 60 a0 60 13*e0 60 a0 60 13*e0
-60 a0 60 13*e0 60 a0 60 13*e0
-60 60 80 60 12*e0 60 60 80
-60 12*e0 60 60 80 60 12*e0 60
-60 80 60 12*e0 60 60 e0 e0
-80 60 12*e0 80 60 15*e0 80 60
-11*e0 60 15*e0 60 15*e0
+60 a0 60 13*e0 60 60 80 60
+12*e0 60 60 80 60 12*e0 60 60
+80 60 12*e0 60 60 80 60 12*e0
+60 60 e0 e0 80 60 12*e0 80
+60 15*e0 80 60 11*e0 60 15*e0 60
+15*e0
 </a>
       <a name="label" val="EEPROM3"/>
       <a name="labelvisible" val="true"/>
@@ -4506,13 +4508,15 @@ ea 60 14*e0 ea 60 14*e0 ea 60
 3 15*7 3 15*7 3 16*7 3 14*7
 3 15*7 3 15*7 3 16*7 3 14*7
 3 15*7 3 15*7 3 15*7 3 15*7
-3 15*7 3 17 3 13*7 3 47
-3 13*7 3 27 3 13*7 3 f
-3 13*7 3 3 17 3 12*7 3
-3 47 3 12*7 3 3 27 3
-12*7 3 3 f 3 12*7 3 3
-6 5 f 3 12*7 f 3 15*7
-f 3 11*7 3 15*7 3 15*7
+3 17*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 13*7 3 17
+3 13*7 3 47 3 13*7 3 27
+3 13*7 3 f 3 13*7 3 3
+17 3 12*7 3 3 47 3 12*7
+3 3 27 3 12*7 3 3 f
+3 12*7 3 3 6 5 f 3
+12*7 f 3 15*7 f 3 11*7 3
+15*7 3 15*7
 </a>
       <a name="label" val="EEPROM4"/>
     </comp>
@@ -4590,14 +4594,16 @@ fa 14*fb db fa 14*fb db fa 15*fb
 fa 14*fb fa 15*fb fa 15*fb fa 16*fb
 fa 14*fb fa 15*fb fa 15*fb fa 16*fb
 fa 14*fb fa 15*fb fa 15*fb fa 15*fb
-fa 15*fb fa 15*fb db fb fa 13*fb
+fa 15*fb fa 17*fb fa 15*fb fa 15*fb
+fa 15*fb fa 15*fb fa 15*fb fa 13*fb
 db fb fa 13*fb db fb fa 13*fb
-db fb fa 13*fb db db fb fa
-12*fb db db fb fa 12*fb db db
-fb fa 12*fb db db fb fa 12*fb
-db db f3 f3 fb fa 10*fb eb
-eb fb fa 12*fb eb eb eb fb
-fa 11*fb fa 15*fb fa 15*fb
+db fb fa 13*fb db fb fa 13*fb
+db db fb fa 12*fb db db fb
+fa 12*fb db db fb fa 12*fb db
+db fb fa 12*fb db db f3 f3
+fb fa 10*fb eb eb fb fa 12*fb
+eb eb eb fb fa 11*fb fa 15*fb
+fa 15*fb
 </a>
       <a name="label" val="EEPROM5"/>
       <a name="labelvisible" val="true"/>
@@ -4639,7 +4645,7 @@ fa 11*fb fa 15*fb fa 15*fb
 1c 15*1e 1c 15*1e 1c 15*1e 1c 14*1e
 1c 15*1e 1c 15*1e 1c 15*1e 1c 15*1e
 1c 15*1e 1c 15*1e 1c 15*1e 1c 15*1e
-1c 15*1e 1c 15*1e 1c 15*1e 1c 207*1e
+1c 15*1e 1c 15*1e 1c 15*1e 1c 303*1e
 18 15*1e 1a 15*1e 1b 15*1e
 </a>
       <a name="label" val="EEPROM6"/>
@@ -4686,7 +4692,9 @@ ff df 13*ff 7f ff 7f 13*ff 7f
 15*ff ef 15*ff ef 15*ff fe 14*ff ef
 15*ff bf 32*ff fe 14*ff ef 15*ff bf
 32*ff fe 14*ff ef 15*ff bf 31*ff fb
-15*ff f7 223*ff
+15*ff f7 15*ff fd de ef 13*ff fd
+7e bf 13*ff fd fe 14*ff df 6f
+bf 13*ff df ef 14*ff 7f bf 222*ff
 </a>
       <a name="label" val="EEPROM0"/>
       <a name="labelvisible" val="true"/>
@@ -4726,9 +4734,10 @@ bf 13*7f 7d 77 7f bf 12*7f 7d
 591*7f 7e 15*7f 7e 15*7f 7e 15*7f 7e
 271*7f 7e 15*7f 7e 15*7f 7e 15*7f 7e
 271*7f 7e 15*7f 7e 15*7f 7e 15*7f 7e
-127*7f 7e 63*7f 7e 63*7f 7e 178*7f bf
-bf 11*7f 3f 3f 14*7f 3f 3f 3f
-45*7f
+127*7f 7e 63*7f 7e 63*7f 7e 80*7f 7d
+7e 30*7f 7d 7e 14*7f 7d 7e 144*7f
+bf bf 11*7f 3f 3f 14*7f 3f 3f
+3f 45*7f
 </a>
       <a name="label" val="EEPROM1"/>
       <a name="labelvisible" val="true"/>
@@ -4797,6 +4806,9 @@ b b 7 13*f b 1f 14*f b
 1f 15*f 2f 15*f 3f 15*f 4b 7
 14*f 5f 15*f 6f 15*f 7f 15*f 4b
 7 14*f 5f 15*f 6f 15*f 7f 47*f
+b f 7 13*f b f 7 13*f
+b f 7 13*f b f 7 13*f
+b f 7 13*f b f 7 13*f
 d 15*f d 15*f d 15*f d 15*f
 e d 14*f e d 14*f e d
 14*f e d 14*f e d 14*f d

@@ -38,6 +38,7 @@ public class Token {
         AND,
         OR,
         XOR,
+        SWAP,
         NOT,
         DEC,
         INC,

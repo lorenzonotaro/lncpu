@@ -1,5 +1,6 @@
 package com.lnasm.compiler.ast;
 
+import com.lnasm.compiler.CompileException;
 import com.lnasm.compiler.Encodeable;
 import com.lnasm.compiler.RegisterId;
 import com.lnasm.compiler.Token;
@@ -34,6 +35,34 @@ public interface Matcher {
         Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.AND));
         Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.XOR));
         Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.CMP));
+        Matcher.addMatcher(new Matcher() {
+            @Override
+            public Token.Type getKeyword() {
+                return Token.Type.SWAP;
+            }
+
+            @Override
+            public boolean matches(Argument... arguments) {
+                return arguments.length == 2 && arguments[0].type == Argument.Type.REGISTER && arguments[1].type == Argument.Type.REGISTER;
+            }
+
+            @Override
+            public Encodeable make(Argument... arguments) {
+                String reg1 = ((Argument.Register) arguments[0]).reg.toString();
+                String reg2 = ((Argument.Register) arguments[1]).reg.toString();
+
+                String instr = "swap_";
+
+                int compare = reg1.compareTo(reg2);
+                if(compare < 0){
+                    instr += reg1 + "_" + reg2;
+                }else if(compare > 0){
+                    instr += reg2 + "_" + reg1;
+                }else
+                    throw new CompileException("Cannot swap a register with itself.", arguments[0].token);
+                return new NoArgumentInstr(instr);
+            }
+        });
 
         Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.NOT));
         Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.INC));
