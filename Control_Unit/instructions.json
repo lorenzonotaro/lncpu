@@ -31,6 +31,12 @@
   "mov_cst_ss": [
     {"NOT_DATA_LATCH_OUT": 0, "NOT_SS_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
   ],
+  "mov_ss_rd": [
+    {"NOT_SS_OUT": 0, "NOT_RD_IN": 0}
+  ],
+  "mov_sp_rd": [
+    {"NOT_SP_OUT": 0, "NOT_RD_IN": 0}
+  ],
   "mov_ra_rb": [
     {"NOT_RA_OUT": 0, "NOT_RB_IN" : 0}
   ],
