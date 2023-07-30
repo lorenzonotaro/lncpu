@@ -1,6 +1,7 @@
 package com.lnasm.compiler.ast;
 
 import com.lnasm.compiler.Encodeable;
+import com.lnasm.compiler.RegisterId;
 import com.lnasm.compiler.Token;
 
 import java.util.HashSet;
@@ -26,81 +27,19 @@ public interface Matcher {
     Encodeable make(Argument... arguments);
 
     static void init(){
-        //ADD
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.ADD;
-            }
 
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER;
-            }
+        Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.ADD));
+        Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.SUB));
+        Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.OR));
+        Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.AND));
+        Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.XOR));
+        Matcher.addMatcher(new BinaryALUOp.BinaryALUOpMatcher(Token.Type.CMP));
 
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new AddRxRx(arguments[0], arguments[1]);
-            }
-        });
-        //AND
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.AND;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new AndRxRx(arguments[0], arguments[1]);
-            }
-        });
-        //NOT
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.NOT;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new NotRx(arguments[0]);
-            }
-        });
-        //OR
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.OR;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new OrRxRx(arguments[0], arguments[1]);
-            }
-        });
+        Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.NOT));
+        Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.INC));
+        Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.DEC));
+        Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.SHL, new RegisterId[]{RegisterId.RA}));
+        Matcher.addMatcher(new UnaryALUOp.UnaryALUOpMatcher(Token.Type.SHR, new RegisterId[]{RegisterId.RA}));
         //POP RX
         Matcher.addMatcher(new Matcher() {
             @Override
@@ -190,42 +129,6 @@ public interface Matcher {
                     return new PushConstant(arguments[0]);
                 }
             });
-        //SHL
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.SHL;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new Shl(arguments[0]);
-            }
-        });
-        //SHR
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.SHR;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 1 &&
-                        arguments[0].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new Shr(arguments[0]);
-            }
-        });
         //MOV X, RX
         Matcher.addMatcher(new Matcher() {
             @Override
@@ -295,63 +198,6 @@ public interface Matcher {
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.JZ));
         Matcher.addMatcher(new ShortJump.SJumpInstrMatcher(Token.Type.GOTO));
 
-        //SUB
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.SUB;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new SubRxRx(arguments[0], arguments[1]);
-            }
-        });
-        //CMP
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.CMP;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new Cmp(arguments[0], arguments[1]);
-            }
-        });
-        //XOR
-        Matcher.addMatcher(new Matcher() {
-            @Override
-            public Token.Type getKeyword() {
-                return Token.Type.XOR;
-            }
-
-            @Override
-            public boolean matches(Argument... arguments) {
-                return arguments.length == 2
-                        && arguments[0].type == Argument.Type.REGISTER
-                        && arguments[1].type == Argument.Type.REGISTER;
-            }
-
-            @Override
-            public Encodeable make(Argument... arguments) {
-                return new XorRxRx(arguments[0], arguments[1]);
-            }
-        });
 
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.NOP));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.HLT));

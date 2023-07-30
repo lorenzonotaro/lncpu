@@ -123,6 +123,10 @@ public class Lexer {
                 return token(Token.Type.XOR);
             case "not":
                 return token(Token.Type.NOT);
+            case "dec":
+                return token(Token.Type.DEC);
+            case "inc":
+                return token(Token.Type.INC);
             case "shl":
                 return token(Token.Type.SHL);
             case "shr":

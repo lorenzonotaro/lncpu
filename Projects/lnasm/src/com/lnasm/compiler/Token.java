@@ -39,6 +39,8 @@ public class Token {
         OR,
         XOR,
         NOT,
+        DEC,
+        INC,
         SHL,
         SHR,
         JC,

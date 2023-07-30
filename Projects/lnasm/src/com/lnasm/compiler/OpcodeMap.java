@@ -26,7 +26,7 @@ public class OpcodeMap {
     public static byte getOpcode(String name){
         OpcodeInfo info = opcodes.get(name);
         if(info == null)
-            throw new IllegalArgumentException("invalid instruction");
+            throw new IllegalArgumentException("invalid instruction: " + name);
         return info.opcode;
     }
 

@@ -4,7 +4,7 @@ import com.lnasm.compiler.*;
 
 import java.util.Locale;
 
-class NoArgumentInstr implements Encodeable {
+public class NoArgumentInstr implements Encodeable {
 
     static {
     }
