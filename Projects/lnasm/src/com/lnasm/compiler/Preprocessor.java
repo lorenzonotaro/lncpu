@@ -70,7 +70,7 @@ public class Preprocessor {
                         Lexer lexer = new Lexer(macroToken);
                         if(lexer.parse(lines)){
                             iterator.set(lexer.getLines().stream().flatMap(List::stream).collect(Collectors.toList()));
-                        } else throw new CompileException("%include filed for file '" + fileName + "'", macroToken);
+                        } else throw new CompileException("%include failed for file '" + fileName + "'", macroToken);
                     } catch (IOException e) {
                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
                     }
