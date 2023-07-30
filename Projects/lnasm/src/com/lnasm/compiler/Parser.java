@@ -80,7 +80,7 @@ public class Parser {
         Set<Matcher> matchers = Matcher.getMatchers();
         for (Matcher matcher : matchers) {
             if (matcher.getKeyword() == t.type && matcher.matches(arguments)) {
-                return matcher.make(arguments);
+                return matcher.make(t, arguments);
             }
         }
         throw new CompileException("invalid syntax", t);

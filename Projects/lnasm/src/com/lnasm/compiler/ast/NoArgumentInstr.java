@@ -28,19 +28,23 @@ public class NoArgumentInstr implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Argument... arguments) {
-            return new NoArgumentInstr(tokenType.toString().toLowerCase(Locale.ROOT));
+        public Encodeable make(Token instructionToken, Argument... arguments) {
+            return new NoArgumentInstr(instructionToken, tokenType.toString().toLowerCase(Locale.ROOT));
         }
     }
 
+    protected final Token token;
     private final String instr;
 
-    public NoArgumentInstr(String instr) {
+    public NoArgumentInstr(Token token, String instr) {
+        this.token = token;
         this.instr = instr;
     }
 
     @Override
     public byte[] encode(Linker linker, short addr) {
+        if(!OpcodeMap.isValid(instr))
+            throw new CompileException("invalid instruction", token);
         return new byte[]{OpcodeMap.getOpcode(instr)};
     }
 

@@ -41,6 +41,8 @@ class LongJump implements Encodeable {
         if(high == (byte) (currentAddr >> 8) && !jumpInstr.equals("lcall"))
             Logger.compileWarning("A long jump is performed to an address in the same code block. Consider using '" + jumpInstr.substring(1) + "' instead (-Woptimizable-long-jump)", target.token);
 
+        if(!OpcodeMap.isValid(jumpInstr))
+            throw new CompileException("invalid jump instruction", target.token);
         return new byte[]{OpcodeMap.getOpcode(jumpInstr), high, low};
     }
 
@@ -70,7 +72,7 @@ class LongJump implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Argument... arguments) {
+        public Encodeable make(Token instructionToken, Argument... arguments) {
             return new LongJump(jInstr.toString().toLowerCase(), arguments[0]);
         }
     }

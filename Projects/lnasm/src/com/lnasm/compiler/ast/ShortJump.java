@@ -34,6 +34,10 @@ public class ShortJump implements Encodeable {
             }
             default -> throw new CompileException("invalid jump target", target.token);
         }
+
+        if(!OpcodeMap.isValid(jumpInstr))
+            throw new CompileException("invalid jump instruction", target.token);
+
         return new byte[]{OpcodeMap.getOpcode(jumpInstr), low};
     }
 
@@ -62,7 +66,7 @@ public class ShortJump implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Argument... arguments) {
+        public Encodeable make(Token instructionToken, Argument... arguments) {
             return new ShortJump(jInstr.toString().toLowerCase(), arguments[0]);
         }
     }

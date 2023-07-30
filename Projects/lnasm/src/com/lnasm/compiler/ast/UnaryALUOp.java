@@ -8,17 +8,22 @@ import java.util.stream.Collectors;
 
 public class UnaryALUOp implements Encodeable {
 
+    private final Token token;
     private final String instruction;
     private final String op;
 
-    public UnaryALUOp(String instruction, String op) {
+    public UnaryALUOp(Token token, String instruction, String op) {
+        this.token = token;
         this.instruction = instruction;
         this.op = op;
     }
 
     @Override
     public byte[] encode(Linker linker, short addr) {
-        return new byte[]{OpcodeMap.getOpcode(instruction + "_" + op)};
+        String instr = instruction + "_" + op;
+        if(!OpcodeMap.isValid(instr))
+            throw new CompileException("invalid argument", token);
+        return new byte[]{OpcodeMap.getOpcode(instr)};
     }
 
     @Override
@@ -52,11 +57,11 @@ public class UnaryALUOp implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Argument... arguments) {
+        public Encodeable make(Token instructionToken, Argument... arguments) {
             List<RegisterId> list = Arrays.asList(this.allowedRegisters);
             if(!list.contains(((Argument.Register)arguments[0]).reg))
                 throw new CompileException("invalid operand for instruction '" + keyword.toString().toLowerCase() + "' (allowed: " + list.stream().map(RegisterId::toString).collect(Collectors.joining(", ")) + ")", arguments[0].token);
-            return new UnaryALUOp(keyword.toString().toLowerCase(), ((Argument.Register) arguments[0]).reg.toString());
+            return new UnaryALUOp(arguments[0].token, keyword.toString().toLowerCase(), ((Argument.Register) arguments[0]).reg.toString());
         }
     }
 
