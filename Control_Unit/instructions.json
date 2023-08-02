@@ -1,898 +1,4356 @@
-{
-  "nop": [
-    {}
-  ],
-  "hlt": [
-    {"NOT_HLT" : 0}
-  ],
-  "brk": [
-    {"NOT_IVH_OUT" : 0,"NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "CSPC_DIR" : 0},
-    {"NOT_IVL_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_CS_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_PC_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_FLAGS_OUT": 0, "NOT_PUSH": 0},
-    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0, "NOT_SP_CT": 0, "SP_DIR": 1, "FLAGS_MODE_SEL0" : 1, "FLAGS_MODE_SEL1": 0, "I_VAL": 1}
-  ],
-  "mov_cst_ra": [
-    {"NOT_DATA_LATCH_OUT": 0, "RA_S0": 1, "RA_S1" : 1, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_cst_rb": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_RB_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_cst_rc": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_RC_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_cst_rd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_RD_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_cst_sp": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_SP_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_cst_ss": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_SS_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_ss_rd": [
-    {"NOT_SS_OUT": 0, "NOT_RD_IN": 0}
-  ],
-  "mov_sp_rd": [
-    {"NOT_SP_OUT": 0, "NOT_RD_IN": 0}
-  ],
-  "mov_ra_rb": [
-    {"NOT_RA_OUT": 0, "NOT_RB_IN" : 0}
-  ],
-  "mov_ra_rc": [
-    {"NOT_RA_OUT": 0, "NOT_RC_IN" : 0}
-  ],
-  "mov_ra_rd": [
-    {"NOT_RA_OUT": 0, "NOT_RD_IN" : 0}
-  ],
-  "mov_rb_ra": [
-    {"NOT_RB_OUT": 0, "RA_S0": 1, "RA_S1" : 1}
-  ],
-  "mov_rb_rc": [
-    {"NOT_RB_OUT": 0, "NOT_RC_IN" : 0}
-  ],
-  "mov_rb_rd": [
-    {"NOT_RB_OUT": 0, "NOT_RD_IN" : 0}
-  ],
-  "mov_rc_ra": [
-    {"NOT_RC_OUT": 0, "RA_S0": 1, "RA_S1" : 1}
-  ],
-  "mov_rc_rb": [
-    {"NOT_RC_OUT": 0, "NOT_RB_IN" : 0}
-  ],
-  "mov_rc_rd": [
-    {"NOT_RC_OUT": 0, "NOT_RD_IN" : 0}
-  ],
-  "mov_rd_ra": [
-    {"NOT_RD_OUT": 0, "RA_S0": 1, "RA_S1" : 1}
-  ],
-  "mov_rd_rb": [
-    {"NOT_RD_OUT": 0, "NOT_RB_IN" : 0}
-  ],
-  "mov_rd_rc": [
-    {"NOT_RD_OUT": 0, "NOT_RC_IN" : 0}
-  ],
-  "mov_rd_ss": [
-    {"NOT_RD_OUT": 0, "NOT_SS_IN" : 0}
-  ],
-  "mov_rd_sp": [
-    {"NOT_RD_OUT": 0, "NOT_SP_IN" : 0}
-  ],
-  "mov_ra_page0": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RA_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
-  ],
-  "mov_rb_page0": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RB_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
-  ],
-  "mov_rc_page0": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RC_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
-  ],
-  "mov_rd_page0": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RD_OUT" : 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
-  ],
-  "mov_page0_ra": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"RA_S0": 1, "RA_S1" : 1, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_page0_rb": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RB_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_page0_rc": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RC_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_page0_rd": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_RD_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_cst_page0": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABL_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_DATA_LATCH_OUT": 0, "PAGE_0" : 1, "NOT_DEVICE_IN" : 0, "NOT_FETCH" : 0, "NOT_PC_INC" : 0}
-  ],
-  "mov_ra_ipage0rd": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RA_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
-  ],
-  "mov_rb_ipage0rd": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RB_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
-  ],
-  "mov_rc_ipage0rd": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RC_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
-  ],
-  "mov_rd_ipage0rd": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
-  ],
-  "mov_ipage0rd_ra": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"RA_S0": 1, "RA_S1" : 1, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_ipage0rd_rb": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RB_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_ipage0rd_rc": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RC_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_ipage0rd_rd": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RD_IN" : 0, "PAGE_0" : 1, "NOT_DEVICE_OUT" : 0}
-  ],
-  "mov_cst_ipage0rd": [
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_PC_INC" : 0, "NOT_FETCH" : 0, "NOT_DATA_LATCH_OUT" : 0,"PAGE_0" : 1, "NOT_DEVICE_IN" : 0}
-  ],
-  "mov_ra_ipagedrd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RA_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_rb_ipagedrd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RB_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_rc_ipagedrd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RC_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_rd_ipagedrd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ipagedrd_ra": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"RA_S0": 1, "RA_S1" : 1, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ipagedrd_rb": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RB_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ipagedrd_rc": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RC_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ipagedrd_rd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RD_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_cst_ipagedrd": [
-    {"NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_DEVICE_IN": 0, "PAGE_0" : 0, "NOT_DATA_LATCH_OUT": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_ra_ifullrcrd": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RA_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_rb_ifullrcrd": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RB_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_rc_ifullrcrd": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RC_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_rd_ifullrcrd": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ifullrcrd_ra": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"RA_S0": 1, "RA_S1" : 1, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ifullrcrd_rb": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RB_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ifullrcrd_rc": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RC_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_ifullrcrd_rd": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_RD_IN" : 0, "NOT_DEVICE_OUT" : 0, "PAGE_0" : 0}
-  ],
-  "mov_cst_ifullrcrd": [
-    {"NOT_RC_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_DEVICE_IN": 0, "PAGE_0" : 0, "NOT_DATA_LATCH_OUT": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
-  ],
-  "mov_ra_abs": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RA_OUT" : 0}
-  ],
-  "mov_rb_abs": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RB_OUT" : 0}
-  ],
-  "mov_rc_abs": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RC_OUT" : 0}
-  ],
-  "mov_rd_abs": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_RD_OUT" : 0}
-  ],
-  "mov_abs_ra": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "RA_S0": 1, "RA_S1" : 1}
-  ],
-  "mov_abs_rb": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RB_IN" : 0}
-  ],
-  "mov_abs_rc": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RC_IN" : 0}
-  ],
-  "mov_abs_rd": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RD_IN" : 0}
-  ],
-  "mov_cst_abs": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_ABL_IN" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_IN" : 0, "PAGE_0" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0}
-  ],
-  "push_ra": [
-    {"NOT_RA_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_rb": [
-    {"NOT_RB_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_rc": [
-    {"NOT_RC_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_rd": [
-    {"NOT_RD_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_page0": [
-    {"NOT_ABL_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 1, "NOT_RT_IN" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_ipage0rd": [
-    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 1, "NOT_RT_IN" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_ipagedrd": [
-    {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RT_IN" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_ifullrcrd": [
-    {"NOT_ABH_IN" : 0, "NOT_RC_OUT" :  0},
-    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RT_IN" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_abs": [
-    {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
-    {"NOT_DEVICE_OUT" : 0, "PAGE_0" : 0, "NOT_RT_IN" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "push_cst": [
-    {"NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "pop_ra": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "RA_S0": 1, "RA_S1" : 1, "NOT_POP" : 0}
-  ],
-  "pop_rb": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RB_IN" : 0, "NOT_POP" : 0}
-  ],
-  "pop_rc": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RC_IN" : 0, "NOT_POP" : 0}
-  ],
-  "pop_rd": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RD_IN" : 0, "NOT_POP" : 0}
-  ],
-  "pop_page0": [
-    {"NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_FETCH" : 0, "NOT_ABL_IN" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
-  ],
-  "pop_ipage0rd": [
-    {"NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 1}
-  ],
-  "pop_ipagedrd" : [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
-    {"NOT_PC_INC" : 0, "NOT_FETCH" : 0,"NOT_DATA_LATCH_OUT" : 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
-    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "pop_ifullrcrd" : [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_RT_IN" : 0, "NOT_POP" : 0},
-    {"NOT_RC_OUT": 0, "NOT_ABH_IN" : 0},
-    {"NOT_RD_OUT": 0, "NOT_ABL_IN": 0},
-    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-  "pop_abs" : [
-    {"NOT_SP_CT": 0, "SP_DIR" : 0,"NOT_POP" : 0, "NOT_RT_IN" : 0},
-    {"NOT_ABH_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_RD_OUT" : 0},
-    {"NOT_RT_OUT" : 0, "NOT_DEVICE_IN" : 0, "PAGE_0" : 0}
-  ],
-    "add_ra_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_ra_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_ra_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_ra_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rb_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rb_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rb_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rb_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rc_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rc_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rc_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rc_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rd_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rd_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rd_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rd_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_ra_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rb_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rc_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "add_rd_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_ra_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_ra_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_ra_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_ra_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rb_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rb_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rb_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rb_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rc_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rc_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rc_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rc_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rd_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rd_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rd_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rd_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_ra_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rb_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rc_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "sub_rd_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_ra_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_ra_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_ra_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_ra_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rb_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rb_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rb_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rb_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rc_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rc_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rc_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rc_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rd_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rd_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rd_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rd_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_ra_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rb_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rc_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "cmp_rd_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_ra_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_ra_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_ra_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_ra_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rb_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rb_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rb_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rb_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rc_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rc_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rc_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rc_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rd_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rd_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rd_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rd_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_ra_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rb_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rc_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "or_rd_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_ra_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_ra_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_ra_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_ra_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rb_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rb_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rb_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rb_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rc_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rc_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rc_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rc_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rd_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rd_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rd_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rd_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_ra_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rb_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rc_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "and_rd_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 0, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_ra_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_ra_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_ra_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_ra_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rb_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rb_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rb_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rb_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rc_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rc_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rc_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rc_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rd_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rd_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rd_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rd_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 1, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_ra_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rb_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rc_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "xor_rd_cst": [
-    {"NOT_RT_IN" : 0, "NOT_DATA_LATCH_OUT" : 0, "NOT_PC_INC" : 0, "NOT_FETCH" : 0},
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN": 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "not_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "not_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "not_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 1, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "not_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 1, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 0, "Y_SEL1" : 0, "Y_SEL2": 0, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "inc_ra": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "inc_rb": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "inc_rc": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "inc_rd": [
-    {"OP_SEL0": 1, "OP_SEL1" : 0, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "dec_ra": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "RA_S0": 1, "RA_S1" : 1, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "dec_rb": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 0, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RB_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "dec_rc": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 0, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RC_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "dec_rd": [
-    {"OP_SEL0": 0, "OP_SEL1" : 1, "OP_SEL2" : 0, "X_SEL0" : 1, "X_SEL1" : 1, "Y_SEL0" : 1, "Y_SEL1" : 0, "Y_SEL2": 1, "NOT_RD_IN" : 0, "FLAGS_MODE_SEL0": 0, "FLAGS_MODE_SEL1": 1}
-  ],
-  "shl_ra": [
-    {"RA_S1" : 1}
-  ],
-  "shr_ra": [
-    {"RA_S0" : 1}
-  ],
-  "swap_ra_rb": [
-    {"NOT_RA_OUT" : 0, "NOT_RT_IN": 0},
-    {"NOT_RB_OUT": 0, "RA_S0": 1, "RA_S1" : 1},
-    {"NOT_RT_OUT": 0, "NOT_RB_IN": 0}
-  ],
-  "swap_ra_rc": [
-    {"NOT_RA_OUT" : 0, "NOT_RT_IN": 0},
-    {"NOT_RC_OUT": 0, "RA_S0": 1, "RA_S1" : 1},
-    {"NOT_RT_OUT": 0, "NOT_RC_IN": 0}
-  ],
-  "swap_ra_rd": [
-    {"NOT_RA_OUT" : 0, "NOT_RT_IN": 0},
-    {"NOT_RD_OUT": 0, "RA_S0": 1, "RA_S1" : 1},
-    {"NOT_RT_OUT": 0, "NOT_RD_IN": 0}
-  ],
-  "swap_rb_rc": [
-    {"NOT_RB_OUT" : 0, "NOT_RT_IN": 0},
-    {"NOT_RC_OUT": 0, "NOT_RB_IN": 0},
-    {"NOT_RT_OUT": 0, "NOT_RC_IN": 0}
-  ],
-  "swap_rb_rd": [
-    {"NOT_RB_OUT" : 0, "NOT_RT_IN": 0},
-    {"NOT_RD_OUT": 0, "NOT_RB_IN": 0},
-    {"NOT_RT_OUT": 0, "NOT_RD_IN": 0}
-  ],
-  "swap_rc_rd": [
-    {"NOT_RC_OUT" : 0, "NOT_RT_IN": 0},
-    {"NOT_RD_OUT": 0, "NOT_RC_IN": 0},
-    {"NOT_RT_OUT": 0, "NOT_RD_IN": 0}
-  ],
-  "jc": [
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JC" : 1, "NOT_PC_IN" : 0}
-  ],
-  "jn": [
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JN" : 1, "NOT_PC_IN" : 0}
-  ],
-  "jz": [
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JZ" : 1, "NOT_PC_IN" : 0}
-  ],
-  "goto": [
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    { "J" : 1, "NOT_PC_IN" : 0}
-  ],
-  "ljc": [
-    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JC" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
-  ],
-  "ljn": [
-    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JN" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
-  ],
-  "ljz": [
-    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"JZ" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" : 0}
-  ],
-  "lgoto": [
-    {"NOT_ABH_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"NOT_ABL_IN" : 0, "NOT_FETCH" :  0, "NOT_PC_INC" : 0, "NOT_DATA_LATCH_OUT" : 0},
-    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0}
-  ],
-  "lcall": [
-    {"NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABH_IN" : 0},
-    {"NOT_FETCH": 0, "NOT_PC_INC": 0, "NOT_DATA_LATCH_OUT": 0, "NOT_ABL_IN" : 0},
-    {"NOT_CS_OUT" : 0, "NOT_PUSH" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 1, "NOT_PC_OUT" : 0, "NOT_PUSH" : 0},
-    {"J" : 1, "NOT_PC_IN" : 0, "NOT_CS_IN" :0, "NOT_SP_CT": 0, "SP_DIR": 1}
-  ],
-  "ret": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_ABL_IN" : 0, "NOT_POP" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_ABH_IN" : 0, "NOT_POP" : 0},
-    {"J" : 1, "NOT_PC_IN": 0, "NOT_CS_IN": 0}
-  ],
-  "iret": [
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "FLAGS_MODE_SEL0" : 0, "FLAGS_MODE_SEL1" : 0, "NOT_POP" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_ABL_IN" : 0, "NOT_POP" : 0},
-    {"NOT_SP_CT": 0, "SP_DIR": 0, "NOT_ABH_IN" : 0, "NOT_POP" : 0},
-    {"J" : 1, "NOT_PC_IN": 0, "NOT_CS_IN": 0}
-  ],
-  "cid": [
-    {"FLAGS_MODE_SEL0" : 1, "FLAGS_MODE_SEL1": 0, "I_VAL": 0}
-  ],
-  "sid": [
-    {"FLAGS_MODE_SEL0" : 1, "FLAGS_MODE_SEL1": 0, "I_VAL": 1}
-  ]
-}
+[
+  {
+    "name": "nop",
+    "microcode": [
+      {}
+    ]
+  },
+  {
+    "name": "hlt",
+    "microcode": [
+      {
+        "NOT_HLT": 0
+      }
+    ]
+  },
+  {
+    "name": "brk",
+    "microcode": [
+      {
+        "NOT_IVH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "CSPC_DIR": 0
+      },
+      {
+        "NOT_IVL_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_CS_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1,
+        "NOT_PC_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1,
+        "NOT_FLAGS_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "J": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0,
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1,
+        "FLAGS_MODE_SEL0": 1,
+        "FLAGS_MODE_SEL1": 0,
+        "I_VAL": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_ra",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_rb",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_RB_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_rc",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_RC_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_rd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_RD_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_sp",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_SP_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_ss",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_SS_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ss_rd",
+    "microcode": [
+      {
+        "NOT_SS_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_sp_rd",
+    "microcode": [
+      {
+        "NOT_SP_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_rb",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_RB_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_rc",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_RC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_rd",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_ra",
+    "microcode": [
+      {
+        "NOT_RB_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_rc",
+    "microcode": [
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_RC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_rd",
+    "microcode": [
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_ra",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_rb",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_RB_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_rd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_ra",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_rb",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_RB_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_rc",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_RC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_ss",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_SS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_sp",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_SP_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_page0",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RA_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_page0",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RB_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_page0",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_page0",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_page0_ra",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_page0_rb",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RB_IN": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_page0_rc",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RC_IN": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_page0_rd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_IN": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_page0",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_ipage0rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_ipage0rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_ipage0rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_ipage0rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_ipage0rd_ra",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipage0rd_rb",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RB_IN": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipage0rd_rc",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RC_IN": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipage0rd_rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RD_IN": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_ipage0rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_DEVICE_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_ipagedrd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_ipagedrd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_ipagedrd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_ipagedrd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipagedrd_ra",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipagedrd_rb",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RB_IN": 0,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipagedrd_rc",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RC_IN": 0,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ipagedrd_rd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RD_IN": 0,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_ipagedrd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ifullrcrd_ra",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ifullrcrd_rb",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RB_IN": 0,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ifullrcrd_rc",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RC_IN": 0,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ifullrcrd_rd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RD_IN": 0,
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_ra_abs",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_RA_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rb_abs",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_RB_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rc_abs",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_RC_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_rd_abs",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_RD_OUT": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_abs_ra",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      }
+    ]
+  },
+  {
+    "name": "mov_abs_rb",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "NOT_RB_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_abs_rc",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "NOT_RC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_abs_rd",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "mov_cst_abs",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      }
+    ]
+  },
+  {
+    "name": "push_ra",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_rb",
+    "microcode": [
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_rc",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_page0",
+    "microcode": [
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_ipage0rd",
+    "microcode": [
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_RD_OUT": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 1,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_ipagedrd",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_RD_OUT": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_RC_OUT": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_RD_OUT": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_abs",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_RD_OUT": 0
+      },
+      {
+        "NOT_DEVICE_OUT": 0,
+        "PAGE_0": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "push_cst",
+    "microcode": [
+      {
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "pop_ra",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "NOT_POP": 0
+      }
+    ]
+  },
+  {
+    "name": "pop_rb",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RB_IN": 0,
+        "NOT_POP": 0
+      }
+    ]
+  },
+  {
+    "name": "pop_rc",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RC_IN": 0,
+        "NOT_POP": 0
+      }
+    ]
+  },
+  {
+    "name": "pop_rd",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RD_IN": 0,
+        "NOT_POP": 0
+      }
+    ]
+  },
+  {
+    "name": "pop_page0",
+    "microcode": [
+      {
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_FETCH": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RT_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 1
+      }
+    ]
+  },
+  {
+    "name": "pop_ipage0rd",
+    "microcode": [
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RT_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 1
+      }
+    ]
+  },
+  {
+    "name": "pop_ipagedrd",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RT_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "pop_ifullrcrd",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_RT_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "pop_abs",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_POP": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_RD_OUT": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_DEVICE_IN": 0,
+        "PAGE_0": 0
+      }
+    ]
+  },
+  {
+    "name": "add_ra_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_ra_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_ra_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_ra_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rb_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rb_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rb_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rb_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rd_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rd_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rd_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rd_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_ra_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rb_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rc_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "add_rd_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_ra_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_ra_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_ra_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_ra_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rb_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rb_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rb_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rb_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rd_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rd_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rd_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rd_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_ra_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rb_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rc_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "sub_rd_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_ra_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_ra_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_ra_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_ra_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rb_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rb_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rb_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rb_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rd_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rd_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rd_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rd_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_ra_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rb_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rc_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "cmp_rd_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_ra_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_ra_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_ra_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_ra_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rb_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rb_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rb_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rb_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rd_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rd_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rd_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rd_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_ra_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rb_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rc_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "or_rd_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_ra_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_ra_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_ra_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_ra_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rb_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rb_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rb_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rb_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rd_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rd_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rd_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rd_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_ra_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rb_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rc_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "and_rd_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_ra_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_ra_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_ra_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_ra_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rb_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rb_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rb_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rb_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rd_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rd_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rd_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rd_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 1,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_ra_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rb_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rc_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "xor_rd_cst",
+    "microcode": [
+      {
+        "NOT_RT_IN": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_PC_INC": 0,
+        "NOT_FETCH": 0
+      },
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "not_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "not_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "not_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 1,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "not_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 1,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 0,
+        "Y_SEL1": 0,
+        "Y_SEL2": 0,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "inc_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "inc_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "inc_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "inc_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 1,
+        "OP_SEL1": 0,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "dec_ra",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "RA_S0": 1,
+        "RA_S1": 1,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "dec_rb",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 0,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RB_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "dec_rc",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 0,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RC_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "dec_rd",
+    "microcode": [
+      {
+        "OP_SEL0": 0,
+        "OP_SEL1": 1,
+        "OP_SEL2": 0,
+        "X_SEL0": 1,
+        "X_SEL1": 1,
+        "Y_SEL0": 1,
+        "Y_SEL1": 0,
+        "Y_SEL2": 1,
+        "NOT_RD_IN": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 1
+      }
+    ]
+  },
+  {
+    "name": "shl_ra",
+    "microcode": [
+      {
+        "RA_S1": 1
+      }
+    ]
+  },
+  {
+    "name": "shr_ra",
+    "microcode": [
+      {
+        "RA_S0": 1
+      }
+    ]
+  },
+  {
+    "name": "swap_ra_rb",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RB_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_RB_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "swap_ra_rc",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_RC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "swap_ra_rd",
+    "microcode": [
+      {
+        "NOT_RA_OUT": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "RA_S0": 1,
+        "RA_S1": 1
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "swap_rb_rc",
+    "microcode": [
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_RB_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_RC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "swap_rb_rd",
+    "microcode": [
+      {
+        "NOT_RB_OUT": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_RB_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "swap_rc_rd",
+    "microcode": [
+      {
+        "NOT_RC_OUT": 0,
+        "NOT_RT_IN": 0
+      },
+      {
+        "NOT_RD_OUT": 0,
+        "NOT_RC_IN": 0
+      },
+      {
+        "NOT_RT_OUT": 0,
+        "NOT_RD_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "jc",
+    "microcode": [
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "JC": 1,
+        "NOT_PC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "jn",
+    "microcode": [
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "JN": 1,
+        "NOT_PC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "jz",
+    "microcode": [
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "JZ": 1,
+        "NOT_PC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "goto",
+    "microcode": [
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "J": 1,
+        "NOT_PC_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "ljc",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "JC": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "ljn",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "JN": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "ljz",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "JZ": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "lgoto",
+    "microcode": [
+      {
+        "NOT_ABH_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "NOT_ABL_IN": 0,
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0
+      },
+      {
+        "J": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "lcall",
+    "microcode": [
+      {
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABH_IN": 0
+      },
+      {
+        "NOT_FETCH": 0,
+        "NOT_PC_INC": 0,
+        "NOT_DATA_LATCH_OUT": 0,
+        "NOT_ABL_IN": 0
+      },
+      {
+        "NOT_CS_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1,
+        "NOT_PC_OUT": 0,
+        "NOT_PUSH": 0
+      },
+      {
+        "J": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0,
+        "NOT_SP_CT": 0,
+        "SP_DIR": 1
+      }
+    ]
+  },
+  {
+    "name": "ret",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "J": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "iret",
+    "microcode": [
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "FLAGS_MODE_SEL0": 0,
+        "FLAGS_MODE_SEL1": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_ABL_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "NOT_SP_CT": 0,
+        "SP_DIR": 0,
+        "NOT_ABH_IN": 0,
+        "NOT_POP": 0
+      },
+      {
+        "J": 1,
+        "NOT_PC_IN": 0,
+        "NOT_CS_IN": 0
+      }
+    ]
+  },
+  {
+    "name": "cid",
+    "microcode": [
+      {
+        "FLAGS_MODE_SEL0": 1,
+        "FLAGS_MODE_SEL1": 0,
+        "I_VAL": 0
+      }
+    ]
+  },
+  {
+    "name": "sid",
+    "microcode": [
+      {
+        "FLAGS_MODE_SEL0": 1,
+        "FLAGS_MODE_SEL1": 0,
+        "I_VAL": 1
+      }
+    ]
+  }
+]

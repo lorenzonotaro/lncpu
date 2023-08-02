@@ -50,7 +50,9 @@ with open('instructions.json') as file:
     opcodes_tsv.write('Opcode\tName\tData length\tClock cycles\n')
     instr_addr = 0
     opcode = 0
-    for name, instr in data.items():
+    for elem in data:
+        name = elem['name']
+        instr = elem['microcode']
         addr = 0
 
         # ensure that every signal used in the microinstruction replaces an existing one
