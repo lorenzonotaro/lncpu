@@ -531,7 +531,7 @@ end TCL_Generic;
       <a name="labelfont" val="SansSerif bold 8"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(1860,660)" name="Tunnel">
+    <comp lib="0" loc="(1860,640)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="C4"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -565,26 +565,21 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(1910,600)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="NOT_RA_SR"/>
+      <a name="label" val="RA_S0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(1910,620)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="NOT_RA_IN"/>
+      <a name="label" val="RA_S1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(1910,640)" name="Tunnel">
-      <a name="facing" val="east"/>
-      <a name="label" val="NOT_RA_SL"/>
-      <a name="labelfont" val="SansSerif bold 8"/>
-    </comp>
-    <comp lib="0" loc="(1910,680)" name="Tunnel">
+    <comp lib="0" loc="(1910,660)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="DBUS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(1910,700)" name="Tunnel">
+    <comp lib="0" loc="(1910,680)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="NOT_RA_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -925,94 +920,90 @@ end TCL_Generic;
       <a name="incoming" val="8"/>
     </comp>
     <comp lib="0" loc="(620,1000)" name="Tunnel">
-      <a name="label" val="NOT_PC_IN"/>
-      <a name="labelfont" val="SansSerif bold 8"/>
-    </comp>
-    <comp lib="0" loc="(620,1020)" name="Tunnel">
       <a name="label" val="NOT_PC_INC"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1040)" name="Tunnel">
+    <comp lib="0" loc="(620,1020)" name="Tunnel">
       <a name="label" val="NOT_CS_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1060)" name="Tunnel">
+    <comp lib="0" loc="(620,1040)" name="Tunnel">
       <a name="label" val="NOT_PC_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1080)" name="Tunnel">
+    <comp lib="0" loc="(620,1060)" name="Tunnel">
       <a name="label" val="NOT_FETCH"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1100)" name="Tunnel">
+    <comp lib="0" loc="(620,1080)" name="Tunnel">
       <a name="label" val="J"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1120)" name="Tunnel">
+    <comp lib="0" loc="(620,1100)" name="Tunnel">
       <a name="label" val="JC"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1140)" name="Tunnel">
+    <comp lib="0" loc="(620,1120)" name="Tunnel">
       <a name="label" val="JZ"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1160)" name="Tunnel">
+    <comp lib="0" loc="(620,1140)" name="Tunnel">
       <a name="label" val="JN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1180)" name="Tunnel">
+    <comp lib="0" loc="(620,1160)" name="Tunnel">
       <a name="label" val="JA"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1200)" name="Tunnel">
+    <comp lib="0" loc="(620,1180)" name="Tunnel">
       <a name="label" val="NOT_PASS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1220)" name="Tunnel">
+    <comp lib="0" loc="(620,1200)" name="Tunnel">
       <a name="label" val="NOT_HLT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1240)" name="Tunnel">
+    <comp lib="0" loc="(620,1220)" name="Tunnel">
       <a name="label" val="PAGE_0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1260)" name="Tunnel">
+    <comp lib="0" loc="(620,1240)" name="Tunnel">
       <a name="label" val="NOT_PUSH"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1280)" name="Tunnel">
+    <comp lib="0" loc="(620,1260)" name="Tunnel">
       <a name="label" val="NOT_POP"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1300)" name="Tunnel">
+    <comp lib="0" loc="(620,1280)" name="Tunnel">
       <a name="label" val="NOT_DATA_LATCH_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1320)" name="Tunnel">
+    <comp lib="0" loc="(620,1300)" name="Tunnel">
       <a name="label" val="NOT_IVH_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1340)" name="Tunnel">
+    <comp lib="0" loc="(620,1320)" name="Tunnel">
       <a name="label" val="NOT_IVL_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1360)" name="Tunnel">
+    <comp lib="0" loc="(620,1340)" name="Tunnel">
       <a name="label" val="I_VAL"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1380)" name="Tunnel">
+    <comp lib="0" loc="(620,1360)" name="Tunnel">
       <a name="label" val="FLAGS_MODE_SEL0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1400)" name="Tunnel">
+    <comp lib="0" loc="(620,1380)" name="Tunnel">
       <a name="label" val="FLAGS_MODE_SEL1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1420)" name="Tunnel">
+    <comp lib="0" loc="(620,1400)" name="Tunnel">
       <a name="label" val="NOT_FLAGS_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,1440)" name="Tunnel">
+    <comp lib="0" loc="(620,1420)" name="Tunnel">
       <a name="label" val="CSPC_DIR"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
@@ -1046,131 +1037,131 @@ end TCL_Generic;
       <a name="width" val="8"/>
     </comp>
     <comp lib="0" loc="(620,360)" name="Tunnel">
-      <a name="label" val="NOT_RA_IN"/>
+      <a name="label" val="RA_S0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(620,380)" name="Tunnel">
-      <a name="label" val="NOT_RA_OUT"/>
+      <a name="label" val="RA_S1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(620,400)" name="Tunnel">
-      <a name="label" val="NOT_RA_SL"/>
+      <a name="label" val="NOT_RA_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(620,420)" name="Tunnel">
-      <a name="label" val="NOT_RA_SR"/>
-      <a name="labelfont" val="SansSerif bold 8"/>
-    </comp>
-    <comp lib="0" loc="(620,440)" name="Tunnel">
       <a name="label" val="NOT_RB_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,460)" name="Tunnel">
+    <comp lib="0" loc="(620,440)" name="Tunnel">
       <a name="label" val="NOT_RB_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,480)" name="Tunnel">
+    <comp lib="0" loc="(620,460)" name="Tunnel">
       <a name="label" val="NOT_RC_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,500)" name="Tunnel">
+    <comp lib="0" loc="(620,480)" name="Tunnel">
       <a name="label" val="NOT_RC_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,520)" name="Tunnel">
+    <comp lib="0" loc="(620,500)" name="Tunnel">
       <a name="label" val="NOT_RD_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,540)" name="Tunnel">
+    <comp lib="0" loc="(620,520)" name="Tunnel">
       <a name="label" val="NOT_RD_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,560)" name="Tunnel">
+    <comp lib="0" loc="(620,540)" name="Tunnel">
       <a name="label" val="NOT_DEVICE_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,580)" name="Tunnel">
+    <comp lib="0" loc="(620,560)" name="Tunnel">
       <a name="label" val="NOT_DEVICE_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,600)" name="Tunnel">
+    <comp lib="0" loc="(620,580)" name="Tunnel">
       <a name="label" val="NOT_SS_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,620)" name="Tunnel">
+    <comp lib="0" loc="(620,600)" name="Tunnel">
       <a name="label" val="NOT_SS_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,640)" name="Tunnel">
+    <comp lib="0" loc="(620,620)" name="Tunnel">
       <a name="label" val="NOT_SP_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,660)" name="Tunnel">
+    <comp lib="0" loc="(620,640)" name="Tunnel">
       <a name="label" val="NOT_SP_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,680)" name="Tunnel">
+    <comp lib="0" loc="(620,660)" name="Tunnel">
       <a name="label" val="NOT_SP_CT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,700)" name="Tunnel">
+    <comp lib="0" loc="(620,680)" name="Tunnel">
       <a name="label" val="SP_DIR"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,720)" name="Tunnel">
+    <comp lib="0" loc="(620,700)" name="Tunnel">
       <a name="label" val="NOT_ABH_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,740)" name="Tunnel">
+    <comp lib="0" loc="(620,720)" name="Tunnel">
       <a name="label" val="NOT_ABL_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,760)" name="Tunnel">
+    <comp lib="0" loc="(620,740)" name="Tunnel">
       <a name="label" val="NOT_RT_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,780)" name="Tunnel">
+    <comp lib="0" loc="(620,760)" name="Tunnel">
       <a name="label" val="NOT_RT_OUT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,800)" name="Tunnel">
+    <comp lib="0" loc="(620,780)" name="Tunnel">
       <a name="label" val="X_SEL0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,820)" name="Tunnel">
+    <comp lib="0" loc="(620,800)" name="Tunnel">
       <a name="label" val="X_SEL1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,840)" name="Tunnel">
+    <comp lib="0" loc="(620,820)" name="Tunnel">
       <a name="label" val="Y_SEL0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,860)" name="Tunnel">
+    <comp lib="0" loc="(620,840)" name="Tunnel">
       <a name="label" val="Y_SEL1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,880)" name="Tunnel">
+    <comp lib="0" loc="(620,860)" name="Tunnel">
       <a name="label" val="Y_SEL2"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,900)" name="Tunnel">
+    <comp lib="0" loc="(620,880)" name="Tunnel">
       <a name="label" val="OP_SEL0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,920)" name="Tunnel">
+    <comp lib="0" loc="(620,900)" name="Tunnel">
       <a name="label" val="OP_SEL1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,940)" name="Tunnel">
+    <comp lib="0" loc="(620,920)" name="Tunnel">
       <a name="label" val="OP_SEL2"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,960)" name="Tunnel">
+    <comp lib="0" loc="(620,940)" name="Tunnel">
       <a name="label" val="ROM_AS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(620,980)" name="Tunnel">
+    <comp lib="0" loc="(620,960)" name="Tunnel">
       <a name="label" val="NOT_CS_IN"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(620,980)" name="Tunnel">
+      <a name="label" val="NOT_PC_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(630,2240)" name="Tunnel">
@@ -1480,9 +1471,6 @@ end TCL_Generic;
       <a name="color" val="#00abf0"/>
     </comp>
     <comp lib="5" loc="(600,1420)" name="LED">
-      <a name="color" val="#00abf0"/>
-    </comp>
-    <comp lib="5" loc="(600,1440)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
     <comp lib="5" loc="(600,360)" name="LED">
@@ -1832,9 +1820,9 @@ end TCL_Generic;
     <wire from="(1790,1030)" to="(1790,1490)"/>
     <wire from="(1810,1070)" to="(1810,1150)"/>
     <wire from="(1810,1070)" to="(2010,1070)"/>
-    <wire from="(1860,570)" to="(1860,660)"/>
+    <wire from="(1860,570)" to="(1860,640)"/>
     <wire from="(1860,570)" to="(2310,570)"/>
-    <wire from="(1860,660)" to="(1910,660)"/>
+    <wire from="(1860,640)" to="(1910,640)"/>
     <wire from="(1880,410)" to="(1890,410)"/>
     <wire from="(1890,360)" to="(1890,410)"/>
     <wire from="(1890,360)" to="(2320,360)"/>
@@ -2046,7 +2034,6 @@ end TCL_Generic;
     <wire from="(600,1380)" to="(620,1380)"/>
     <wire from="(600,1400)" to="(620,1400)"/>
     <wire from="(600,1420)" to="(620,1420)"/>
-    <wire from="(600,1440)" to="(620,1440)"/>
     <wire from="(600,360)" to="(620,360)"/>
     <wire from="(600,380)" to="(620,380)"/>
     <wire from="(600,400)" to="(620,400)"/>
@@ -2132,18 +2119,20 @@ end TCL_Generic;
     <a name="appearance" val="logisim_evolution"/>
     <a name="circuit" val="ShiftRegister"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
-    <a name="simulationFrequency" val="2048000.0"/>
-    <comp lib="0" loc="(130,110)" name="Pin">
+    <a name="simulationFrequency" val="128.0"/>
+    <comp lib="0" loc="(1170,150)" name="Pin">
       <a name="appearance" val="NewPins"/>
-      <a name="label" val="NOT_SR"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="ASYNC_OUT"/>
+      <a name="output" val="true"/>
+      <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(130,140)" name="Pin">
+    <comp lib="0" loc="(1170,210)" name="Pin">
       <a name="appearance" val="NewPins"/>
-      <a name="label" val="NOT_IE"/>
-    </comp>
-    <comp lib="0" loc="(130,170)" name="Pin">
-      <a name="appearance" val="NewPins"/>
-      <a name="label" val="NOT_SL"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="BUS_OUT"/>
+      <a name="output" val="true"/>
+      <a name="width" val="8"/>
     </comp>
     <comp lib="0" loc="(130,270)" name="Pin">
       <a name="appearance" val="NewPins"/>
@@ -2153,81 +2142,114 @@ end TCL_Generic;
       <a name="appearance" val="NewPins"/>
       <a name="label" val="NOT_OE"/>
     </comp>
+    <comp lib="0" loc="(190,150)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="label" val="S0"/>
+    </comp>
+    <comp lib="0" loc="(190,170)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="label" val="S1"/>
+    </comp>
     <comp lib="0" loc="(270,300)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="BUS_IN"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(360,330)" name="Constant"/>
-    <comp lib="0" loc="(370,250)" name="Constant">
+    <comp lib="0" loc="(350,300)" name="Splitter">
+      <a name="appear" val="right"/>
+      <a name="bit1" val="0"/>
+      <a name="bit2" val="0"/>
+      <a name="bit3" val="0"/>
+      <a name="bit4" val="1"/>
+      <a name="bit5" val="1"/>
+      <a name="bit6" val="1"/>
+      <a name="bit7" val="1"/>
+      <a name="facing" val="north"/>
+      <a name="incoming" val="8"/>
+    </comp>
+    <comp lib="0" loc="(370,130)" name="Constant">
+      <a name="facing" val="north"/>
+    </comp>
+    <comp lib="0" loc="(380,90)" name="Constant">
+      <a name="facing" val="north"/>
       <a name="value" val="0x0"/>
     </comp>
-    <comp lib="0" loc="(410,330)" name="Constant">
+    <comp lib="0" loc="(600,100)" name="Splitter">
+      <a name="bit1" val="none"/>
+      <a name="bit2" val="none"/>
+      <a name="bit3" val="none"/>
+      <a name="fanout" val="1"/>
+      <a name="incoming" val="4"/>
+    </comp>
+    <comp lib="0" loc="(710,50)" name="Constant">
+      <a name="facing" val="north"/>
       <a name="value" val="0x0"/>
     </comp>
-    <comp lib="0" loc="(640,210)" name="Pin">
-      <a name="appearance" val="NewPins"/>
+    <comp lib="0" loc="(940,20)" name="Splitter">
+      <a name="appear" val="right"/>
+      <a name="bit0" val="none"/>
+      <a name="bit1" val="none"/>
+      <a name="bit2" val="none"/>
+      <a name="bit3" val="0"/>
       <a name="facing" val="west"/>
-      <a name="label" val="ASYNC_OUT"/>
-      <a name="output" val="true"/>
-      <a name="width" val="8"/>
+      <a name="fanout" val="1"/>
+      <a name="incoming" val="4"/>
     </comp>
-    <comp lib="0" loc="(640,270)" name="Pin">
-      <a name="appearance" val="NewPins"/>
-      <a name="facing" val="west"/>
-      <a name="label" val="BUS_OUT"/>
-      <a name="output" val="true"/>
+    <comp lib="0" loc="(950,200)" name="Splitter">
+      <a name="bit1" val="0"/>
+      <a name="bit2" val="0"/>
+      <a name="bit3" val="0"/>
+      <a name="bit4" val="1"/>
+      <a name="bit5" val="1"/>
+      <a name="bit6" val="1"/>
+      <a name="bit7" val="1"/>
+      <a name="facing" val="north"/>
+      <a name="incoming" val="8"/>
+    </comp>
+    <comp lib="1" loc="(1160,210)" name="Controlled Buffer">
       <a name="width" val="8"/>
     </comp>
     <comp lib="1" loc="(200,350)" name="NOT Gate"/>
-    <comp lib="1" loc="(260,120)" name="NAND Gate">
-      <a name="label" val="S0"/>
-      <a name="size" val="30"/>
-    </comp>
-    <comp lib="1" loc="(260,160)" name="NAND Gate">
-      <a name="label" val="S1"/>
-      <a name="size" val="30"/>
-    </comp>
-    <comp lib="1" loc="(630,270)" name="Controlled Buffer">
-      <a name="width" val="8"/>
-    </comp>
-    <comp lib="12" loc="(440,250)" name="L_8_bit_universal_shift_storage_register_with_3_state_outputs_SN74ALS299_87cfe9f2"/>
-    <wire from="(130,110)" to="(220,110)"/>
-    <wire from="(130,140)" to="(210,140)"/>
-    <wire from="(130,170)" to="(220,170)"/>
+    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <wire from="(1120,150)" to="(1120,200)"/>
+    <wire from="(1120,150)" to="(1170,150)"/>
+    <wire from="(1120,200)" to="(1120,210)"/>
+    <wire from="(1120,210)" to="(1140,210)"/>
+    <wire from="(1150,220)" to="(1150,350)"/>
+    <wire from="(1160,210)" to="(1170,210)"/>
     <wire from="(130,270)" to="(350,270)"/>
     <wire from="(130,350)" to="(170,350)"/>
-    <wire from="(200,350)" to="(620,350)"/>
-    <wire from="(210,130)" to="(210,140)"/>
-    <wire from="(210,130)" to="(220,130)"/>
-    <wire from="(210,140)" to="(210,150)"/>
-    <wire from="(210,150)" to="(220,150)"/>
-    <wire from="(260,120)" to="(360,120)"/>
-    <wire from="(260,160)" to="(270,160)"/>
-    <wire from="(270,140)" to="(270,160)"/>
-    <wire from="(270,140)" to="(350,140)"/>
-    <wire from="(270,300)" to="(380,300)"/>
-    <wire from="(350,140)" to="(350,240)"/>
-    <wire from="(350,240)" to="(380,240)"/>
-    <wire from="(350,270)" to="(350,280)"/>
-    <wire from="(350,280)" to="(380,280)"/>
-    <wire from="(360,120)" to="(360,230)"/>
-    <wire from="(360,230)" to="(380,230)"/>
-    <wire from="(360,330)" to="(390,330)"/>
-    <wire from="(370,250)" to="(370,260)"/>
-    <wire from="(370,250)" to="(380,250)"/>
-    <wire from="(370,260)" to="(380,260)"/>
-    <wire from="(390,320)" to="(390,330)"/>
-    <wire from="(410,320)" to="(410,330)"/>
-    <wire from="(410,330)" to="(420,330)"/>
-    <wire from="(420,320)" to="(420,330)"/>
-    <wire from="(440,260)" to="(590,260)"/>
-    <wire from="(590,210)" to="(590,260)"/>
-    <wire from="(590,210)" to="(640,210)"/>
-    <wire from="(590,260)" to="(590,270)"/>
-    <wire from="(590,270)" to="(610,270)"/>
-    <wire from="(620,280)" to="(620,350)"/>
-    <wire from="(630,270)" to="(640,270)"/>
+    <wire from="(190,150)" to="(380,150)"/>
+    <wire from="(190,170)" to="(380,170)"/>
+    <wire from="(200,350)" to="(1150,350)"/>
+    <wire from="(270,300)" to="(350,300)"/>
+    <wire from="(350,110)" to="(350,270)"/>
+    <wire from="(350,110)" to="(380,110)"/>
+    <wire from="(360,10)" to="(360,50)"/>
+    <wire from="(360,10)" to="(920,10)"/>
+    <wire from="(360,50)" to="(380,50)"/>
+    <wire from="(360,70)" to="(360,280)"/>
+    <wire from="(360,70)" to="(380,70)"/>
+    <wire from="(370,130)" to="(380,130)"/>
+    <wire from="(370,280)" to="(680,280)"/>
+    <wire from="(380,110)" to="(710,110)"/>
+    <wire from="(380,130)" to="(710,130)"/>
+    <wire from="(380,150)" to="(710,150)"/>
+    <wire from="(380,170)" to="(710,170)"/>
+    <wire from="(380,50)" to="(390,50)"/>
+    <wire from="(390,50)" to="(390,60)"/>
+    <wire from="(600,100)" to="(600,180)"/>
+    <wire from="(600,180)" to="(930,180)"/>
+    <wire from="(600,50)" to="(600,100)"/>
+    <wire from="(620,90)" to="(710,90)"/>
+    <wire from="(680,70)" to="(680,280)"/>
+    <wire from="(680,70)" to="(710,70)"/>
+    <wire from="(710,70)" to="(720,70)"/>
+    <wire from="(930,50)" to="(940,50)"/>
+    <wire from="(940,20)" to="(940,50)"/>
+    <wire from="(940,50)" to="(940,180)"/>
+    <wire from="(950,200)" to="(1120,200)"/>
   </circuit>
   <circuit name="BufferedRegister">
     <a name="appearance" val="logisim_evolution"/>
@@ -3467,21 +3489,21 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-0 0 8 1 5 1f ca 1f
-ff 0 bb b6 df b e9 da
-37 e8 90 20 df 28 90 a
-df 33 e5 0 45 90 ff df
-b 4*db 58 e0 b 47 1e ff
-20 d6 1a ff 51 bb e0 b
-47 1e ff bb b6 df 3f da
-25 58 e0 37 51 3b 60 0
-e0 7 7c 30 de 63 90 9
-de 68 df 68 7c 11 de 63
-90 5 de 66 df 66 7c 20
-de 63 90 5 de 66 df 66
-4 ff e6 68 a e6 7831*0 44
-3f 40 0 a7 df d 3f 40
-1 32 d6 4e e7
+0 0 8 1 5 1f cc 21
+ff 0 bd b8 e7 b f1 dc
+39 f0 92 20 e7 28 92 a
+e7 33 ed 0 45 92 ff e7
+b 4*dd 5a e8 b 49 20 ff
+22 d8 1c ff 53 bd e8 b
+49 20 ff bd b8 e7 3f dc
+27 5a e8 37 53 3d 60 0
+e8 7 7e 30 e6 63 92 9
+e6 68 e7 68 7e 11 e6 63
+92 5 e6 66 e7 66 7e 20
+e6 63 92 5 e6 66 e7 66
+4 ff ee 6a a ee 7831*0 46
+41 40 0 a9 e7 d 41 40
+1 34 d8 50 ef
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
@@ -3958,334 +3980,328 @@ de 63 90 5 de 66 df 66
     <comp lib="0" loc="(1230,1070)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="Y_SEL0"/>
+      <a name="label" val="Y_SEL1"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1090)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="Y_SEL1"/>
+      <a name="label" val="Y_SEL2"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1110)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="Y_SEL2"/>
+      <a name="label" val="OP_SEL0"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1130)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="OP_SEL0"/>
+      <a name="label" val="OP_SEL1"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1150)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="OP_SEL1"/>
+      <a name="label" val="OP_SEL2"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1170)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="OP_SEL2"/>
+      <a name="label" val="ROM_AS"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1190)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="ROM_AS"/>
+      <a name="label" val="NOT_CS_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1210)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_CS_IN"/>
+      <a name="label" val="NOT_PC_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1310)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_PC_IN"/>
+      <a name="label" val="NOT_PC_INC"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1330)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_PC_INC"/>
+      <a name="label" val="NOT_CS_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1350)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_CS_OUT"/>
+      <a name="label" val="NOT_PC_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1370)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_PC_OUT"/>
+      <a name="label" val="NOT_FETCH"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1390)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_FETCH"/>
+      <a name="label" val="J"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1410)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="J"/>
+      <a name="label" val="JC"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1430)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="JC"/>
+      <a name="label" val="JZ"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1450)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="JZ"/>
+      <a name="label" val="JN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1550)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="JN"/>
+      <a name="label" val="JA"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1570)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="JA"/>
+      <a name="label" val="NOT_PASS"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1590)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_PASS"/>
+      <a name="label" val="NOT_HLT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1610)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_HLT"/>
+      <a name="label" val="PAGE_0"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1630)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="PAGE_0"/>
+      <a name="label" val="NOT_PUSH"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1650)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_PUSH"/>
+      <a name="label" val="NOT_POP"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1670)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_POP"/>
+      <a name="label" val="NOT_DATA_LATCH_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,1690)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_DATA_LATCH_OUT"/>
+      <a name="label" val="NOT_IVH_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,350)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RA_IN"/>
+      <a name="label" val="RA_S0"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,370)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RA_OUT"/>
+      <a name="label" val="RA_S1"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,390)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RA_SL"/>
+      <a name="label" val="NOT_RA_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,410)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RA_SR"/>
+      <a name="label" val="NOT_RB_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,430)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RB_IN"/>
+      <a name="label" val="NOT_RB_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,450)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RB_OUT"/>
+      <a name="label" val="NOT_RC_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,470)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RC_IN"/>
+      <a name="label" val="NOT_RC_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,490)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RC_OUT"/>
+      <a name="label" val="NOT_RD_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,590)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RD_IN"/>
+      <a name="label" val="NOT_RD_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,610)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RD_OUT"/>
+      <a name="label" val="NOT_DEVICE_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,630)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_DEVICE_IN"/>
+      <a name="label" val="NOT_DEVICE_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,650)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_DEVICE_OUT"/>
+      <a name="label" val="NOT_SS_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,670)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_SS_IN"/>
+      <a name="label" val="NOT_SS_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,690)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_SS_OUT"/>
+      <a name="label" val="NOT_SP_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,710)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_SP_IN"/>
+      <a name="label" val="NOT_SP_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,730)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_SP_OUT"/>
+      <a name="label" val="NOT_SP_CT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,830)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_SP_CT"/>
+      <a name="label" val="SP_DIR"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,850)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="SP_DIR"/>
+      <a name="label" val="NOT_ABH_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,870)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_ABH_IN"/>
+      <a name="label" val="NOT_ABL_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,890)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_ABL_IN"/>
+      <a name="label" val="NOT_RT_IN"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,910)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RT_IN"/>
+      <a name="label" val="NOT_RT_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,930)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_RT_OUT"/>
+      <a name="label" val="X_SEL0"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,950)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="X_SEL0"/>
+      <a name="label" val="X_SEL1"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1230,970)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="X_SEL1"/>
+      <a name="label" val="Y_SEL0"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1240,1790)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_IVH_OUT"/>
+      <a name="label" val="NOT_IVL_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1240,1810)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_IVL_OUT"/>
+      <a name="label" val="I_VAL"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1240,1830)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="I_VAL"/>
+      <a name="label" val="FLAGS_MODE_SEL0"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1240,1850)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="FLAGS_MODE_SEL0"/>
+      <a name="label" val="FLAGS_MODE_SEL1"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1240,1870)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="FLAGS_MODE_SEL1"/>
+      <a name="label" val="NOT_FLAGS_OUT"/>
       <a name="output" val="true"/>
     </comp>
     <comp lib="0" loc="(1240,1890)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
-      <a name="label" val="NOT_FLAGS_OUT"/>
-      <a name="output" val="true"/>
-    </comp>
-    <comp lib="0" loc="(1240,1910)" name="Pin">
-      <a name="appearance" val="NewPins"/>
-      <a name="facing" val="west"/>
       <a name="label" val="CSPC_DIR"/>
       <a name="output" val="true"/>
     </comp>
-    <comp lib="0" loc="(1380,1590)" name="Tunnel">
+    <comp lib="0" loc="(1380,1570)" name="Tunnel">
       <a name="label" val="NOT_PASS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
@@ -4382,42 +4398,43 @@ de 63 90 5 de 66 df 66
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-37*80 0 1386*80 88 15*80 89 15*80 8a
-15*80 8b 15*80 88 15*80 89 15*80 8a
-15*80 8b 15*80 88 15*80 89 15*80 8a
-15*80 8b 15*80 88 15*80 89 15*80 8a
-15*80 8b 16*80 8c 15*80 8c 15*80 8c
-15*80 8c 14*80 90 15*80 91 15*80 92
-15*80 93 15*80 90 15*80 91 15*80 92
-15*80 93 15*80 90 15*80 91 15*80 92
-15*80 93 15*80 90 15*80 91 15*80 92
-15*80 93 16*80 94 15*80 94 15*80 94
-15*80 94 14*80 90 15*80 91 15*80 92
-15*80 93 15*80 90 15*80 91 15*80 92
-15*80 93 15*80 90 15*80 91 15*80 92
-15*80 93 15*80 90 15*80 91 15*80 92
-15*80 93 16*80 94 15*80 94 15*80 94
-15*80 94 14*80 98 15*80 99 15*80 9a
-15*80 9b 15*80 98 15*80 99 15*80 9a
-15*80 9b 15*80 98 15*80 99 15*80 9a
-15*80 9b 15*80 98 15*80 99 15*80 9a
-15*80 9b 16*80 9c 15*80 9c 15*80 9c
-15*80 9c 14*80 a0 15*80 a1 15*80 a2
-15*80 a3 15*80 a0 15*80 a1 15*80 a2
-15*80 a3 15*80 a0 15*80 a1 15*80 a2
-15*80 a3 15*80 a0 15*80 a1 15*80 a2
-15*80 a3 16*80 a4 15*80 a4 15*80 a4
-15*80 a4 14*80 a8 15*80 a9 15*80 aa
-15*80 ab 15*80 a8 15*80 a9 15*80 aa
-15*80 ab 15*80 a8 15*80 a9 15*80 aa
-15*80 ab 15*80 a8 15*80 a9 15*80 aa
-15*80 ab 16*80 ac 15*80 ac 15*80 ac
-15*80 ac 14*80 b0 15*80 b0 15*80 b0
-15*80 b0 15*80 8d 15*80 8d 15*80 8d
-15*80 8d 15*80 95 15*80 95 15*80 95
-15*80 95 209*80 0 15*80 0 15*80 0
-15*80 0 17*80 0 13*80 0 16*80 0
-44*80
+37*c0 0 1386*c0 c4 15*c0 c4 15*c0 c5
+15*c0 c5 15*c0 c4 15*c0 c4 15*c0 c5
+15*c0 c5 15*c0 c4 15*c0 c4 15*c0 c5
+15*c0 c5 15*c0 c4 15*c0 c4 15*c0 c5
+15*c0 c5 16*c0 c6 15*c0 c6 15*c0 c6
+15*c0 c6 14*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 15*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 15*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 15*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 16*c0 ca 15*c0 ca 15*c0 ca
+15*c0 ca 14*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 15*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 15*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 15*c0 c8 15*c0 c8 15*c0 c9
+15*c0 c9 16*c0 ca 15*c0 ca 15*c0 ca
+15*c0 ca 14*c0 cc 15*c0 cc 15*c0 cd
+15*c0 cd 15*c0 cc 15*c0 cc 15*c0 cd
+15*c0 cd 15*c0 cc 15*c0 cc 15*c0 cd
+15*c0 cd 15*c0 cc 15*c0 cc 15*c0 cd
+15*c0 cd 16*c0 ce 15*c0 ce 15*c0 ce
+15*c0 ce 14*c0 d0 15*c0 d0 15*c0 d1
+15*c0 d1 15*c0 d0 15*c0 d0 15*c0 d1
+15*c0 d1 15*c0 d0 15*c0 d0 15*c0 d1
+15*c0 d1 15*c0 d0 15*c0 d0 15*c0 d1
+15*c0 d1 16*c0 d2 15*c0 d2 15*c0 d2
+15*c0 d2 14*c0 d4 15*c0 d4 15*c0 d5
+15*c0 d5 15*c0 d4 15*c0 d4 15*c0 d5
+15*c0 d5 15*c0 d4 15*c0 d4 15*c0 d5
+15*c0 d5 15*c0 d4 15*c0 d4 15*c0 d5
+15*c0 d5 16*c0 d6 15*c0 d6 15*c0 d6
+15*c0 d6 14*c0 d8 15*c0 d8 15*c0 d8
+15*c0 d8 15*c0 c6 15*c0 c6 15*c0 c6
+15*c0 c6 15*c0 ca 15*c0 ca 15*c0 ca
+15*c0 ca 144*c0 40 15*c0 40 15*c0 40
+15*c0 40 16*c0 0 15*c0 0 15*c0 0
+15*c0 0 17*c0 0 13*c0 0 16*c0 0
+44*c0
 </a>
       <a name="label" val="EEPROM3"/>
       <a name="labelvisible" val="true"/>
@@ -4426,84 +4443,83 @@ de 63 90 5 de 66 df 66
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-d 15*1f d 15*1f 1d 1f 1b 17
-1f 3e d 9*1f d d 14*1f d
-d 14*1f d d 14*1f d d 14*1f
-d d 14*1f d d 14*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d d
-14*1f d d 14*1f d d 14*1f d
-d 14*1f d d 14*1f d d 14*1f
-d d 14*1f d d 14*1f d d
-d 14*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d d 13*1f d 1f d
-13*1f d 1f d 13*1f d 1f d
-13*1f d 1f d 13*1f d 1f d
-13*1f d 1f d 13*1f d 1f d
-13*1f d 1f d 13*1f d 1f d
-d 14*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d d 12*1f d d d
-13*1f d d d 13*1f d d d
-13*1f d d d 13*1f d d d
-13*1f d d d 13*1f d d d
-13*1f d d d 13*1f 4*d 13*1f d
-15*1f d 15*1f d 15*1f d 14*1f d
-1f 1f d 15*1f d 12*1f d 1f
-1f 1f d 15*1f d 11*1f d 1f
-1f 1f d 11*1f d d 14*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-1f d 15*1f d 14*1f d 1f d
-15*1f d 13*1f d 1f d 13*1f d
-15*1f d 15*1f d 15*1f d 14*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-1f d 13*1f d d 14*1f d d
-14*1f d d 15*1f d 15*1f d 15*1f
-d 15*1f d 14*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 1f d 13*1f
-d d 14*1f d d 14*1f d d
-14*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d d 14*1f d d 14*1f d
-d 14*1f d d 15*1f d 15*1f d
-15*1f d 15*1f d 14*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 1f d
-13*1f d d 14*1f d d 14*1f d
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 14*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 1f d 13*1f d d
-14*1f d d 14*1f d d 15*1f d
-15*1f d 15*1f d 15*1f d 14*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-15*1f d 15*1f d 15*1f d 15*1f d
-1f d 13*1f d d 14*1f d d
-14*1f d d 15*1f d 14*1f d 15*1f
-d 15*1f d 16*1f d 14*1f d 15*1f
-d 15*1f d 16*1f d 14*1f d 15*1f
-d 15*1f d 15*1f d 15*1f d 17*1f
-d 15*1f d 15*1f d 15*1f d 15*1f
-d 15*1f d 13*1f d 5e d 13*1f
-d 1e d 13*1f d 9e d 13*1f
-d 3e d 13*1f d d 5e d
-12*1f d d 1e d 12*1f d d
-9e d 12*1f d d 3e d 12*1f
-d d 1b 17 3e d 12*1f 3e
-d 15*1f 3e d 11*1f d 15*1f d
-15*1f
+6 15*f 6 15*f e f d b
+f 1f 6 9*f 6 6 14*f 6
+6 14*f 6 6 14*f 6 6 14*f
+6 6 14*f 6 6 14*f 6 15*f
+6 15*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 15*f 6 15*f 6 6
+14*f 6 6 14*f 6 6 14*f 6
+6 14*f 6 6 14*f 6 6 14*f
+6 6 14*f 6 6 14*f 6 6
+6 14*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 6 13*f 6 f 6
+13*f 6 f 6 13*f 6 f 6
+13*f 6 f 6 13*f 6 f 6
+13*f 6 f 6 13*f 6 f 6
+13*f 6 f 6 13*f 6 f 6
+6 14*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 15*f 6 15*f 6 15*f
+6 15*f 6 6 12*f 6 6 6
+13*f 6 6 6 13*f 6 6 6
+13*f 6 6 6 13*f 6 6 6
+13*f 6 6 6 13*f 6 6 6
+13*f 6 6 6 13*f 4*6 13*f 6
+15*f 6 15*f 6 15*f 6 14*f 6
+f f 6 15*f 6 12*f 6 f
+f f 6 15*f 6 11*f 6 f
+f f 6 11*f 6 6 14*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+f 6 15*f 6 14*f 6 f 6
+15*f 6 13*f 6 f 6 12*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+6 14*f 6 6 14*f 6 6 14*f
+6 6 14*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 6 14*f 6 6
+14*f 6 6 14*f 6 6 14*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+6 14*f 6 6 14*f 6 6 14*f
+6 6 14*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 6 14*f 6 6
+14*f 6 6 14*f 6 6 14*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+6 14*f 6 6 14*f 6 6 14*f
+6 6 14*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 6 14*f 6 6
+14*f 6 6 14*f 6 6 14*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 15*f 6
+15*f 6 17*f 6 15*f 6 15*f 6
+15*f 6 15*f 6 15*f 6 13*f 6
+2f 6 13*f 6 8f 6 13*f 6
+4f 6 13*f 6 1f 6 13*f 6
+6 2f 6 12*f 6 6 8f 6
+12*f 6 6 4f 6 12*f 6 6
+1f 6 12*f 6 6 d b 1f
+6 12*f 1f 6 15*f 1f 6 11*f
+6 15*f 6 15*f
 </a>
       <a name="label" val="EEPROM4"/>
     </comp>
@@ -4511,86 +4527,86 @@ d 15*1f 3e d 11*1f d 15*1f d
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-e8 15*ec e0 17*ec cc cc cc ec
-e8 9*ec 6c e8 14*ec 6c e8 14*ec
-6c e8 14*ec 6c e8 14*ec 6c e8
-14*ec 6c e8 14*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec 6c f8 14*ec 6c
-f8 14*ec 6c f8 14*ec 6c f8 14*ec
-6c f8 14*ec 6c f8 14*ec 6c f8
-14*ec 6c f8 14*ec 6c 7c e8 14*ec
-f8 15*ec f8 15*ec f8 15*ec f8 15*ec
-f8 15*ec f8 15*ec f8 15*ec f8 15*ec
-7c e8 13*ec 6c ec e8 13*ec 6c
-ec e8 13*ec 6c ec e8 13*ec 6c
-ec e8 13*ec 6c ec e8 13*ec 6c
-ec e8 13*ec 6c ec e8 13*ec 6c
-ec e8 13*ec 6c ec 6c e8 14*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-6c e8 12*ec 6c 6c e8 13*ec 6c
-6c e8 13*ec 6c 6c e8 13*ec 6c
-6c e8 13*ec 6c 6c e8 13*ec 6c
-6c e8 13*ec 6c 6c e8 13*ec 6c
-6c e8 13*ec 6c 6c 6c e8 12*ec
-cc e8 14*ec cc e8 14*ec cc e8
-14*ec cc e8 14*ec 6c fc cc e8
-13*ec fc cc e8 12*ec 6c ec ec
-cc e8 14*ec cc e8 11*ec 6c ec
-ec cc e8 11*ec 4c e8 14*ec a8
-15*ec a8 15*ec a8 15*ec a8 15*ec 6c
-ac f8 14*ec ac f8 13*ec ac 6c
-ec e8 12*ec ac ec ec e8 12*ec
-ac 6c ec e8 13*ec e8 15*ec e8
-15*ec e8 15*ec e8 14*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec 6c ec e8
-13*ec 6c e8 14*ec 6c e8 14*ec 6c
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 14*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec 6c ec e8 13*ec 6c e8
-14*ec 6c e8 14*ec 6c e8 14*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec 6c
-e8 14*ec 6c e8 14*ec 6c e8 14*ec
-6c e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 14*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec 6c ec e8 13*ec 6c
-e8 14*ec 6c e8 14*ec 6c e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 14*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-6c ec e8 13*ec 6c e8 14*ec 6c
-e8 14*ec 6c e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 14*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec e8 15*ec e8
-15*ec e8 15*ec e8 15*ec 6c ec e8
-13*ec 6c e8 14*ec 6c e8 14*ec 6c
-e8 15*ec e8 14*ec e8 15*ec e8 15*ec
-e8 16*ec e8 14*ec e8 15*ec e8 15*ec
-e8 16*ec e8 14*ec e8 15*ec e8 15*ec
-e8 15*ec e8 15*ec e8 17*ec e8 15*ec
-e8 15*ec e8 15*ec e8 15*ec e8 15*ec
-e8 13*ec 6c ec e8 13*ec 6c ed
-e8 13*ec 6c ec e8 13*ec 6c ec
-e8 13*ec 6c 6c ec e8 12*ec 6c
-6c ed e8 12*ec 6c 6c ec e8
-12*ec 6c 6c ec e8 12*ec 6c 6c
-cc cc ec e8 10*ec ac ac ec
-e8 12*ec ac ac ac ec e8 11*ec
-e8 15*ec e8 15*ec
+f4 15*f6 f0 15*f6 76 f6 e6 e6
+e6 f6 f4 9*f6 b6 f4 14*f6 b6
+f4 14*f6 b6 f4 14*f6 b6 f4 14*f6
+b6 f4 14*f6 b6 f4 14*f6 f4 15*f6
+f4 15*f6 f4 15*f6 f4 15*f6 f4 15*f6
+f4 15*f6 f4 15*f6 f4 15*f6 f4 15*f6
+f4 15*f6 f4 15*f6 f4 15*f6 f4 15*f6
+f4 15*f6 f4 15*f6 f4 15*f6 b6 fc
+14*f6 b6 fc 14*f6 b6 fc 14*f6 b6
+fc 14*f6 b6 fc 14*f6 b6 fc 14*f6
+b6 fc 14*f6 b6 fc 14*f6 b6 be
+f4 14*f6 fc 15*f6 fc 15*f6 fc 15*f6
+fc 15*f6 fc 15*f6 fc 15*f6 fc 15*f6
+fc 15*f6 be f4 13*f6 b6 f6 f4
+13*f6 b6 f6 f4 13*f6 b6 f6 f4
+13*f6 b6 f6 f4 13*f6 b6 f6 f4
+13*f6 b6 f6 f4 13*f6 b6 f6 f4
+13*f6 b6 f6 f4 13*f6 b6 f6 b6
+f4 14*f6 f4 15*f6 f4 15*f6 f4 15*f6
+f4 15*f6 f4 15*f6 f4 15*f6 f4 15*f6
+f4 15*f6 b6 f4 12*f6 b6 b6 f4
+13*f6 b6 b6 f4 13*f6 b6 b6 f4
+13*f6 b6 b6 f4 13*f6 b6 b6 f4
+13*f6 b6 b6 f4 13*f6 b6 b6 f4
+13*f6 b6 b6 f4 13*f6 b6 b6 b6
+f4 12*f6 e6 f4 14*f6 e6 f4 14*f6
+e6 f4 14*f6 e6 f4 14*f6 b6 fe
+e6 f4 13*f6 fe e6 f4 12*f6 b6
+f6 f6 e6 f4 14*f6 e6 f4 11*f6
+b6 f6 f6 e6 f4 11*f6 a6 f4
+14*f6 d4 15*f6 d4 15*f6 d4 15*f6 d4
+15*f6 b6 d6 fc 14*f6 d6 fc 13*f6
+d6 b6 f6 f4 12*f6 d6 f6 f6
+f4 12*f6 d6 b6 f6 f4 12*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 b6
+f4 14*f6 b6 f4 14*f6 b6 f4 14*f6
+b6 f4 14*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 b6 f4 14*f6 b6 f4
+14*f6 b6 f4 14*f6 b6 f4 14*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 b6
+f4 14*f6 b6 f4 14*f6 b6 f4 14*f6
+b6 f4 14*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 b6 f4 14*f6 b6 f4
+14*f6 b6 f4 14*f6 b6 f4 14*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 b6
+f4 14*f6 b6 f4 14*f6 b6 f4 14*f6
+b6 f4 14*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 b6 f4 14*f6 b6 f4
+14*f6 b6 f4 14*f6 b6 f4 14*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 17*f6 f4 15*f6 f4 15*f6 f4
+15*f6 f4 15*f6 f4 15*f6 f4 13*f6 b6
+f6 f4 13*f6 b6 f6 f4 13*f6 b6
+f6 f4 13*f6 b6 f6 f4 13*f6 b6
+b6 f6 f4 12*f6 b6 b6 f6 f4
+12*f6 b6 b6 f6 f4 12*f6 b6 b6
+f6 f4 12*f6 b6 b6 e6 e6 f6
+f4 10*f6 d6 d6 f6 f4 12*f6 d6
+d6 d6 f6 f4 11*f6 f4 15*f6 f4
+15*f6
 </a>
       <a name="label" val="EEPROM5"/>
       <a name="labelvisible" val="true"/>
@@ -4599,41 +4615,41 @@ e8 15*ec e8 15*ec
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-32*7b 3a 79 7b 7b 5b 6f 1386*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 16*7b
-73 15*7b 73 15*7b 73 15*7b 73 14*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 16*7b
-73 15*7b 73 15*7b 73 15*7b 73 14*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 16*7b
-73 15*7b 73 15*7b 73 15*7b 73 14*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 16*7b
-73 15*7b 73 15*7b 73 15*7b 73 14*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 16*7b
-73 15*7b 73 15*7b 73 15*7b 73 14*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 16*7b
-73 15*7b 73 15*7b 73 15*7b 73 14*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 15*7b
-73 15*7b 73 15*7b 73 15*7b 73 303*7b
-63 15*7b 6b 15*7b 6f 15*7b
+32*3d 1d 3c 3d 3d 2d 37 1386*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 16*3d
+39 15*3d 39 15*3d 39 15*3d 39 14*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 16*3d
+39 15*3d 39 15*3d 39 15*3d 39 14*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 16*3d
+39 15*3d 39 15*3d 39 15*3d 39 14*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 16*3d
+39 15*3d 39 15*3d 39 15*3d 39 14*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 16*3d
+39 15*3d 39 15*3d 39 15*3d 39 14*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 16*3d
+39 15*3d 39 15*3d 39 15*3d 39 14*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 15*3d
+39 15*3d 39 15*3d 39 15*3d 39 303*3d
+31 15*3d 35 15*3d 37 15*3d
 </a>
       <a name="label" val="EEPROM6"/>
     </comp>
@@ -4641,47 +4657,56 @@ e8 15*ec e8 15*ec
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-48*ff fe 15*ff ef 15*ff bf 95*ff ed
-15*ff bd 15*ff fd 15*ff de 15*ff 9f
-15*ff df 15*ff 7e 15*ff 6f 15*ff 7f
-15*ff fe 15*ff ef 15*ff bf 48*ff fd
-15*ff df 15*ff 7f 31*ff fe 15*ff ef
-15*ff bf 47*ff fd 15*ff df 15*ff 7f
-31*ff fe 15*ff ef 15*ff bf 48*ff fd
-15*ff df 15*ff 7f 31*ff fe 15*ff ef
-15*ff bf 45*ff 7f ff fd 13*ff 7f
-ff df 13*ff 7f ff 7f 13*ff 7f
-15*ff 7f ff fe 13*ff 7f ff ef
-13*ff 7f ff bf 13*ff 7f 15*ff 7f
-17*ff fd 15*ff df 15*ff 7f 31*ff fe
-15*ff ef 15*ff bf 45*ff fd 15*ff df
-15*ff 7f 79*ff 7f 47*ff fe 15*ff ef
-15*ff bf 80*ff 7f 31*ff fe 15*ff fe
-15*ff fe 15*ff fe 14*ff ef 15*ff ef
-15*ff ef 15*ff ef 15*ff bf 15*ff bf
-15*ff bf 15*ff bf 81*ff fe 14*ff ef
-15*ff ef 15*ff ef 15*ff fe 15*ff fe
-15*ff fe 15*ff fe 14*ff ef 15*ff ef
-15*ff ef 15*ff ef 15*ff bf 15*ff bf
-15*ff bf 15*ff bf 81*ff fe 14*ff ef
-15*ff ef 15*ff ef 335*ff fe 15*ff fe
-15*ff fe 15*ff fe 14*ff ef 15*ff ef
-15*ff ef 15*ff ef 15*ff bf 15*ff bf
-15*ff bf 15*ff bf 81*ff fe 14*ff ef
-15*ff ef 15*ff ef 15*ff fe 15*ff fe
-15*ff fe 15*ff fe 14*ff ef 15*ff ef
-15*ff ef 15*ff ef 15*ff bf 15*ff bf
-15*ff bf 15*ff bf 81*ff fe 14*ff ef
-15*ff ef 15*ff ef 15*ff fe 15*ff fe
-15*ff fe 15*ff fe 14*ff ef 15*ff ef
-15*ff ef 15*ff ef 15*ff bf 15*ff bf
-15*ff bf 15*ff bf 81*ff fe 14*ff ef
-15*ff ef 15*ff ef 15*ff fe 14*ff ef
-15*ff bf 32*ff fe 14*ff ef 15*ff bf
-32*ff fe 14*ff ef 15*ff bf 31*ff fb
-15*ff f7 15*ff fd de ef 13*ff fd
-7e bf 13*ff fd fe 14*ff df 6f
-bf 13*ff df ef 14*ff 7f bf 222*ff
+48*fc ff 15*fc f4 15*fc dc 15*fc 7c
+47*fc 7c 15*fc 7c 15*fc f0 15*fc d8
+15*fc 78 15*fc ef 15*fc cc 15*fc 6c
+15*fc bf 15*fc b4 15*fc 3c 15*fc ff
+15*fc f4 15*fc dc 48*fc f8 15*fc ec
+15*fc bc 31*fc ff 15*fc f4 15*fc dc
+15*fc 7c 31*fc f8 15*fc ec 15*fc bc
+31*fc ff 15*fc f4 15*fc dc 15*fc 7c
+32*fc f8 15*fc ec 15*fc bc 31*fc ff
+15*fc f4 15*fc dc 15*fc 7c 29*fc bc
+fc f8 13*fc bc fc ec 13*fc bc
+fc bc 13*fc bc 15*fc bc fc ff
+13*fc bc fc f4 13*fc bc fc dc
+13*fc bc fc 7c 13*fc bc 17*fc f8
+15*fc ec 15*fc bc 31*fc ff 15*fc f4
+15*fc dc 15*fc 7c 29*fc f8 15*fc ec
+15*fc bc 79*fc bc 47*fc ff 15*fc f4
+15*fc dc 15*fc 7c 64*fc bc 30*fc ff
+15*fc ff 15*fc ff 15*fc ff 15*fc f4
+15*fc f4 15*fc f4 15*fc f4 15*fc dc
+15*fc dc 15*fc dc 15*fc dc 15*fc 7c
+15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
+15*fc f4 15*fc f4 15*fc f4 14*fc ff
+15*fc ff 15*fc ff 15*fc ff 15*fc f4
+15*fc f4 15*fc f4 15*fc f4 15*fc dc
+15*fc dc 15*fc dc 15*fc dc 15*fc 7c
+15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
+15*fc f4 15*fc f4 15*fc f4 334*fc ff
+15*fc ff 15*fc ff 15*fc ff 15*fc f4
+15*fc f4 15*fc f4 15*fc f4 15*fc dc
+15*fc dc 15*fc dc 15*fc dc 15*fc 7c
+15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
+15*fc f4 15*fc f4 15*fc f4 14*fc ff
+15*fc ff 15*fc ff 15*fc ff 15*fc f4
+15*fc f4 15*fc f4 15*fc f4 15*fc dc
+15*fc dc 15*fc dc 15*fc dc 15*fc 7c
+15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
+15*fc f4 15*fc f4 15*fc f4 14*fc ff
+15*fc ff 15*fc ff 15*fc ff 15*fc f4
+15*fc f4 15*fc f4 15*fc f4 15*fc dc
+15*fc dc 15*fc dc 15*fc dc 15*fc 7c
+15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
+15*fc f4 15*fc f4 15*fc f4 14*fc ff
+15*fc f4 15*fc dc 15*fc 7c 15*fc ff
+15*fc f4 15*fc dc 15*fc 7c 15*fc ff
+15*fc f4 15*fc dc 15*fc 7c 15*fc fe
+15*fc fd 15*fc f8 ef f4 13*fc f8
+bf dc 13*fc f8 ff 7c 13*fc ec
+b4 dc 13*fc ec f4 7c 13*fc bc
+dc 7c 221*fc
 </a>
       <a name="label" val="EEPROM0"/>
       <a name="labelvisible" val="true"/>
@@ -4690,35 +4715,34 @@ bf 13*ff df ef 14*ff 7f bf 222*ff
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-96*ff fe 15*ff bf 15*ff ef 15*ff de
-15*ff 7e 47*ff fe 47*ff fe 47*ff fe
-15*ff fd 15*ff fd 15*ff fd 15*ff ed
-15*ff bd 16*ff fb 15*ff fb 15*ff fb
-15*ff f9 15*ff f7 15*ff f7 15*ff f7
-15*ff f6 15*ff fb 14*ff fd fb 14*ff
-fd fb 14*ff fd fb 14*ff fd f9
-14*ff fd f7 14*ff fd f7 14*ff fd
-f7 14*ff fd f6 14*ff fd fb 15*ff
-fd fb 14*ff fd fb 14*ff fd fb
-14*ff fd f9 14*ff fd f7 14*ff fd
-f7 14*ff fd f7 14*ff fd f6 14*ff
-fd fb 14*ff fd fb 14*ff fd fb
-14*ff fd fb 14*ff fd f9 14*ff fd
-f7 14*ff fd f7 14*ff fd f7 14*ff
-fd f6 14*ff fd fb 15*ff fb 15*ff
-fb 15*ff fb 15*ff f9 15*ff f7 15*ff
-f7 15*ff f7 15*ff f6 15*ff fb 61*ff
-fd 16*ff f7 14*ff fd f7 15*ff fd
-f7 14*ff fd f7 14*ff fd f7 77*ff
-fe 17*ff fb 13*ff fd ff fb 15*ff
-fd fb 14*ff fd fb 14*ff fd fb
-204*ff fe 15*ff fe 15*ff fe 15*ff fe
-271*ff fe 15*ff fe 15*ff fe 15*ff fe
-591*ff fe 15*ff fe 15*ff fe 15*ff fe
-271*ff fe 15*ff fe 15*ff fe 15*ff fe
-271*ff fe 15*ff fe 15*ff fe 15*ff fe
-127*ff fe 63*ff fe 63*ff fe 80*ff fd
-fe 30*ff fd fe 14*ff fd fe 221*ff
+35*ff 7f 7f 7f 74*ff df 15*ff f7
+15*ff ef 15*ff bf 159*ff fe 15*ff fe
+15*ff fe 15*ff f6 15*ff de 16*ff fd
+15*ff fd 15*ff fd 15*ff fc 15*ff fb
+15*ff fb 15*ff fb 15*ff fb 15*ff fd
+14*ff fe fd 14*ff fe fd 14*ff fe
+fd 14*ff fe fc 14*ff fe fb 14*ff
+fe fb 14*ff fe fb 14*ff fe fb
+14*ff fe fd 15*ff fe fd 14*ff fe
+fd 14*ff fe fd 14*ff fe fc 14*ff
+fe fb 14*ff fe fb 14*ff fe fb
+14*ff fe fb 14*ff fe fd 14*ff fe
+fd 14*ff fe fd 14*ff fe fd 14*ff
+fe fc 14*ff fe fb 14*ff fe fb
+14*ff fe fb 14*ff fe fb 14*ff fe
+fd 15*ff fd 15*ff fd 15*ff fd 15*ff
+fc 15*ff fb 15*ff fb 15*ff fb 15*ff
+fb 15*ff fd 14*ff 7f 15*ff 7f 15*ff
+7f 14*ff fe 7f 15*ff fb ff 7f
+12*ff fe fb ff 7f 13*ff fe fb
+ff 7f 12*ff fe fb ff 7f 12*ff
+fe fb ff 7f 12*ff 7f 14*ff 7f
+15*ff 7f 15*ff 7f 15*ff 7f 16*ff 7f
+fd 13*ff fe 7f fd 13*ff 7f ff
+fe fd 12*ff 7f ff fe fd 12*ff
+7f ff fe fd 2189*ff fe 31*ff fe
+15*ff fe 145*ff 7f 7f 11*ff 7f 7f
+14*ff 7f 7f 7f 45*ff
 </a>
       <a name="label" val="EEPROM1"/>
       <a name="labelvisible" val="true"/>
@@ -4727,76 +4751,69 @@ fe 30*ff fd fe 14*ff fd fe 221*ff
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-32*3d 39 35 3d 3e 3e 3e 362*3d
-35 15*3d 35 15*3d 35 15*3d 35 15*3d
-35 15*3d 35 15*3d 35 15*3d 35 15*3d
-35 15*3d 35 15*3d 35 15*3d 35 15*3d
-35 15*3d 35 15*3d 35 15*3d 35 15*3d
-35 15*3d 35 15*3d 39 35 14*3d 39
-35 14*3d 39 35 14*3d 39 35 14*3d
-39 35 14*3d 39 35 14*3d 39 35
-14*3d 39 35 14*3d 39 35 14*3d 39
-35 14*3d 39 35 14*3d 39 35 14*3d
-39 35 14*3d 39 35 14*3d 39 35
-14*3d 39 35 14*3d 39 35 14*3d 39
-35 14*3d 39 35 14*3d 39 35 14*3d
-39 35 14*3d 39 35 14*3d 39 35
-14*3d 39 35 14*3d 39 35 14*3d 39
-35 14*3d 39 35 15*3d 3e 15*3d 3e
-15*3d 3e 15*3d 3e 14*3d 35 2d 1d
-3e 12*3d 35 2d 1d 3e 12*3d 39
-35 2d 1d 3e 11*3d 39 35 2d
-1d 3e 11*3d 39 35 2d 1d 3e
-12*3d 3e 14*3d 3c 15*3d 3c 15*3d 3c
-15*3d 3c 15*3d 35 2c 1d 13*3d 35
-2c 1d 13*3d 2c 39 35 1d 12*3d
-2c 39 35 1d 12*3d 2c 39 35
-1d 12*3d 2d 1d 14*3d 2d 1d 14*3d
-2d 1d 14*3d 2d 1d 14*3d 7d 15*3d
-7d 15*3d 7d 15*3d 7d 15*3d bd 15*3d
-bd 15*3d bd 15*3d bd 15*3d fd 15*3d
-fd 15*3d fd 15*3d fd 15*3d 2d 2d
-1d 13*3d 2d 7d 14*3d 2d bd 14*3d
-2d fd 14*3d 2d 1d 14*3d 2d 1d
-14*3d 2d 1d 14*3d 2d 1d 14*3d 7d
-15*3d 7d 15*3d 7d 15*3d 7d 15*3d bd
-15*3d bd 15*3d bd 15*3d bd 15*3d fd
-15*3d fd 15*3d fd 15*3d fd 15*3d 2d
-2d 1d 13*3d 2d 7d 14*3d 2d bd
-14*3d 2d fd 78*3d 7d 15*3d 7d 15*3d
-7d 15*3d 7d 15*3d bd 15*3d bd 15*3d
-bd 15*3d bd 15*3d fd 15*3d fd 15*3d
-fd 15*3d fd 15*3d 2d 15*3d 2d 7d
-14*3d 2d bd 14*3d 2d fd 14*3d 2d
-1d 14*3d 2d 1d 14*3d 2d 1d 14*3d
-2d 1d 14*3d 7d 15*3d 7d 15*3d 7d
-15*3d 7d 15*3d bd 15*3d bd 15*3d bd
-15*3d bd 15*3d fd 15*3d fd 15*3d fd
-15*3d fd 15*3d 2d 2d 1d 13*3d 2d
-7d 14*3d 2d bd 14*3d 2d fd 14*3d
-2d 1d 14*3d 2d 1d 14*3d 2d 1d
-14*3d 2d 1d 14*3d 7d 15*3d 7d 15*3d
-7d 15*3d 7d 15*3d bd 15*3d bd 15*3d
-bd 15*3d bd 15*3d fd 15*3d fd 15*3d
-fd 15*3d fd 15*3d 2d 2d 1d 13*3d
-2d 7d 14*3d 2d bd 14*3d 2d fd
-14*3d 2d 1d 14*3d 2d 1d 14*3d 2d
-1d 14*3d 2d 1d 14*3d 7d 15*3d 7d
-15*3d 7d 15*3d 7d 15*3d bd 15*3d bd
-15*3d bd 15*3d bd 15*3d fd 15*3d fd
-15*3d fd 15*3d fd 15*3d 2d 2d 1d
-13*3d 2d 7d 14*3d 2d bd 14*3d 2d
-fd 14*3d 2d 1d 14*3d 7d 15*3d bd
-15*3d fd 15*3d 2d 1d 14*3d 7d 15*3d
-bd 15*3d fd 15*3d 2d 1d 14*3d 7d
-15*3d bd 15*3d fd 47*3d 2d 3d 1d
-13*3d 2d 3d 1d 13*3d 2d 3d 1d
-13*3d 2d 3d 1d 13*3d 2d 3d 1d
-13*3d 2d 3d 1d 13*3d 35 15*3d 35
-15*3d 35 15*3d 35 15*3d 39 35 14*3d
-39 35 14*3d 39 35 14*3d 39 35
-14*3d 39 35 3d 3e 3e 11*3d 34
-38 14*3d 3c 34 38 45*3d
+32*1e 1c 1a 1e 1f 1f 1f 362*1e
+1a 15*1e 1a 15*1e 1a 15*1e 1a 15*1e
+1a 15*1e 1a 15*1e 1a 15*1e 1a 15*1e
+1a 15*1e 1a 15*1e 1a 15*1e 1a 15*1e
+1a 15*1e 1a 15*1e 1a 15*1e 1a 15*1e
+1a 15*1e 1a 15*1e 1c 1a 14*1e 1c
+1a 14*1e 1c 1a 14*1e 1c 1a 14*1e
+1c 1a 14*1e 1c 1a 14*1e 1c 1a
+14*1e 1c 1a 14*1e 1c 1a 14*1e 1c
+1a 14*1e 1c 1a 14*1e 1c 1a 14*1e
+1c 1a 14*1e 1c 1a 14*1e 1c 1a
+14*1e 1c 1a 14*1e 1c 1a 14*1e 1c
+1a 14*1e 1c 1a 14*1e 1c 1a 14*1e
+1c 1a 14*1e 1c 1a 14*1e 1c 1a
+14*1e 1c 1a 14*1e 1c 1a 14*1e 1c
+1a 14*1e 1c 1a 15*1e 1f 15*1e 1f
+15*1e 1f 15*1e 1f 14*1e 1a 16 e
+1f 12*1e 1a 16 e 1f 12*1e 1c
+1a 16 e 1f 11*1e 1c 1a 16
+e 1f 11*1e 1c 1a 16 e 1f
+12*1e 1f 78*1e 1a 16 e 13*1e 1a
+16 e 13*1e 16 1c 1a e 12*1e
+16 1c 1a e 12*1e 16 1c 1a
+e 28*1e 9e 31*1e 9e 15*1e 3e 15*1e
+be 15*1e 3e 15*1e be 15*1e 5e 15*1e
+de 15*1e 5e 15*1e de 15*1e 7e 15*1e
+fe 15*1e 7e 15*1e fe 15*1e 16 15*1e
+16 3e 14*1e 16 5e 14*1e 16 7e
+30*1e 9e 31*1e 9e 15*1e 3e 15*1e be
+15*1e 3e 15*1e be 15*1e 5e 15*1e de
+15*1e 5e 15*1e de 15*1e 7e 15*1e fe
+15*1e 7e 15*1e fe 15*1e 16 15*1e 16
+3e 14*1e 16 5e 14*1e 16 7e 30*1e
+9e 31*1e 9e 15*1e 3e 15*1e be 15*1e
+3e 15*1e be 15*1e 5e 15*1e de 15*1e
+5e 15*1e de 15*1e 7e 15*1e fe 15*1e
+7e 15*1e fe 15*1e 16 15*1e 16 3e
+14*1e 16 5e 14*1e 16 7e 30*1e 9e
+31*1e 9e 15*1e 3e 15*1e be 15*1e 3e
+15*1e be 15*1e 5e 15*1e de 15*1e 5e
+15*1e de 15*1e 7e 15*1e fe 15*1e 7e
+15*1e fe 15*1e 16 15*1e 16 3e 14*1e
+16 5e 14*1e 16 7e 30*1e 9e 31*1e
+9e 15*1e 3e 15*1e be 15*1e 3e 15*1e
+be 15*1e 5e 15*1e de 15*1e 5e 15*1e
+de 15*1e 7e 15*1e fe 15*1e 7e 15*1e
+fe 15*1e 16 15*1e 16 3e 14*1e 16
+5e 14*1e 16 7e 30*1e 9e 31*1e 9e
+15*1e 3e 15*1e be 15*1e 3e 15*1e be
+15*1e 5e 15*1e de 15*1e 5e 15*1e de
+15*1e 7e 15*1e fe 15*1e 7e 15*1e fe
+15*1e 16 15*1e 16 3e 14*1e 16 5e
+14*1e 16 7e 30*1e 3e 15*1e 5e 15*1e
+7e 15*1e 9e 15*1e be 15*1e de 15*1e
+fe 15*1e 9e 15*1e be 15*1e de 15*1e
+fe 47*1e 16 1e e 13*1e 16 1e
+e 13*1e 16 1e e 13*1e 16 1e
+e 13*1e 16 1e e 13*1e 16 1e
+e 13*1e 1a 15*1e 1a 15*1e 1a 15*1e
+1a 15*1e 1c 1a 14*1e 1c 1a 14*1e
+1c 1a 14*1e 1c 1a 14*1e 1c 1a
+1e 1f 1f 11*1e 1a 1c 15*1e 1a
+1c 45*1e
 </a>
       <a name="label" val="EEPROM2"/>
     </comp>
@@ -4940,7 +4957,7 @@ bd 15*3d fd 15*3d 2d 1d 14*3d 7d
     <wire from="(1230,1070)" to="(1230,1080)"/>
     <wire from="(1230,1310)" to="(1230,1320)"/>
     <wire from="(1230,1550)" to="(1230,1560)"/>
-    <wire from="(1230,1590)" to="(1380,1590)"/>
+    <wire from="(1230,1570)" to="(1380,1570)"/>
     <wire from="(1230,1790)" to="(1230,1800)"/>
     <wire from="(1230,1790)" to="(1240,1790)"/>
     <wire from="(1230,350)" to="(1230,360)"/>

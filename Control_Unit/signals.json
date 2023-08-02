@@ -1,8 +1,7 @@
 {
-  "NOT_RA_IN": 1,
+  "RA_S0": 0,
+  "RA_S1": 0,
   "NOT_RA_OUT": 1,
-  "NOT_RA_SL": 1,
-  "NOT_RA_SR": 1,
   "NOT_RB_IN": 1,
   "NOT_RB_OUT": 1,
   "NOT_RC_IN": 1,
