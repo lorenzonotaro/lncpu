@@ -30,8 +30,8 @@ public class CompileException extends RuntimeException{
     public void log() {
         if (this.token != null && this.token.macroSub != null) {
             Logger.error(String.format("in file %s:%d:%d, symbol '%s' (expansion of macro %s at %s:%d:%d): %s",
-                    this.token.file, this.token.line, this.token.col, this.token.lexeme,
-                    this.token.macroSub.lexeme, this.token.macroSub.file, this.token.macroSub.line, this.token.macroSub.col, this.getMessage()));
+                    this.token.macroSub.file, this.token.macroSub.line, this.token.macroSub.col, this.token.lexeme,
+                    this.token.macroSub.lexeme, this.token.file, this.token.line, this.token.col, this.getMessage()));
         } else {
             Logger.error(String.format("in file %s:%d:%d, symbol '%s': %s", this.file, this.line, this.col, this.lexeme, this.getMessage()));
         }
