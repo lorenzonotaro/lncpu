@@ -28,7 +28,6 @@
   "OP_SEL0": 0,
   "OP_SEL1": 0,
   "OP_SEL2": 0,
-  "ROM_AS": 0,
   "NOT_CS_IN": 1,
   "NOT_PC_IN": 1,
   "NOT_PC_INC": 1,
