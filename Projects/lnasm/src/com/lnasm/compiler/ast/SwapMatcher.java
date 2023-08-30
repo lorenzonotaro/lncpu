@@ -1,9 +1,6 @@
 package com.lnasm.compiler.ast;
 
-import com.lnasm.compiler.CompileException;
-import com.lnasm.compiler.Encodeable;
-import com.lnasm.compiler.Linker;
-import com.lnasm.compiler.Token;
+import com.lnasm.compiler.*;
 
 class Swap extends NoArgumentInstr{
 
@@ -32,7 +29,7 @@ class Swap extends NoArgumentInstr{
         }
 
         @Override
-        public Encodeable make(Token instructionToken, Argument... arguments) {
+        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
             String reg1 = ((Argument.Register) arguments[0]).reg.toString();
             String reg2 = ((Argument.Register) arguments[1]).reg.toString();
 

@@ -80,6 +80,12 @@ public class Linker {
         throw new CompileException("unresolved label '" + labelName + "'", token);
     }
 
+    public short resolveLabel(String parentLabel, String subLabel, Token token){
+        if(parentLabel != null && subLabel.startsWith("_") && labels.containsKey(parentLabel + Parser.SUBLABEL_SEPARATOR + subLabel))
+            return labels.get(parentLabel + Parser.SUBLABEL_SEPARATOR + subLabel);
+        return resolveLabel(subLabel, token);
+    }
+
     public byte[] getOutput() {
         return channel.toByteArray();
     }

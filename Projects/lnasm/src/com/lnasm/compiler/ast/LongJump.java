@@ -6,10 +6,12 @@ import com.lnasm.compiler.*;
 class LongJump implements Encodeable {
 
     private final String jumpInstr;
+    private final String parentLabel;
     private final Argument target;
 
-    LongJump(String jumpInstr, Argument target) {
+    LongJump(String jumpInstr, String parentLabel, Argument target) {
         this.jumpInstr = jumpInstr;
+        this.parentLabel = parentLabel;
         this.target = target;
     }
 
@@ -26,7 +28,7 @@ class LongJump implements Encodeable {
             }
             case LABEL -> {
                 Argument.LabelRef lr = (Argument.LabelRef) target;
-                short targetAddr = linker.resolveLabel(lr.labelName, lr.token);
+                short targetAddr = linker.resolveLabel(parentLabel, lr.labelName, lr.token);
                 high = (byte) (targetAddr >> 8);
                 low = (byte) targetAddr;
             }
@@ -72,8 +74,8 @@ class LongJump implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Token instructionToken, Argument... arguments) {
-            return new LongJump(jInstr.toString().toLowerCase(), arguments[0]);
+        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            return new LongJump(jInstr.toString().toLowerCase(), parser.getCurrentParentLabel(), arguments[0]);
         }
     }
 }

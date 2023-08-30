@@ -7,10 +7,12 @@ import com.lnasm.compiler.*;
 public class ShortJump implements Encodeable {
 
     private final String jumpInstr;
+    private final String parentLabel;
     private final Argument target;
 
-    ShortJump(String jumpInstr, Argument target) {
+    ShortJump(String jumpInstr, String parentLabel, Argument target) {
         this.jumpInstr = jumpInstr;
+        this.parentLabel = parentLabel;
         this.target = target;
     }
 
@@ -20,7 +22,7 @@ public class ShortJump implements Encodeable {
         switch (target.type) {
             case LABEL -> {
                 Argument.LabelRef lr = (Argument.LabelRef) target;
-                short targetAddr = linker.resolveLabel(lr.labelName, lr.token);
+                short targetAddr = linker.resolveLabel(parentLabel, lr.labelName, lr.token);
                 byte high = (byte) (targetAddr >> 8);
 
                 if ((targetAddr & 0xFF00) != (currentAddr & 0xFF00) && !LNASM.settings.get("-Wshort-jump-out-of-range", Boolean.class))
@@ -66,8 +68,8 @@ public class ShortJump implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Token instructionToken, Argument... arguments) {
-            return new ShortJump(jInstr.toString().toLowerCase(), arguments[0]);
+        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            return new ShortJump(jInstr.toString().toLowerCase(), parser.getCurrentParentLabel(), arguments[0]);
         }
     }
 }

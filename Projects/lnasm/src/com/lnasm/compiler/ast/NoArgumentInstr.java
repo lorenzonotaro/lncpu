@@ -28,7 +28,7 @@ public class NoArgumentInstr implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Token instructionToken, Argument... arguments) {
+        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
             return new NoArgumentInstr(instructionToken, tokenType.toString().toLowerCase(Locale.ROOT));
         }
     }

@@ -7,12 +7,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Parser {
+
+    // The starting character of a sublabel.
+    private static final String SUBLABEL_INITIATOR = "_";
+
+    // What is used internally to store sublabels (parent label + SUBLABEL_SEPARATOR + sublabel).
+    // The character should be an invalid identifier character, so that sublabels aren't accessible in any way outside of their scope.
+    public static final String SUBLABEL_SEPARATOR = "$";
     private final Set<Block> blocks;
     private List<Token[]> lines;
     private Token[] currentLine;
     private int index;
-
     private Block currentBlock;
+
+    private String currentParentLabel = null;
 
     private final Map<String, Short> labels;
 
@@ -84,7 +92,7 @@ public class Parser {
         Set<Matcher> matchers = Matcher.getMatchers();
         for (Matcher matcher : matchers) {
             if (matcher.getKeyword() == t.type && matcher.matches(arguments)) {
-                return matcher.make(t, arguments);
+                return matcher.make(this, t, arguments);
             }
         }
         throw new CompileException("invalid syntax", t);
@@ -94,9 +102,15 @@ public class Parser {
         Token label = previous();
         consume("expected ':' after label name", Token.Type.COLON);
 
-        if(labels.containsKey(label.lexeme))
-            throw new CompileException("Duplicate label '" + label.lexeme + "'", label);
-        labels.put(label.lexeme, (short) (currentBlock.startAddress + currentBlock.codeSize));
+        String labelName = label.lexeme;
+
+        if(label.lexeme.startsWith(SUBLABEL_INITIATOR) && this.currentParentLabel != null) //this label is a sublabel
+            labelName = this.currentParentLabel + SUBLABEL_SEPARATOR + labelName;
+        else if(!label.lexeme.startsWith(SUBLABEL_INITIATOR)) this.currentParentLabel = labelName;
+
+        if(labels.containsKey(labelName))
+            throw new CompileException("Duplicate label '" + labelName + "'", label);
+        labels.put(labelName, (short) (currentBlock.startAddress + currentBlock.codeSize));
     }
 
     private Argument[] arguments() {
@@ -159,6 +173,7 @@ public class Parser {
     private void reset(List<Token[]> lines) {
         this.lines = lines;
         this.index = 0;
+        this.currentParentLabel = null;
         blocks.clear();
     }
 
@@ -167,6 +182,7 @@ public class Parser {
         if (currentBlock != null)
             blocks.add(currentBlock);
         currentBlock = new Block(previous(), startAddress);
+        currentParentLabel = null;
     }
 
     private boolean isAtEnd() {
@@ -243,5 +259,9 @@ public class Parser {
 
     public Map<String, Short> getLabels() {
         return labels;
+    }
+
+    public String getCurrentParentLabel() {
+        return currentParentLabel;
     }
 }

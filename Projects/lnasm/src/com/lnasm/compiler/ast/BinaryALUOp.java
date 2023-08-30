@@ -54,7 +54,7 @@ public class BinaryALUOp implements Encodeable{
         }
 
         @Override
-        public Encodeable make(Token instructionToken, Argument... arguments) {
+        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
             String register = arguments[0].token.lexeme.toLowerCase();
 
             if (arguments[1].type == Argument.Type.REGISTER) {

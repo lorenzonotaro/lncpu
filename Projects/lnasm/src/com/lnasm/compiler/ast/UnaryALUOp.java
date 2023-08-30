@@ -57,7 +57,7 @@ public class UnaryALUOp implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Token instructionToken, Argument... arguments) {
+        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
             List<RegisterId> list = Arrays.asList(this.allowedRegisters);
             if(!list.contains(((Argument.Register)arguments[0]).reg))
                 throw new CompileException("invalid operand for instruction '" + keyword.toString().toLowerCase() + "' (allowed: " + list.stream().map(RegisterId::toString).collect(Collectors.joining(", ")) + ")", arguments[0].token);
