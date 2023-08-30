@@ -1,5 +1,6 @@
 package com.lnasm.compiler;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,8 +184,10 @@ public class Lexer {
     }
 
     private Token string(char terminator) {
-        while (!isAtEnd() && peek() != terminator)
-            advance();
+        boolean escaped = false;
+        while (!isAtEnd() && !(peek() == terminator && !escaped)){
+            escaped = advance() == '\\';
+        }
 
         if (isAtEnd())
             throw error("unterminated string", "[EOL]");
@@ -192,12 +195,41 @@ public class Lexer {
         advance();
 
         String lexeme = line.code.substring(start, index);
-        String val = line.code.substring(start + 1, index - 1);
+        String val = escapeString(line.code.substring(start + 1, index - 1));
 
         if(val.length() == 1)
             return token(Token.Type.INTEGER, lexeme, (int) val.charAt(0) & 0xFF);
 
         return token(Token.Type.STRING, lexeme, val);
+    }
+
+    private String escapeString(String str){
+        StringBuilder sb = new StringBuilder();
+
+        char[] chars = str.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if(c == '\\'){
+                c = chars[++i];
+                switch (c) {
+                    case 'r' -> sb.append('\r');
+                    case 'n' -> sb.append('\n');
+                    case 'f' -> sb.append('\f');
+                    case 'b' -> sb.append('\b');
+                    case 't' -> sb.append('\t');
+                    case '\'' -> sb.append('\'');
+                    case '\"' -> sb.append('\"');
+                    case '\\' -> sb.append('\\');
+                    case '0'  -> sb.append('\0');
+                    default -> throw error("Invalid escape sequence", "\\" + c);
+                }
+            }else{
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
     }
 
     private Token integer(int base) {
@@ -236,6 +268,8 @@ public class Lexer {
             return token(Token.Type.DIR_ORG);
         else if (".data".equalsIgnoreCase(ident))
             return token(Token.Type.DIR_DATA);
+        else if (".pad".equals(ident))
+            return token(Token.Type.DIR_PAD);
         throw error("invalid directive", ident);
     }
 

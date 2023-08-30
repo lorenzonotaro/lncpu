@@ -19,6 +19,8 @@ public class Token {
         MACRO_INCLUDE,
         DIR_ORG,
         DIR_DATA,
+        DIR_PAD,
+
         L_SQUARE_BRACKET,
         R_SQUARE_BRACKET,
         IDENTIFIER,

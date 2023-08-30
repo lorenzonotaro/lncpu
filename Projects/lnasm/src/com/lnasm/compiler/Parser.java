@@ -67,6 +67,10 @@ public class Parser {
                 }
             }
             return new EncodedData(bytes);
+
+        }else if (match(Token.Type.DIR_PAD)) {
+            Token amount = consume("expected integer", Token.Type.INTEGER);
+            return new EncodedData(new byte[(Integer) amount.literal]);
         } else return instruction();
     }
 
