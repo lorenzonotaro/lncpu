@@ -19,7 +19,7 @@ public class UnaryALUOp implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         String instr = instruction + "_" + op;
         if(!OpcodeMap.isValid(instr))
             throw new CompileException("invalid argument", token);

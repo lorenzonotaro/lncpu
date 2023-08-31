@@ -8,7 +8,7 @@ public class EncodedData implements Encodeable{
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         return data;
     }
 

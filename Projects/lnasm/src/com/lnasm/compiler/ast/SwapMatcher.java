@@ -9,7 +9,7 @@ class Swap extends NoArgumentInstr{
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         try{
             return super.encode(linker, addr);
         }catch(CompileException e){

@@ -42,7 +42,7 @@ public class NoArgumentInstr implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         if(!OpcodeMap.isValid(instr))
             throw new CompileException("invalid instruction", token);
         return new byte[]{OpcodeMap.getOpcode(instr)};

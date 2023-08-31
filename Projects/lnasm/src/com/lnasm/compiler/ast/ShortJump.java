@@ -17,7 +17,7 @@ public class ShortJump implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, short currentAddr) {
+    public byte[] encode(AbstractLinker linker, short currentAddr) {
         byte low = 0;
         switch (target.type) {
             case LABEL -> {

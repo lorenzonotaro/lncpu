@@ -15,11 +15,6 @@ public class Compiler {
     }
 
     public boolean compile() {
-        if(!"binary".equals(outputFormat)){
-            Logger.error("invalid output format '" + outputFormat + "'");
-            return false;
-        }
-
         Logger.setProgramState("lexer");
         Lexer lexer = new Lexer();
         if(!lexer.parse(this.sourceLines))
@@ -39,13 +34,19 @@ public class Compiler {
         Set<Block> blocks = parser.getBlocks();
 
         Logger.setProgramState("linker");
-        Linker linker = new Linker(parser.getLabels());
-        if(!linker.link(blocks))
+        AbstractLinker linker = null;
+        if("binary".equals(outputFormat)){
+            linker = new BinaryLinker(parser.getLabels());
+        }else if("immediate".equals(outputFormat)){
+            linker = new ImmediateLinker(parser.getLabels());
+        }else{
+            Logger.error("invalid output format '" + outputFormat + "'");
             return false;
+        }
 
-        this.output = linker.getOutput();
-        return true;
+        this.output = linker.link(blocks);
 
+        return this.output != null;
     }
 
 

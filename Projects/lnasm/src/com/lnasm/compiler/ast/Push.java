@@ -24,7 +24,7 @@ class PushRx implements Encodeable{
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         return encoded;
     }
 }
@@ -54,7 +54,7 @@ ImmediateParamEncoding src = new ImmediateParamEncoding(arg);
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         return encoded;
     }
 }
@@ -80,7 +80,7 @@ class PushConstant implements Encodeable{
     }
 
     @Override
-    public byte[] encode(Linker linker, short addr) {
+    public byte[] encode(AbstractLinker linker, short addr) {
         return encoded;
     }
 }

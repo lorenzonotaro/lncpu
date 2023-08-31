@@ -16,7 +16,7 @@ class LongJump implements Encodeable {
     }
 
     @Override
-    public byte[] encode(Linker linker, short currentAddr) {
+    public byte[] encode(AbstractLinker linker, short currentAddr) {
         byte high = 0, low = 0;
         switch (target.type){
             case L_ADDRESS -> {
