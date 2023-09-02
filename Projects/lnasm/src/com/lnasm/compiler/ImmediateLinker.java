@@ -5,10 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ImmediateLinker extends AbstractLinker {
+    private final Map<Short, String> reverseLookupLabels;
+    private final int longestLabelLength;
+
     public ImmediateLinker(Map<String, Short> labels) {
         super(labels);
+        this.reverseLookupLabels = labels.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        this.longestLabelLength = labels.keySet().stream().mapToInt(String::length).max().orElse(0);
     }
 
     @Override
@@ -28,7 +34,7 @@ public class ImmediateLinker extends AbstractLinker {
                         params.append(String.format("%02x ", encoded[i] & 0xFF));
                     }
                     String instructionDesc = String.format("%02x (%s)", encoded[0], OpcodeMap.getImmediateName(encoded[0]));
-                    sb.append(String.format("%06x:\t%-20s %16s", addr & 0xFFFFFF, instructionDesc, params));
+                    sb.append(String.format("%" + longestLabelLength + "s %06x:\t%-20s %16s", reverseLookupLabels.getOrDefault(addr, ""), addr & 0xFFFFFF, instructionDesc, params));
                     sb.append("\n");
                     addr += encodeable.size();
                 }
