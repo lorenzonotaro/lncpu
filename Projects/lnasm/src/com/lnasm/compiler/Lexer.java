@@ -247,7 +247,11 @@ public class Lexer {
 
         String lexeme = line.code.substring(lStart, index);
 
-        return token(Token.Type.INTEGER, lexeme, Integer.parseInt(line.code.substring(start, index), base));
+        String num = line.code.substring(start, index);
+
+        if(num.length() == 0)
+            throw error("invalid integer", lexeme);
+        return token(Token.Type.INTEGER, lexeme, Integer.parseInt(num, base));
     }
 
     private Token macro() {
