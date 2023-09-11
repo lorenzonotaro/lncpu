@@ -1,0 +1,12 @@
+{
+	"cmd": ["lnasm.bat", "$file_name", "-o", "a.out"],
+	"selector": "source.lnasm",
+	"file_patterns": ["*.lnasm"],
+	"file_regex": "in file (\\S[^:]*):([0-9]+):([0-9]+).+:(.*)",
+	"line_regex": "in file \\S[^:]*:([0-9]+):([0-9]+).+:(.*)",
+	"variants": [{
+		"name": "Output: immediate code",
+		"cmd": ["lnasm.bat", "$file_name", "-f", "immediate", "-o", "immediate.txt"]
+	}]
+}
+ 
