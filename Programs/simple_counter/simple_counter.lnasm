@@ -10,7 +10,7 @@
 %define 	STOP			127
 
 
-.segment CODE0
+.org			CODE0
 
 start:
 	mov				START, RA				; RA will be the counter
@@ -26,4 +26,3 @@ loop:
 
 end:
 	hlt										; halt the CPU
-	tsm 			[ROM 0x1]

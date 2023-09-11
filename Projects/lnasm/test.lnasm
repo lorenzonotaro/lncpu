@@ -1,0 +1,365 @@
+%define STACK_PAGE          0x21 
+%define BUFFER_PAGE         0x22
+
+; page 0 variables
+%define BUFFER_PT           0x0
+%define STATUS              0x1
+%define ADDR1H              0x2
+%define ADDR1L              0x3
+%define ADDR2H              0x4
+%define ADDR2L              0x5
+
+%define PRSADRH             0x6
+%define PRSADRL             0x7
+
+%define TEMP1               0xFE
+%define TEMP2               0xFF
+
+; devices
+%define KB_AVAIL            0x4000
+%define KB_NEXT             0x4001
+%define TTY_OUT             0x6000
+
+.org            0x0
+
+startup:
+    nop
+    nop
+    mov         STACK_PAGE,     SS          ; stack will be located at 0x2100, second page of RAM
+    mov         0x0,            SP
+    mov         0x0C,           [TTY_OUT]   ; clear screen
+init:
+    sid
+    mov         0x0,            [BUFFER_PT]
+    mov         0x0,            [STATUS]
+    mov         '>',            [TTY_OUT]   ; send ready chars
+    mov         ' ',            [TTY_OUT]
+    ;reset the four slots we use to store the addresses
+    mov         0,             [ADDR1H]
+    mov         0,             [ADDR1L]
+    mov         0,             [ADDR2H]
+    mov         0,             [ADDR2L]
+    cid
+
+parse_loop:
+    mov         [STATUS],       RA          ; check if status is != 0
+    cmp         RA,             0
+    jz          parse_loop                  ; if it's not, go back to loop
+    sid                                     ; no interrupts while we parse
+
+    mov         BUFFER_PAGE,    RC          ; set up to read first character
+    xor         RD,             RD
+    mov         [BUFFER_PT],    RB
+
+    cmp         RB,             4          ; if there are less then 4 characters available, it's an error
+    jc          err_parse
+
+    lcall       parse_full_addr
+    cmp         RA,             1
+    jz          err_parse
+    mov         [PRSADRH],      RA
+    mov         RA,             [ADDR1H]
+    mov         [PRSADRL],      RA
+    mov         RA,             [ADDR1L]
+
+    cmp         RD,             RB
+    jz          _single
+    mov         [RC:RD],        RA
+    inc         RD
+    cmp         RA,             '.'
+    jz          _range
+    cmp         RA,             ':'
+    lcall       setval
+    goto        err_parse
+_range:
+    cmp         RB,             9
+    jz          _parse_2nd_addr
+    goto        err_parse
+_parse_2nd_addr:
+    lcall       parse_full_addr
+    cmp         RA,             1
+    jz          err_parse
+    mov         [PRSADRH],      RA
+    mov         RA,             [ADDR2H]
+    mov         [PRSADRL],      RA
+    mov         RA,             [ADDR2L]
+    lcall       range_inspect
+    goto        end_parse
+_single:
+    lcall       single_inspect
+    goto        end_parse
+err_parse:
+    mov         '?',            [TTY_OUT]   ; send error char
+end_parse:
+    mov         '\n',           [TTY_OUT]   ; new line
+    cid                                     ; resume interrupts
+    goto        init
+
+single_inspect:
+    mov         [ADDR1H],       RA
+    mov         RA,             [ADDR2H]
+    mov         [ADDR1L],       RA
+    mov         RA,             [ADDR2L]
+range_inspect:
+    mov         [ADDR2H],       RA
+    mov         [ADDR2L],       RB
+    mov         [ADDR1H],       RC
+    mov         [ADDR1L],       RD
+
+    push        RA
+    goto        _printaddr
+
+_loop:
+    cmp         RA,             RC
+    jc          _ret
+    jz          _final_page
+    goto        _exec
+_final_page:
+    cmp         RB,             RD
+    jc          _ret
+_exec:
+    push        RA
+    mov         RD,             RA
+    and         RA,             0x7
+    jz          _printaddr
+    goto        _skipaddr
+_printaddr:
+    mov         '\n',           [TTY_OUT]
+    mov         RC,             RA
+    lcall       print_byte
+    mov         RD,             RA
+    lcall       print_byte
+    mov         ':'             [TTY_OUT]
+    mov         ' ',            [TTY_OUT]
+_skipaddr:
+    mov         [RC:RD],        RA
+    lcall       print_byte
+    mov         ' ',            [TTY_OUT]
+    pop         RA
+    inc         RD
+    jc          _carryrc
+    goto        _loop
+_carryrc:
+    inc         RC
+    goto        _loop
+_ret:
+    ret
+
+setval:
+    push        RB
+_loop:
+    sub         RB,             RD
+    cmp         RB,             3
+    jn          _next_digit
+    goto        _ret
+_next_digit:
+    mov         [RC:RD],        RA
+    cmp         RA,             ' '
+    jz          _ret
+    inc         RD
+    mov         [RC:RD],        RA
+    lcall       parse_hex_digit
+    cmp         RA,             0xFF
+    jz          _ret
+    mov         RA,             RB
+    inc         RD
+    mov         [RC:RD],        RA
+    lcall       parse_hex_digit
+    cmp         RA,             0xFF
+    jz          _ret
+    shl         RA
+    shl         RA
+    shl         RA
+    shl         RA
+    add         RA,             RB
+    push        RC
+    push        RD
+    mov         [ADDR1H],       RC
+    mov         [ADDR1L],       RD
+    mov         RA,             [RC:RD]
+    inc         RD
+    jc          _carryrc
+_continue:
+    mov         RD,             [ADDR1L]
+    pop         RC
+    pop         RD
+_ret:
+    pop         RB
+    ret
+_carryrc:
+    inc         RC
+    goto        _continue
+.org            0x1e00
+ ; prints characters starting at [RC:RD], until it encounters a 0
+print_ntstr:
+    push        RA
+    push        RC
+    push        RD
+
+_loop:
+    mov         [RC:RD],        RA
+    and         RA,             RA
+    jz          _ret
+    mov         RA,             [TTY_OUT]
+    inc         RD
+    jc          _carryrc
+    goto        _loop
+_carryrc:
+    inc         RC
+    goto        _loop
+_ret:
+    pop         RD
+    pop         RC
+    pop         RA
+    ret
+
+
+ ; parses the ASCII character in RA as a hex digit and stores it in RA, 0xFF if invalid
+parse_hex_digit:
+    sub     RA,             0x30 ; subtract the ASCII code for 0
+    jn      _invalidchar         ; if the result is negative, it definitely wasn't a valid digit
+    cmp     RA,             9   ; compare it with 9
+    jn      _digit               ; if <= 9, the user typed a digit
+    jz      _digit
+
+    sub     RA,             0x11; if it's not a digit it might be a hex letter digit 
+                                ; subtract the remaining to get to 0x41 (ASCII code for 'A')
+    jn      _invalidchar         ; again, if it's negative at this point it's invalid
+    cmp     RA,             5
+    jn      _letterdigit         ; if <= 5, the user typed a hex letter digit
+    jz      _letterdigit
+
+    sub     RA,             0x20 ; if it's not an uppercase letter digit, it might be a lowercase a-f
+                                 ; subtract the remaining to get to 0x61 (ASCII code for'a')
+    jn      _invalidchar          ; same here, we jump if it's in the range between upper and lower alphabet
+    cmp     RA,             5
+    jn      _letterdigit
+    jz      _letterdigit
+_invalidchar:
+    mov     0xFF,           RA  ; if we reached here the character is invalid 
+    ret                         ; store 0xFF to signal the calling fuction that the digit is invalid
+
+_letterdigit:
+    add     RA,             0xA ; because of the way we parse letter digits, we need to add 0xA before the next steps
+_digit:
+    ret
+
+
+to_hex_digit:       ; convers the digit in the 4 LSB of RA into a ASCII character and stores it in RA
+    and     RA,             0x0F
+    cmp     RA,             0xA
+    jn      _digit
+    sub     RA,             0xA
+    add     RA,             'A'
+    ret
+_digit:
+    add     RA,             '0'
+    ret
+
+print_byte:         ; prints the content of RA in hexadecimal format
+    push    RA
+    push    RA
+    shr     RA      ; RA >> 4, so we print the MSB first
+    shr     RA
+    shr     RA
+    shr     RA
+    lcall   to_hex_digit
+    mov     RA,             [TTY_OUT]   ; print the MSB
+    pop     RA
+    lcall   to_hex_digit
+    mov     RA,             [TTY_OUT]   ; print the LSB
+    pop     RA
+    ret
+
+; parses 4 hexadecimal digits (2 bytes) from the buffer in RC:RD
+; and pushes them onto the stack (high byte THEN low byte, to be popped in reverse order)
+; returns 0 in RA if success, 1 if not
+; WARN: contents of RD WILL be changed (+4)
+parse_full_addr:
+    push        RB
+    ; parse digit 1
+    mov         [RC:RD],        RA
+    lcall       parse_hex_digit             ; parse the first digit
+    cmp         RA,             0xFF        ; 0xFF means invalid digit
+    jz          _err
+    shl         RA
+    shl         RA
+    shl         RA
+    shl         RA
+    mov         RA,             [PRSADRH]
+
+    ; parse digit 2
+    inc         RD
+    mov         [RC:RD],        RA
+    lcall       parse_hex_digit
+    cmp         RA,             0xFF
+    jz          _err
+    mov         [PRSADRH],      RB
+    add         RA,             RB
+    mov         RA,             [PRSADRH]      
+
+    ; parse digit 3
+    inc         RD
+    mov         [RC:RD],        RA
+    lcall       parse_hex_digit
+    cmp         RA,             0xFF
+    jz          _err
+    shl         RA
+    shl         RA
+    shl         RA
+    shl         RA
+    mov         RA,             [PRSADRL]
+
+    ; parse digit 4
+    inc         RD
+    mov         [RC:RD],        RA
+    lcall       parse_hex_digit
+    cmp         RA,             0xFF
+    jz          _err
+    mov         [PRSADRL],      RB
+    add         RA,             RB
+    mov         RA,             [PRSADRL]      
+_ret:
+    inc         RD
+    pop         RB
+    xor         RA,             RA
+    ret
+_err:
+    pop         RB
+    mov         1,              RA
+    ret
+
+
+.org            0x1f00
+interrupt:
+    push        RA
+    mov         [KB_AVAIL],     RA
+    and         RA,             RA
+    jz          _ret
+    push        RC
+    push        RD
+    mov         [KB_NEXT],      RA
+    mov         RA,             [TTY_OUT] ; echo
+    mov         BUFFER_PAGE,  RC
+    mov         [BUFFER_PT],    RD
+    cmp         RA,             '\b'
+    jz          _backspace
+    cmp         RA,             0x0A        ; line feed
+    jz          _set_status
+    mov         RA,             [RC:RD]
+    inc         RD
+    mov         RD,             [BUFFER_PT]
+    goto        _ret_poprcrd
+_backspace:
+    dec         RD
+    mov         RD,             [BUFFER_PT]
+_ret_poprcrd:
+    pop         RD
+    pop         RC
+
+_ret:
+    pop         RA
+    iret
+_set_status:
+    mov         1,              [STATUS]    ; set status to line available
+    goto        _ret_poprcrd
