@@ -1,7 +1,10 @@
 .org 0x0
-nop
-nop
-mov		0x42,		RA
-mov		0xFF,		RB
-sub		RA,		RB
-hlt
+
+mov			0x25,		RC
+mov			00,			RD
+lcall		0x1e00
+ret
+
+
+.org 0x0100
+.data "HeWWo from a RAM program!"
