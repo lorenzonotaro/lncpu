@@ -236,8 +236,10 @@ Opcode	Name	Data length	Clock cycles
 0xea	ljn	3	4
 0xeb	ljz	3	4
 0xec	lgoto	3	4
-0xed	lcall	3	6
-0xee	ret	1	4
-0xef	iret	1	5
-0xf0	cid	1	1
-0xf1	sid	1	1
+0xed	lgoto_ifullrcrd	1	4
+0xee	lcall	3	6
+0xef	lcall_ifullrcrd	1	6
+0xf0	ret	1	4
+0xf1	iret	1	5
+0xf2	cid	1	1
+0xf3	sid	1	1

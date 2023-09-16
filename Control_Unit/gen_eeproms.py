@@ -7,6 +7,8 @@ import hashlib
 # ordered list of control signals
 import json
 
+KEEP_EEPROM_FILES = False
+
 OPCODES_TSV = 'opcodes.tsv'
 EEPROM_FILES = []
 EEPROM_HASHES = []
@@ -118,5 +120,7 @@ for i, data in enumerate(EEPROM_FILES):
 
 for i in range(EEPROM_COUNT):
     filename = f"EEPROM{i}.raw"
-    if(EEPROM_HASHES[i] != sha256sum(filename)):
+    if not KEEP_EEPROM_FILES:
+        os.remove('EEPROM' + str(i) + '.eeprom')
+    if EEPROM_HASHES[i] != sha256sum(filename):
         print(f"EEPROM{i} changed.")

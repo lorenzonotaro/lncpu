@@ -8,11 +8,13 @@ class LongJump implements Encodeable {
     private final String jumpInstr;
     private final String parentLabel;
     private final Argument target;
+    private boolean isIFullRcRd;
 
-    LongJump(String jumpInstr, String parentLabel, Argument target) {
+    LongJump(String jumpInstr, String parentLabel, Argument target, boolean isIFullRcRd) {
         this.jumpInstr = jumpInstr;
         this.parentLabel = parentLabel;
         this.target = target;
+        this.isIFullRcRd = isIFullRcRd;
     }
 
     @Override
@@ -24,7 +26,11 @@ class LongJump implements Encodeable {
                 if(la.high.type == Argument.Type.BYTE && la.low.type == Argument.Type.BYTE){
                     high = ((Argument.Byte) la.high).value;
                     low = ((Argument.Byte) la.low).value;
-                }else throw new CompileException("invalid jump target", target.token);
+                }else if(isIFullRcRd){
+                    return new byte[]{OpcodeMap.getOpcode(jumpInstr + "_ifullrcrd")};
+                }else{
+                    throw new CompileException("invalid jump target", target.token);
+                }
             }
             case LABEL -> {
                 Argument.LabelRef lr = (Argument.LabelRef) target;
@@ -50,7 +56,7 @@ class LongJump implements Encodeable {
 
     @Override
     public int size() {
-        return 3;
+        return isIFullRcRd ? 1 : 3;
     }
 
     static class LJumpInstrMatcher implements Matcher {
@@ -75,7 +81,14 @@ class LongJump implements Encodeable {
 
         @Override
         public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
-            return new LongJump(jInstr.toString().toLowerCase(), parser.getCurrentParentLabel(), arguments[0]);
+            boolean isIFullRcRd = false;
+
+            if(arguments[0].type == Argument.Type.L_ADDRESS){
+                Argument.LongAddress la = (Argument.LongAddress) arguments[0];
+                isIFullRcRd = la.high.type == Argument.Type.REGISTER && ((Argument.Register)la.high).reg.equals(RegisterId.RC) && la.low.type == Argument.Type.REGISTER && ((Argument.Register)la.low).reg.equals(RegisterId.RD);
+            }
+
+            return new LongJump(jInstr.toString().toLowerCase(), parser.getCurrentParentLabel(), arguments[0], isIFullRcRd);
         }
     }
 }
