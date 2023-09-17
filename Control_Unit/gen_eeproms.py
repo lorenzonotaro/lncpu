@@ -1,5 +1,8 @@
 #!/usr/local/bin/python3.7
+import itertools
+import math
 import os
+from collections import OrderedDict
 from math import ceil
 import subprocess
 import hashlib
@@ -13,8 +16,10 @@ OPCODES_TSV = 'opcodes.tsv'
 EEPROM_FILES = []
 EEPROM_HASHES = []
 
-with open('signals.json') as file:
-    SIGNALS = json.load(file)
+with open('signals_meta.json') as file:
+    SIGNALS_META = json.load(file, object_pairs_hook=OrderedDict)
+    SIGNALS_DICT = {item['name']: item for item in SIGNALS_META['signals']}
+    SIGNALS = OrderedDict({item['name']: item['default_value'] for item in SIGNALS_META['signals']})
 
 EEPROM_COUNT = ceil(len(SIGNALS) / 8)
 for i in range(0, EEPROM_COUNT):
@@ -29,11 +34,50 @@ if len(SIGNALS) != EEPROM_COUNT * 8:
 # micro-instructions to be executed after every instruction to pass to the next
 I_END = {"NOT_PASS": 0, "NOT_PC_INC": 0, "NOT_FETCH": 0}
 
-#merges the default signal states with the given modifications made by each microinstruction
-def make_microinstruction(edits=None):
+
+
+def compose_comb_group(group : str, count : int, edits : OrderedDict):
+    return ''.join([str({**SIGNALS, **edits}[group + str(i)]) for i in range(count)])
+
+# merges the default signal states with the given modifications made by each microinstruction
+# then checks whether there is a bus conflict (e.g. multiple components writing to the bus)
+def make_microinstruction(instr_name, microinst_index, edits=None):
     if edits is None:
-        edits = {}
-    return {**SIGNALS, **edits}
+        return {**SIGNALS}
+
+    dbus_writes = {key: value for key, value in edits.items()
+                   if not key.startswith('_UNUSED')
+                   and value != SIGNALS_DICT[key]['default_value']
+                   and type(SIGNALS_DICT[key]['behavior']) == OrderedDict and
+                   SIGNALS_DICT[key]['behavior']['dbus_write']}
+    combinatorial_dbus_writes = {group: 1 for group, behavior in SIGNALS_META['behavior_groups'].items() if behavior[compose_comb_group(group, int(math.log2(len(behavior))), edits)]['dbus_write']}
+    dbus_writes = {**dbus_writes, **combinatorial_dbus_writes}
+    if len(dbus_writes) > 1:
+        tostr = ', '.join([key for key, value in dbus_writes.items()])
+        print(f'Instruction {instr_name}[{microinst_index}] has multiple bus writes: {tostr}')
+        raise AssertionError
+
+    dbus_reads = {key: value for key, value in edits.items()
+                   if not key.startswith('_UNUSED')
+                   and value != SIGNALS_DICT[key]['default_value']
+                   and type(SIGNALS_DICT[key]['behavior']) == OrderedDict and
+                   SIGNALS_DICT[key]['behavior']['dbus_read']}
+    combinatorial_dbus_reads = {group: 1 for group, behavior in SIGNALS_META['behavior_groups'].items() if behavior[compose_comb_group(group, int(math.log2(len(behavior))), edits)]['dbus_read']}
+    dbus_reads = {**dbus_reads, **combinatorial_dbus_reads}
+    if len(dbus_writes) > 1:
+        tostr = ', '.join([key for key, value in dbus_reads.items()])
+        print(f'Instruction {instr_name}[{microinst_index}] has multiple bus reads: {tostr}')
+        raise AssertionError
+
+    if len(dbus_writes) == 1 and len(dbus_reads) == 0:
+        print(f'Instruction {instr_name}[{microinst_index}] has one bus write ({list(dbus_writes.keys())[0]}) but no bus reads.')
+    elif len(dbus_reads) == 1 and len(dbus_writes) == 0:
+        print(f'Instruction {instr_name}[{microinst_index}] has one bus read ({list(dbus_reads.keys())[0]}) but no bus writes.')
+
+    microcode = {**SIGNALS, **edits}
+
+    return microcode
+
 
 # writes to each .eeprom file the correct signals
 def write_to_eeproms(address, byteLabel, microinstr):
@@ -88,8 +132,12 @@ with open('instructions.json') as file:
             all_steps = all_steps + [SIGNALS]
 
         # eeprom files
-        for step in all_steps:
-            write_to_eeproms(instr_addr + addr, name + '.' + str(addr), make_microinstruction(step))
+        for i, step in enumerate(all_steps):
+            try:
+                microinstruction = make_microinstruction(name, i, step)
+            except AssertionError:
+                exit(1)
+            write_to_eeproms(instr_addr + addr, name + '.' + str(addr), microinstruction)
             addr = addr + 1
 
         instr_addr = instr_addr + 16
