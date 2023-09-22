@@ -1,4 +1,0 @@
-Ordine
-------
-2x SN74AS169N, binary counter up/down
-?x 
