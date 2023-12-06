@@ -103,9 +103,39 @@ with open('instructions.json') as file:
 
         # ensure that every signal used in the microinstruction replaces an existing one
         for step in instr:
-            for value, signal in enumerate(step):
-                if signal not in SIGNALS:
-                    raise NameError(f"Invalid signal '{signal}' in instruction '{name}'")
+            items = {**step}.items()
+            for signal, value in items:
+                if type(value) == int:
+                    # signal
+                    if signal not in SIGNALS:
+                        raise NameError(f"Invalid signal '{signal}' in instruction '{name}'")
+                elif type(value) == str:
+                    # behavior group
+                    # check if it is among the keys behavior group
+                    if signal not in SIGNALS_META['behavior_groups']:
+                        raise NameError(f"Invalid signal/behavior '{signal}' in instruction '{name}'")
+
+                    # get the case in the behavior group that has its "name" property set to the signal value
+                    cases = {k: dict(v) for k, v in SIGNALS_META['behavior_groups'][signal].items()}
+                    case = next((case for case, properties in cases.items() if
+                                 properties['name'] == value), None)
+
+                    if case is None:
+                        raise NameError(f"Invalid behavior group case in '{signal}' in instruction '{name}'")
+
+                    # Replace the behavior group in the step with the generated signals from the case name.
+                    # the case name is a binary string. Each generated signal is composed of the behavior group name + its digit.
+                    # Signal 0 is the rightmost digit.
+
+                    for i, bit in enumerate(reversed(case)):
+                        step[signal + str(i)] = int(bit)
+
+                    # remove the behavior group from the step
+                    del step[signal]
+
+
+                else:
+                    raise TypeError(f"Invalid signal value type '{type(value)}' in instruction '{name}'")
 
         # determine where the instruction needs an extra clock cycle to fetch the
         # next one or if we can optimize by fetching during the last microinstruction
@@ -164,7 +194,7 @@ for i in range(EEPROM_COUNT):
 for i, data in enumerate(EEPROM_FILES):
     with open('EEPROM' + str(i) + ".eeprom", mode='w') as file:
         json.dump(data, file)
-    subprocess.run(["java", "-jar","../Utilities/eeprom-serial-loader.jar", "EEPROM" + str(i) + ".eeprom", "--no-gui", "--export-raw", "EEPROM" + str(i) + ".raw"])
+    subprocess.run(["java", "-jar", "../../utilities/eeprom-serial-loader.jar", "EEPROM" + str(i) + ".eeprom", "--no-gui", "--export-raw", "EEPROM" + str(i) + ".raw"])
 
 for i in range(EEPROM_COUNT):
     filename = f"EEPROM{i}.raw"
