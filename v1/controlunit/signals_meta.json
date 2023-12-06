@@ -135,12 +135,12 @@
                 "dbus_write": false
             },
             "01": {
-                "name": "alu_in",
+                "name": "i_in",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "10": {
-                "name": "i_in",
+                "name": "alu_in",
                 "dbus_read": false,
                 "dbus_write": false
             },

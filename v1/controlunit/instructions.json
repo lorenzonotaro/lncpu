@@ -49,7 +49,7 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1,
                 "I_VAL": 1,
-                "FLAGS_MODE_SEL": "alu_in"
+                "FLAGS_MODE_SEL": "i_in"
             }
         ]
     },
@@ -1448,7 +1448,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1460,7 +1460,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1472,7 +1472,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1484,7 +1484,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1496,7 +1496,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1508,7 +1508,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1520,7 +1520,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1532,7 +1532,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1544,7 +1544,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1556,7 +1556,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1568,7 +1568,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1580,7 +1580,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1592,7 +1592,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1604,7 +1604,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1616,7 +1616,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1628,7 +1628,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1646,7 +1646,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1664,7 +1664,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1682,7 +1682,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1700,7 +1700,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1712,7 +1712,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1724,7 +1724,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1736,7 +1736,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1748,7 +1748,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1760,7 +1760,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1772,7 +1772,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1784,7 +1784,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1796,7 +1796,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1808,7 +1808,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1820,7 +1820,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1832,7 +1832,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1844,7 +1844,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1856,7 +1856,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1868,7 +1868,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1880,7 +1880,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1892,7 +1892,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1910,7 +1910,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1928,7 +1928,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1946,7 +1946,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1964,7 +1964,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1975,7 +1975,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1986,7 +1986,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -1997,7 +1997,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2008,7 +2008,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2019,7 +2019,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2030,7 +2030,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2041,7 +2041,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2052,7 +2052,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2063,7 +2063,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2074,7 +2074,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2085,7 +2085,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2096,7 +2096,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2107,7 +2107,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2118,7 +2118,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2129,7 +2129,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2140,7 +2140,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2157,7 +2157,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2174,7 +2174,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2191,7 +2191,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2208,7 +2208,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2220,7 +2220,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2232,7 +2232,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2244,7 +2244,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2256,7 +2256,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2268,7 +2268,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2280,7 +2280,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2292,7 +2292,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2304,7 +2304,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2316,7 +2316,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2328,7 +2328,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2340,7 +2340,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2352,7 +2352,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2364,7 +2364,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2376,7 +2376,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2388,7 +2388,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2400,7 +2400,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2418,7 +2418,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2436,7 +2436,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2454,7 +2454,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2472,7 +2472,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2484,7 +2484,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2496,7 +2496,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2508,7 +2508,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2520,7 +2520,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2532,7 +2532,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2544,7 +2544,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2556,7 +2556,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2568,7 +2568,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2580,7 +2580,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2592,7 +2592,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2604,7 +2604,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2616,7 +2616,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2628,7 +2628,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2640,7 +2640,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2652,7 +2652,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2664,7 +2664,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2682,7 +2682,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2700,7 +2700,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2718,7 +2718,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2736,7 +2736,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2748,7 +2748,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2760,7 +2760,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2772,7 +2772,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2784,7 +2784,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2796,7 +2796,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2808,7 +2808,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2820,7 +2820,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2832,7 +2832,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2844,7 +2844,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2856,7 +2856,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2868,7 +2868,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2880,7 +2880,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2892,7 +2892,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2904,7 +2904,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2916,7 +2916,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2928,7 +2928,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2946,7 +2946,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2964,7 +2964,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -2982,7 +2982,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3000,7 +3000,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3012,7 +3012,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3024,7 +3024,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3036,7 +3036,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3048,7 +3048,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3060,7 +3060,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3072,7 +3072,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3084,7 +3084,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3096,7 +3096,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3108,7 +3108,7 @@
                 "X_SEL": "ra",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3120,7 +3120,7 @@
                 "X_SEL": "rb",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3132,7 +3132,7 @@
                 "X_SEL": "rc",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3144,7 +3144,7 @@
                 "X_SEL": "rd",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "alu_in"
             }
         ]
     },
@@ -3551,7 +3551,7 @@
         "microcode": [
             {
                 "I_VAL": 0,
-                "FLAGS_MODE_SEL": "alu_in"
+                "FLAGS_MODE_SEL": "i_in"
             }
         ]
     },
@@ -3560,7 +3560,7 @@
         "microcode": [
             {
                 "I_VAL": 1,
-                "FLAGS_MODE_SEL": "alu_in"
+                "FLAGS_MODE_SEL": "i_in"
             }
         ]
     }
