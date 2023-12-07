@@ -43,11 +43,7 @@ class ImmediateParamEncoding {
                 Argument.Type highType = la.high.type;
                 Argument.Type lowType = la.low.type;
 
-                if (highType == Argument.Type.BYTE && lowType == Argument.Type.REGISTER && ((Argument.Register) la.low).reg == RegisterId.RD) {
-                    //this.encoded = new byte[]{OpcodeMap.getOpcode("pop_ipagedrd"), ((Argument.Byte)la.high).value};
-                    this.immediateName = "ipagedrd";
-                    this.args = new byte[]{((Argument.Byte) la.high).value};
-                } else if (highType == Argument.Type.REGISTER && lowType == Argument.Type.REGISTER && ((Argument.Register) la.high).reg == RegisterId.RC && ((Argument.Register) la.low).reg == RegisterId.RD) {
+                if (highType == Argument.Type.REGISTER && lowType == Argument.Type.REGISTER && ((Argument.Register) la.high).reg == RegisterId.RC && ((Argument.Register) la.low).reg == RegisterId.RD) {
                     //this.encoded = new byte[]{OpcodeMap.getOpcode("pop_ifullrcrd")};
                     this.immediateName = "ifullrcrd";
                     this.args = new byte[0];
