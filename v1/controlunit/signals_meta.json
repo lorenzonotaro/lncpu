@@ -149,25 +149,44 @@
                 "dbus_read": false,
                 "dbus_write": false
             }
+        },
+        "ADDR_SEL": {
+            "00": {
+                "name": "abh:abl",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "01": {
+                "name": "ss:sp",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "10": {
+                "name": "page0:abl",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "11": {
+                "name": "page0:abl",
+                "dbus_read": false,
+                "dbus_write": false
+            }
         }
     },
     "signals": [
         {
-            "index": 0,
             "name": "RA_S0",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "RA_S"
         },
         {
-            "index": 1,
             "name": "RA_S1",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "RA_S"
         },
         {
-            "index": 2,
             "name": "NOT_RA_OUT",
             "default_value": 1,
             "behavior": {
@@ -176,7 +195,6 @@
             }
         },
         {
-            "index": 3,
             "name": "NOT_RB_IN",
             "default_value": 1,
             "behavior": {
@@ -185,7 +203,6 @@
             }
         },
         {
-            "index": 4,
             "name": "NOT_RB_OUT",
             "default_value": 1,
             "behavior": {
@@ -194,7 +211,6 @@
             }
         },
         {
-            "index": 5,
             "name": "NOT_RC_IN",
             "default_value": 1,
             "behavior": {
@@ -203,7 +219,6 @@
             }
         },
         {
-            "index": 6,
             "name": "NOT_RC_OUT",
             "default_value": 1,
             "behavior": {
@@ -212,7 +227,6 @@
             }
         },
         {
-            "index": 7,
             "name": "NOT_RD_IN",
             "default_value": 1,
             "behavior": {
@@ -221,7 +235,6 @@
             }
         },
         {
-            "index": 8,
             "name": "NOT_RD_OUT",
             "default_value": 1,
             "behavior": {
@@ -230,7 +243,6 @@
             }
         },
         {
-            "index": 9,
             "name": "NOT_DEVICE_IN",
             "default_value": 1,
             "behavior": {
@@ -239,7 +251,6 @@
             }
         },
         {
-            "index": 10,
             "name": "NOT_DEVICE_OUT",
             "default_value": 1,
             "behavior": {
@@ -248,7 +259,6 @@
             }
         },
         {
-            "index": 11,
             "name": "NOT_SS_IN",
             "default_value": 1,
             "behavior": {
@@ -257,7 +267,6 @@
             }
         },
         {
-            "index": 12,
             "name": "NOT_SS_OUT",
             "default_value": 1,
             "behavior": {
@@ -266,7 +275,6 @@
             }
         },
         {
-            "index": 13,
             "name": "NOT_SP_IN",
             "default_value": 1,
             "behavior": {
@@ -275,7 +283,6 @@
             }
         },
         {
-            "index": 14,
             "name": "NOT_SP_OUT",
             "default_value": 1,
             "behavior": {
@@ -284,7 +291,6 @@
             }
         },
         {
-            "index": 15,
             "name": "NOT_SP_CT",
             "default_value": 1,
             "behavior": {
@@ -293,7 +299,6 @@
             }
         },
         {
-            "index": 16,
             "name": "SP_DIR",
             "default_value": 0,
             "behavior": {
@@ -302,7 +307,6 @@
             }
         },
         {
-            "index": 17,
             "name": "NOT_ABH_IN",
             "default_value": 1,
             "behavior": {
@@ -311,7 +315,6 @@
             }
         },
         {
-            "index": 18,
             "name": "NOT_ABL_IN",
             "default_value": 1,
             "behavior": {
@@ -320,7 +323,6 @@
             }
         },
         {
-            "index": 19,
             "name": "NOT_RT_IN",
             "default_value": 1,
             "behavior": {
@@ -329,7 +331,6 @@
             }
         },
         {
-            "index": 20,
             "name": "NOT_RT_OUT",
             "default_value": 1,
             "behavior": {
@@ -338,63 +339,54 @@
             }
         },
         {
-            "index": 21,
             "name": "X_SEL0",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "X_SEL"
         },
         {
-            "index": 22,
             "name": "X_SEL1",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "X_SEL"
         },
         {
-            "index": 23,
             "name": "Y_SEL0",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "Y_SEL"
         },
         {
-            "index": 24,
             "name": "Y_SEL1",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "Y_SEL"
         },
         {
-            "index": 25,
             "name": "Y_SEL2",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "Y_SEL"
         },
         {
-            "index": 26,
             "name": "OP_SEL0",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "OP_SEL"
         },
         {
-            "index": 27,
             "name": "OP_SEL1",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "OP_SEL"
         },
         {
-            "index": 28,
             "name": "OP_SEL2",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "OP_SEL"
         },
         {
-            "index": 29,
             "name": "NOT_CS_IN",
             "default_value": 1,
             "behavior": {
@@ -403,7 +395,6 @@
             }
         },
         {
-            "index": 30,
             "name": "NOT_PC_IN",
             "default_value": 1,
             "behavior": {
@@ -412,7 +403,6 @@
             }
         },
         {
-            "index": 31,
             "name": "NOT_PC_INC",
             "default_value": 1,
             "behavior": {
@@ -421,7 +411,6 @@
             }
         },
         {
-            "index": 32,
             "name": "NOT_CS_OUT",
             "default_value": 1,
             "behavior": {
@@ -430,7 +419,6 @@
             }
         },
         {
-            "index": 33,
             "name": "NOT_PC_OUT",
             "default_value": 1,
             "behavior": {
@@ -439,7 +427,6 @@
             }
         },
         {
-            "index": 34,
             "name": "NOT_FETCH",
             "default_value": 1,
             "behavior": {
@@ -448,7 +435,6 @@
             }
         },
         {
-            "index": 35,
             "name": "J",
             "default_value": 0,
             "behavior": {
@@ -457,7 +443,6 @@
             }
         },
         {
-            "index": 36,
             "name": "JC",
             "default_value": 0,
             "behavior": {
@@ -466,7 +451,6 @@
             }
         },
         {
-            "index": 37,
             "name": "JZ",
             "default_value": 0,
             "behavior": {
@@ -475,7 +459,6 @@
             }
         },
         {
-            "index": 38,
             "name": "JN",
             "default_value": 0,
             "behavior": {
@@ -484,7 +467,6 @@
             }
         },
         {
-            "index": 39,
             "name": "JA",
             "default_value": 0,
             "behavior": {
@@ -493,7 +475,6 @@
             }
         },
         {
-            "index": 40,
             "name": "NOT_PASS",
             "default_value": 1,
             "behavior": {
@@ -502,7 +483,6 @@
             }
         },
         {
-            "index": 41,
             "name": "NOT_HLT",
             "default_value": 1,
             "behavior": {
@@ -511,34 +491,18 @@
             }
         },
         {
-            "index": 42,
-            "name": "0_PAGE",
+            "name": "ADDR_SEL0",
             "default_value": 0,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": false
-            }
+            "behavior": "combinatorial",
+            "behavior_group": "ADDR_SEL"
         },
         {
-            "index": 43,
-            "name": "NOT_PUSH",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": true,
-                "dbus_write": false
-            }
+            "name": "ADDR_SEL1",
+            "default_value": 0,
+            "behavior": "combinatorial",
+            "behavior_group": "ADDR_SEL"
         },
         {
-            "index": 44,
-            "name": "NOT_POP",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": true
-            }
-        },
-        {
-            "index": 45,
             "name": "NOT_DATA_LATCH_OUT",
             "default_value": 1,
             "behavior": {
@@ -547,7 +511,6 @@
             }
         },
         {
-            "index": 46,
             "name": "NOT_IVH_OUT",
             "default_value": 1,
             "behavior": {
@@ -556,7 +519,6 @@
             }
         },
         {
-            "index": 47,
             "name": "NOT_IVL_OUT",
             "default_value": 1,
             "behavior": {
@@ -565,7 +527,6 @@
             }
         },
         {
-            "index": 48,
             "name": "I_VAL",
             "default_value": 0,
             "behavior": {
@@ -574,21 +535,18 @@
             }
         },
         {
-            "index": 49,
             "name": "FLAGS_MODE_SEL0",
             "default_value": 1,
             "behavior": "combinatorial",
             "behavior_group": "FLAGS_MODE_SEL"
         },
         {
-            "index": 50,
             "name": "FLAGS_MODE_SEL1",
             "default_value": 1,
             "behavior": "combinatorial",
             "behavior_group": "FLAGS_MODE_SEL"
         },
         {
-            "index": 51,
             "name": "NOT_FLAGS_OUT",
             "default_value": 1,
             "behavior": {
@@ -597,7 +555,6 @@
             }
         },
         {
-            "index": 52,
             "name": "CSPC_DIR",
             "default_value": 1,
             "behavior": {

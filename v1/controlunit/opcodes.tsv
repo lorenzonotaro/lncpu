@@ -87,7 +87,7 @@ Opcode	Name	Data length	Clock cycles
 0x55	pop_ipage0rd	1	3
 0x56	pop_ipagedrd	2	4
 0x57	pop_ifullrcrd	1	4
-0x58	pop_abs	2	4
+0x58	pop_abs	3	4
 0x59	add_ra_ra	1	1
 0x5a	add_ra_rb	1	1
 0x5b	add_ra_rc	1	1
