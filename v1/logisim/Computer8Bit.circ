@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#C8BComponents.circ" name="12"/>
-  <lib desc="file#Devices.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="file#C8BComponents.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1482,8 +1482,8 @@ end TCL_Generic;
     <comp lib="10" loc="(970,350)" name="Switch">
       <a name="label" val="RESET"/>
     </comp>
-    <comp lib="13" loc="(1410,1840)" name="TTYAdapter"/>
-    <comp lib="13" loc="(840,1780)" name="KeyboardAdapter"/>
+    <comp lib="12" loc="(1410,1840)" name="TTYAdapter"/>
+    <comp lib="12" loc="(840,1780)" name="KeyboardAdapter"/>
     <comp lib="2" loc="(1370,850)" name="Multiplexer">
       <a name="width" val="16"/>
     </comp>
@@ -2438,8 +2438,8 @@ end TCL_Generic;
       <a name="width" val="8"/>
     </comp>
     <comp lib="1" loc="(200,350)" name="NOT Gate"/>
-    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -4421,7 +4421,7 @@ f0 97*0 46 41 40 0 a9 e7
     <comp lib="1" loc="(600,370)" name="AND Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="12" loc="(550,490)" name="EdgeDetector">
+    <comp lib="13" loc="(550,490)" name="EdgeDetector">
       <a name="facing" val="north"/>
     </comp>
     <comp lib="2" loc="(540,230)" name="Multiplexer">
@@ -4453,70 +4453,64 @@ f0 97*0 46 41 40 0 a9 e7
 60 60 14*e0 60 60 60 14*e0 60
 15*e0 60 15*e0 60 15*e0 60 15*e0 60
 15*e0 60 15*e0 60 15*e0 60 15*e0 60
-60 13*e0 60 e0 60 13*e0 60 e0
-60 13*e0 60 e0 60 13*e0 60 e0
-60 13*e0 60 e0 60 13*e0 60 e0
-60 13*e0 60 e0 60 13*e0 60 e0
-60 13*e0 60 e0 60 60 14*e0 60
-15*e0 60 15*e0 60 15*e0 60 15*e0 60
-15*e0 60 15*e0 60 15*e0 60 15*e0 60
-60 12*e0 60 60 60 13*e0 60 60
-60 13*e0 60 60 60 13*e0 60 60
-60 13*e0 60 60 60 13*e0 60 60
-60 13*e0 60 60 60 13*e0 60 60
-60 13*e0 4*60 13*e0 60 15*e0 60 15*e0
-60 15*e0 60 14*e0 60 e0 e0 60
-15*e0 60 12*e0 60 e0 e0 e0 60
-15*e0 60 11*e0 60 e0 e0 e0 60
-11*e0 60 60 14*e0 60 15*e0 60 15*e0
-60 15*e0 60 15*e0 60 e0 60 15*e0
-60 14*e0 60 e0 60 15*e0 60 13*e0
-60 60 60 12*e0 64 15*e0 64 15*e0
-65 15*e0 65 15*e0 64 15*e0 64 15*e0
-65 15*e0 65 15*e0 64 15*e0 64 15*e0
-65 15*e0 65 15*e0 64 15*e0 64 15*e0
-65 15*e0 65 15*e0 60 66 14*e0 60
-66 14*e0 60 66 14*e0 60 66 14*e0
-68 15*e0 68 15*e0 69 15*e0 69 15*e0
-68 15*e0 68 15*e0 69 15*e0 69 15*e0
-68 15*e0 68 15*e0 69 15*e0 69 15*e0
-68 15*e0 68 15*e0 69 15*e0 69 15*e0
-60 6a 14*e0 60 6a 14*e0 60 6a
-14*e0 60 6a 14*e0 68 15*e0 68 15*e0
-69 15*e0 69 15*e0 68 15*e0 68 15*e0
-69 15*e0 69 15*e0 68 15*e0 68 15*e0
-69 15*e0 69 15*e0 68 15*e0 68 15*e0
-69 15*e0 69 15*e0 60 6a 14*e0 60
-6a 14*e0 60 6a 14*e0 60 6a 14*e0
-6c 15*e0 6c 15*e0 6d 15*e0 6d 15*e0
-6c 15*e0 6c 15*e0 6d 15*e0 6d 15*e0
-6c 15*e0 6c 15*e0 6d 15*e0 6d 15*e0
-6c 15*e0 6c 15*e0 6d 15*e0 6d 15*e0
-60 6e 14*e0 60 6e 14*e0 60 6e
-14*e0 60 6e 14*e0 70 15*e0 70 15*e0
-71 15*e0 71 15*e0 70 15*e0 70 15*e0
-71 15*e0 71 15*e0 70 15*e0 70 15*e0
-71 15*e0 71 15*e0 70 15*e0 70 15*e0
-71 15*e0 71 15*e0 60 72 14*e0 60
-72 14*e0 60 72 14*e0 60 72 14*e0
-74 15*e0 74 15*e0 75 15*e0 75 15*e0
-74 15*e0 74 15*e0 75 15*e0 75 15*e0
-74 15*e0 74 15*e0 75 15*e0 75 15*e0
-74 15*e0 74 15*e0 75 15*e0 75 15*e0
-60 76 14*e0 60 76 14*e0 60 76
-14*e0 60 76 14*e0 78 15*e0 78 15*e0
-78 15*e0 78 15*e0 66 15*e0 66 15*e0
-66 15*e0 66 15*e0 6a 15*e0 6a 15*e0
-6a 15*e0 6a 15*e0 60 15*e0 60 17*e0
 60 15*e0 60 15*e0 60 15*e0 60 15*e0
-60 15*e0 60 13*e0 60 a0 60 13*e0
-60 a0 60 13*e0 60 a0 60 13*e0
-60 a0 60 13*e0 60 60 80 60
-12*e0 60 60 80 60 12*e0 60 60
-80 60 12*e0 60 60 80 60 14*e0
-80 60 12*e0 60 60 e0 e0 80
-60 14*e0 80 60 12*e0 80 60 15*e0
-80 60 11*e0 60 15*e0 60 15*e0
+60 15*e0 60 15*e0 60 15*e0 60 15*e0
+60 15*e0 60 60 12*e0 60 60 60
+13*e0 60 60 60 13*e0 60 60 60
+13*e0 60 60 60 13*e0 60 60 60
+13*e0 60 60 60 13*e0 60 60 60
+13*e0 60 60 60 13*e0 4*60 13*e0 60
+15*e0 60 15*e0 60 15*e0 60 14*e0 60
+e0 e0 60 15*e0 60 16*e0 60 11*e0
+60 e0 e0 e0 60 11*e0 60 60
+14*e0 60 15*e0 60 15*e0 60 15*e0 60
+15*e0 60 e0 60 15*e0 60 16*e0 60
+13*e0 60 60 60 12*e0 64 15*e0 64
+15*e0 65 15*e0 65 15*e0 64 15*e0 64
+15*e0 65 15*e0 65 15*e0 64 15*e0 64
+15*e0 65 15*e0 65 15*e0 64 15*e0 64
+15*e0 65 15*e0 65 15*e0 60 66 14*e0
+60 66 14*e0 60 66 14*e0 60 66
+14*e0 68 15*e0 68 15*e0 69 15*e0 69
+15*e0 68 15*e0 68 15*e0 69 15*e0 69
+15*e0 68 15*e0 68 15*e0 69 15*e0 69
+15*e0 68 15*e0 68 15*e0 69 15*e0 69
+15*e0 60 6a 14*e0 60 6a 14*e0 60
+6a 14*e0 60 6a 14*e0 68 15*e0 68
+15*e0 69 15*e0 69 15*e0 68 15*e0 68
+15*e0 69 15*e0 69 15*e0 68 15*e0 68
+15*e0 69 15*e0 69 15*e0 68 15*e0 68
+15*e0 69 15*e0 69 15*e0 60 6a 14*e0
+60 6a 14*e0 60 6a 14*e0 60 6a
+14*e0 6c 15*e0 6c 15*e0 6d 15*e0 6d
+15*e0 6c 15*e0 6c 15*e0 6d 15*e0 6d
+15*e0 6c 15*e0 6c 15*e0 6d 15*e0 6d
+15*e0 6c 15*e0 6c 15*e0 6d 15*e0 6d
+15*e0 60 6e 14*e0 60 6e 14*e0 60
+6e 14*e0 60 6e 14*e0 70 15*e0 70
+15*e0 71 15*e0 71 15*e0 70 15*e0 70
+15*e0 71 15*e0 71 15*e0 70 15*e0 70
+15*e0 71 15*e0 71 15*e0 70 15*e0 70
+15*e0 71 15*e0 71 15*e0 60 72 14*e0
+60 72 14*e0 60 72 14*e0 60 72
+14*e0 74 15*e0 74 15*e0 75 15*e0 75
+15*e0 74 15*e0 74 15*e0 75 15*e0 75
+15*e0 74 15*e0 74 15*e0 75 15*e0 75
+15*e0 74 15*e0 74 15*e0 75 15*e0 75
+15*e0 60 76 14*e0 60 76 14*e0 60
+76 14*e0 60 76 14*e0 78 15*e0 78
+15*e0 78 15*e0 78 15*e0 66 15*e0 66
+15*e0 66 15*e0 66 15*e0 6a 15*e0 6a
+15*e0 6a 15*e0 6a 15*e0 60 15*e0 60
+17*e0 60 15*e0 60 15*e0 60 15*e0 60
+15*e0 60 15*e0 60 13*e0 60 a0 60
+13*e0 60 a0 60 13*e0 60 a0 60
+13*e0 60 a0 60 13*e0 60 60 80
+60 12*e0 60 60 80 60 12*e0 60
+60 80 60 12*e0 60 60 80 60
+14*e0 80 60 12*e0 60 60 e0 e0
+80 60 14*e0 80 60 12*e0 80 60
+15*e0 80 60 11*e0 60 15*e0 60 15*e0
 </a>
       <a name="label" val="EEPROM3"/>
       <a name="labelvisible" val="true"/>
@@ -4538,71 +4532,65 @@ f0 97*0 46 41 40 0 a9 e7
 14*7 3 3 14*7 3 3 3 14*7
 3 15*7 3 15*7 3 15*7 3 15*7
 3 15*7 3 15*7 3 15*7 3 15*7
-3 3 13*7 3 7 3 13*7 3
-7 3 13*7 3 7 3 13*7 3
-7 3 13*7 3 7 3 13*7 3
-7 3 13*7 3 7 3 13*7 3
-7 3 13*7 3 7 3 3 14*7
+3 3 15*7 3 15*7 3 15*7 3
+15*7 3 15*7 3 15*7 3 15*7 3
+15*7 3 15*7 3 3 12*7 3 3
+3 13*7 3 3 3 13*7 3 3
+3 13*7 3 3 3 13*7 3 3
+3 13*7 3 3 3 13*7 3 3
+3 13*7 3 3 3 13*7 4*3 13*7
+3 15*7 3 15*7 3 15*7 3 14*7
+3 7 7 3 15*7 3 16*7 3
+11*7 3 7 7 7 3 11*7 3
+3 14*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 7 3 15*7 3 16*7
+3 13*7 3 3 3 12*7 3 15*7
 3 15*7 3 15*7 3 15*7 3 15*7
 3 15*7 3 15*7 3 15*7 3 15*7
-3 3 12*7 3 3 3 13*7 3
-3 3 13*7 3 3 3 13*7 3
-3 3 13*7 3 3 3 13*7 3
-3 3 13*7 3 3 3 13*7 3
-3 3 13*7 4*3 13*7 3 15*7 3
-15*7 3 15*7 3 14*7 3 7 7
-3 15*7 3 12*7 3 7 7 7
-3 15*7 3 11*7 3 7 7 7
-3 11*7 3 3 14*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 7 3
-15*7 3 14*7 3 7 3 15*7 3
-13*7 3 3 3 12*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 3 14*7
-3 3 14*7 3 3 14*7 3 3
-14*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 3 14*7 3 3 14*7 3
-3 14*7 3 3 14*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 3 14*7
-3 3 14*7 3 3 14*7 3 3
-14*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 3 14*7 3 3 14*7 3
-3 14*7 3 3 14*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 3 14*7
-3 3 14*7 3 3 14*7 3 3
-14*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 3 14*7 3 3 14*7 3
-3 14*7 3 3 14*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 15*7 3 15*7 3
-17*7 3 15*7 3 15*7 3 15*7 3
-15*7 3 15*7 3 13*7 3 17 3
-13*7 3 47 3 13*7 3 27 3
-13*7 3 f 3 13*7 3 3 17
-3 12*7 3 3 47 3 12*7 3
-3 27 3 12*7 3 3 f 3
-14*7 f 3 12*7 3 3 6 5
-f 3 12*7 6 5 f 3 12*7
-f 3 15*7 f 3 11*7 3 15*7
-3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 3
+14*7 3 3 14*7 3 3 14*7 3
+3 14*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 3 14*7 3 3 14*7
+3 3 14*7 3 3 14*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 3
+14*7 3 3 14*7 3 3 14*7 3
+3 14*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 3 14*7 3 3 14*7
+3 3 14*7 3 3 14*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 3
+14*7 3 3 14*7 3 3 14*7 3
+3 14*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 3 14*7 3 3 14*7
+3 3 14*7 3 3 14*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 15*7 3 15*7
+3 17*7 3 15*7 3 15*7 3 15*7
+3 15*7 3 15*7 3 13*7 3 17
+3 13*7 3 47 3 13*7 3 27
+3 13*7 3 f 3 13*7 3 3
+17 3 12*7 3 3 47 3 12*7
+3 3 27 3 12*7 3 3 f
+3 14*7 f 3 12*7 3 3 6
+5 f 3 12*7 6 5 f 3
+12*7 f 3 15*7 f 3 11*7 3
+15*7 3 15*7
 </a>
       <a name="label" val="EEPROM4"/>
     </comp>
@@ -4623,26 +4611,20 @@ f 3 15*7 f 3 11*7 3 15*7
 63 7a 14*73 63 7a 14*73 63 6b
 72 14*73 7a 15*73 7a 15*73 7a 15*73
 7a 15*73 7a 15*73 7a 15*73 7a 15*73
-7a 15*73 6b 72 13*73 63 73 72
-13*73 63 73 72 13*73 63 73 72
-13*73 63 73 72 13*73 63 73 72
-13*73 63 73 72 13*73 63 73 72
-13*73 63 73 72 13*73 63 73 63
-72 14*73 72 15*73 72 15*73 72 15*73
-72 15*73 72 15*73 72 15*73 72 15*73
-72 15*73 63 72 12*73 63 63 72
-13*73 63 63 72 13*73 63 63 72
-13*73 63 63 72 13*73 63 63 72
-13*73 63 63 72 13*73 63 63 72
-13*73 63 63 72 13*73 63 63 63
-72 12*73 77 72 14*73 77 72 14*73
-77 72 14*73 77 72 14*73 63 7b
-77 72 13*73 7b 77 72 12*73 63
-73 73 77 72 14*73 77 72 11*73
-63 73 73 77 72 11*73 67 72
-14*73 76 15*73 76 15*73 76 15*73 76
-15*73 63 77 7a 14*73 77 7a 13*73
-77 63 73 7a 12*73 77 73 73
+7a 15*73 6b 72 15*73 72 15*73 72
+15*73 72 15*73 72 15*73 72 15*73 72
+15*73 72 15*73 72 15*73 63 72 12*73
+63 63 72 13*73 63 63 72 13*73
+63 63 72 13*73 63 63 72 13*73
+63 63 72 13*73 63 63 72 13*73
+63 63 72 13*73 63 63 72 13*73
+63 63 63 72 12*73 77 72 14*73
+77 72 14*73 77 72 14*73 77 72
+14*73 63 7b 77 72 13*73 7b 77
+72 15*73 77 72 11*73 63 73 73
+77 72 11*73 67 72 14*73 76 15*73
+76 15*73 76 15*73 76 15*73 63 77
+7a 14*73 77 7a 13*73 77 73 73
 72 12*73 77 63 63 72 12*73 72
 15*73 72 15*73 72 15*73 72 15*73 72
 15*73 72 15*73 72 15*73 72 15*73 72
@@ -4698,7 +4680,7 @@ f 3 15*7 f 3 11*7 3 15*7
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-32*f 7 f f f b d 1386*f
+32*f 7 f f f b d 1210*f
 e 15*f e 15*f e 15*f e 15*f
 e 15*f e 15*f e 15*f e 15*f
 e 15*f e 15*f e 15*f e 15*f
@@ -4748,48 +4730,47 @@ c 15*f d 15*f d 15*f
 15*fc bc 31*fc ff 15*fc f4 15*fc dc
 15*fc 7c 31*fc f8 15*fc ec 15*fc bc
 31*fc ff 15*fc f4 15*fc dc 15*fc 7c
-32*fc f8 15*fc ec 15*fc bc 31*fc ff
-15*fc f4 15*fc dc 15*fc 7c 29*fc bc
-fc f8 13*fc bc fc ec 13*fc bc
-fc bc 13*fc bc 15*fc bc fc ff
-13*fc bc fc f4 13*fc bc fc dc
-13*fc bc fc 7c 13*fc bc 17*fc f8
-15*fc ec 15*fc bc 31*fc ff 15*fc f4
-15*fc dc 15*fc 7c 29*fc f8 15*fc ec
-15*fc bc 79*fc bc 47*fc ff 15*fc f4
-15*fc dc 15*fc 7c 64*fc bc 30*fc ff
-15*fc ff 15*fc ff 15*fc ff 15*fc f4
-15*fc f4 15*fc f4 15*fc f4 15*fc dc
-15*fc dc 15*fc dc 15*fc dc 15*fc 7c
-15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
-15*fc f4 15*fc f4 15*fc f4 14*fc ff
-15*fc ff 15*fc ff 15*fc ff 15*fc f4
-15*fc f4 15*fc f4 15*fc f4 15*fc dc
-15*fc dc 15*fc dc 15*fc dc 15*fc 7c
-15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
-15*fc f4 15*fc f4 15*fc f4 334*fc ff
-15*fc ff 15*fc ff 15*fc ff 15*fc f4
-15*fc f4 15*fc f4 15*fc f4 15*fc dc
-15*fc dc 15*fc dc 15*fc dc 15*fc 7c
-15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
-15*fc f4 15*fc f4 15*fc f4 14*fc ff
-15*fc ff 15*fc ff 15*fc ff 15*fc f4
-15*fc f4 15*fc f4 15*fc f4 15*fc dc
-15*fc dc 15*fc dc 15*fc dc 15*fc 7c
-15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
-15*fc f4 15*fc f4 15*fc f4 14*fc ff
-15*fc ff 15*fc ff 15*fc ff 15*fc f4
-15*fc f4 15*fc f4 15*fc f4 15*fc dc
-15*fc dc 15*fc dc 15*fc dc 15*fc 7c
-15*fc 7c 15*fc 7c 15*fc 7c 16*fc ff
-15*fc f4 15*fc f4 15*fc f4 14*fc ff
-15*fc f4 15*fc dc 15*fc 7c 15*fc ff
-15*fc f4 15*fc dc 15*fc 7c 15*fc ff
-15*fc f4 15*fc dc 15*fc 7c 15*fc fe
-15*fc fd 15*fc f8 ef f4 13*fc f8
-bf dc 13*fc f8 ff 7c 13*fc ec
-b4 dc 13*fc ec f4 7c 13*fc bc
-dc 7c 141*fc bc 31*fc bc 79*fc
+30*fc bc fc f8 13*fc bc fc ec
+13*fc bc fc bc 13*fc bc 15*fc bc
+fc ff 13*fc bc fc f4 13*fc bc
+fc dc 13*fc bc fc 7c 13*fc bc
+17*fc f8 15*fc ec 15*fc bc 31*fc ff
+15*fc f4 15*fc dc 15*fc 7c 29*fc f8
+15*fc ec 15*fc bc 63*fc bc 47*fc ff
+15*fc f4 15*fc dc 15*fc 7c 48*fc bc
+30*fc ff 15*fc ff 15*fc ff 15*fc ff
+15*fc f4 15*fc f4 15*fc f4 15*fc f4
+15*fc dc 15*fc dc 15*fc dc 15*fc dc
+15*fc 7c 15*fc 7c 15*fc 7c 15*fc 7c
+16*fc ff 15*fc f4 15*fc f4 15*fc f4
+14*fc ff 15*fc ff 15*fc ff 15*fc ff
+15*fc f4 15*fc f4 15*fc f4 15*fc f4
+15*fc dc 15*fc dc 15*fc dc 15*fc dc
+15*fc 7c 15*fc 7c 15*fc 7c 15*fc 7c
+16*fc ff 15*fc f4 15*fc f4 15*fc f4
+334*fc ff 15*fc ff 15*fc ff 15*fc ff
+15*fc f4 15*fc f4 15*fc f4 15*fc f4
+15*fc dc 15*fc dc 15*fc dc 15*fc dc
+15*fc 7c 15*fc 7c 15*fc 7c 15*fc 7c
+16*fc ff 15*fc f4 15*fc f4 15*fc f4
+14*fc ff 15*fc ff 15*fc ff 15*fc ff
+15*fc f4 15*fc f4 15*fc f4 15*fc f4
+15*fc dc 15*fc dc 15*fc dc 15*fc dc
+15*fc 7c 15*fc 7c 15*fc 7c 15*fc 7c
+16*fc ff 15*fc f4 15*fc f4 15*fc f4
+14*fc ff 15*fc ff 15*fc ff 15*fc ff
+15*fc f4 15*fc f4 15*fc f4 15*fc f4
+15*fc dc 15*fc dc 15*fc dc 15*fc dc
+15*fc 7c 15*fc 7c 15*fc 7c 15*fc 7c
+16*fc ff 15*fc f4 15*fc f4 15*fc f4
+14*fc ff 15*fc f4 15*fc dc 15*fc 7c
+15*fc ff 15*fc f4 15*fc dc 15*fc 7c
+15*fc ff 15*fc f4 15*fc dc 15*fc 7c
+15*fc fe 15*fc fd 15*fc f8 ef f4
+13*fc f8 bf dc 13*fc f8 ff 7c
+13*fc ec b4 dc 13*fc ec f4 7c
+13*fc bc dc 7c 141*fc bc 31*fc bc
+79*fc
 </a>
       <a name="label" val="EEPROM0"/>
       <a name="labelvisible" val="true"/>
@@ -4809,25 +4790,20 @@ fe fd 14*ff fe fc 14*ff fe fb
 fb 14*ff fe fd 15*ff fe fd 14*ff
 fe fd 14*ff fe fd 14*ff fe fc
 14*ff fe fb 14*ff fe fb 14*ff fe
-fb 14*ff fe fb 14*ff fe fd 14*ff
-fe fd 14*ff fe fd 14*ff fe fd
-14*ff fe fc 14*ff fe fb 14*ff fe
-fb 14*ff fe fb 14*ff fe fb 14*ff
-fe fd 15*ff fd 15*ff fd 15*ff fd
-15*ff fc 15*ff fb 15*ff fb 15*ff fb
-15*ff fb 15*ff fd 13*ff fd 7f 14*ff
-fd 7f 14*ff fd 7f 14*ff fc 7f
-15*ff fb fd 7f 12*ff fe fb fd
-7f 13*ff fe fb fd 7f 12*ff fe
+fb 14*ff fe fb 14*ff fe fd 15*ff
+fd 15*ff fd 15*ff fd 15*ff fc 15*ff
+fb 15*ff fb 15*ff fb 15*ff fb 15*ff
+fd 13*ff fd 7f 14*ff fd 7f 14*ff
+fd 7f 14*ff fc 7f 15*ff fb fd
+7f 12*ff fe fb fd 7f 13*ff fe
 fb fd 7f 12*ff fe fb fd 7f
 11*ff fd 7f 14*ff 7b 15*ff 7b 15*ff
 7b 15*ff 7b 16*ff 7b fd 13*ff fe
 7b fd 13*ff 7b ff fe fd 12*ff
-7b ff fe fd 12*ff 7b ff ff
-fd 2189*ff fe 31*ff fe 15*ff fe 143*ff
-fe 16*ff fd 7d 7f 12*ff fe fd
-7d 7f 11*ff 7b 7b 14*ff 7b 7b
-7b 45*ff
+7b ff ff fd 2189*ff fe 31*ff fe
+15*ff fe 143*ff fe 16*ff fd 7d 7f
+12*ff fe fd 7d 7f 11*ff 7b 7b
+14*ff 7b 7b 7b 45*ff
 </a>
       <a name="label" val="EEPROM1"/>
       <a name="labelvisible" val="true"/>
@@ -4848,18 +4824,23 @@ fe 16*ff fd 7d 7f 12*ff fe fd
 1a 14*1e 1c 1a 14*1e 1c 1a 14*1e
 1c 1a 14*1e 1c 1a 14*1e 1c 1a
 14*1e 1c 1a 14*1e 1c 1a 14*1e 1c
-1a 14*1e 1c 1a 14*1e 1c 1a 14*1e
-1c 1a 14*1e 1c 1a 14*1e 1c 1a
-14*1e 1c 1a 14*1e 1c 1a 14*1e 1c
-1a 14*1e 1c 1a 15*1e 1f 15*1e 1f
-15*1e 1f 15*1e 1f 14*1e 1a 16 e
-1f 12*1e 1a 16 e 1f 12*1e 1c
-1a 16 e 1f 11*1e 1c 1a 16
-e 1f 11*1e 1c 1a 16 e 1f
-12*1e 1f 78*1e 1a 16 e 13*1e 1a
-16 e 13*1e 16 1c 1a e 12*1e
-16 1c 1a e 12*1e 16 1c 1a
-e 28*1e 9e 31*1e 9e 15*1e 3e 15*1e
+1a 15*1e 1f 15*1e 1f 15*1e 1f 15*1e
+1f 14*1e 1a 16 e 1f 12*1e 1a
+16 e 1f 12*1e 1c 1a 16 e
+1f 11*1e 1c 1a 16 e 1f 12*1e
+1f 78*1e 1a 16 e 13*1e 1a 16
+e 13*1e 16 1c 1a e 12*1e 16
+1c 1a e 28*1e 9e 31*1e 9e 15*1e
+3e 15*1e be 15*1e 3e 15*1e be 15*1e
+5e 15*1e de 15*1e 5e 15*1e de 15*1e
+7e 15*1e fe 15*1e 7e 15*1e fe 15*1e
+16 15*1e 16 3e 14*1e 16 5e 14*1e
+16 7e 30*1e 9e 31*1e 9e 15*1e 3e
+15*1e be 15*1e 3e 15*1e be 15*1e 5e
+15*1e de 15*1e 5e 15*1e de 15*1e 7e
+15*1e fe 15*1e 7e 15*1e fe 15*1e 16
+15*1e 16 3e 14*1e 16 5e 14*1e 16
+7e 30*1e 9e 31*1e 9e 15*1e 3e 15*1e
 be 15*1e 3e 15*1e be 15*1e 5e 15*1e
 de 15*1e 5e 15*1e de 15*1e 7e 15*1e
 fe 15*1e 7e 15*1e fe 15*1e 16 15*1e
@@ -4878,28 +4859,18 @@ fe 15*1e 7e 15*1e fe 15*1e 16 15*1e
 15*1e be 15*1e 5e 15*1e de 15*1e 5e
 15*1e de 15*1e 7e 15*1e fe 15*1e 7e
 15*1e fe 15*1e 16 15*1e 16 3e 14*1e
-16 5e 14*1e 16 7e 30*1e 9e 31*1e
-9e 15*1e 3e 15*1e be 15*1e 3e 15*1e
-be 15*1e 5e 15*1e de 15*1e 5e 15*1e
-de 15*1e 7e 15*1e fe 15*1e 7e 15*1e
-fe 15*1e 16 15*1e 16 3e 14*1e 16
-5e 14*1e 16 7e 30*1e 9e 31*1e 9e
-15*1e 3e 15*1e be 15*1e 3e 15*1e be
-15*1e 5e 15*1e de 15*1e 5e 15*1e de
-15*1e 7e 15*1e fe 15*1e 7e 15*1e fe
-15*1e 16 15*1e 16 3e 14*1e 16 5e
-14*1e 16 7e 30*1e 3e 15*1e 5e 15*1e
-7e 15*1e 9e 15*1e be 15*1e de 15*1e
-fe 15*1e 9e 15*1e be 15*1e de 15*1e
-fe 47*1e 16 1e e 13*1e 16 1e
-e 13*1e 16 1e e 13*1e 16 1e
-e 13*1e 16 1e e 13*1e 16 1e
-e 13*1e 1a 15*1e 1a 15*1e 1a 15*1e
-1a 15*1e 1c 1a 14*1e 1c 1a 14*1e
-1c 1a 14*1e 1c 1a 14*1e 1c 1a
-14*1e 1c 1a 1e 1f 1f 11*1e 1c
-1a 1e 1f 1f 11*1e 1a 1c 15*1e
-1a 1c 45*1e
+16 5e 14*1e 16 7e 30*1e 3e 15*1e
+5e 15*1e 7e 15*1e 9e 15*1e be 15*1e
+de 15*1e fe 15*1e 9e 15*1e be 15*1e
+de 15*1e fe 47*1e 16 1e e 13*1e
+16 1e e 13*1e 16 1e e 13*1e
+16 1e e 13*1e 16 1e e 13*1e
+16 1e e 13*1e 1a 15*1e 1a 15*1e
+1a 15*1e 1a 15*1e 1c 1a 14*1e 1c
+1a 14*1e 1c 1a 14*1e 1c 1a 14*1e
+1c 1a 14*1e 1c 1a 1e 1f 1f
+11*1e 1c 1a 1e 1f 1f 11*1e 1a
+1c 15*1e 1a 1c 45*1e
 </a>
       <a name="label" val="EEPROM2"/>
     </comp>
@@ -5274,19 +5245,19 @@ e 13*1e 1a 15*1e 1a 15*1e 1a 15*1e
     <comp lib="1" loc="(440,240)" name="OR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="8" loc="(12,257)" name="Text">
+    <comp lib="8" loc="(10,255)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(17,197)" name="Text">
+    <comp lib="8" loc="(15,195)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="0"/>
     </comp>
-    <comp lib="8" loc="(17,217)" name="Text">
+    <comp lib="8" loc="(15,215)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(17,237)" name="Text">
+    <comp lib="8" loc="(15,235)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="0"/>
     </comp>
@@ -5306,23 +5277,23 @@ e 13*1e 1a 15*1e 1a 15*1e 1a 15*1e
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="1"/>
     </comp>
-    <comp lib="8" loc="(55,182)" name="Text">
+    <comp lib="8" loc="(55,180)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="SEL1 SEL0 MODE"/>
     </comp>
-    <comp lib="8" loc="(66,252)" name="Text">
+    <comp lib="8" loc="(65,250)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="nothing"/>
     </comp>
-    <comp lib="8" loc="(91,197)" name="Text">
+    <comp lib="8" loc="(90,195)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="load from bus"/>
     </comp>
-    <comp lib="8" loc="(91,217)" name="Text">
+    <comp lib="8" loc="(90,215)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="load from ALU"/>
     </comp>
-    <comp lib="8" loc="(91,232)" name="Text">
+    <comp lib="8" loc="(90,230)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="load I"/>
     </comp>
