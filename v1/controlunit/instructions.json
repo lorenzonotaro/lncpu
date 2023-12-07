@@ -2858,6 +2858,7 @@
     },
     {
         "name": "and_rd_rc",
+        "description": "Performs a bitwise AND of RD and RC, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_RD_IN": 0,

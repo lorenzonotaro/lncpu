@@ -93,7 +93,7 @@ def write_to_eeproms(address, byteLabel, microinstr):
 with open('instructions.json') as file:
     data = json.load(file)
     opcodes_tsv = open(OPCODES_TSV, mode='w')
-    opcodes_tsv.write('Opcode\tName\tData length\tClock cycles\n')
+    opcodes_tsv.write('Opcode\tName\tData length\tClock cycles\tDescription\n')
     instr_addr = 0
     opcode = 0
     for elem in data:
@@ -152,7 +152,7 @@ with open('instructions.json') as file:
         # store the instruction in opcodes.tsv
         codesize = sum(
             1 for step in all_steps if "NOT_PC_INC" in step and "CSPC_DIR" not in step)  # count how many times the instruction increments PC
-        string = hex(opcode) + '\t' + name + '\t' + str(codesize) + '\t' + str(len(all_steps)) + '\n'
+        string = hex(opcode) + '\t' + name + '\t' + str(codesize) + '\t' + str(len(all_steps)) + '\t' + elem["description"] + '\n'
         opcodes_tsv.write(string)
 
         # pad the clock cycles with the default signals
