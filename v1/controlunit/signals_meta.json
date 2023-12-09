@@ -157,7 +157,7 @@
                 "dbus_write": false
             },
             "01": {
-                "name": "ss:sp",
+                "name": "page0:abl",
                 "dbus_read": false,
                 "dbus_write": false
             },
@@ -167,7 +167,7 @@
                 "dbus_write": false
             },
             "11": {
-                "name": "page0:abl",
+                "name": "ss:sp",
                 "dbus_read": false,
                 "dbus_write": false
             }
