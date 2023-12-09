@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.9.3dev" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.9.3dev(https://github.com/logisim-evolution/).
+<project source="3.9.2dev" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.9.2dev(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -277,13 +277,10 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(120,610)" name="Probe">
       <a name="appearance" val="NewPins"/>
-      <a name="breakOnValue" val="true"/>
-      <a name="breakValue" val="0x65"/>
       <a name="radix" val="16"/>
     </comp>
     <comp lib="0" loc="(120,630)" name="Probe">
       <a name="appearance" val="NewPins"/>
-      <a name="breakValue" val="0x12e"/>
       <a name="radix" val="16"/>
     </comp>
     <comp lib="0" loc="(120,650)" name="Probe">
@@ -3413,57 +3410,57 @@ end TCL_Generic;
     <a name="circuit" val="StackPointer"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="2048000.0"/>
-    <comp lib="0" loc="(150,300)" name="Pin">
+    <comp lib="0" loc="(250,300)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="CLK"/>
     </comp>
-    <comp lib="0" loc="(150,330)" name="Pin">
+    <comp lib="0" loc="(250,330)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="DBUS"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(190,260)" name="Pin">
+    <comp lib="0" loc="(290,260)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="SP_DIR"/>
     </comp>
-    <comp lib="0" loc="(190,280)" name="Pin">
+    <comp lib="0" loc="(290,280)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="NOT_SP_CT"/>
     </comp>
-    <comp lib="0" loc="(200,240)" name="Pin">
+    <comp lib="0" loc="(300,240)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="NOT_SP_IN"/>
     </comp>
-    <comp lib="0" loc="(290,320)" name="Constant">
+    <comp lib="0" loc="(390,320)" name="Constant">
       <a name="facing" val="north"/>
       <a name="value" val="0x0"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(300,230)" name="Constant">
+    <comp lib="0" loc="(400,230)" name="Constant">
       <a name="value" val="0x0"/>
     </comp>
-    <comp lib="0" loc="(530,320)" name="Pin">
+    <comp lib="0" loc="(630,320)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="facing" val="west"/>
       <a name="label" val="SP_OUT"/>
       <a name="output" val="true"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="1" loc="(230,240)" name="NOT Gate"/>
-    <comp lib="1" loc="(300,280)" name="NOT Gate"/>
-    <comp lib="4" loc="(300,210)" name="Counter">
+    <comp lib="1" loc="(330,240)" name="NOT Gate"/>
+    <comp lib="1" loc="(400,280)" name="NOT Gate"/>
+    <comp lib="4" loc="(400,210)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
-    <wire from="(150,300)" to="(190,300)"/>
-    <wire from="(150,320)" to="(150,330)"/>
-    <wire from="(150,320)" to="(290,320)"/>
-    <wire from="(190,260)" to="(300,260)"/>
-    <wire from="(190,280)" to="(270,280)"/>
-    <wire from="(190,290)" to="(190,300)"/>
-    <wire from="(190,290)" to="(300,290)"/>
-    <wire from="(230,240)" to="(300,240)"/>
-    <wire from="(290,320)" to="(300,320)"/>
-    <wire from="(490,320)" to="(530,320)"/>
+    <wire from="(250,300)" to="(290,300)"/>
+    <wire from="(250,320)" to="(250,330)"/>
+    <wire from="(250,320)" to="(390,320)"/>
+    <wire from="(290,260)" to="(400,260)"/>
+    <wire from="(290,280)" to="(370,280)"/>
+    <wire from="(290,290)" to="(290,300)"/>
+    <wire from="(290,290)" to="(400,290)"/>
+    <wire from="(330,240)" to="(400,240)"/>
+    <wire from="(390,320)" to="(400,320)"/>
+    <wire from="(590,320)" to="(630,320)"/>
   </circuit>
   <circuit name="ROMModule">
     <a name="appearance" val="logisim_evolution"/>
@@ -3533,68 +3530,68 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-0 0 8 21 7 0 45 60
+0 0 8 21 7 0 3c 60
 0 c 21 2 0 21 3 0
-21 4 0 21 5 0 f3 21
-0 0 21 1 0 45 60 0
-3e 45 60 0 20 f2 1d 1
-91 0 e7 26 f3 5 22 cc
-1e 0 92 1 e7 58 92 4
-e5 92 ee 1e 5d 91 1 e7
+21 4 0 21 5 0 e8 21
+0 0 21 1 0 3c 60 0
+3e 3c 60 0 20 e7 1d 1
+86 0 dc 26 e8 5 22 c1
+1e 0 87 1 dc 58 87 4
+da 92 e3 1e 5d 86 1 dc
 92 1d 6 19 2 1d 7 19
-3 8e e7 8d 38 d8 91 2e
-e7 73 91 3a e7 6a e8 92
-38 91 72 e7 63 91 52 e7
-63 e8 92 1f 2 20 3 ef
-e8 96 ee 1 0 91 1 e7
-92 e8 96 92 9 e7 79 e8
-92 ee 1e 5d 91 1 e7 92
+3 83 dc 8d 2f cd 86 2e
+dc 73 86 3a dc 6a dd 92
+2f 86 72 dc 63 86 52 dc
+63 dd 92 1f 2 20 3 e4
+dd 96 e3 1 0 86 1 dc
+92 dd 96 87 9 dc 79 dd
+92 e3 1e 5d 86 1 dc 92
 1d 6 19 4 1d 7 19 5
-ee 0 a5 e8 96 ee 0 9d
-e8 96 45 60 0 3f 45 60
-0 a f2 e8 16 1d 2 19
+e3 0 a5 dd 96 e3 0 9d
+dd 96 3c 60 0 3f 3c 60
+0 a e7 dd 16 1d 2 19
 4 1d 3 19 5 1d 4 1e
-5 1f 2 20 3 46 e8 c2
-83 e5 e7 e7 b7 e8 ba 88
-e5 e7 46 14 b9 7 e7 c2
-e8 d6 45 60 0 a 11 ee
-1e 48 14 ee 1e 48 45 60
-0 3a 45 60 0 20 38 ee
-1e 48 45 60 0 20 50 d8
-e5 e4 e8 b0 d7 e8 b0 f0
-24*0 47 51 47 74 e7 41 e5
-3d 38 91 20 e7 f e8 3d
-d8 38 ee 1e 16 91 ff e7
-3d 4*dd b d8 38 ee 1e 16
-91 ff e7 3d 5a 48 49 1f
-2 20 3 34 d8 1c 3 e5
-38 53 52 d8 e8 1 d7 1b
-2 e8 33 3 1 51 f0 bd
-51 f0 7356*0 46 48 49 38 a9
-e7 12 3d 60 0 d8 e5 f
-e8 3 d7 e8 3 53 52 50
-f0 7d 30 e6 34 91 9 e6
-39 e7 39 7d 11 e6 34 91
-5 e6 37 e7 37 7d 20 e6
-34 91 5 e6 37 e7 37 3
-ff f0 69 a f0 b9 f 91
-a e6 45 7d a 69 41 f0
-69 30 f0 46 46 4*de ee 1e
-3a 3d 60 0 50 ee 1e 3a
-3d 60 0 50 f0 47 38 ee
-1e 16 91 ff e7 9b 4*dd 19
-6 d8 38 ee 1e 16 91 ff
-e7 9b 1e 6 5a 19 6 d8
-38 ee 1e 16 91 ff e7 9b
-4*dd 19 7 d8 38 ee 1e 16
-91 ff e7 9b 1e 7 5a 19
-7 d8 51 bd f0 51 3 1
-f0 97*0 46 41 40 0 a9 e7
-26 48 49 41 40 1 3d 60
-0 5 22 20 0 91 8 e7
-21 91 a e7 28 34 d8 1c
-0 e8 24 dc 1c 0 53 52
-50 f1 21 1 1 e8 24
+5 1f 2 20 3 3d dd c2
+78 da e7 dc b7 dd ba 7d
+da e7 3d 14 ae 7 dc c2
+dd d6 3c 60 0 a 11 e3
+1e 48 14 e3 1e 48 3c 60
+0 3a 3c 60 0 20 2f e3
+1e 48 3c 60 0 20 46 cd
+da e4 dd b0 cc dd b0 e5
+24*0 3e 47 3e 69 dc 41 da
+3d 2f 86 20 dc f dd 3d
+cd 2f e3 1e 16 86 ff dc
+3d 4*d2 b cd 2f e3 1e 16
+86 ff dc 3d 4f 3f 40 1f
+2 20 3 2b cd 1c 3 da
+38 49 48 cd dd 1 cc 1b
+2 dd 33 3 1 47 e5 b2
+47 e5 7356*0 3d 3f 40 2f 9e
+dc 12 34 60 0 cd da f
+dd 3 cc dd 3 49 48 46
+e5 72 30 db 34 86 9 db
+39 dc 39 72 11 db 34 86
+5 db 37 dc 37 72 20 db
+34 86 5 db 37 dc 37 3
+ff e5 5e a e5 ae f 86
+a db 45 72 a 5e 41 e5
+5e 30 e5 3d 3d 4*d3 e3 1e
+3a 34 60 0 46 e3 1e 3a
+34 60 0 46 e5 3e 2f e3
+1e 16 86 ff dc 9b 4*d2 19
+6 cd 2f e3 1e 16 86 ff
+dc 9b 1e 6 4f 19 6 cd
+2f e3 1e 16 86 ff dc 9b
+4*d2 19 7 cd 2f e3 1e 16
+86 ff dc 9b 1e 7 4f 19
+7 cd 47 b2 e5 47 3 1
+e5 97*0 3d 38 40 0 9e dc
+26 3f 40 38 40 1 34 60
+0 5 22 20 0 86 8 dc
+21 86 a dc 28 2b cd 1c
+0 dd 24 d1 1c 0 49 48
+46 e6 21 1 1 dd 24
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
