@@ -162,12 +162,12 @@
                 "dbus_write": false
             },
             "10": {
-                "name": "page0:abl",
+                "name": "ss:sp",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "11": {
-                "name": "ss:sp",
+                "name": "cs:pc",
                 "dbus_read": false,
                 "dbus_write": false
             }
