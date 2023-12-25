@@ -3,7 +3,7 @@
  *  This sketch is the loader for the AT28C64B EEPROM chip.
  *  It was written for Arduino Nano and it conforms to the protocol defined in
  *  the loaders/ directory of this repository.
- *  The circuit associated with the sketch is illsustrated in an adjacent file.
+ *  The circuit associated with the sketch is illustrated in an adjacent file.
  *  Given the limited numbers of pins on the Arduino Nano, 
  *  3 4-bit counters are used to keep track of addresses A0-A11, while a digital pin 
  *  will determine which half of the EEPROM is active (A12).
