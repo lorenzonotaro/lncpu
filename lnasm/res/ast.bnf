@@ -1,6 +1,0 @@
-Argument ::= LAddress
-
-LAddress ::= Dereference [ ":" Dereference ]
-Dereference ::= "[" ["RAM" | "ROM"] (Register) "]"
-Register ::= RA | RB | RC | RD | MDS | SS | SP | SDS | Literal
-Literal ::= constant | identifier
