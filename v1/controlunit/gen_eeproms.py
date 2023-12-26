@@ -191,13 +191,18 @@ for i in range(EEPROM_COUNT):
         EEPROM_HASHES.append("0")
 
 
+if not os.path.exists('../../eeprom-serial-loader/target/eeprom-serial-loader.jar'):
+    print("Building eeprom-serial-loader.jar")
+    subprocess.run(f"mvn package", cwd="../../eeprom-serial-loader", check=True, shell=True)
+
+print("Generating EEPROM files")
 for i, data in enumerate(EEPROM_FILES):
     with open('EEPROM' + str(i) + ".eeprom", mode='w') as file:
         json.dump(data, file)
-    subprocess.run(["java", "-jar", "../../utilities/eeprom-serial-loader.jar", "EEPROM" + str(i) + ".eeprom", "--no-gui", "--export-raw", "EEPROM" + str(i) + ".raw"])
+    subprocess.run(f"java -jar \"../../eeprom-serial-loader/target/eeprom-serial-loader.jar\" EEPROM{str(i)}.eeprom -no-gui --export-bin EEPROM{str(i)}.bin", shell=True)
 
 for i in range(EEPROM_COUNT):
-    filename = f"EEPROM{i}.raw"
+    filename = f"EEPROM{i}.bin"
     if not KEEP_EEPROM_FILES:
         os.remove('EEPROM' + str(i) + '.eeprom')
     if EEPROM_HASHES[i] != sha256sum(filename):
