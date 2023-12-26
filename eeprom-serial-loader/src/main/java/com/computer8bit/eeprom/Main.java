@@ -92,8 +92,8 @@ public class Main {
                 case "--no-gui":
                     launchGUI = false;
                     break;
-                case "--export-raw":
-                    if(i + 1 >= args.length) return requiresDestFile("--export-raw");
+                case "--export-bin":
+                    if(i + 1 >= args.length) return requiresDestFile("--export-bin");
                     exportRaw = true;
                     exportRawDest = args[++i];
                     break;
@@ -113,7 +113,7 @@ public class Main {
                 "       java -jar eeprom-serial-loader.jar [file] [options...]\n\n" +
                 "Options: \n" +
                 "   --no-gui : command-line only, doesn't launch the user interface\n" +
-                "   --export-raw <dest> : exports the given file to the given destination as raw binary\n" +
+                "   --export-bin <dest> : exports the given file to the given destination as raw binary\n" +
                 "   --export-hex <dest> : exports the given file to the given destination as a hex dump\n");
     }
 
