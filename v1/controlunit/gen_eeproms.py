@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3.7
 import itertools
+import shutil
 import math
 import os
 from collections import OrderedDict
@@ -13,6 +14,7 @@ import json
 KEEP_EEPROM_FILES = False
 
 OPCODES_TSV = 'opcodes.tsv'
+COPY_OPCODES_TSV_TO_LNASM = True
 EEPROM_FILES = []
 EEPROM_HASHES = []
 
@@ -90,9 +92,8 @@ def write_to_eeproms(address, byteLabel, microinstr):
         pass
 
 
-with open('instructions.json') as file:
+with open('instructions.json') as file, open(OPCODES_TSV, mode='w') as opcodes_tsv:
     data = json.load(file)
-    opcodes_tsv = open(OPCODES_TSV, mode='w')
     opcodes_tsv.write('Opcode\tName\tData length\tClock cycles\tDescription\n')
     instr_addr = 0
     opcode = 0
@@ -173,6 +174,11 @@ with open('instructions.json') as file:
         instr_addr = instr_addr + 16
         opcode = opcode + 1
 
+# copy opcodes.tsv to lncpu if necessary
+
+if COPY_OPCODES_TSV_TO_LNASM:
+    print("Copying opcodes.tsv to lnasm project....")
+    shutil.copy(OPCODES_TSV, '../../lnasm/src/main/resources/opcodes.tsv')
 
 def sha256sum(filename):
     h  = hashlib.sha256()
@@ -184,7 +190,7 @@ def sha256sum(filename):
     return h.hexdigest()
 
 for i in range(EEPROM_COUNT):
-    filename = f"EEPROM{i}.raw"
+    filename = f"EEPROM{i}.bin"
     if(os.path.isfile(filename)):
         EEPROM_HASHES.append(sha256sum(filename))
     else:
@@ -199,7 +205,7 @@ print("Generating EEPROM files")
 for i, data in enumerate(EEPROM_FILES):
     with open('EEPROM' + str(i) + ".eeprom", mode='w') as file:
         json.dump(data, file)
-    subprocess.run(f"java -jar \"../../eeprom-serial-loader/target/eeprom-serial-loader.jar\" EEPROM{str(i)}.eeprom -no-gui --export-bin EEPROM{str(i)}.bin", shell=True)
+    subprocess.run(f"java -jar \"../../eeprom-serial-loader/target/eeprom-serial-loader.jar\" EEPROM{str(i)}.eeprom --no-gui --export-bin EEPROM{str(i)}.bin", shell=True)
 
 for i in range(EEPROM_COUNT):
     filename = f"EEPROM{i}.bin"
