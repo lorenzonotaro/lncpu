@@ -82,8 +82,12 @@ Labels starting with `_` are interpreted as sublabels (if preceded by a label th
 
 Currently, labels can only be used in jump instructions.
 
+### Comments
 
-## Instruction list
+Comments can be initiated with `;`: the remainder of the line after the semicolon will be ignored by the parser.
+
+
+### Instruction list
 
 For a list of available instructions, refer to [this .tsv file](src/main/resources/opcodes.tsv). This file is a resource file for the compiler and it is automatically generated when generating the control unit EEPROMS using the script in [v1/controlunit](/v1/controlunit/gen_eeproms.py).
 
