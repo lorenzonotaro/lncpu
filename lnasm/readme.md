@@ -115,14 +115,23 @@ Basically, each immediate instruction code is made of (separated by `_`):
 
         - `abs`: absolute addressing mode. In lnasm this is achieved with `[<8-bit page>:<8-bit address>]` or `[<16-bit full address>]`.
 
+    Jump instructions do not have a parameter in their immediate instruction code, but require one:
+        
+    - *short jump instructions* require an 8-bit constant OR a label.
+
+    - *long jump instructions* require a 16-bit constant address or a label.
+
+    The compiler will issue a warning if a distant label (not in the same code segment) is used within a short jump or if a local label (in the same code segment) is used withing a long jump.
+
 Some examples to clarify:
 
-     mov        RA,        RB      ; mov_ra_rb: moves the contents of RA into RB
+    START:
+        mov        RA,        RB      ; mov_ra_rb: moves the contents of RA into RB
 
-     mov        [0x42],    RA      ; mov_page0_ra: moves the contents of address 0x2042 into RA
+        mov        [0x42],    RA      ; mov_page0_ra: moves the contents of address 0x2042 into RA
 
-     mov        [RD],      RA      ; mov_ipage0rd_ra: moves the contents of address 0x20:RD into RA
+        mov        [RD],      RA      ; mov_ipage0rd_ra: moves the contents of address 0x20:RD into RA
 
-     mov        RC,        [RC:RD] ; mov_rc_ifullrcrd: moves the contents of RC to address RC:RD
+        mov        RC,        [RC:RD] ; mov_rc_ifullrcrd: moves the contents of RC to address RC:RD
 
-     mov        0x24f1,    [RD]    ; mov_abs_rd: moves the content of address 0x24f1 to RD
+        mov        0x24f1,    [RD]    ; mov_abs_rd: moves the content of address 0x24f1 to RD
