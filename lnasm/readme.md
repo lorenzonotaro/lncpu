@@ -89,7 +89,7 @@ For a list of available instructions, refer to [this .tsv file](src/main/resourc
 
 The second column of this TSV file contains the _immediate instruction code_ which is, although not directly usable in lnasm, easily translatable to valid lnasm code.
 
-(Since for the time being the implementation is constantly chaning, this is the only form of "documentation" available until the project is finished)
+(Since for the time being the implementation is constantly chanhing, this is the only form of "documentation" available until the project is finished.)
 
 Basically, each immediate instruction code is made of (separated by `_`):
 
