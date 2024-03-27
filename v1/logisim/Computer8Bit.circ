@@ -1803,6 +1803,10 @@ end TCL_Generic;
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="CS_PC"/>
     </comp>
+    <comp lib="8" loc="(328,1952)" name="Text">
+      <a name="font" val="Monospaced bold 16"/>
+      <a name="text" val="Click here with the poke tool to type into the serial port -&gt;"/>
+    </comp>
     <comp lib="8" loc="(35,655)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="DBUS"/>
@@ -5490,17 +5494,17 @@ de 15*1e fe 47*1e 16 1e e 13*1e
       <a name="select" val="2"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="8" loc="(396,493)" name="Text">
+    <comp lib="8" loc="(395,470)" name="Text">
+      <a name="font" val="Consolas bold 16"/>
+      <a name="text" val="01: 20:ABL"/>
+    </comp>
+    <comp lib="8" loc="(395,490)" name="Text">
       <a name="font" val="Consolas bold 16"/>
       <a name="text" val="10: SS:SP"/>
     </comp>
-    <comp lib="8" loc="(397,513)" name="Text">
+    <comp lib="8" loc="(395,510)" name="Text">
       <a name="font" val="Consolas bold 16"/>
       <a name="text" val="11: CS:PC"/>
-    </comp>
-    <comp lib="8" loc="(398,471)" name="Text">
-      <a name="font" val="Consolas bold 16"/>
-      <a name="text" val="01: 20:ABL"/>
     </comp>
     <comp lib="8" loc="(405,450)" name="Text">
       <a name="font" val="Consolas bold 16"/>
