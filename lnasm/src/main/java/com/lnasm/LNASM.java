@@ -74,14 +74,15 @@ public class LNASM {
     public static List<Line> getLinesFromFile(String file) throws FileNotFoundException{
         List<String> strLines;
         List<Line> lines = new ArrayList<>();
+        Path path = Path.of(file);
         try {
-            strLines = Files.readAllLines(Path.of(file));
+            strLines = Files.readAllLines(path);
         } catch (IOException e) {
             throw new FileNotFoundException("Unable to open source file '" + file + "'");
         }
         for (int i = 0; i < strLines.size(); i++) {
             String code = strLines.get(i);
-            lines.add(new Line(i + 1, code, file));
+            lines.add(new Line(path.toAbsolutePath(), code, i + 1));
         }
         return lines;
     }

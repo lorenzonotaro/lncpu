@@ -1,16 +1,16 @@
 package com.lnasm.compiler;
 
 public class Token {
-    public String file;
+
+    public Location location;
     Token macroSub;
     final Type type;
     public final String lexeme;
     public final Object literal;
-    public final int line;
-    public final int col;
 
-    public Token(Type type, String lexeme, Object literal, String file, int line, int col) {
-        this(null, type, lexeme, literal, file, line, col);
+
+    public Token(Type type, String lexeme, Object literal, Location location) {
+        this(null, type, lexeme, literal, location);
     }
 
     public enum Type{
@@ -77,18 +77,16 @@ public class Token {
         SP
     }
 
-    public Token(Token macroSub, Type type, String lexeme, Object literal, String file, int line, int col) {
+    public Token(Token macroSub, Type type, String lexeme, Object literal, Location location) {
         this.macroSub = macroSub;
         this.type = type;
         this.lexeme = lexeme;
         this.literal = literal;
-        this.file = file;
-        this.line = line;
-        this.col = col;
+        this.location = location;
     }
 
     public Token(Token token, Token macroSub){
-        this(macroSub, token.type, token.lexeme, token.literal, token.file, token.line, token.col);
+        this(macroSub, token.type, token.lexeme, token.literal, token.location);
     }
 
     @Override
@@ -97,12 +95,12 @@ public class Token {
                 "type=" + type +
                 ", lexeme='" + lexeme + '\'' +
                 ", literal=" + literal +
-                ", line=" + line +
-                ", col=" + col +
+                ", line=" + location.lineNumber +
+                ", col=" + location.colNumber +
                 '}';
     }
 
     public String formatLocation(){
-        return String.format("%s:%d:%d", this.file, this.line, this.col);
+        return String.format("%s:%d:%d", this.location.filename, this.location.lineNumber, this.location.colNumber);
     }
 }

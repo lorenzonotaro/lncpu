@@ -26,7 +26,7 @@ public class ImmediateLinker extends AbstractLinker {
 
             for(Block block : sortedBlocks){
                 short addr = block.startAddress;
-                sb.append(String.format("###### Origin: 0x%06x (block at %s:%d) ###### \n\n", block.startAddress & 0xFFFFFF, block.origin.file, block.origin.line));
+                sb.append(String.format("###### Origin: 0x%06x (block at %s:%d) ###### \n\n", block.startAddress & 0xFFFFFF, block.origin.location.filepath, block.origin.location.lineNumber));
                 for(Encodeable encodeable : block.encodeables){
                     byte[] encoded = encodeable.encode(this, addr);
                     StringBuilder params = new StringBuilder();

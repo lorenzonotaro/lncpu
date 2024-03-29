@@ -1,6 +1,5 @@
 package com.lnasm.compiler;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,7 +179,7 @@ public class Lexer {
     }
 
     private CompileException error(String message, String lexeme) {
-        return new CompileException(message, lexeme, line.filename, line.number, start + 1);
+        return new CompileException(message, lexeme, Location.of(line, start + 1));
     }
 
     private Token string(char terminator) {
@@ -286,7 +285,7 @@ public class Lexer {
     }
 
     private Token token(Token.Type type, String lexeme, Object literal) {
-        return new Token(macroSubToken, type, lexeme, literal, line.filename, line.number, start + 1);
+        return new Token(macroSubToken, type, lexeme, literal, Location.of(line, start + 1));
     }
 
     private Token token(Token.Type type, String lexeme) {
