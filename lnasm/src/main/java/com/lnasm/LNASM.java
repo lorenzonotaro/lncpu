@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LNASM {
 
@@ -17,6 +18,7 @@ public class LNASM {
     public static final String PROGRAM_VERSION = "1.0.0";
 
     public static ProgramSettings settings = new ProgramSettings(LNASM.class.getClassLoader().getResourceAsStream("default-settings.json"));
+    public static String[] includeDirs;
 
     public static void main(String[] args){
         Logger.setProgramState("init");
@@ -42,7 +44,9 @@ public class LNASM {
     private static int runFromSourceFiles() {
         List<Line> lines;
         try {
-            if(settings.getSourceFiles().size() == 0){
+            includeDirs = settings.get("-I", String.class).split(";");
+
+            if(settings.getSourceFiles().isEmpty()){
                 Logger.error("no source files.");
                 return 1;
             }

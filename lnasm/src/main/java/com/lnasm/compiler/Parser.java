@@ -52,8 +52,9 @@ public class Parser {
                 success = false;
             }
         }
-        blocks.add(currentBlock);
-
+        if(currentBlock != null) {
+            blocks.add(currentBlock);
+        }
         return success;
     }
 

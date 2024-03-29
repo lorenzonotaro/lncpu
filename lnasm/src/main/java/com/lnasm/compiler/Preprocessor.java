@@ -59,13 +59,11 @@ public class Preprocessor {
                 if(line.size() == 2){
                     String fileName = (String) line.get(1).literal;
                     try {
-                        List<Line> lines = LNASM.getLinesFromFile(Path.of(fileName).toRealPath().toString());
-                        Lexer lexer = new Lexer(macroToken);
+                        List<Line> lines = LNASM.getLinesFromFile(resolvePath(fileName, line.get(1).location));
+                        Lexer lexer = new Lexer();
                         if(lexer.parse(lines)){
                             iterator.remove();
-                            for(List<Token> _line : lexer.getLines()){
-                                iterator.add(_line);
-                            }
+                            addLines(new LinkedList<>(lexer.getLines()), iterator);
                         } else throw new CompileException("%include failed for file '" + fileName + "'", macroToken);
                     } catch (IOException e) {
                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
@@ -76,14 +74,14 @@ public class Preprocessor {
                     String macroName = line.get(1).lexeme;
                     boolean keep = defines.containsKey(macroName);
                     iterator.remove();
-                    consumeUntilEndif(iterator, keep);
+                    consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(Token.Type.MACRO_IFNDEF)){
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = !defines.containsKey(macroName);
                     iterator.remove();
-                    consumeUntilEndif(iterator, keep);
+                    consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
                 throw new CompileException("unexpected %endif", macroToken);
@@ -100,11 +98,38 @@ public class Preprocessor {
         }
     }
 
-    private void consumeUntilEndif(ListIterator<List<Token>> iterator, boolean keep){
+    private String resolvePath(String fileName, Location includerLocation) throws IOException {
+        // 1. Check if we can resolve the path starting from the current file's path
+        Path resolvedPath = Path.of(includerLocation.filepath).toAbsolutePath().getParent().resolve(fileName);
+
+        if(resolvedPath.toFile().exists()){
+            return resolvedPath.toString();
+        }
+
+        // 2. Check if we can resolve the path starting from the current working directory
+        resolvedPath = Path.of(fileName);
+        if(resolvedPath.toFile().exists()){
+            return resolvedPath.toString();
+        }
+
+        // 3. Check if we can resolve the path starting from the include directories
+        for(String includeDir : LNASM.includeDirs){
+            resolvedPath = Path.of(includeDir).resolve(fileName);
+            if(resolvedPath.toFile().exists()){
+                return resolvedPath.toString();
+            }
+        }
+
+        // 4. If we can't resolve the path, throw an exception
+        throw new IOException("file not found");
+    }
+
+    private void consumeUntilEndif(List<Token> openingLine, ListIterator<List<Token>> iterator, boolean keep){
         LinkedList<List<Token>> lines = new LinkedList<>();
         boolean closed = false;
+        List<Token> line =  openingLine;
         while(iterator.hasNext()){
-            List<Token> line = iterator.next();
+            line = iterator.next();
             if(line.isEmpty())
                 continue;
             Token macroToken = line.get(0);
@@ -119,15 +144,23 @@ public class Preprocessor {
         if(!closed){
             iterator.add(Collections.emptyList());
             iterator.previous();
-            throw new CompileException("missing %endif", lines.get(lines.size() - 1).get(0));
+            throw new CompileException("missing %endif", openingLine.get(0));
         }
 
         if(keep){
             for (Iterator<List<Token>> it = lines.descendingIterator(); it.hasNext(); ) {
-                List<Token> line = it.next();
-                iterator.add(line);
+                List<Token> _line = it.next();
+                iterator.add(_line);
                 iterator.previous();
             }
+        }
+    }
+
+    private void addLines(LinkedList<List<Token>> lines, ListIterator<List<Token>> iterator) {
+        for (Iterator<List<Token>> iter = lines.descendingIterator(); iter.hasNext(); ) {
+            List<Token> line = iter.next();
+            iterator.add(line);
+            iterator.previous();
         }
     }
 

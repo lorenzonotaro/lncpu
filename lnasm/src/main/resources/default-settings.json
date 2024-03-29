@@ -30,5 +30,10 @@
   "-Woptimizable-long-jump": {
     "help": "Disables long jump used on label in current segment compile warning.",
     "value": false
+  },
+
+  "-I": {
+    "help": "Set the include path (directories separated by ';'). ",
+    "value": ""
   }
 }
