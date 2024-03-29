@@ -17,6 +17,10 @@ public class Token {
         MACRO_DEFINE,
         MACRO_UNDEFINE,
         MACRO_INCLUDE,
+        MACRO_IFDEF,
+        MACRO_IFNDEF,
+        MACRO_ENDIF,
+
         DIR_ORG,
         DIR_DATA,
         DIR_PAD,
