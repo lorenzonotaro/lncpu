@@ -39,7 +39,7 @@ contexts:
       scope: storage.type.class.lnasm
 
     # Preprocessor
-    - match: '%(define|undef|include|ifdef|ifndef)\b'
+    - match: '%(define|undef|include|ifdef|ifndef|endif)\b'
       scope: keyword.control.import
 
     # Numbers
