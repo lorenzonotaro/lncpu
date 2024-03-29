@@ -43,7 +43,7 @@ public class Preprocessor {
                     if (defines.containsKey(macroName))
                         throw new CompileException("duplicate macro name '" + macroName + "'", macroToken);
                     defines.put(macroName, line.subList(2, line.size()));
-                    iterator.set(Collections.emptyList());
+                    iterator.remove();
                     needsReprocessing = true;
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if (macroToken.type.equals(Token.Type.MACRO_UNDEFINE)) {
@@ -53,7 +53,7 @@ public class Preprocessor {
                         throw new CompileException("undefined macro" + macroName + "'" + macroName + "'", macroToken);
                     }
                     defines.remove(macroName);
-                    iterator.set(Collections.emptyList());
+                    iterator.remove();
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if (macroToken.type.equals(Token.Type.MACRO_INCLUDE)){
                 if(line.size() == 2){
@@ -62,7 +62,7 @@ public class Preprocessor {
                         List<Line> lines = LNASM.getLinesFromFile(Path.of(fileName).toRealPath().toString());
                         Lexer lexer = new Lexer(macroToken);
                         if(lexer.parse(lines)){
-                            iterator.set(Collections.emptyList());
+                            iterator.remove();
                             for(List<Token> _line : lexer.getLines()){
                                 iterator.add(_line);
                             }
@@ -75,14 +75,14 @@ public class Preprocessor {
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = defines.containsKey(macroName);
-                    iterator.set(Collections.emptyList());
+                    iterator.remove();
                     consumeUntilEndif(iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(Token.Type.MACRO_IFNDEF)){
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = !defines.containsKey(macroName);
-                    iterator.set(Collections.emptyList());
+                    iterator.remove();
                     consumeUntilEndif(iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
