@@ -3,6 +3,8 @@ package com.lnasm.compiler;
 import com.lnasm.compiler.ast.Argument;
 import com.lnasm.compiler.ast.Matcher;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -62,19 +64,20 @@ public class Parser {
         } else if (currentBlock == null)
             throw new CompileException("initial code segment not specified", peek());
         else if (match(Token.Type.DIR_DATA)) {
-            byte[] bytes = null;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             while (!isAtEnd()) {
                 Token t = consume("expected encodeable constant value(s) (strings, bytes)", Token.Type.STRING, Token.Type.INTEGER);
                 switch (t.type) {
                     case STRING:
-                        bytes = ((String) t.literal).getBytes(StandardCharsets.US_ASCII);
+                        byte[] strBytes = ((String) t.literal).getBytes(StandardCharsets.US_ASCII);
+                        baos.write(strBytes, 0, strBytes.length);
                         break;
                     case INTEGER:
                         byte bVal = ensureByte(t, (Integer) t.literal);
-                        bytes = new byte[]{bVal};
+                        baos.write(bVal);
                 }
             }
-            return new EncodedData(bytes);
+            return new EncodedData(baos.toByteArray());
 
         }else if (match(Token.Type.DIR_PAD)) {
             Token amount = consume("expected integer", Token.Type.INTEGER);
