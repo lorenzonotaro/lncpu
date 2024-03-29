@@ -257,6 +257,8 @@ public class Lexer {
     private Token macro() {
         String ident = identifier();
 
+        if ("%include".equalsIgnoreCase(ident))
+            return token(Token.Type.MACRO_INCLUDE);
         if ("%define".equalsIgnoreCase(ident))
             return token(Token.Type.MACRO_DEFINE);
         if ("%undef".equalsIgnoreCase(ident))
