@@ -1,0 +1,66 @@
+%ifndef     F_BIOS
+%define     F_BIOS
+
+%include        "defs.lnasm"
+
+.org BIOS
+;   Resets the buffer write and read pointers.
+;   Modifies registers: none.
+IO_INIT_BUFFER:
+    mov         0x0,        [BUFWPT]        ; store 0 in both the buffer write and read pointers
+    mov         0x0,        [BUFRPT]
+    ret
+
+
+;   Returns the number of characters left to read in the buffer in RA.
+;   Modifies registers: RA
+IO_AVAIL:
+    push        RB                          ; preserve RB
+    mov         [BUFWPT],   RA              ; store the write pointer and the read pointer
+    mov         [BUFRPT],   RB              ; in RA and RB, respectively
+    sub         RA,         RB              ; subtract the read pointer to the write pointer
+    pop         RB                          ; restore RB
+    ret                                     ; RA will contain the available characters to read
+
+IO_GETC:
+    push        RB
+    mov         [BUFWPT],   RA              ; store the write pointer and the read pointer
+    mov         [BUFRPT],   RB              ; in RA and RB, respectively
+    cmp         RA,         RB              ; subtract the read pointer to the write pointer
+    jz          _notavail
+    push        RC
+    push        RD
+    mov         RA,         RC
+    mov         RB,         RD
+    mov         [RC:RD],    RA              ; read the character from the buffer
+    inc         RD
+    mov         RD,         [BUFRPT]
+    pop         RD
+    pop         RC
+_notavail:
+    pop         RB
+    ret
+
+;   Reads a character from the buffer into RA, increments the read pointer.
+;   Modifies registers: RA
+IO_GETC:
+    push        RC                          ; preserve RC, RD
+    push        RD                          
+    mov         INPBUF,     RC              ; load the buffer page and read pointer into RC:RD
+    mov         [BUFRPT],   RD
+    mov         [RC:RD],    RA              ; read the character from the buffer
+    inc         RD                          ; advance the read pointer and store it back
+    mov         RD,         [BUFRPT]
+
+    pop         RD                          ; restore RD, RC
+    pop         RC
+    ret
+
+;   Writes a the character contained in RA to the output.
+;   Modifies registers: none.
+IO_PUTC:
+    mov         RA,         [TTYOUT]        ; write RA to the output device
+    ret
+
+
+%endif

@@ -367,10 +367,10 @@ _err:
 
 .org            0x1f00
 interrupt:
-    push        RA
-    mov         [KB_AVAIL],     RA
     and         RA,             RA
     jz          _ret
+    push        RA
+    mov         [KB_AVAIL],     RA
     push        RC
     push        RD
     mov         [KB_NEXT],      RA

@@ -1,0 +1,63 @@
+###### Origin: 0x000000 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\start.lnasm:8) ###### 
+
+            _start 000000:	00 (nop)                             
+                   000001:	00 (nop)                             
+                   000002:	e8 (sid)                             
+                   000003:	08 (mov_cst_ss)                   21 
+                   000005:	07 (mov_cst_sp)                   00 
+                   000007:	e3 (lcall)                     1e 00 
+                   00000a:	e1 (lgoto)                     1d 00 
+
+
+###### Origin: 0x001d00 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\defs.lnasm:5) ###### 
+
+                   001d00:	e7 (cid)                             
+             _loop 001d01:	e3 (lcall)                     1e 07 
+                   001d04:	dd (goto)                         01 
+
+
+###### Origin: 0x001e00 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\defs.lnasm:6) ###### 
+
+    IO_INIT_BUFFER 001e00:	21 (mov_cst_page0)             01 00 
+                   001e03:	21 (mov_cst_page0)             02 00 
+                   001e06:	e5 (ret)                             
+          IO_AVAIL 001e07:	3e (push_rb)                         
+                   001e08:	1d (mov_page0_ra)                 01 
+                   001e0a:	1e (mov_page0_rb)                 02 
+                   001e0c:	63 (sub_ra_rb)                       
+                   001e0d:	47 (pop_rb)                          
+                   001e0e:	e5 (ret)                             
+           IO_GETC 001e0f:	3f (push_rc)                         
+                   001e10:	40 (push_rd)                         
+                   001e11:	05 (mov_cst_rc)                   22 
+                   001e13:	20 (mov_page0_rd)                 02 
+                   001e15:	2f (mov_ifullrcrd_ra)                 
+                   001e16:	cd (inc_rd)                          
+                   001e17:	1c (mov_rd_page0)                 02 
+                   001e19:	49 (pop_rd)                          
+                   001e1a:	48 (pop_rc)                          
+                   001e1b:	e5 (ret)                             
+           IO_PUTC 001e1c:	34 (mov_ra_abs)                60 00 
+                   001e1f:	e5 (ret)                             
+
+
+###### Origin: 0x001f00 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\defs.lnasm:7) ###### 
+
+       IRQ_HANDLER 001f00:	3d (push_ra)                         
+                   001f01:	38 (mov_abs_ra)                40 00 
+                   001f04:	86 (cmp_ra_cst)                   00 
+                   001f06:	dc (jz)                           17 
+                   001f08:	38 (mov_abs_ra)                40 01 
+                   001f0b:	3f (push_rc)                         
+                   001f0c:	40 (push_rd)                         
+                   001f0d:	05 (mov_cst_rc)                   22 
+                   001f0f:	20 (mov_page0_rd)                 01 
+                   001f11:	2b (mov_ra_ifullrcrd)                 
+                   001f12:	cd (inc_rd)                          
+                   001f13:	1c (mov_rd_page0)                 01 
+                   001f15:	49 (pop_rd)                          
+                   001f16:	48 (pop_rc)                          
+IRQ_HANDLER$_notkb 001f17:	46 (pop_ra)                          
+                   001f18:	e6 (iret)                            
+
+

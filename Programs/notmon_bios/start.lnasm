@@ -1,0 +1,19 @@
+%include	"defs.lnasm"
+%include	"bios.lnasm"
+%include	"interrupt.lnasm"
+%include	"notmon.lnasm"
+
+
+; start of ROM.
+.org	0x0
+
+_start:
+	nop		; with the current design, these nop instructions are necessary to initialize the pipeline.
+	nop
+	sid		; disable interrupts during initialization
+
+	; setup stack
+	mov		STACKP,			SS
+	mov		0,			SP
+	lcall		IO_INIT_BUFFER
+	lgoto		NOTMON				; transfer control to notmon

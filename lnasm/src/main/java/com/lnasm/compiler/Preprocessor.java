@@ -60,7 +60,7 @@ public class Preprocessor {
                     String fileName = (String) line.get(1).literal;
                     try {
                         List<Line> lines = LNASM.getLinesFromFile(resolvePath(fileName, line.get(1).location));
-                        Lexer lexer = new Lexer();
+                        Lexer lexer = new Lexer(); //TODO: file locations aren't accurate? see immediate mode compilation
                         if(lexer.parse(lines)){
                             iterator.remove();
                             addLines(new LinkedList<>(lexer.getLines()), iterator);

@@ -1,0 +1,24 @@
+%ifndef F_DEFS
+%define F_DEFS
+
+	; code placement
+	%define 	NOTMON			0x1d00			; notmon code location
+	%define		BIOS			0x1e00			; BIOS code location
+	%define 	INTVEC			0x1f00			; The interrupt vector for the v1 design of the lncpu (last page of ROM)
+
+	; stack and buffers
+	%define 	STACKP			0x21			; Stack will be in the second page of memory
+	%define		INPBUF			0x3f			; The serial input buffer will be in the last page of memory
+
+	; page 0 variables
+	%define		STATUS			0x1 			; This will keep track of the current program status
+	%define		BUFWPT			0x1                     ; The write pointer for the input buffer
+	%define		BUFRPT			0x2                     ; The read pointer for the input buffer
+
+	; I/O address mappings
+	%define		KBAVAIL			0x4000			; Keyboard available.
+	%define		KBNEXT			0x4001			; Keyboard next character.
+
+	%define		TTYOUT			0x6000			; TTY Output.
+
+%endif

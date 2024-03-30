@@ -1,0 +1,25 @@
+%ifndef F_NOTMON
+%define F_NOTMON
+
+
+; page 0 variables
+%define ADDR1H              	0x3
+%define ADDR1L              	0x4
+%define ADDR2H              	0x5
+%define ADDR2L              	0x6
+%define	NWRPTR			0x7	; write pointer to the notmon input buffer
+%define NRDPTR			0x8	; read pointer to the notmon input buffer
+%define	NBUFPG			0x3e	; notmon input buffer page (second to last page of memory)
+
+.org	NOTMON
+	mov		0x0,		[NWRPTR]	; clear notmon input buffer
+	mov		0x0,		[NRDPTR]
+	cid
+_loop:
+	lcall		IO_AVAIL
+	cmp		RA,		0
+	jz		_loop
+	lcall		IO_GETC
+	
+
+%endif
