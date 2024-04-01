@@ -22,39 +22,45 @@ IO_AVAIL:
     pop         RB                          ; restore RB
     ret                                     ; RA will contain the available characters to read
 
+;   Checks whether there are characters available to read:
+;       - if there are, the zero flag is cleared and the next available character is read
+;       - if there aren't, the zero flag is set
+;   Modifies registers: RA
 IO_GETC:
-    push        RB
+    push        RB                          ; preserve RB
     mov         [BUFWPT],   RA              ; store the write pointer and the read pointer
     mov         [BUFRPT],   RB              ; in RA and RB, respectively
     cmp         RA,         RB              ; subtract the read pointer to the write pointer
-    jz          _notavail
-    push        RC
+    jz          _notavail                   ; if they are equal, there are no available characters
+    push        RC                          ; preserve RC, RD
     push        RD
-    mov         RA,         RC
-    mov         RB,         RD
-    mov         [RC:RD],    RA              ; read the character from the buffer
-    inc         RD
+    mov         INPBUF,     RC              ; move the input buffer page into RC
+    mov         RB,         RD              ; and the buffer read pointer in RB
+    mov         [RC:RD],    RA              ; read the character from the buffer and store it RA
+    inc         RD                          ; increment the buffer read pointer and store it back
     mov         RD,         [BUFRPT]
-    pop         RD
+    pop         RD                          ; restore RD, RC
     pop         RC
+    xor         RB,         RB              ; these two instructions ensure that the zero flag is not set
+                                            ; before returning (until I implement Set/Clear Carry Flag instructions :))
 _notavail:
-    pop         RB
+    pop         RB                          ; restore RB
     ret
 
 ;   Reads a character from the buffer into RA, increments the read pointer.
 ;   Modifies registers: RA
-IO_GETC:
-    push        RC                          ; preserve RC, RD
-    push        RD                          
-    mov         INPBUF,     RC              ; load the buffer page and read pointer into RC:RD
-    mov         [BUFRPT],   RD
-    mov         [RC:RD],    RA              ; read the character from the buffer
-    inc         RD                          ; advance the read pointer and store it back
-    mov         RD,         [BUFRPT]
+;IO_GETC:
+;    push        RC                          ; preserve RC, RD
+;    push        RD                          
+;    mov         INPBUF,     RC              ; load the buffer page and read pointer into RC:RD
+;    mov         [BUFRPT],   RD
+;    mov         [RC:RD],    RA              ; read the character from the buffer
+;    inc         RD                          ; advance the read pointer and store it back
+;    mov         RD,         [BUFRPT]
 
-    pop         RD                          ; restore RD, RC
-    pop         RC
-    ret
+;    pop         RD                          ; restore RD, RC
+;    pop         RC
+;    ret
 
 ;   Writes a the character contained in RA to the output.
 ;   Modifies registers: none.
