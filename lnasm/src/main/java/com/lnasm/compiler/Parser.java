@@ -60,7 +60,7 @@ public class Parser {
 
     private Encodeable parseLine() {
         if (match(Token.Type.DIR_ORG)) {
-            newBlock(consume("expected number", Token.Type.INTEGER));
+            newBlock(previous(), consume("expected number", Token.Type.INTEGER));
             return null;
         } else if (currentBlock == null)
             throw new CompileException("initial code segment not specified", peek());
@@ -181,11 +181,11 @@ public class Parser {
         blocks.clear();
     }
 
-    private void newBlock(Token t) {
-        short startAddress = ensureShort(t, (Integer) t.literal);
+    private void newBlock(Token orgToken, Token originToken) {
+        short startAddress = ensureShort(originToken, (Integer) originToken.literal);
         if (currentBlock != null)
             blocks.add(currentBlock);
-        currentBlock = new Block(previous(), startAddress);
+        currentBlock = new Block(orgToken, startAddress);
         currentParentLabel = null;
     }
 

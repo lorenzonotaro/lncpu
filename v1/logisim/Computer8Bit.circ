@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#C8BComponents.circ" name="12"/>
-  <lib desc="file#Devices.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="file#C8BComponents.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -291,7 +291,7 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(120,610)" name="Probe">
       <a name="appearance" val="NewPins"/>
-      <a name="breakValue" val="0x1f04"/>
+      <a name="breakValue" val="0x1e22"/>
       <a name="radix" val="16"/>
     </comp>
     <comp lib="0" loc="(120,630)" name="Probe">
@@ -1494,8 +1494,8 @@ end TCL_Generic;
     <comp lib="10" loc="(970,350)" name="Switch">
       <a name="label" val="RESET"/>
     </comp>
-    <comp lib="13" loc="(1410,1840)" name="TTYAdapter"/>
-    <comp lib="13" loc="(840,1780)" name="KeyboardAdapter"/>
+    <comp lib="12" loc="(1410,1840)" name="TTYAdapter"/>
+    <comp lib="12" loc="(840,1780)" name="KeyboardAdapter"/>
     <comp lib="4" loc="(1240,490)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="SS"/>
@@ -2458,8 +2458,8 @@ end TCL_Generic;
       <a name="width" val="8"/>
     </comp>
     <comp lib="1" loc="(200,350)" name="NOT Gate"/>
-    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -3606,15 +3606,18 @@ end TCL_Generic;
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
 0 0 e8 8 21 7 0 e3
-1e 0 e1 1d 7412*0 e7 e3 1e
-7 dd 1 250*0 21 1 0 21
-2 0 e5 3e 1d 1 1e 2
-63 47 e5 3f 40 5 22 20
-2 2f cd 1c 2 49 48 e5
-34 60 0 e5 224*0 3d 38 40
-0 86 0 dc 17 38 40 1
-3f 40 5 22 20 1 2b cd
-1c 1 49 48 46 e6
+1e 0 e1 1d 7412*0 21 7 0
+21 8 0 e7 e3 1e f dc
+7 e3 1e 26 dd 7 239*0 21
+1 0 21 2 0 e5 3e 1d
+1 1e 2 63 47 e5 3e 1d
+1 1e 2 77 dc 24 3f 40
+5 3f 10 2f cd 1c 2 49
+48 b7 cb 47 e5 34 60 0
+e5 214*0 3d 38 40 0 86 0
+dc 17 38 40 1 3f 40 5
+3f 20 1 2b cd 1c 1 49
+48 46 e6
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
@@ -4441,7 +4444,7 @@ end TCL_Generic;
     <comp lib="1" loc="(600,370)" name="AND Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="12" loc="(550,490)" name="EdgeDetector">
+    <comp lib="13" loc="(550,490)" name="EdgeDetector">
       <a name="facing" val="north"/>
     </comp>
     <comp lib="2" loc="(540,230)" name="Multiplexer">

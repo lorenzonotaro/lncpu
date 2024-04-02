@@ -1,4 +1,4 @@
-###### Origin: 0x000000 (block at C:\Users\Amministratore\Desktop\Personal\lncpu\Programs\notmon_bios\start.lnasm:8) ###### 
+###### Origin: 0x000000 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\start.lnasm:8) ###### 
 
             _start 000000:	00 (nop)                             
                    000001:	00 (nop)                             
@@ -9,66 +9,83 @@
                    00000a:	e1 (lgoto)                     1d 00 
 
 
-###### Origin: 0x001d00 (block at C:\Users\Amministratore\Desktop\Personal\lncpu\Programs\notmon_bios\defs.lnasm:5) ###### 
+###### Origin: 0x001d00 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\notmon.lnasm:14) ###### 
 
-                   001d00:	21 (mov_cst_page0)             07 00 
-                   001d03:	21 (mov_cst_page0)             08 00 
-                   001d06:	e7 (cid)                             
-             _loop 001d07:	e3 (lcall)                     1e 0f 
-                   001d0a:	dc (jz)                           07 
-                   001d0c:	e3 (lcall)                     1e 25 
-                   001d0f:	dd (goto)                         07 
+                   001d00:	e7 (cid)                             
+            notmon 001d01:	b7 (xor_rb_rb)                       
+                   001d02:	05 (mov_cst_rc)                   3e 
+                   001d04:	c1 (xor_rd_rd)                       
+      notmon$_loop 001d05:	e3 (lcall)                     1e 07 
+                   001d08:	dc (jz)                           05 
+                   001d0a:	2b (mov_ra_ifullrcrd)                 
+                   001d0b:	86 (cmp_ra_cst)                   0a 
+                   001d0d:	dc (jz)                           1d 
+                   001d0f:	86 (cmp_ra_cst)                   08 
+                   001d11:	dc (jz)                           16 
+                   001d13:	cd (inc_rd)                          
+                   001d14:	dd (goto)                         05 
+ notmon$_backspace 001d16:	89 (cmp_rd_cst)                   00 
+                   001d18:	dc (jz)                           05 
+                   001d1a:	d1 (dec_rd)                          
+                   001d1b:	dd (goto)                         05 
+     notmon$_parse 001d1d:	d8 (swap_rb_rd)                      
+                   001d1e:	89 (cmp_rd_cst)                   01 
+                   001d20:	dc (jz)                           2b 
+                   001d22:	89 (cmp_rd_cst)                   04 
+                   001d24:	da (jc)                           2c 
+                   001d26:	e3 (lcall)                     1d 36 
+                   001d29:	dd (goto)                         2c 
+   notmon$_command 001d2b:	00 (nop)                             
+       notmon$_err 001d2c:	3c (mov_cst_abs)            60 00 3f 
+       notmon$_end 001d30:	3c (mov_cst_abs)            60 00 0a 
+                   001d34:	dd (goto)                         01 
 
 
-###### Origin: 0x001e00 (block at C:\Users\Amministratore\Desktop\Personal\lncpu\Programs\notmon_bios\defs.lnasm:6) ###### 
+###### Origin: 0x001e00 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\bios.lnasm:6) ###### 
 
     IO_INIT_BUFFER 001e00:	21 (mov_cst_page0)             01 00 
                    001e03:	21 (mov_cst_page0)             02 00 
                    001e06:	e5 (ret)                             
-          IO_AVAIL 001e07:	3e (push_rb)                         
+           IO_GETC 001e07:	3e (push_rb)                         
                    001e08:	1d (mov_page0_ra)                 01 
                    001e0a:	1e (mov_page0_rb)                 02 
-                   001e0c:	63 (sub_ra_rb)                       
-                   001e0d:	47 (pop_rb)                          
-                   001e0e:	e5 (ret)                             
-           IO_GETC 001e0f:	3e (push_rb)                         
-                   001e10:	1d (mov_page0_ra)                 01 
-                   001e12:	1e (mov_page0_rb)                 02 
-                   001e14:	77 (cmp_ra_rb)                       
-                   001e15:	dc (jz)                           23 
-                   001e17:	3f (push_rc)                         
-                   001e18:	40 (push_rd)                         
-                   001e19:	05 (mov_cst_rc)                   3f 
-                   001e1b:	10 (mov_rb_rd)                       
-                   001e1c:	2f (mov_ifullrcrd_ra)                 
-                   001e1d:	cd (inc_rd)                          
-                   001e1e:	1c (mov_rd_page0)                 02 
-                   001e20:	49 (pop_rd)                          
-                   001e21:	48 (pop_rc)                          
-                   001e22:	b7 (xor_rb_rb)                       
- IO_GETC$_notavail 001e23:	47 (pop_rb)                          
-                   001e24:	e5 (ret)                             
-           IO_PUTC 001e25:	34 (mov_ra_abs)                60 00 
-                   001e28:	e5 (ret)                             
+                   001e0c:	77 (cmp_ra_rb)                       
+                   001e0d:	dc (jz)                           1c 
+                   001e0f:	3f (push_rc)                         
+                   001e10:	40 (push_rd)                         
+                   001e11:	05 (mov_cst_rc)                   3f 
+                   001e13:	10 (mov_rb_rd)                       
+                   001e14:	2f (mov_ifullrcrd_ra)                 
+                   001e15:	cd (inc_rd)                          
+                   001e16:	1c (mov_rd_page0)                 02 
+                   001e18:	49 (pop_rd)                          
+                   001e19:	48 (pop_rc)                          
+                   001e1a:	b7 (xor_rb_rb)                       
+                   001e1b:	cb (inc_rb)                          
+ IO_GETC$_notavail 001e1c:	47 (pop_rb)                          
+                   001e1d:	e5 (ret)                             
+           IO_PUTC 001e1e:	34 (mov_ra_abs)                60 00 
+                   001e21:	e5 (ret)                             
 
 
-###### Origin: 0x001f00 (block at C:\Users\Amministratore\Desktop\Personal\lncpu\Programs\notmon_bios\defs.lnasm:7) ###### 
+###### Origin: 0x001f00 (block at C:\Users\loryn\Desktop\Progetti\lncpu\programs\notmon_bios\interrupt.lnasm:4) ###### 
 
        IRQ_HANDLER 001f00:	3d (push_ra)                         
                    001f01:	38 (mov_abs_ra)                40 00 
                    001f04:	86 (cmp_ra_cst)                   00 
-                   001f06:	dc (jz)                           17 
+                   001f06:	dc (jz)                           1a 
                    001f08:	38 (mov_abs_ra)                40 01 
-                   001f0b:	3f (push_rc)                         
-                   001f0c:	40 (push_rd)                         
-                   001f0d:	05 (mov_cst_rc)                   3f 
-                   001f0f:	20 (mov_page0_rd)                 01 
-                   001f11:	2b (mov_ra_ifullrcrd)                 
-                   001f12:	cd (inc_rd)                          
-                   001f13:	1c (mov_rd_page0)                 01 
-                   001f15:	49 (pop_rd)                          
-                   001f16:	48 (pop_rc)                          
-IRQ_HANDLER$_notkb 001f17:	46 (pop_ra)                          
-                   001f18:	e6 (iret)                            
+                   001f0b:	34 (mov_ra_abs)                60 00 
+                   001f0e:	3f (push_rc)                         
+                   001f0f:	40 (push_rd)                         
+                   001f10:	05 (mov_cst_rc)                   3f 
+                   001f12:	20 (mov_page0_rd)                 01 
+                   001f14:	2b (mov_ra_ifullrcrd)                 
+                   001f15:	cd (inc_rd)                          
+                   001f16:	1c (mov_rd_page0)                 01 
+                   001f18:	49 (pop_rd)                          
+                   001f19:	48 (pop_rc)                          
+IRQ_HANDLER$_notkb 001f1a:	46 (pop_ra)                          
+                   001f1b:	e6 (iret)                            
 
 

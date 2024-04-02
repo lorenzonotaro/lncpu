@@ -9,7 +9,7 @@ IRQ_HANDLER:
     jz              _notkb                      ; if it doesn't return from interrupt
     mov             [KBNEXT],       RA          ; if it does, retrieve the character
     
-;    mov             RA,             [TTYOUT]    ; echo.
+    mov             RA,             [TTYOUT]    ; echo.
 
     push            RC                          ; preserve RC, and RD
     push            RD

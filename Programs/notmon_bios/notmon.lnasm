@@ -12,13 +12,57 @@
 %define NBUFPG                  0x3e ; notmon input buffer page (second to last page of memory)
 
 .org    NOTMON
-    mov             0x0,          [NWRPTR]    ; clear notmon input buffer
-    mov             0x0,          [NRDPTR]
-    cid 
+    cid                                             ; allow interrupts 
+notmon:
+    xor             RB,             RB              ; set RB to 0
+    mov             NBUFPG,         RC              ; load NBUFPG:0 into RC:RD (as the write buffer)
+    xor             RD,             RD
+
 _loop:
-    lcall           IO_GETC
-    jz              _loop
-    lcall           IO_PUTC
+    lcall           IO_GETC                         ; get the next character 
+    jz              _loop                           ; if there is none available, IO_GETC sets the Zero flag
+
+    mov             RA,             [RC:RD]         ; write the newly read character to the buffer
+
+    cmp             RA,             '\n'            ; newline?
+    jz              _parse
+
+    cmp             RA,             '\b'            ; backspace?
+    jz              _backspace
+
+    inc             RD                              ; increment the buffer
     goto            _loop
 
+_backspace:
+    cmp             RD,             0               ; is the buffer empty?
+    jz              _loop                           ; if so, ignore the backspace character
+
+    dec             RD                              ; decrement the buffer
+    goto            _loop
+
+_parse:
+    swap            RB,             RD              ; swap RB and RD so that:
+                                                    ; RD becomes 0 (index to read the buffer from now on)
+                                                    ; RB becomes the buffer length
+
+    cmp             RD,             1               ; single character?
+    jz              _command
+    
+    cmp             RD,             4               ; at this point, if there are less then 4 characters it's an error
+    jc              _err
+
+    lcall           parse_full_addr
+
+    goto            _err
+
+_command:
+
+_err:
+    mov             '?',            [TTYOUT]
+_end:
+    mov             '\n',           [TTYOUT]
+    goto            notmon
+
+parse_full_addr:
+    
 %endif
