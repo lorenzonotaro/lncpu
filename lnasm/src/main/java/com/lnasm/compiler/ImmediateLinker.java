@@ -13,8 +13,14 @@ public class ImmediateLinker extends AbstractLinker {
 
     public ImmediateLinker(Map<String, Short> labels) {
         super(labels);
-        this.reverseLookupLabels = labels.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-        this.longestLabelLength = labels.keySet().stream().mapToInt(String::length).max().orElse(1);
+        this.reverseLookupLabels = labels.entrySet().stream()
+                .collect(Collectors.groupingBy(Map.Entry::getValue,
+                        Collectors.mapping(Map.Entry::getKey, Collectors.collectingAndThen(
+                                Collectors.joining(": "),
+                                str -> str + ": "
+                        ))
+                ));
+        this.longestLabelLength = reverseLookupLabels.values().stream().mapToInt(String::length).max().orElse(1);
     }
 
     @Override
