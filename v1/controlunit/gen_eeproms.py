@@ -11,12 +11,23 @@ import hashlib
 # ordered list of control signals
 import json
 
-KEEP_EEPROM_FILES = False
+
+KEEP_EEPROM_FILES = True
 
 OPCODES_TSV = 'opcodes.tsv'
 COPY_OPCODES_TSV_TO_LNASM = True
 EEPROM_FILES = []
 EEPROM_HASHES = []
+
+# the size of each instruction in the eeproms, in bytes
+INSTR_SIZE = 16
+
+# whether to fill the rest of the EEPROMs with the default signals
+# this is necessary for the actual circuit, but not for simulation
+FILL_EEPROMS = True
+
+# the size of the EEPROMs in bytes
+EEPROM_SIZE = 8192
 
 with open('signals_meta.json') as file:
     SIGNALS_META = json.load(file, object_pairs_hook=OrderedDict)
@@ -89,7 +100,6 @@ def write_to_eeproms(address, byteLabel, microinstr):
         value = sum(list[i * 8 + n][1] * pow(2, n) for n in range(0, 8))
         bitLabels = [list[i * 8 + 7 - n][0] for n in range(0, 8)]
         eeprom.append({"address": address, "value": value, "byteLabel": byteLabel, "bitLabels": bitLabels})
-        pass
 
 
 with open('instructions.json') as file, open(OPCODES_TSV, mode='w') as opcodes_tsv:
@@ -159,7 +169,7 @@ with open('instructions.json') as file, open(OPCODES_TSV, mode='w') as opcodes_t
         # pad the clock cycles with the default signals
         # this isn't needed, it's just in case the instruction fails to pass
         # and runs through the remaining clock cycles
-        while len(all_steps) < 16:
+        while len(all_steps) < INSTR_SIZE:
             all_steps = all_steps + [SIGNALS]
 
         # eeprom files
@@ -171,10 +181,15 @@ with open('instructions.json') as file, open(OPCODES_TSV, mode='w') as opcodes_t
             write_to_eeproms(instr_addr + addr, name + '.' + str(addr), microinstruction)
             addr = addr + 1
 
-        instr_addr = instr_addr + 16
+        instr_addr = instr_addr + INSTR_SIZE
         opcode = opcode + 1
 
-# copy opcodes.tsv to lncpu if necessary
+    if FILL_EEPROMS:
+        for i in range(instr_addr, EEPROM_SIZE, 16):
+            for j in range(0, INSTR_SIZE):
+                write_to_eeproms(i + j, 'FILLER_NOP', SIGNALS)
+
+# copy opcodes.tsv to lnasm if necessary
 
 if COPY_OPCODES_TSV_TO_LNASM:
     print("Copying opcodes.tsv to lnasm project....")
