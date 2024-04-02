@@ -12,7 +12,7 @@ import hashlib
 import json
 
 
-KEEP_EEPROM_FILES = True
+KEEP_EEPROM_FILES = False
 
 OPCODES_TSV = 'opcodes.tsv'
 COPY_OPCODES_TSV_TO_LNASM = True

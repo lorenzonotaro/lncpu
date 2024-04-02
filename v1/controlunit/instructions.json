@@ -971,6 +971,33 @@
         ]
     },
     {
+        "name": "mov_page0_page0",
+        "description": "Copies a location in the address space (zero page addressing mode) to another location in the address space (zero page addressing mode)",
+        "microcode": [
+            {
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_ABL_IN": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0
+            },
+            {
+                "ADDR_SEL": "page0:abl",
+                "NOT_DEVICE_OUT": 0,
+                "NOT_RT_IN": 0
+            },{
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_ABL_IN": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0
+            },
+            {
+                "ADDR_SEL": "page0:abl",
+                "NOT_DEVICE_IN": 0,
+                "NOT_RT_OUT": 0
+            }
+        ]
+    },
+    {
         "name": "push_ra",
         "description": "Pushes RA onto the stack",
         "microcode": [
