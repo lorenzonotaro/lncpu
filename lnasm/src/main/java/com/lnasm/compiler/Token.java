@@ -21,6 +21,8 @@ public class Token {
         MACRO_IFNDEF,
         MACRO_ENDIF,
 
+        MACRO_ERROR,
+
         DIR_ORG,
         DIR_DATA,
         DIR_PAD,

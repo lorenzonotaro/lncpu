@@ -268,6 +268,8 @@ public class Lexer {
             return token(Token.Type.MACRO_IFNDEF);
         if ("%endif".equalsIgnoreCase(ident))
             return token(Token.Type.MACRO_ENDIF);
+        if ("%error".equalsIgnoreCase(ident))
+            return token(Token.Type.MACRO_ERROR);
 
         throw error("invalid macro", ident);
     }

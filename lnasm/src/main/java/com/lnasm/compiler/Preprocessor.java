@@ -85,6 +85,10 @@ public class Preprocessor {
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
                 throw new CompileException("unexpected %endif", macroToken);
+            }else if(macroToken.type.equals(Token.Type.MACRO_ERROR)){
+                if(line.size() == 2 && line.get(1).type == Token.Type.STRING){
+                    throw new CompileException(line.get(1).literal.toString(), macroToken);
+                }else throw new CompileException("invalid macro syntax", macroToken);
             }else {
                 iterator.set(line.stream().flatMap(l -> {
                     List<Token> macroValue = null;

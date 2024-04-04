@@ -15,7 +15,7 @@ import java.util.Objects;
 public class LNASM {
 
     public static final String PROGRAM_NAME = "lnasm";
-    public static final String PROGRAM_VERSION = "1.0.0";
+    public static final String PROGRAM_VERSION = "1.1.0";
 
     public static ProgramSettings settings = new ProgramSettings(LNASM.class.getClassLoader().getResourceAsStream("default-settings.json"));
     public static String[] includeDirs;
