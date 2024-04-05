@@ -1,0 +1,126 @@
+
+%ifndef LOC_NUMUTILS
+	%error "Specify numutils location via %define LOC_NUMUTILS <address> before %include"
+%endif
+
+%ifndef F_NUMUTILS
+%define F_NUMUTILS
+
+.org	LOC_NUMUTILS
+
+ ; Parses the ASCII value in RA as a hex digit and stores it in RA, 0xFF if invalid.
+ ; Modifies registers: RA.
+NUMUTILS_PARSEHEX:
+    sub     RA,             0x30 	; subtract the ASCII code for 0
+    jn      _invalidchar         	; if the result is negative, it definitely wasn't a valid digit
+    cmp     RA,             9   	; compare it with 9
+    jn      _digit               	; if <= 9, the user typed a digit
+    jz      _digit
+
+    sub     RA,             0x11	; if it's not a digit it might be a hex letter digit 
+                                	; subtract the remaining to get to 0x41 (ASCII code for 'A')
+    jn      _invalidchar         	; again, if it's negative at this point it's invalid
+    cmp     RA,             5
+    jn      _letterdigit         	; if <= 5, the user typed a hex letter digit
+    jz      _letterdigit
+
+    sub     RA,             0x20 	; if it's not an uppercase letter digit, it might be a lowercase a-f
+                                 	; subtract the remaining to get to 0x61 (ASCII code for'a')
+    jn      _invalidchar         	; same here, we jump if it's in the range between upper and lower letters
+    cmp     RA,             5		
+    jn      _letterdigit
+    jz      _letterdigit
+_invalidchar:
+    mov     0xFF,           RA  	; if we reached here the character is invalid 
+    ret                         	; store 0xFF to signal the calling fuction that the digit is invalid
+
+_letterdigit:
+    add     RA,             0xA 	; because of the way we parse letter digits, we need to add 0xA before the next steps
+_digit:
+    ret
+
+
+
+; Converts the digit stored in the 4 least-significant bits of RA into a ASCII character and stores it in RA
+; Modifies registers: RA.
+NUMUTILS_FORMATHEX:       
+    and     RA,             0x0F		; set the 4 most-significant bits to 0
+    cmp     RA,             0x0A		; is the value less than 0x0A?
+    jn      _digit                      ; -> it's a digit
+    sub     RA,             0x0A        ; if it's a letter, subtract 0x0A and add the ASCII value for the letter 'A'
+    add     RA,             'A'
+    ret
+_digit:
+    add     RA,             '0'         ; add the ASCII value for '0' to get the cright digit
+    ret
+
+
+; Parses a full address from the buffer starting at [RC:RD], and stores it in RA:RB.
+; If successful, the zero flag is cleared; it is set otherwise.
+; Modifies registers: RA, RB.
+NUMUTILS_PARSE_FADDR:
+    push    RD                          ; preserve RD
+    mov     [RC:RD],        RA          ; get first digit and parse it
+
+    ; first digit
+    lcall   NUMUTILS_PARSEHEX
+    cmp     RA,             0xFF        
+    jz      _err
+
+    shl     RA                          ; we store the first digit in the 4 MSB of RB 
+    shl     RA
+    shl     RA
+    shl     RA
+    mov     RA,             RB
+
+    inc     RD
+    mov     [RC:RD],        RA          ; next character
+
+    ; second digit
+    lcall   NUMUTILS_PARSEHEX
+    cmp     RA,             0xFF        
+    jz      _err
+    add     RB,             RA          ; add the two digits together. RB now contains the first byte.
+    push    RB                          ; preserve the first byte.
+
+    inc     RD
+    mov     [RC:RD],        RA          ; next character
+
+
+    ; third digit
+    lcall   NUMUTILS_PARSEHEX
+    cmp     RA,             0xFF        
+    jz      _err
+
+    shl     RA                          ; we store the first digit in the 4 MSB of RB 
+    shl     RA
+    shl     RA
+    shl     RA
+    mov     RA,             RB
+
+    inc     RD
+    mov     [RC:RD],        RA          ; next character
+
+    ; fourth digit
+    lcall   NUMUTILS_PARSEHEX
+    cmp     RA,             0xFF        
+    jz      _err
+    add     RB,             RA          ; add the two digits together. RB now contains the second byte.
+
+    inc     RD                          ; increment cursor so it points to the next byte
+
+    pop     RA                          ; pop the first byte into RA
+
+_ret:
+    pop     RD                          ; restore RD
+    xor     RA,             RA          ; clear zero flag
+    inc     RA
+    ret
+_err:
+    pop     RD                          ; restore RD
+    cmp     RA,             RA          ; set zero flag
+    ret
+
+
+
+%endif

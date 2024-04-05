@@ -1,16 +1,19 @@
+%ifndef LOC_BIOS
+    %error "Specify BIOS location via %define LOC_BIOS <address> before %include"
+%endif
+
 %ifndef     F_BIOS
 %define     F_BIOS
 
 %include        "defs.lnasm"
 
-.org BIOS
+.org LOC_BIOS
 ;   Resets the buffer write and read pointers.
 ;   Modifies registers: none.
 IO_INIT_BUFFER:
     mov         0x0,        [BUFWPT]        ; store 0 in both the buffer write and read pointers
     mov         0x0,        [BUFRPT]
     ret
-                      ; RA will contain the available characters to read
 
 ;   Checks whether there are characters available to read:
 ;       - if there are, the zero flag is cleared and the next available character is read

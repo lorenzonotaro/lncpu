@@ -6,14 +6,13 @@
 
 ; start of ROM.
 .org	0x0
-
-_start:
-	nop		; with the current design, these nop instructions are necessary to initialize the pipeline.
+	nop									; with the current design, these nop instructions are necessary to initialize the pipeline.
 	nop
-	sid		; disable interrupts during initialization
+_start:
+	sid									; disable interrupts during initialization
 
 	; setup stack
 	mov		STACKP,			SS
-	mov		0,			SP
+	mov		0,				SP
 	lcall		IO_INIT_BUFFER
-	lgoto		NOTMON				; transfer control to notmon
+	lgoto		LOC_NOTMON				; transfer control to notmon

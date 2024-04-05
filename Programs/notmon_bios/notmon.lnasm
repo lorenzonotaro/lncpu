@@ -1,17 +1,25 @@
+%include "numutils.lnasm"
+%include "ioutils.lnasm"
+
+
+%ifndef LOC_NOTMON
+    %error "Specify notmon location via %define LOC_NOTMON <address> before %include"
+%endif
+
 %ifndef F_NOTMON
 %define F_NOTMON
 
 
 ; page 0 variables
-%define ADDR1H                  0x3
-%define ADDR1L                  0x4
-%define ADDR2H                  0x5
-%define ADDR2L                  0x6
-%define NWRPTR                  0x7  ; write pointer to the notmon input buffer
-%define NRDPTR                  0x8  ; read pointer to the notmon input buffer
-%define NBUFPG                  0x3e ; notmon input buffer page (second to last page of memory)
+%define ADDR1H                  0x3     ; First address, high byte
+%define ADDR1L                  0x4     ; First address, low byte
+%define ADDR2H                  0x5     ; Second address, high byte
+%define ADDR2L                  0x6     ; Second address, low byte
+%define PRSADRH                 0x7     ; Parsed address, high byte
+%define PRSADRL                 0x8     ; Parsed address, low byte
+%define NBUFPG                  0x3e    ; notmon input buffer page (second to last page of memory)
 
-.org    NOTMON
+.org    LOC_NOTMON
     cid                                             ; allow interrupts 
 notmon:
     xor             RB,             RB              ; set RB to 0
@@ -51,18 +59,123 @@ _parse:
     cmp             RD,             4               ; at this point, if there are less then 4 characters it's an error
     jc              _err
 
-    lcall           parse_full_addr
+
+    push            RB                              ; preserve RB (the next call modifies it).
+    lcall           NUMUTILS_PARSE_FADDR
+    jz              _poprb_err
+    mov             RA,             [ADDR1H]        ; store the address in memory
+    mov             RB,             [ADDR1L]
+    pop             RB
+
+    cmp             RD,             RB              ; end of buffer -> single address inspection
+    jz              _single_inspect
+
+    mov             [RC:RD],        RA              ; get the next character
+    inc             RD
+
+    cmp             RA,             '.'
+    jz              _range
+
+    cmp             RA,             ':'
+    jz              _setval
 
     goto            _err
 
 _command:
+    mov             [RC:RD],        RA              ; get the next character
+    cmp             RA,             'r'             ; if it's 'r' or 'R', run the last address
+    jz              _run
+    cmp             RA,             'R'
+    jz              _run                            ; if not fall through to _err
+    goto            _err
+_run:
+    mov             [ADDR1H],       RC              ; move the last address parsed to RC:RD
+    mov             [ADDR1L],       RD
+    lgoto           RC:RD                           ; transfer control to the address
+_range:
+    cmp             RB,             9               ; range inspection requires 9 characters: HHHH.HHHH
+    jz              _parse_2nd_address
+    goto            _err
+_parse_2nd_address:
+    push            RB                              ; preserve RB (the next call modifies it).
+    lcall           NUMUTILS_PARSE_FADDR
+    jz              _poprb_err
+    mov             RA,             [ADDR2H]        ; store the address in memory
+    mov             RB,             [ADDR2L]
+    pop             RB
+    goto            _range_inspect
+    
+_setval:
+    cmp             RB,             RD
+    jz              _end
+    jc              _err
+_setval_nextc:
+    mov             [RC:RD],        RA
+    cmp             RA,             ' '
+    jz              _setval_space
+    goto            _err
+_setval_space:
+    inc             RD
+    push            RB
+    sub             RB,             RD
+    cmp             RB,             2
+    jc              _err
+_single_inspect:
+    mov             [ADDR1H],       [ADDR2H]        ; copy ADDR1 into ADDR2
+    mov             [ADDR1L],       [ADDR2L]        
+_range_inspect:
+    mov             [ADDR2H],       RA
+    mov             [ADDR2L],       RB
+    mov             [ADDR1H],       RC
+    mov             [ADDR1L],       RD
 
+    push            RA
+    goto            _insp_printaddr
+
+_insp_loop:
+    cmp             RA,             RC
+    jc              _insp_end
+    jz              _insp_final_page
+    goto            _insp_exec
+_insp_final_page:
+    cmp             RB,             RD
+    jc              _insp_end
+_insp_exec:
+    push            RA
+    mov             RD,             RA
+    and             RA,             0x7
+    jz              _insp_printaddr
+    goto            _insp_skipaddr
+_insp_printaddr:
+    mov             '\n',           [TTYOUT]
+    mov             RC,             RA
+    lcall           IOUTILS_PUTBYTE
+    mov             RD,             RA
+    lcall           IOUTILS_PUTBYTE
+    mov             ':'             [TTYOUT]
+    mov             ' ',            [TTYOUT]
+_insp_skipaddr:
+    mov             [RC:RD],        RA
+    lcall           IOUTILS_PUTBYTE
+    mov             ' ',            [TTYOUT]
+    pop             RA
+    inc             RD
+    jc              _insp_carryrc
+    goto            _insp_loop
+_insp_carryrc:
+    inc             RC
+    goto            _insp_loop
+_insp_end:
+    goto           _end
+
+_poprb_err:
+    pop             RB
 _err:
     mov             '?',            [TTYOUT]
 _end:
     mov             '\n',           [TTYOUT]
     goto            notmon
 
-parse_full_addr:
+
     
 %endif

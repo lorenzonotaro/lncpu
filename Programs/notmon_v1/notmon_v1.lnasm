@@ -322,7 +322,7 @@ parse_full_addr:
     shl         RA
     shl         RA
     mov         RA,             [PRSADRH]
-
+ 
     ; parse digit 2
     inc         RD
     mov         [RC:RD],        RA
