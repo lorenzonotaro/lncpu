@@ -25,7 +25,7 @@ public class Token {
 
         DIR_ORG,
         DIR_DATA,
-        DIR_PAD,
+        DIR_RES,
 
         L_SQUARE_BRACKET,
         R_SQUARE_BRACKET,
