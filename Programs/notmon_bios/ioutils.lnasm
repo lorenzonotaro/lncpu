@@ -1,34 +1,34 @@
-%include	"numutils.lnasm"
+%include    "numutils.lnasm"
 
 %ifndef LOC_IOUTILS
-	%error "Specify ioutils location via %define LOC_IOUTILS <address> before %include"
+    %error "Specify ioutils location via %define LOC_IOUTILS <address> before %include"
 %endif
 
 %ifndef F_IOUTILS
 %define F_IOUTILS
 
-.org	LOC_IOUTILS
+.org    LOC_IOUTILS
 
 ; Outputs a sequence of characters, starting at [RC:RD], until it encounters a 0
 ; Modifies registers: none.
 IOUTILS_PUTS:
-    push        RA							; preserve RA, RC, RD
+    push        RA                          ; preserve RA, RC, RD
     push        RC
     push        RD
 
 _loop:
-    mov         [RC:RD],        RA			; get the next character
-    and         RA,             RA			; 0?
-    jz          _ret						; -> exit
-    mov         RA,             [TTYOUT]	; output the character, then increment
-    inc         RD							
-    jc          _carryrc					; RD overflowed? -> increment RC
-    goto        _loop						
+    mov         [RC:RD],        RA          ; get the next character
+    and         RA,             RA          ; 0?
+    jz          _ret                        ; -> exit
+    mov         RA,             [TTYOUT]    ; output the character, then increment
+    inc         RD                          
+    jc          _carryrc                    ; RD overflowed? -> increment RC
+    goto        _loop                       
 _carryrc:
     inc         RC
     goto        _loop
 _ret:
-    pop         RD							; restore RD, RC, RA
+    pop         RD                          ; restore RD, RC, RA
     pop         RC
     pop         RA
     ret
@@ -36,18 +36,18 @@ _ret:
 ; Outputs the contents of RA in hex.
 ; Modifies registers: none.
 IOUTILS_PUTBYTE:
-    push    	RA							; preserve RA
-    push    	RA							; push another copy of RA
-    shr     	RA      					; RA >> 4, so we print the MSB first
-    shr     	RA
-    shr     	RA
-    shr     	RA
-    lcall   	NUMUTILS_FORMATHEX
-    mov     	RA,             [TTYOUT]   	; print the MSB
-    pop     	RA							; restore RA
-    lcall   	NUMUTILS_FORMATHEX
-    mov     	RA,             [TTYOUT]   	; print the LSB
-    pop     	RA							; restore RA
+    push        RA                          ; preserve RA
+    push        RA                          ; push another copy of RA
+    shr         RA                          ; RA >> 4, so we print the MSB first
+    shr         RA
+    shr         RA
+    shr         RA
+    lcall       NUMUTILS_FORMATHEX
+    mov         RA,             [TTYOUT]    ; print the MSB
+    pop         RA                          ; restore RA
+    lcall       NUMUTILS_FORMATHEX
+    mov         RA,             [TTYOUT]    ; print the LSB
+    pop         RA                          ; restore RA
     ret
 
 %endif

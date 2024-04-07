@@ -1866,7 +1866,9 @@ end TCL_Generic;
     </comp>
     <comp loc="(1270,820)" name="AddressSelector"/>
     <comp loc="(1360,280)" name="AddrDecoder"/>
-    <comp loc="(1390,980)" name="CodeSegment_ProgramCounter"/>
+    <comp loc="(1390,980)" name="CodeSegment_ProgramCounter">
+      <a name="label" val="CSPC"/>
+    </comp>
     <comp loc="(1430,630)" name="StackPointer">
       <a name="label" val="SP"/>
     </comp>
@@ -1874,8 +1876,11 @@ end TCL_Generic;
     <comp loc="(1770,370)" name="ClockModule">
       <a name="labelvisible" val="false"/>
     </comp>
-    <comp loc="(1780,510)" name="RAMModule"/>
+    <comp loc="(1780,510)" name="RAMModule">
+      <a name="label" val="RAM"/>
+    </comp>
     <comp loc="(1780,820)" name="ROMModule">
+      <a name="label" val="ROM"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp loc="(2130,390)" name="BufferedRegister">
@@ -1892,7 +1897,9 @@ end TCL_Generic;
     <comp loc="(2560,390)" name="BufferedRegister">
       <a name="label" val="RD"/>
     </comp>
-    <comp loc="(2570,1170)" name="FLAGSRegister"/>
+    <comp loc="(2570,1170)" name="FLAGSRegister">
+      <a name="label" val="FLAGS"/>
+    </comp>
     <comp loc="(2570,890)" name="ALUOperatorSelector"/>
     <comp loc="(2570,980)" name="ALU"/>
     <comp loc="(600,360)" name="ControlUnit"/>
@@ -3605,8 +3612,7 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-21 20 42 3d 20 21 3d 21
-22 1e 22 5 44 1
+0 0 b3 cb de 3
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>

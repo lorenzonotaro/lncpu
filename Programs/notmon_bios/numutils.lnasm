@@ -1,41 +1,41 @@
 
 %ifndef LOC_NUMUTILS
-	%error "Specify numutils location via %define LOC_NUMUTILS <address> before %include"
+    %error "Specify numutils location via %define LOC_NUMUTILS <address> before %include"
 %endif
 
 %ifndef F_NUMUTILS
 %define F_NUMUTILS
 
-.org	LOC_NUMUTILS
+.org    LOC_NUMUTILS
 
  ; Parses the ASCII value in RA as a hex digit and stores it in RA, 0xFF if invalid.
  ; Modifies registers: RA.
 NUMUTILS_PARSEHEX:
-    sub     RA,             0x30 	; subtract the ASCII code for 0
-    jn      _invalidchar         	; if the result is negative, it definitely wasn't a valid digit
-    cmp     RA,             9   	; compare it with 9
-    jn      _digit               	; if <= 9, the user typed a digit
+    sub     RA,             0x30    ; subtract the ASCII code for 0
+    jn      _invalidchar            ; if the result is negative, it definitely wasn't a valid digit
+    cmp     RA,             9       ; compare it with 9
+    jn      _digit                  ; if <= 9, the user typed a digit
     jz      _digit
 
-    sub     RA,             0x11	; if it's not a digit it might be a hex letter digit 
-                                	; subtract the remaining to get to 0x41 (ASCII code for 'A')
-    jn      _invalidchar         	; again, if it's negative at this point it's invalid
+    sub     RA,             0x11    ; if it's not a digit it might be a hex letter digit 
+                                    ; subtract the remaining to get to 0x41 (ASCII code for 'A')
+    jn      _invalidchar            ; again, if it's negative at this point it's invalid
     cmp     RA,             5
-    jn      _letterdigit         	; if <= 5, the user typed a hex letter digit
+    jn      _letterdigit            ; if <= 5, the user typed a hex letter digit
     jz      _letterdigit
 
-    sub     RA,             0x20 	; if it's not an uppercase letter digit, it might be a lowercase a-f
-                                 	; subtract the remaining to get to 0x61 (ASCII code for'a')
-    jn      _invalidchar         	; same here, we jump if it's in the range between upper and lower letters
-    cmp     RA,             5		
+    sub     RA,             0x20    ; if it's not an uppercase letter digit, it might be a lowercase a-f
+                                    ; subtract the remaining to get to 0x61 (ASCII code for'a')
+    jn      _invalidchar            ; same here, we jump if it's in the range between upper and lower letters
+    cmp     RA,             5       
     jn      _letterdigit
     jz      _letterdigit
 _invalidchar:
-    mov     0xFF,           RA  	; if we reached here the character is invalid 
-    ret                         	; store 0xFF to signal the calling fuction that the digit is invalid
+    mov     0xFF,           RA      ; if we reached here the character is invalid 
+    ret                             ; store 0xFF to signal the calling fuction that the digit is invalid
 
 _letterdigit:
-    add     RA,             0xA 	; because of the way we parse letter digits, we need to add 0xA before the next steps
+    add     RA,             0xA     ; because of the way we parse letter digits, we need to add 0xA before the next steps
 _digit:
     ret
 
@@ -44,8 +44,8 @@ _digit:
 ; Converts the digit stored in the 4 least-significant bits of RA into a ASCII character and stores it in RA
 ; Modifies registers: RA.
 NUMUTILS_FORMATHEX:       
-    and     RA,             0x0F		; set the 4 most-significant bits to 0
-    cmp     RA,             0x0A		; is the value less than 0x0A?
+    and     RA,             0x0F        ; set the 4 most-significant bits to 0
+    cmp     RA,             0x0A        ; is the value less than 0x0A?
     jn      _digit                      ; -> it's a digit
     sub     RA,             0x0A        ; if it's a letter, subtract 0x0A and add the ASCII value for the letter 'A'
     add     RA,             'A'
