@@ -3612,8 +3612,7 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-21 20 42 3d 20 21 3d 21
-22 1e 22 5 44 1
+0 0 b3 cb de 3
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>

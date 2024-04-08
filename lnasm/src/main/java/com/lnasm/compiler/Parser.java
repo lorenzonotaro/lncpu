@@ -4,7 +4,6 @@ import com.lnasm.compiler.ast.Argument;
 import com.lnasm.compiler.ast.Matcher;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -80,7 +79,7 @@ public class Parser {
             }
             return new EncodedData(baos.toByteArray());
 
-        }else if (match(Token.Type.DIR_PAD)) {
+        }else if (match(Token.Type.DIR_RES)) {
             Token amount = consume("expected integer", Token.Type.INTEGER);
             return new EncodedData(new byte[(Integer) amount.literal]);
         } else return instruction();

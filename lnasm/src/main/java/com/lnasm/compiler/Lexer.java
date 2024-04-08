@@ -281,8 +281,8 @@ public class Lexer {
             return token(Token.Type.DIR_ORG);
         else if (".data".equalsIgnoreCase(ident))
             return token(Token.Type.DIR_DATA);
-        else if (".pad".equals(ident))
-            return token(Token.Type.DIR_PAD);
+        else if (".res".equals(ident))
+            return token(Token.Type.DIR_RES);
         throw error("invalid directive", ident);
     }
 

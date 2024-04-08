@@ -1,0 +1,9 @@
+###### Origin: 0x000000 (block at C:\Users\Amministratore\Desktop\Personal\lncpu\Programs\notmon_bios\test.lnasm:1) ###### 
+
+       000000:	00 (nop)                             
+       000001:	00 (nop)                             
+       000002:	b3 (xor_ra_ra)                       
+loop:  000003:	cb (inc_ra)                          
+       000004:	de (goto)                         03 
+
+
