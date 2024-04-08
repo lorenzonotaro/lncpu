@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#Devices.circ" name="12"/>
-  <lib desc="file#C8BComponents.circ" name="13"/>
+  <lib desc="file#C8BComponents.circ" name="12"/>
+  <lib desc="file#Devices.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1494,8 +1494,8 @@ end TCL_Generic;
     <comp lib="10" loc="(970,350)" name="Switch">
       <a name="label" val="RESET"/>
     </comp>
-    <comp lib="12" loc="(1410,1840)" name="TTYAdapter"/>
-    <comp lib="12" loc="(840,1780)" name="KeyboardAdapter"/>
+    <comp lib="13" loc="(1410,1840)" name="TTYAdapter"/>
+    <comp lib="13" loc="(840,1780)" name="KeyboardAdapter"/>
     <comp lib="4" loc="(1240,490)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="SS"/>
@@ -1866,7 +1866,9 @@ end TCL_Generic;
     </comp>
     <comp loc="(1270,820)" name="AddressSelector"/>
     <comp loc="(1360,280)" name="AddrDecoder"/>
-    <comp loc="(1390,980)" name="CodeSegment_ProgramCounter"/>
+    <comp loc="(1390,980)" name="CodeSegment_ProgramCounter">
+      <a name="label" val="CSPC"/>
+    </comp>
     <comp loc="(1430,630)" name="StackPointer">
       <a name="label" val="SP"/>
     </comp>
@@ -1874,8 +1876,11 @@ end TCL_Generic;
     <comp loc="(1770,370)" name="ClockModule">
       <a name="labelvisible" val="false"/>
     </comp>
-    <comp loc="(1780,510)" name="RAMModule"/>
+    <comp loc="(1780,510)" name="RAMModule">
+      <a name="label" val="RAM"/>
+    </comp>
     <comp loc="(1780,820)" name="ROMModule">
+      <a name="label" val="ROM"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp loc="(2130,390)" name="BufferedRegister">
@@ -1892,7 +1897,9 @@ end TCL_Generic;
     <comp loc="(2560,390)" name="BufferedRegister">
       <a name="label" val="RD"/>
     </comp>
-    <comp loc="(2570,1170)" name="FLAGSRegister"/>
+    <comp loc="(2570,1170)" name="FLAGSRegister">
+      <a name="label" val="FLAGS"/>
+    </comp>
     <comp loc="(2570,890)" name="ALUOperatorSelector"/>
     <comp loc="(2570,980)" name="ALU"/>
     <comp loc="(600,360)" name="ControlUnit"/>
@@ -2458,8 +2465,8 @@ end TCL_Generic;
       <a name="width" val="8"/>
     </comp>
     <comp lib="1" loc="(200,350)" name="NOT Gate"/>
-    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -4433,7 +4440,7 @@ end TCL_Generic;
     <comp lib="1" loc="(600,370)" name="AND Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="13" loc="(550,490)" name="EdgeDetector">
+    <comp lib="12" loc="(550,490)" name="EdgeDetector">
       <a name="facing" val="north"/>
     </comp>
     <comp lib="2" loc="(540,230)" name="Multiplexer">
