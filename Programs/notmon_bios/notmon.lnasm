@@ -53,10 +53,10 @@ _parse:
                                                     ; RD becomes 0 (index to read the buffer from now on)
                                                     ; RB becomes the buffer length
 
-    cmp             RD,             1               ; single character?
+    cmp             RB,             1               ; single character?
     jz              _command
     
-    cmp             RD,             4               ; at this point, if there are less then 4 characters it's an error
+    cmp             RB,             4               ; at this point, if there are less then 4 characters it's an error
     jc              _err
 
 
@@ -116,10 +116,42 @@ _setval_nextc:
     goto            _err
 _setval_space:
     inc             RD
+    mov             [RC:RD],        RA
     push            RB
     sub             RB,             RD
     cmp             RB,             2
-    jc              _err
+    jc              _poprb_err
+    lcall           NUMUTILS_PARSEHEX
+    cmp             RA,             0xFF
+    jz              _poprb_err
+    shl             RA
+    shl             RA
+    shl             RA
+    shl             RA
+    mov             RA,             RB
+    inc             RD
+    mov             [RC:RD],        RA
+    lcall           NUMUTILS_PARSEHEX
+    cmp             RA,             0xFF
+    jz              _poprb_err
+    add             RA,             RB
+    push            RC
+    push            RD
+    mov             [ADDR1H],       RC
+    mov             [ADDR1L],       RD
+    mov             RA,             [RC:RD]
+    inc             RD
+    mov             RD,             [ADDR1L]
+    jc              _setval_carryrc
+_setval_endloop:
+    pop             RD
+    pop             RC
+    pop             RB
+    goto            _setval
+_setval_carryrc:
+    inc             RC
+    mov             RC,             [ADDR1H]
+    goto            _setval_endloop
 _single_inspect:
     mov             [ADDR1H],       [ADDR2H]        ; copy ADDR1 into ADDR2
     mov             [ADDR1L],       [ADDR2L]        

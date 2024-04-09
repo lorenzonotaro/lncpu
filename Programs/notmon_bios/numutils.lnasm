@@ -57,9 +57,8 @@ _digit:
 
 ; Parses a full address from the buffer starting at [RC:RD], and stores it in RA:RB.
 ; If successful, the zero flag is cleared; it is set otherwise.
-; Modifies registers: RA, RB.
+; Modifies registers: RA, RB, RD (+4).
 NUMUTILS_PARSE_FADDR:
-    push    RD                          ; preserve RD
     mov     [RC:RD],        RA          ; get first digit and parse it
 
     ; first digit
@@ -90,7 +89,7 @@ NUMUTILS_PARSE_FADDR:
     ; third digit
     lcall   NUMUTILS_PARSEHEX
     cmp     RA,             0xFF        
-    jz      _err
+    jz      _pop_err
 
     shl     RA                          ; we store the first digit in the 4 MSB of RB 
     shl     RA
@@ -104,20 +103,21 @@ NUMUTILS_PARSE_FADDR:
     ; fourth digit
     lcall   NUMUTILS_PARSEHEX
     cmp     RA,             0xFF        
-    jz      _err
+    jz      _pop_err
     add     RB,             RA          ; add the two digits together. RB now contains the second byte.
 
     inc     RD                          ; increment cursor so it points to the next byte
 
-    pop     RA                          ; pop the first byte into RA
 
 _ret:
-    pop     RD                          ; restore RD
     xor     RA,             RA          ; clear zero flag
     inc     RA
-    ret
-_err:
+    pop     RA                          ; pop the first byte into RA
     pop     RD                          ; restore RD
+    ret
+_pop_err:
+    pop     RA
+_err:
     cmp     RA,             RA          ; set zero flag
     ret
 
