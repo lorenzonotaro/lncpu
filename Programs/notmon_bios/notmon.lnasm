@@ -166,14 +166,6 @@ _range_inspect:
     push            RA                              ; preserve RA
     goto            _insp_printaddr                 ; always print the first address
 
-_insp_loop:
-    cmp             RA,             RC              ; if RA (end page) < RC (start page) -> end
-    jc              _insp_end                       
-    jz              _insp_final_page                ; if RA == RC -> check RB with RD
-    goto            _insp_exec
-_insp_final_page:
-    cmp             RB,             RD              ; if RB (end address) < RD (start address) -> end
-    jc              _insp_end
 _insp_exec:
     push            RA                              ; preserve RA
     mov             RD,             RA              ; move RD to RA so we can modify it
@@ -193,14 +185,22 @@ _insp_skipaddr:
     lcall           IOUTILS_PUTBYTE
     mov             ' ',            [TTYOUT]
     pop             RA                              ; restore RA so it contains the end address high bits
+_insp_check:
+    cmp             RC,             RA              ; if RC (start page) < RA (end page page) -> continue loop
+    jz              _insp_chk_finalpage
+    goto            _insp_endloop
+_insp_chk_finalpage:                     
+    cmp             RD,             RB              ; if RD (start address) <= RB (end address) 
+    jz              _end
+    goto           _insp_endloop
+_insp_endloop:
     inc             RD                              ; increment the address we're inspecting
     jc              _insp_carryrc                   ; carry RC if necessary
-    goto            _insp_loop
+    goto            _insp_exec
 _insp_carryrc:
     inc             RC
-    goto            _insp_loop
-_insp_end:
-    goto           _end
+    goto            _insp_exec
+
 
 _poprb_err:
     pop             RB
