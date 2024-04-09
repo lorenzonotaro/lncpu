@@ -2,11 +2,11 @@
 %define F_DEFS
 
         ; code placement
-        %define         LOC_IOUTILS                     0x1b00                  ; ioutils code location
-        %define         LOC_NUMUTILS                    0x1c00                  ; numutils code location
-        %define         LOC_NOTMON                      0x1d00                  ; notmon code location
-        %define         LOC_BIOS                        0x1e00                  ; BIOS code location
-        %define         INTVEC                          0x1f00                  ; The interrupt vector for the v1 design of the lncpu (last page of ROM)
+        %define         LOC_IOUTILS             0x1b00                  ; ioutils code location
+        %define         LOC_NUMUTILS            0x1c00                  ; numutils code location
+        %define         LOC_NOTMON              0x1d00                  ; notmon code location
+        %define         LOC_BIOS                0x1e00                  ; BIOS code location
+        %define         INTVEC                  0x1f00                  ; The interrupt vector for the v1 design of the lncpu (last page of ROM)
 
         ; stack and buffers
         %define         STACKP                  0x21                    ; Stack will be in the second page of memory

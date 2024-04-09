@@ -20,12 +20,12 @@
 %define NBUFPG                  0x3e    ; notmon input buffer page (second to last page of memory)
 
 .org    LOC_NOTMON
-    cid                                             ; allow interrupts 
 notmon:
     xor             RB,             RB              ; set RB to 0
     mov             NBUFPG,         RC              ; load NBUFPG:0 into RC:RD (as the write buffer)
     xor             RD,             RD
-
+    mov             '>',            [TTYOUT]
+    mov             ' ',            [TTYOUT]
 _loop:
     lcall           IO_GETC                         ; get the next character 
     jz              _loop                           ; if there is none available, IO_GETC sets the Zero flag
@@ -73,10 +73,10 @@ _parse:
     mov             [RC:RD],        RA              ; get the next character
     inc             RD
 
-    cmp             RA,             '.'
+    cmp             RA,             '.'             ; '.' means we're parsing a range
     jz              _range
 
-    cmp             RA,             ':'
+    cmp             RA,             ':'             ; ':' means we're setting a value in memory
     jz              _setval
 
     goto            _err
@@ -102,49 +102,50 @@ _parse_2nd_address:
     jz              _poprb_err
     mov             RA,             [ADDR2H]        ; store the address in memory
     mov             RB,             [ADDR2L]
-    pop             RB
+    pop             RB                              ; restore RB
     goto            _range_inspect
     
 _setval:
-    cmp             RB,             RD
-    jz              _end
-    jc              _err
+    cmp             RB,             RD              
+    jz              _end                            ; RD == RB? -> no more values
+    jc              _err                            ; RD >  RB? -> error
 _setval_nextc:
-    mov             [RC:RD],        RA
+    mov             [RC:RD],        RA              ; we expect a whitespace
     cmp             RA,             ' '
     jz              _setval_space
     goto            _err
 _setval_space:
     inc             RD
-    mov             [RC:RD],        RA
-    push            RB
-    sub             RB,             RD
+    mov             [RC:RD],        RA              ; get next character
+    push            RB                              ; preserve RB
+    sub             RB,             RD              ; do we have less then 2 characters?
     cmp             RB,             2
-    jc              _poprb_err
-    lcall           NUMUTILS_PARSEHEX
-    cmp             RA,             0xFF
+    jc              _poprb_err                      ; -> error
+    lcall           NUMUTILS_PARSEHEX               ; parse the first digit
+    cmp             RA,             0xFF            
     jz              _poprb_err
-    shl             RA
+    shl             RA                              ; store it in the MSB of RB
     shl             RA
     shl             RA
     shl             RA
     mov             RA,             RB
-    inc             RD
+    inc             RD                              ; get next character
     mov             [RC:RD],        RA
-    lcall           NUMUTILS_PARSEHEX
+    inc             RD
+    lcall           NUMUTILS_PARSEHEX               ; parse second digit
     cmp             RA,             0xFF
     jz              _poprb_err
-    add             RA,             RB
-    push            RC
+    add             RA,             RB              ; add the first digit
+    push            RC                              ; preserve RC and RD
     push            RD
-    mov             [ADDR1H],       RC
+    mov             [ADDR1H],       RC              ; get the address we're loading with our value
     mov             [ADDR1L],       RD
-    mov             RA,             [RC:RD]
-    inc             RD
+    mov             RA,             [RC:RD]         ; store the value in RA
+    inc             RD                              ; increment the address
     mov             RD,             [ADDR1L]
-    jc              _setval_carryrc
+    jc              _setval_carryrc                 ; carry RC if needed
 _setval_endloop:
-    pop             RD
+    pop             RD                              ; pop RD, RC, RB
     pop             RC
     pop             RB
     goto            _setval
@@ -152,47 +153,48 @@ _setval_carryrc:
     inc             RC
     mov             RC,             [ADDR1H]
     goto            _setval_endloop
+
 _single_inspect:
     mov             [ADDR1H],       [ADDR2H]        ; copy ADDR1 into ADDR2
     mov             [ADDR1L],       [ADDR2L]        
 _range_inspect:
-    mov             [ADDR2H],       RA
+    mov             [ADDR2H],       RA              ; store the start address in RC:RD and the end address in RA:RB
     mov             [ADDR2L],       RB
     mov             [ADDR1H],       RC
     mov             [ADDR1L],       RD
 
-    push            RA
-    goto            _insp_printaddr
+    push            RA                              ; preserve RA
+    goto            _insp_printaddr                 ; always print the first address
 
 _insp_loop:
-    cmp             RA,             RC
-    jc              _insp_end
-    jz              _insp_final_page
+    cmp             RA,             RC              ; if RA (end page) < RC (start page) -> end
+    jc              _insp_end                       
+    jz              _insp_final_page                ; if RA == RC -> check RB with RD
     goto            _insp_exec
 _insp_final_page:
-    cmp             RB,             RD
+    cmp             RB,             RD              ; if RB (end address) < RD (start address) -> end
     jc              _insp_end
 _insp_exec:
-    push            RA
-    mov             RD,             RA
-    and             RA,             0x7
+    push            RA                              ; preserve RA
+    mov             RD,             RA              ; move RD to RA so we can modify it
+    and             RA,             0x7             ; RA % 8 == 0? -> print address
     jz              _insp_printaddr
     goto            _insp_skipaddr
 _insp_printaddr:
-    mov             '\n',           [TTYOUT]
-    mov             RC,             RA
+    mov             '\n',           [TTYOUT]        ; newline
+    mov             RC,             RA              ; print address
     lcall           IOUTILS_PUTBYTE
     mov             RD,             RA
     lcall           IOUTILS_PUTBYTE
-    mov             ':'             [TTYOUT]
+    mov             ':'             [TTYOUT]        ; print ": "
     mov             ' ',            [TTYOUT]
 _insp_skipaddr:
-    mov             [RC:RD],        RA
+    mov             [RC:RD],        RA              ; print the value, followed by whitespace
     lcall           IOUTILS_PUTBYTE
     mov             ' ',            [TTYOUT]
-    pop             RA
-    inc             RD
-    jc              _insp_carryrc
+    pop             RA                              ; restore RA so it contains the end address high bits
+    inc             RD                              ; increment the address we're inspecting
+    jc              _insp_carryrc                   ; carry RC if necessary
     goto            _insp_loop
 _insp_carryrc:
     inc             RC

@@ -15,4 +15,5 @@ _start:
         mov             STACKP,                 SS
         mov             0,                      SP
         lcall           IO_INIT_BUFFER
+        cid                                                     ; allow interrupts
         lgoto           LOC_NOTMON                              ; transfer control to notmon

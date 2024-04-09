@@ -113,7 +113,6 @@ _ret:
     xor     RA,             RA          ; clear zero flag
     inc     RA
     pop     RA                          ; pop the first byte into RA
-    pop     RD                          ; restore RD
     ret
 _pop_err:
     pop     RA
