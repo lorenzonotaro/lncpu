@@ -1,6 +1,8 @@
 package com.lnasm.compiler;
 
 import com.lnasm.Logger;
+import com.lnasm.compiler.lexer.Location;
+import com.lnasm.compiler.lexer.Token;
 
 public class CompileException extends RuntimeException{
     final Token token;

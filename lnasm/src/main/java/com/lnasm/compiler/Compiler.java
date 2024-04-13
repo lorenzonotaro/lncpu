@@ -1,6 +1,14 @@
 package com.lnasm.compiler;
 
 import com.lnasm.Logger;
+import com.lnasm.compiler.lexer.Lexer;
+import com.lnasm.compiler.lexer.Line;
+import com.lnasm.compiler.lexer.Token;
+import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.BinaryLinker;
+import com.lnasm.compiler.linker.ImmediateLinker;
+import com.lnasm.compiler.parser.Block;
+import com.lnasm.compiler.parser.Parser;
 
 import java.util.*;
 

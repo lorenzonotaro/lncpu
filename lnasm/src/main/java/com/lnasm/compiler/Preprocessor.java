@@ -1,6 +1,10 @@
 package com.lnasm.compiler;
 
 import com.lnasm.LNASM;
+import com.lnasm.compiler.lexer.Lexer;
+import com.lnasm.compiler.lexer.Line;
+import com.lnasm.compiler.lexer.Location;
+import com.lnasm.compiler.lexer.Token;
 
 import java.io.IOException;
 import java.nio.file.Path;

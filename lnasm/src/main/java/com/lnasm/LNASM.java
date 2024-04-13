@@ -1,8 +1,8 @@
 package com.lnasm;
 
 import com.lnasm.compiler.Compiler;
-import com.lnasm.compiler.Line;
-import com.lnasm.compiler.ast.Matcher;
+import com.lnasm.compiler.lexer.Line;
+import com.lnasm.compiler.parser.ast.Matcher;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class LNASM {
 

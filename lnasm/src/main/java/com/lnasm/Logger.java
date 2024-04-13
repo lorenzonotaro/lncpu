@@ -1,7 +1,6 @@
 package com.lnasm;
 
-import com.lnasm.compiler.CompileException;
-import com.lnasm.compiler.Token;
+import com.lnasm.compiler.lexer.Token;
 
 import java.io.PrintStream;
 
