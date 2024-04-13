@@ -7,14 +7,10 @@ import com.lnasm.io.ByteArrayChannel;
 
 public class Section {
 
-    @Expose
     public String name;
 
-    @SerializedName("start")
-    @Expose
     public short startAddress;
 
-    @Expose
     public Type type;
 
     private final ByteArrayChannel channel;
@@ -31,13 +27,10 @@ public class Section {
     }
 
     public enum Type{
-        @SerializedName("ROM")
         ROM,
 
-        @SerializedName("RAM")
         RAM,
 
-        @SerializedName("PAGE0")
         PAGE0
     }
 }

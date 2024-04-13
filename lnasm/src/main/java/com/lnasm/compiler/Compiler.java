@@ -28,10 +28,10 @@ public class Compiler {
         List<Token[]> preprocessedLines = preprocessor.getLines();
 
         Logger.setProgramState("parser");
-        Parser parser = new Parser();
-        if(!parser.parse(preprocessedLines))
+        Parser parser = new Parser(preprocessedLines);
+        if(!parser.parse())
             return false;
-        Set<Block> blocks = parser.getBlocks();
+        Set<Block> blocks = parser.getResult();
 
         Logger.setProgramState("linker");
         AbstractLinker linker = null;

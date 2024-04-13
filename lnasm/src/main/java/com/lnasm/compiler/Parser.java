@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Parser {
+public class Parser extends AbstractParser<Set<Block>> {
 
     // The starting character of a sublabel.
     private static final String SUBLABEL_INITIATOR = "_";
@@ -16,53 +16,40 @@ public class Parser {
     // The character should be an invalid identifier character, so that sublabels aren't accessible in any way outside of their scope.
     public static final String SUBLABEL_SEPARATOR = "$";
     private final Set<Block> blocks;
-    private List<Token[]> lines;
-    private Token[] currentLine;
-    private int index;
     private Block currentBlock;
-
     private String currentParentLabel = null;
-
     private final Map<String, Short> labels;
 
-    Parser() {
+    Parser(List<Token[]> tokens) {
+        super(tokens);
         blocks = new HashSet<>();
         labels = new HashMap<>();
+        this.currentParentLabel = null;
     }
 
-    boolean parse(List<Token[]> tokens) {
-        reset(tokens);
-
-        boolean success = true;
-
-        for (Token[] line : lines) {
-            if (line.length == 0) continue;
-            try {
-                currentLine = line;
-                index = 0;
-                Encodeable instr;
-                if ((instr = parseLine()) != null) {
-                    if (!currentBlock.addInstruction(instr)) {
-                        throw new CompileException("exceeded maximum code size (65536)", previous());
-                    }
-                }
-            } catch (CompileException e) {
-                e.log();
-                success = false;
+    @Override
+    protected void parseLine() {
+        Encodeable instr;
+        if ((instr = doParseLine()) != null) {
+            if (!currentBlock.addInstruction(instr)) {
+                throw error(previous(), "exceeded maximum code size (65536)");
             }
         }
+    }
+
+    @Override
+    protected void endParse(){
         if(currentBlock != null) {
             blocks.add(currentBlock);
         }
-        return success;
     }
 
-    private Encodeable parseLine() {
+    private Encodeable doParseLine() {
         if (match(Token.Type.DIR_ORG)) {
             newBlock(previous(), consume("expected number", Token.Type.INTEGER));
             return null;
         } else if (currentBlock == null)
-            throw new CompileException("initial code segment not specified", peek());
+            throw error(peek(), "initial code segment not specified");
         else if (match(Token.Type.DIR_DATA)) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             while (!isAtEnd()) {
@@ -98,7 +85,7 @@ public class Parser {
                 return matcher.make(this, t, arguments);
             }
         }
-        throw new CompileException("invalid syntax", t);
+        throw error(t, "invalid syntax");
     }
 
     private void label() {
@@ -112,7 +99,7 @@ public class Parser {
         else if(!label.lexeme.startsWith(SUBLABEL_INITIATOR)) this.currentParentLabel = labelName;
 
         if(labels.containsKey(labelName))
-            throw new CompileException("Duplicate label '" + labelName + "'", label);
+            throw error(label, "Duplicate label '" + labelName + "'");
         labels.put(labelName, (short) (currentBlock.startAddress + currentBlock.codeSize));
     }
 
@@ -168,16 +155,10 @@ public class Parser {
             if(inByteRange((Integer) prev.literal))
                 return new Argument.Byte(prev);
             else if(inShortRange((Integer) prev.literal)) return new Argument.Word(prev);
-            throw new CompileException("constant value out of range", prev);
+            throw error(prev, "constant value out of range");
         } else if (match(Token.Type.IDENTIFIER))
             return new Argument.LabelRef(previous());
-        throw new CompileException("unexpected token", peek());
-    }
-    private void reset(List<Token[]> lines) {
-        this.lines = lines;
-        this.index = 0;
-        this.currentParentLabel = null;
-        blocks.clear();
+        throw error(peek(), "unexpected token");
     }
 
     private void newBlock(Token orgToken, Token originToken) {
@@ -188,54 +169,10 @@ public class Parser {
         currentParentLabel = null;
     }
 
-    private boolean isAtEnd() {
-        return index >= currentLine.length;
-    }
-
-    private boolean match(Token.Type type) {
-        if (!isAtEnd() && peek().type == type) {
-            advance();
-            return true;
-        }
-        return false;
-    }
-
-
-    private Token consume(String errorMsg, Token.Type... types) {
-        if (check(types)) return advance();
-        else throw error(peek(), errorMsg);
-    }
-
-    private CompileException error(Token token, String errorMsg) {
-        return new CompileException(errorMsg, token);
-    }
-
-    private boolean check(Token.Type... types) {
-        if (isAtEnd()) return false;
-        Token.Type peekType = peek().type;
-        return Arrays.stream(types).anyMatch(t -> t == peekType);
-    }
-
-    private Token advance() {
-        if (isAtEnd())
-            throw error(previous(), "unexpected end of line");
-        return currentLine[index++];
-    }
-
-    private Token previous() {
-        return currentLine[index - 1];
-    }
-
-    private Token peek() {
-        if (isAtEnd()) {
-            throw error(previous(), "unexpected end of line");
-        }
-        return currentLine[index];
-    }
 
     public static byte ensureByte(Token t, int i) {
         if (!inByteRange(i))
-            throw new CompileException("Argument out of range (expected 1-byte integer)", t);
+            throw error(t, "Argument out of range (expected 1-byte integer)");
         return (byte) i;
     }
 
@@ -246,7 +183,7 @@ public class Parser {
 
     public static short ensureShort(Token t, int i) {
         if (!inShortRange(i))
-            throw new CompileException("Argument out of range (expected 2-byte integer)", t);
+            throw error(t, "Argument out of range (expected 2-byte integer)");
         return (short) i;
     }
 
@@ -255,7 +192,8 @@ public class Parser {
     }
 
 
-    public Set<Block> getBlocks() {
+    @Override
+    public Set<Block> getResult() {
         return blocks;
     }
 
