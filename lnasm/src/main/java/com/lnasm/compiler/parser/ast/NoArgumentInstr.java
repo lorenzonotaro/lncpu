@@ -5,7 +5,7 @@ import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.linker.AbstractLinker;
 import com.lnasm.compiler.parser.Encodeable;
 import com.lnasm.compiler.parser.OpcodeMap;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 
 import java.util.Locale;
 
@@ -33,7 +33,7 @@ public class NoArgumentInstr implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+        public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
             return new NoArgumentInstr(instructionToken, tokenType.toString().toLowerCase(Locale.ROOT));
         }
     }

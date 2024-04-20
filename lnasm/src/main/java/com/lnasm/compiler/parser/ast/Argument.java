@@ -1,6 +1,6 @@
 package com.lnasm.compiler.parser.ast;
 
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.RegisterId;
 import com.lnasm.compiler.lexer.Token;
 
@@ -50,7 +50,7 @@ public abstract class Argument{
 
         public Word(Token token) {
             super(token, Type.WORD);
-            this.value = Parser.ensureShort(token, (Integer) token.literal);
+            this.value = LnasmParser.ensureShort(token, (Integer) token.literal);
         }
     }
     public static class Byte extends Argument{
@@ -58,7 +58,7 @@ public abstract class Argument{
 
         public Byte(Token token) {
             super(token, Type.BYTE);
-            this.value = Parser.ensureByte(token, (Integer) token.literal);
+            this.value = LnasmParser.ensureByte(token, (Integer) token.literal);
         }
 
     }

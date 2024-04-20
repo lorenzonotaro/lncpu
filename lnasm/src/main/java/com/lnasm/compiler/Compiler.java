@@ -4,21 +4,21 @@ import com.lnasm.Logger;
 import com.lnasm.compiler.lexer.Lexer;
 import com.lnasm.compiler.lexer.Line;
 import com.lnasm.compiler.lexer.Token;
-import com.lnasm.compiler.linker.AbstractLinker;
-import com.lnasm.compiler.linker.BinaryLinker;
-import com.lnasm.compiler.linker.ImmediateLinker;
+import com.lnasm.compiler.linker.*;
 import com.lnasm.compiler.parser.Block;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 
 import java.util.*;
 
 public class Compiler {
     private final List<Line> sourceLines;
+    private final List<Line> linkerConfigLines;
     private final String outputFormat;
     private byte[] output;
 
-    public Compiler(List<Line> sourceLines, String outputFormat) {
+    public Compiler(List<Line> sourceLines, List<Line> linkerConfigLines, String outputFormat) {
         this.sourceLines = sourceLines;
+        this.linkerConfigLines = linkerConfigLines;
         this.outputFormat = outputFormat;
     }
 
@@ -36,10 +36,20 @@ public class Compiler {
         List<Token[]> preprocessedLines = preprocessor.getLines();
 
         Logger.setProgramState("parser");
-        Parser parser = new Parser(preprocessedLines);
+        LnasmParser parser = new LnasmParser(preprocessedLines);
         if(!parser.parse())
             return false;
         Set<Block> blocks = parser.getResult();
+
+        Logger.setProgramState("linker-config");
+        Lexer linkerConfigLexer = new Lexer(null, Token.Type.LINKER_CONFIG_KEYWORDSET, false,false);
+        if(!linkerConfigLexer.parse(linkerConfigLines))
+            return false;
+        LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getLines().stream().map(l -> l.toArray(new Token[0])).toList());
+        if(!linkerconfigParser.parse())
+            return false;
+        LinkerConfig linkerConfig = linkerconfigParser.getResult();
+        System.out.println(linkerConfig.toString());
 
         Logger.setProgramState("linker");
         AbstractLinker linker = null;

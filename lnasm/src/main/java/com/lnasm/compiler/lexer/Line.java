@@ -8,7 +8,7 @@ public class Line {
     public String filename;
     public String filepath;
 
-    protected Line(String filepath, String filename, String code, int lineNumber) {
+    public Line(String filepath, String filename, String code, int lineNumber) {
         this.lineNumber = lineNumber;
         this.code = code;
         this.filename = filename;

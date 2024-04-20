@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Parser extends AbstractParser<Set<Block>> {
+public class LnasmParser extends AbstractLineParser<Set<Block>> {
 
     // The starting character of a sublabel.
     private static final String SUBLABEL_INITIATOR = "_";
@@ -21,7 +21,7 @@ public class Parser extends AbstractParser<Set<Block>> {
     private String currentParentLabel = null;
     private final Map<String, Short> labels;
 
-    public Parser(List<Token[]> tokens) {
+    public LnasmParser(List<Token[]> tokens) {
         super(tokens);
         blocks = new HashSet<>();
         labels = new HashMap<>();

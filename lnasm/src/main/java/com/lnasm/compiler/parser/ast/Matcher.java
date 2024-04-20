@@ -1,7 +1,7 @@
 package com.lnasm.compiler.parser.ast;
 
 import com.lnasm.compiler.parser.Encodeable;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.RegisterId;
 import com.lnasm.compiler.lexer.Token;
 
@@ -25,7 +25,7 @@ public interface Matcher {
 
     boolean matches(Argument... arguments);
 
-    Encodeable make(Parser parser, Token instructionToken, Argument... arguments);
+    Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments);
 
     static void init(){
 
@@ -56,7 +56,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new PopRx(arguments[0]);
             }
         });
@@ -74,7 +74,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new PopIndirect(arguments[0]);
             }
         });
@@ -91,7 +91,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new PushRx(arguments[0]);
             }
         });
@@ -109,7 +109,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new PushIndirect(((Argument.Dereference) arguments[0]).value);
             }
         });
@@ -127,7 +127,7 @@ public interface Matcher {
                 }
 
                 @Override
-                public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+                public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                     return new PushConstant(arguments[0]);
                 }
             });
@@ -146,7 +146,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new MovConstantRx(arguments[0], arguments[1]);
             }
         });
@@ -165,7 +165,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new MovRxRx(arguments[0], arguments[1]);
             }
         });
@@ -183,7 +183,7 @@ public interface Matcher {
             }
 
             @Override
-            public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+            public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
                 return new MovIndirect(arguments[0], arguments[1]);
             }
         });

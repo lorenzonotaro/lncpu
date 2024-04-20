@@ -41,7 +41,7 @@ public class LNASM {
     }
 
     private static int runFromSourceFiles() {
-        List<Line> lines;
+        List<Line> lines, linkerConfigLines;
         try {
             includeDirs = settings.get("-I", String.class).split(";");
 
@@ -50,13 +50,14 @@ public class LNASM {
                 return 1;
             }
             lines = getLinesFromSourceFiles();
-            Compiler compiler = new Compiler(lines, settings.get("-f", String.class));
+            linkerConfigLines = getLinkerConfig();
+            Compiler compiler = new Compiler(lines, linkerConfigLines, settings.get("-f", String.class));
             if(!compiler.compile())
                 System.exit(1);
             else if(!settings.get("-s", Boolean.class)){
                 Files.write(Path.of(settings.get("-o", String.class)), compiler.getOutput());
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | IllegalStateException e) {
             Logger.error(e.getMessage());
             return 1;
         } catch (IOException e) {
@@ -72,6 +73,21 @@ public class LNASM {
             lines.addAll(getLinesFromFile(file));
         }
         return lines;
+    }
+
+    private static List<Line> getLinkerConfig() throws FileNotFoundException {
+        var configFile = settings.get("-lC", String.class);
+        var configScript = settings.get("-lc", String.class);
+
+        if("".equals(configScript) && "".equals(configFile)) {
+            throw new IllegalStateException("no linker config specified");
+        } else if(!"".equals(configScript) && !"".equals(configFile)){
+            throw new IllegalStateException("cannot specify both linker config file and script");
+        } else if(!"".equals(configFile)){
+            return getLinesFromFile(configFile);
+        }else{
+            return new ArrayList<>(List.of(new Line("<cmdline>", "<cmdline>", configScript, 1)));
+        }
     }
 
     public static List<Line> getLinesFromFile(String file) throws FileNotFoundException{

@@ -6,7 +6,7 @@ import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.linker.AbstractLinker;
 import com.lnasm.compiler.parser.Encodeable;
 import com.lnasm.compiler.parser.OpcodeMap;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.RegisterId;
 
 class LongJump implements Encodeable {
@@ -86,7 +86,7 @@ class LongJump implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+        public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
             boolean isIFullRcRd = false;
 
             if(arguments[0].type == Argument.Type.L_ADDRESS){

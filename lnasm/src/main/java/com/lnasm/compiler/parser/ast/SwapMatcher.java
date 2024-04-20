@@ -4,7 +4,7 @@ import com.lnasm.compiler.*;
 import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.linker.AbstractLinker;
 import com.lnasm.compiler.parser.Encodeable;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 
 class Swap extends NoArgumentInstr{
 
@@ -33,7 +33,7 @@ class Swap extends NoArgumentInstr{
         }
 
         @Override
-        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+        public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
             String reg1 = ((Argument.Register) arguments[0]).reg.toString();
             String reg2 = ((Argument.Register) arguments[1]).reg.toString();
 

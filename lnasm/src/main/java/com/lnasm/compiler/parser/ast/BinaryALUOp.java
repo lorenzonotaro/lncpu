@@ -5,7 +5,7 @@ import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.linker.AbstractLinker;
 import com.lnasm.compiler.parser.Encodeable;
 import com.lnasm.compiler.parser.OpcodeMap;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 
 public class BinaryALUOp implements Encodeable {
 
@@ -59,7 +59,7 @@ public class BinaryALUOp implements Encodeable {
         }
 
         @Override
-        public Encodeable make(Parser parser, Token instructionToken, Argument... arguments) {
+        public Encodeable make(LnasmParser parser, Token instructionToken, Argument... arguments) {
             String register = arguments[0].token.lexeme.toLowerCase();
 
             if (arguments[1].type == Argument.Type.REGISTER) {

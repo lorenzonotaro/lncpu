@@ -3,7 +3,7 @@ package com.lnasm.compiler.linker;
 import com.lnasm.compiler.CompileException;
 import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.parser.Block;
-import com.lnasm.compiler.parser.Parser;
+import com.lnasm.compiler.parser.LnasmParser;
 
 import java.util.*;
 
@@ -24,8 +24,8 @@ public abstract class AbstractLinker {
     }
 
     public short resolveLabel(String parentLabel, String subLabel, Token token){
-        if(parentLabel != null && subLabel.startsWith("_") && labels.containsKey(parentLabel + Parser.SUBLABEL_SEPARATOR + subLabel))
-            return labels.get(parentLabel + Parser.SUBLABEL_SEPARATOR + subLabel);
+        if(parentLabel != null && subLabel.startsWith("_") && labels.containsKey(parentLabel + LnasmParser.SUBLABEL_SEPARATOR + subLabel))
+            return labels.get(parentLabel + LnasmParser.SUBLABEL_SEPARATOR + subLabel);
         return resolveLabel(subLabel, token);
     }
 }

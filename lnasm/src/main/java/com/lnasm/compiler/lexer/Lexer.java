@@ -12,12 +12,25 @@ public class Lexer {
     private int index;
     private int start;
 
+    private Token.Type[] keywordSet;
+
+    private final boolean preprocessorDirectives;
+
+    private final boolean comments;
+
     public Lexer() {
-        this(null);
+        this(null, Token.Type.LNASM_KEYWORDSET, true, true);
     }
 
-    public Lexer(Token macroSubToken) {
+    public Lexer(Token.Type[] keywordSet) {
+        this(null, keywordSet, true, true);
+    }
+
+    public Lexer(Token macroSubToken, Token.Type[] keywordSet, boolean preprocessorDirectives, boolean comments) {
         this.macroSubToken = macroSubToken;
+        this.keywordSet = keywordSet;
+        this.preprocessorDirectives = preprocessorDirectives;
+        this.comments = comments;
         lines = new ArrayList<>();
     }
 
@@ -65,15 +78,21 @@ public class Lexer {
                 return match(advance());
             case '\0':
             case ';':
-                return null;
+                if(comments)
+                    return null;
+                else return token(Token.Type.SEMICOLON);
             case '.':
                 return directive();
             case '%':
-                return macro();
+                if (preprocessorDirectives)
+                    return macro();
+                else throw error("unexpected character", "%");
             case '[':
                 return token(Token.Type.L_SQUARE_BRACKET);
             case ']':
                 return token(Token.Type.R_SQUARE_BRACKET);
+            case '=':
+                return token(Token.Type.EQUALS);
             case ',':
                 return token(Token.Type.COMMA);
             case ':':
@@ -100,84 +119,11 @@ public class Lexer {
 
     private Token name() {
         String ident = identifier();
-        switch (ident.toLowerCase()) {
-            case "nop":
-                return token(Token.Type.NOP);
-            case "hlt":
-                return token(Token.Type.HLT);
-            case "mov":
-                return token(Token.Type.MOV);
-            case "push":
-                return token(Token.Type.PUSH);
-            case "pop":
-                return token(Token.Type.POP);
-            case "add":
-                return token(Token.Type.ADD);
-            case "sub":
-                return token(Token.Type.SUB);
-            case "cmp":
-                return token(Token.Type.CMP);
-            case "and":
-                return token(Token.Type.AND);
-            case "or":
-                return token(Token.Type.OR);
-            case "xor":
-                return token(Token.Type.XOR);
-            case "swap":
-                return token(Token.Type.SWAP);
-            case "not":
-                return token(Token.Type.NOT);
-            case "dec":
-                return token(Token.Type.DEC);
-            case "inc":
-                return token(Token.Type.INC);
-            case "shl":
-                return token(Token.Type.SHL);
-            case "shr":
-                return token(Token.Type.SHR);
-            case "jc":
-                return token(Token.Type.JC);
-            case "jz":
-                return token(Token.Type.JZ);
-            case "jn":
-                return token(Token.Type.JN);
-            case "goto":
-                return token(Token.Type.GOTO);
-            case "ljc":
-                return token(Token.Type.LJC);
-            case "ljz":
-                return token(Token.Type.LJZ);
-            case "ljn":
-                return token(Token.Type.LJN);
-            case "lgoto":
-                return token(Token.Type.LGOTO);
-            case "lcall":
-                return token(Token.Type.LCALL);
-            case "ret":
-                return token(Token.Type.RET);
-            case "iret":
-                return token(Token.Type.IRET);
-            case "sid":
-                return token(Token.Type.SID);
-            case "cid":
-                return token(Token.Type.CID);
-            case "brk":
-                return token(Token.Type.BRK);
-            case "ra":
-                return token(Token.Type.RA);
-            case "rb":
-                return token(Token.Type.RB);
-            case "rc":
-                return token(Token.Type.RC);
-            case "rd":
-                return token(Token.Type.RD);
-            case "ss":
-                return token(Token.Type.SS);
-            case "sp":
-                return token(Token.Type.SP);
-            default:
-                return token(Token.Type.IDENTIFIER, ident);
+        for (Token.Type type : keywordSet) {
+            if (type.name().equalsIgnoreCase(ident))
+                return token(type);
         }
+        return token(Token.Type.IDENTIFIER, ident);
     }
 
     private CompileException error(String message, String lexeme) {

@@ -1,36 +1,33 @@
 package com.lnasm.compiler.linker;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
 import com.lnasm.io.ByteArrayChannel;
 
 public class Section {
 
     public String name;
 
-    public short startAddress;
+    public int startAddress;
 
-    public Type type;
+    public SectionType type;
 
     private final ByteArrayChannel channel;
 
-    public Section(String name, short startAddress, Type type) {
+    private Section(String name, int startAddress, SectionType type) {
         this();
         this.name = name;
         this.startAddress = startAddress;
         this.type = type;
     }
 
-    public Section() {
+    private Section() {
         this.channel = new ByteArrayChannel(0, false);
     }
 
-    public enum Type{
-        ROM,
+    public static Section create(String name, int startAddress, SectionType type) {
+        return new Section(name, startAddress, type);
+    }
 
-        RAM,
-
-        PAGE0
+    public static Section create(SectionInfo sectionInfo) {
+        return new Section(sectionInfo.name, sectionInfo.start, sectionInfo.type);
     }
 }
