@@ -1,4 +1,4 @@
-package com.lnasm.compiler.lexer;
+package com.lnasm.compiler.common;
 
 import java.nio.file.Path;
 

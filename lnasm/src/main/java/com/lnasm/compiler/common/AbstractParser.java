@@ -1,6 +1,5 @@
-package com.lnasm.compiler.parser;
+package com.lnasm.compiler.common;
 
-import com.lnasm.compiler.CompileException;
 import com.lnasm.compiler.lexer.Token;
 
 import java.util.Arrays;

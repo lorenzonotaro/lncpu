@@ -1,5 +1,6 @@
 package com.lnasm.compiler.parser;
 
+import com.lnasm.compiler.common.Encodeable;
 import com.lnasm.compiler.lexer.Token;
 
 import java.util.*;

@@ -1,8 +1,8 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.CompileException;
+import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.parser.Block;
-import com.lnasm.compiler.parser.Encodeable;
+import com.lnasm.compiler.common.Encodeable;
 import com.lnasm.io.ByteArrayChannel;
 
 import java.io.IOException;

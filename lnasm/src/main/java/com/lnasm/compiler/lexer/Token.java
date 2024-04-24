@@ -1,5 +1,7 @@
 package com.lnasm.compiler.lexer;
 
+import com.lnasm.compiler.common.Location;
+
 public class Token {
 
     public Location location;

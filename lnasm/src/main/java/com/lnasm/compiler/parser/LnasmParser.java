@@ -1,5 +1,8 @@
 package com.lnasm.compiler.parser;
 
+import com.lnasm.compiler.common.AbstractLineParser;
+import com.lnasm.compiler.common.Encodeable;
+import com.lnasm.compiler.common.EncodedData;
 import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.parser.ast.Argument;
 import com.lnasm.compiler.parser.ast.Matcher;

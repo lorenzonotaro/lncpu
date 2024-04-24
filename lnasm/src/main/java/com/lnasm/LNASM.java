@@ -1,7 +1,7 @@
 package com.lnasm;
 
 import com.lnasm.compiler.Compiler;
-import com.lnasm.compiler.lexer.Line;
+import com.lnasm.compiler.common.Line;
 import com.lnasm.compiler.parser.ast.Matcher;
 
 import java.io.FileNotFoundException;

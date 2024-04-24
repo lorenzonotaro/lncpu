@@ -1,6 +1,6 @@
 package com.lnasm.compiler.parser.ast;
 
-import com.lnasm.compiler.parser.Encodeable;
+import com.lnasm.compiler.common.Encodeable;
 import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.RegisterId;
 import com.lnasm.compiler.lexer.Token;

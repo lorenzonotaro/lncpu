@@ -1,4 +1,4 @@
-package com.lnasm.compiler.linker;
+package com.lnasm.compiler.common;
 
 public class SectionInfo {
     protected final String name;

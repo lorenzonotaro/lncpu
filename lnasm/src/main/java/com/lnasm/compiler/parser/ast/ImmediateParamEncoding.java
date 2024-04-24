@@ -1,6 +1,6 @@
 package com.lnasm.compiler.parser.ast;
 
-import com.lnasm.compiler.CompileException;
+import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.parser.RegisterId;
 
 class ImmediateParamEncoding {

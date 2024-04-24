@@ -1,5 +1,7 @@
 package com.lnasm.compiler.linker;
 
+import com.lnasm.compiler.common.SectionInfo;
+
 import java.util.Arrays;
 
 public record LinkerConfig(SectionInfo[] sections){

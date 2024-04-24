@@ -1,4 +1,4 @@
-package com.lnasm.compiler.linker;
+package com.lnasm.compiler.common;
 
 public enum SectionType {
     ROM,

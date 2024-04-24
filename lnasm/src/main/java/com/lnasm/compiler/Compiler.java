@@ -2,7 +2,7 @@ package com.lnasm.compiler;
 
 import com.lnasm.Logger;
 import com.lnasm.compiler.lexer.Lexer;
-import com.lnasm.compiler.lexer.Line;
+import com.lnasm.compiler.common.Line;
 import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.linker.*;
 import com.lnasm.compiler.parser.Block;

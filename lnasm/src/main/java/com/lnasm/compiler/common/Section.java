@@ -1,4 +1,4 @@
-package com.lnasm.compiler.linker;
+package com.lnasm.compiler.common;
 
 import com.lnasm.io.ByteArrayChannel;
 

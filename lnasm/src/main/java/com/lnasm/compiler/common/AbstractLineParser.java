@@ -1,11 +1,12 @@
-package com.lnasm.compiler.parser;
+package com.lnasm.compiler.common;
 
-import com.lnasm.compiler.CompileException;
+import com.lnasm.compiler.common.AbstractParser;
+import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.lexer.Token;
 
 import java.util.List;
 
-public abstract class AbstractLineParser<T> extends AbstractParser<T>{
+public abstract class AbstractLineParser<T> extends AbstractParser<T> {
     private final List<Token[]> lines;
     private Token[] currentLine;
     protected int index;

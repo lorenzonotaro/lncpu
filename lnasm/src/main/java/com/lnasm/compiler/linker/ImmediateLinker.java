@@ -1,10 +1,10 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.CompileException;
-import com.lnasm.compiler.lexer.Location;
+import com.lnasm.compiler.common.CompileException;
+import com.lnasm.compiler.common.Location;
 import com.lnasm.compiler.parser.Block;
-import com.lnasm.compiler.parser.Encodeable;
-import com.lnasm.compiler.parser.OpcodeMap;
+import com.lnasm.compiler.common.Encodeable;
+import com.lnasm.compiler.common.OpcodeMap;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;

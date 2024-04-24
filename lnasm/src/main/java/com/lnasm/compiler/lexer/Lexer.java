@@ -1,6 +1,8 @@
 package com.lnasm.compiler.lexer;
 
-import com.lnasm.compiler.CompileException;
+import com.lnasm.compiler.common.CompileException;
+import com.lnasm.compiler.common.Line;
+import com.lnasm.compiler.common.Location;
 
 import java.util.ArrayList;
 import java.util.List;

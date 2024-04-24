@@ -1,10 +1,10 @@
 package com.lnasm.compiler.parser.ast;
 
-import com.lnasm.compiler.*;
+import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.lexer.Token;
 import com.lnasm.compiler.linker.AbstractLinker;
-import com.lnasm.compiler.parser.Encodeable;
-import com.lnasm.compiler.parser.OpcodeMap;
+import com.lnasm.compiler.common.Encodeable;
+import com.lnasm.compiler.common.OpcodeMap;
 import com.lnasm.compiler.parser.LnasmParser;
 
 public class BinaryALUOp implements Encodeable {
