@@ -2,7 +2,7 @@ package com.lnasm.compiler.linker;
 
 import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.parser.Block;
-import com.lnasm.compiler.common.Encodeable;
+import com.lnasm.compiler.common.IEncodeable;
 import com.lnasm.io.ByteArrayChannel;
 
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class BinaryLinker extends AbstractLinker{
     private void linkBlock(Block block) {
         try {
             this.channel.position(block.startAddress & 0xFFFF);
-            for (Encodeable encodeable : block.encodeables) {
+            for (IEncodeable encodeable : block.encodeables) {
                 this.channel.write(ByteBuffer.wrap(encodeable.encode(this, (short) this.channel.position())));
             }
         } catch (IOException e1) {

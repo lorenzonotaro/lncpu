@@ -2,7 +2,7 @@ package com.lnasm.compiler.common;
 
 import com.lnasm.compiler.linker.AbstractLinker;
 
-public class EncodedData implements Encodeable{
+public class EncodedData implements IEncodeable {
     private final byte[] data;
 
     public EncodedData(byte[] data) {
@@ -15,7 +15,7 @@ public class EncodedData implements Encodeable{
     }
 
     @Override
-    public int size() {
+    public int size(ILabelSectionLocator sectionLocator) {
         return data.length;
     }
 }

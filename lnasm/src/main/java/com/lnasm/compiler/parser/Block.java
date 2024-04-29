@@ -1,13 +1,13 @@
 package com.lnasm.compiler.parser;
 
-import com.lnasm.compiler.common.Encodeable;
-import com.lnasm.compiler.lexer.Token;
+import com.lnasm.compiler.common.IEncodeable;
+import com.lnasm.compiler.common.Token;
 
 import java.util.*;
 
 public class Block {
     public final short startAddress;
-    public final List<Encodeable> encodeables;
+    public final List<IEncodeable> encodeables;
     public Token origin;
     public int codeSize;
 
@@ -17,7 +17,7 @@ public class Block {
         this.encodeables = new ArrayList<>();
     }
 
-    boolean addInstruction(Encodeable instr) {
+    boolean addInstruction(IEncodeable instr) {
         if(startAddress + codeSize + instr.size() >= 32768)
             return false;
         encodeables.add(instr);

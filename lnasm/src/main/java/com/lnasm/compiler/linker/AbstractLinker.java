@@ -1,7 +1,7 @@
 package com.lnasm.compiler.linker;
 
 import com.lnasm.compiler.common.CompileException;
-import com.lnasm.compiler.lexer.Token;
+import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.parser.Block;
 import com.lnasm.compiler.parser.LnasmParser;
 

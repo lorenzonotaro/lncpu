@@ -1,6 +1,4 @@
-package com.lnasm.compiler.lexer;
-
-import com.lnasm.compiler.common.Location;
+package com.lnasm.compiler.common;
 
 public class Token {
 
@@ -42,6 +40,41 @@ public class Token {
     public String formatLocation(){
         return String.format("%s:%d:%d", this.location.filename, this.location.lineNumber, this.location.colNumber);
     }
+
+    public short getValueAsShort() {
+        if (literal instanceof Integer){
+            int i = (int) literal;
+            if (inShortRange(i)){
+                return (short) i;
+            } else {
+                throw new CompileException("Value out of range for word: " + i, this);
+            }
+        } else {
+            throw new CompileException("Expected integer literal", this);
+        }
+    }
+
+    public byte getValueAsByte() {
+        if (literal instanceof Integer){
+            int i = (int) literal;
+            if (inByteRange(i)){
+                return (byte) i;
+            } else {
+                throw new CompileException("Value out of range for byte: " + i, this);
+            }
+        } else {
+            throw new CompileException("Expected integer literal", this);
+        }
+    }
+
+    private static boolean inByteRange(int i) {
+        return i >= -128 && i < 256;
+    }
+
+    private static boolean inShortRange(int i) {
+        return i >= -32768 && i < 65536;
+    }
+
 
     public enum Type {
         MACRO_DEFINE,

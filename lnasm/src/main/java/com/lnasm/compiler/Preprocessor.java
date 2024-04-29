@@ -5,7 +5,7 @@ import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.lexer.Lexer;
 import com.lnasm.compiler.common.Line;
 import com.lnasm.compiler.common.Location;
-import com.lnasm.compiler.lexer.Token;
+import com.lnasm.compiler.common.Token;
 
 import java.io.IOException;
 import java.nio.file.Path;

@@ -3,7 +3,7 @@ package com.lnasm.compiler.linker;
 import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.common.Location;
 import com.lnasm.compiler.parser.Block;
-import com.lnasm.compiler.common.Encodeable;
+import com.lnasm.compiler.common.IEncodeable;
 import com.lnasm.compiler.common.OpcodeMap;
 
 import java.nio.charset.StandardCharsets;
@@ -40,7 +40,7 @@ public class ImmediateLinker extends AbstractLinker {
                 short addr = block.startAddress;
                 Location location = block.origin.macroSub != null ? block.origin.macroSub.location : block.origin.location;
                 sb.append(String.format("###### Origin: 0x%06x (block at %s:%d) ###### \n\n", block.startAddress & 0xFFFFFF, location.filepath, location.lineNumber));
-                for(Encodeable encodeable : block.encodeables){
+                for(IEncodeable encodeable : block.encodeables){
                     byte[] encoded = encodeable.encode(this, addr);
                     StringBuilder params = new StringBuilder();
                     for (int i = 1; i < encoded.length; i++) {
