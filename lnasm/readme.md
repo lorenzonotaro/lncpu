@@ -109,8 +109,6 @@ Basically, each immediate instruction code is made of (separated by `_`):
     
         - `page0`: zero page addressing mode. The target address will be in the first page of RAM (`0x2000-0x20ff`). In lnasm you will specify an 8-bit value in the square brackets, corresponding to the address in page zero you want to write to/read from (`[8-bit address]`)
 
-        - `ipage0rd`: indirect zero page addressing mode. In lnasm this is achieved with `[RD]`. The address will be in the first page of RAM and the value in RD is used as the address.
-
         - `ifullrcrd`: full indirect addressing mode. In lnasm this is achieved with `[RC:RD]`.
 
         - `abs`: absolute addressing mode. In lnasm this is achieved with `[<8-bit page>:<8-bit address>]` or `[<16-bit full address>]`.

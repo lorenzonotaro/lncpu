@@ -29,13 +29,6 @@ class ImmediateParamEncoding {
 
     private void dereference(Argument arg) {
         switch (arg.type) {
-            case REGISTER -> {
-                //can only be RD
-                if (((Argument.Register) arg).reg != RegisterId.RD)
-                    throw new CompileException("Indirect page 0 mode is only permitted with RD", arg.token);
-                this.immediateName = "ipage0rd";
-                this.args = new byte[0];
-            }
             case L_ADDRESS -> {
                 //pop [page:adr], [page:rd] or [rc:rd]
                 Argument.LongAddress la = (Argument.LongAddress) arg;
