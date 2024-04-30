@@ -69,6 +69,10 @@ public class Token {
 
         CID,
 
+        SEC,
+
+        CLC,
+
         BRK,
         //registers
         RA,

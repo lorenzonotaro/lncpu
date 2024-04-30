@@ -54,8 +54,7 @@
                 "NOT_CS_IN": 0,
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1,
-                "I_VAL": 1,
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "set_i"
             }
         ]
     },
@@ -3610,8 +3609,7 @@
         "description": "Clears the interrupt disable flag",
         "microcode": [
             {
-                "I_VAL": 0,
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "reset_i"
             }
         ]
     },
@@ -3620,9 +3618,27 @@
         "description": "Sets the interrupt disable flag",
         "microcode": [
             {
-                "I_VAL": 1,
-                "FLAGS_MODE_SEL": "i_in"
+                "FLAGS_MODE_SEL": "set_i"
+            }
+        ]
+    },
+    {
+        "name": "clc",
+        "description": "Clears the carry flag",
+        "microcode": [
+            {
+                "FLAGS_MODE_SEL": "reset_c"
+            }
+        ]
+    },
+    {
+        "name": "sec",
+        "description": "Sets the carry flag",
+        "microcode": [
+            {
+                "FLAGS_MODE_SEL": "set_c"
             }
         ]
     }
+
 ]

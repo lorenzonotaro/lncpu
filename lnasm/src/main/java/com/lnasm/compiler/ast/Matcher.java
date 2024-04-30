@@ -207,6 +207,8 @@ public interface Matcher {
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.IRET));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.SID));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.CID));
+        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.CLC));
+        Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.SEC));
         Matcher.addMatcher(new NoArgumentInstr.NoArgumentInstrMatcher(Token.Type.BRK));
     }
 }

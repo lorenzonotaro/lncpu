@@ -233,3 +233,5 @@ Opcode	Name	Data length	Clock cycles	Description
 0xe7	iret	1	5	Returns from an interrupt
 0xe8	cid	1	1	Clears the interrupt disable flag
 0xe9	sid	1	1	Sets the interrupt disable flag
+0xea	clc	1	1	Clears the carry flag
+0xeb	sec	1	1	Sets the carry flag
