@@ -16,8 +16,8 @@ IO_INIT_BUFFER:
     ret
 
 ;   Checks whether there are characters available to read:
-;       - if there are, the zero flag is cleared and the next available character is read
-;       - if there aren't, the zero flag is set
+;       - if there are, the carry flag is cleared and the next available character is read
+;       - if there aren't, the carry flag is set
 ;   Modifies registers: RA
 IO_GETC:
     push        RB                          ; preserve RB
@@ -34,9 +34,11 @@ IO_GETC:
     mov         RD,         [BUFRPT]
     pop         RD                          ; restore RD, RC
     pop         RC
-    xor         RB,         RB              ; these two instructions ensure that the zero flag is not set
-    inc         RB                          ; before returning (until I implement Set/Clear Carry Flag instructions :))
+    clc                                     ; clear the carry flag then return
+    goto        _ret
 _notavail:
+    sec                                     ; set the carry flag before returning
+_ret:
     pop         RB                          ; restore RB
     ret
 

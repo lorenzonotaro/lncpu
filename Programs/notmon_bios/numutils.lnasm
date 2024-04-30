@@ -56,7 +56,7 @@ _digit:
 
 
 ; Parses a full address from the buffer starting at [RC:RD], and stores it in RA:RB.
-; If successful, the zero flag is cleared; it is set otherwise.
+; If successful, the carry flag is cleared; it is set otherwise.
 ; Modifies registers: RA, RB, RD (+4).
 NUMUTILS_PARSE_FADDR:
     mov     [RC:RD],        RA          ; get first digit and parse it
@@ -110,14 +110,13 @@ NUMUTILS_PARSE_FADDR:
 
 
 _ret:
-    xor     RA,             RA          ; clear zero flag
-    inc     RA
+    clc                                 ; clear carry flag
     pop     RA                          ; pop the first byte into RA
     ret
 _pop_err:
     pop     RA
 _err:
-    cmp     RA,             RA          ; set zero flag
+    sec                                 ; set carry flag
     ret
 
 

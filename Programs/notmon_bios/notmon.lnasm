@@ -28,7 +28,7 @@ notmon:
     mov             ' ',            [TTYOUT]
 _loop:
     lcall           IO_GETC                         ; get the next character 
-    jz              _loop                           ; if there is none available, IO_GETC sets the Zero flag
+    jc              _loop                           ; if there is none available, IO_GETC sets the Carry flag
 
     mov             RA,             [RC:RD]         ; write the newly read character to the buffer
 
@@ -62,7 +62,7 @@ _parse:
 
     push            RB                              ; preserve RB (the next call modifies it).
     lcall           NUMUTILS_PARSE_FADDR
-    jz              _poprb_err
+    jc              _poprb_err                      ; NUMUTILS_PARSE_FADDR sets the carry flag on error
     mov             RA,             [ADDR1H]        ; store the address in memory
     mov             RB,             [ADDR1L]
     pop             RB
@@ -99,7 +99,7 @@ _range:
 _parse_2nd_address:
     push            RB                              ; preserve RB (the next call modifies it).
     lcall           NUMUTILS_PARSE_FADDR
-    jz              _poprb_err
+    jc              _poprb_err                      ; NUMUTILS_PARSE_FADDR sets the carry flag on error
     mov             RA,             [ADDR2H]        ; store the address in memory
     mov             RB,             [ADDR2L]
     pop             RB                              ; restore RB
