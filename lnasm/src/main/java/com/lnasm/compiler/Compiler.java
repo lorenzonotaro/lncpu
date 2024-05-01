@@ -7,6 +7,7 @@ import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.linker.*;
 import com.lnasm.compiler.parser.Block;
 import com.lnasm.compiler.parser.LnasmParser;
+import com.lnasm.compiler.parser.ParseResult;
 
 import java.util.*;
 
@@ -39,7 +40,8 @@ public class Compiler {
         LnasmParser parser = new LnasmParser(preprocessedLines);
         if(!parser.parse())
             return false;
-        Set<Block> blocks = parser.getResult();
+
+        ParseResult parseResult = parser.getResult();
 
         Logger.setProgramState("linker-config");
         Lexer linkerConfigLexer = new Lexer(null, Token.Type.LINKER_CONFIG_KEYWORDSET, false,false);

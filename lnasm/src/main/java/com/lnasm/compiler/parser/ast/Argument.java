@@ -101,7 +101,7 @@ public abstract class Argument implements IEncodeable {
 
         @Override
         public int size(ILabelSectionLocator sectionLocator) {
-            return sectionLocator.getSection(label).type == SectionType.PAGE0 ? 1 : 2;
+            return sectionLocator.getSectionName(label).type == SectionType.PAGE0 ? 1 : 2;
         }
 
         @Override
