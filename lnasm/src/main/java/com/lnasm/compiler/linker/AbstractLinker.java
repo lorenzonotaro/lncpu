@@ -4,27 +4,30 @@ import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.parser.Block;
 
+import java.lang.foreign.Linker;
 import java.util.*;
 
 public abstract class AbstractLinker {
 
-    private final Map<String, Short> labels;
 
-    AbstractLinker(Map<String, Short> labels){
-        this.labels = labels;
+    private final LinkerConfig config;
+
+    AbstractLinker(LinkerConfig config){
+
+        this.config = config;
     }
 
     public abstract byte[] link(Set<Block> blocks);
 
     public short resolveLabel(String labelName, Token token) {
-        if(labels.containsKey(labelName))
-            return labels.get(labelName);
-        throw new CompileException("unresolved label '" + labelName + "'", token);
+        return 0;
     }
 
     public short resolveLabel(String parentLabel, String subLabel, Token token){
-        if(parentLabel != null && subLabel.startsWith("_") && labels.containsKey(parentLabel + LnasmParser.SUBLABEL_SEPARATOR + subLabel))
-            return labels.get(parentLabel + LnasmParser.SUBLABEL_SEPARATOR + subLabel);
-        return resolveLabel(subLabel, token);
+        return 0;
+    }
+
+    public LinkerConfig getConfig() {
+        return config;
     }
 }

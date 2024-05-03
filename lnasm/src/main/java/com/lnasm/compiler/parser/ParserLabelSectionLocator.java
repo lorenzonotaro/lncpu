@@ -10,7 +10,7 @@ public class ParserLabelSectionLocator extends HashMap<String, LabelBlockInfo> i
     public String getSectionName(String label) {
         LabelBlockInfo blockInfo = get(label);
         if (blockInfo != null) {
-            return blockInfo.name();
+            return blockInfo.sectionName();
         }
         return null;
     }

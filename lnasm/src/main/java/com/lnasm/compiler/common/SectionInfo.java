@@ -1,9 +1,9 @@
 package com.lnasm.compiler.common;
 
 public class SectionInfo {
-    protected final String name;
-    protected final int start;
-    protected final SectionType type;
+    public final String name;
+    public final int start;
+    public final SectionType type;
 
     public SectionInfo(String name, int start, SectionType type) {
         this.name = name;

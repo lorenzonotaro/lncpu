@@ -1,4 +1,4 @@
 package com.lnasm.compiler.parser;
 
-public record LabelBlockInfo(Block block, int index, String name){
+public record LabelBlockInfo(String sectionName, int index, String name){
 }

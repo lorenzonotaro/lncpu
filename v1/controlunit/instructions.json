@@ -446,143 +446,6 @@
             }
         ]
     },
-    {
-        "name": "mov_ra_ipage0rd",
-        "description": "Copies RA to a location in the address space (indirect zero page addressing mode)",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RA_OUT": 0,
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
-            }
-        ]
-    },
-    {
-        "name": "mov_rb_ipage0rd",
-        "description": "Copies RB to a location in the address space (indirect zero page addressing mode)",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RB_OUT": 0,
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
-            }
-        ]
-    },
-    {
-        "name": "mov_rc_ipage0rd",
-        "description": "Copies RC to a location in the address space (indirect zero page addressing mode)",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RC_OUT": 0,
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
-            }
-        ]
-    },
-    {
-        "name": "mov_rd_ipage0rd",
-        "description": "Copies RD to a location in the address space (indirect zero page addressing mode)",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
-            }
-        ]
-    },
-    {
-        "name": "mov_ipage0rd_ra",
-        "description": "Copies from location in the address space (indirect zero page addressing mode) to RA",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "ADDR_SEL": "page0:abl",
-                "NOT_DEVICE_OUT": 0,
-                "RA_S": "input"
-            }
-        ]
-    },
-    {
-        "name": "mov_ipage0rd_rb",
-        "description": "Copies from location in the address space (indirect zero page addressing mode) to RB",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RB_IN": 0,
-                "ADDR_SEL": "page0:abl",
-                "NOT_DEVICE_OUT": 0
-            }
-        ]
-    },
-    {
-        "name": "mov_ipage0rd_rc",
-        "description": "Copies from location in the address space (indirect zero page addressing mode) to RC",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RC_IN": 0,
-                "ADDR_SEL": "page0:abl",
-                "NOT_DEVICE_OUT": 0
-            }
-        ]
-    },
-    {
-        "name": "mov_ipage0rd_rd",
-        "description": "Copies from location in the address space (indirect zero page addressing mode) to RD",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_RD_IN": 0,
-                "ADDR_SEL": "page0:abl",
-                "NOT_DEVICE_OUT": 0
-            }
-        ]
-    },
-    {
-        "name": "mov_cst_ipage0rd",
-        "description": "Copies a constant to a location in the address space (indirect zero page addressing mode)",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "ADDR_SEL": "page0:abl",
-                "NOT_DEVICE_IN": 0
-            }
-        ]
-    },
 
     {
         "name": "mov_ra_ifullrcrd",
@@ -1084,30 +947,6 @@
         ]
     },
     {
-        "name": "push_ipage0rd",
-        "description": "Pushes a location in the address space (indirect zero page addressing mode) onto the stack",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_RD_OUT": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ss:sp"
-            },
-            {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
-            }
-        ]
-    },
-    {
         "name": "push_ifullrcrd",
         "description": "Pushes a location in the address space (full indirect addressing mode) onto the stack",
         "microcode": [
@@ -1243,28 +1082,6 @@
                 "NOT_PC_INC": 0,
                 "NOT_DATA_LATCH_OUT": 0,
                 "NOT_FETCH": 0,
-                "NOT_ABL_IN": 0
-            },
-            {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
-                "NOT_RT_IN": 0,
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ss:sp"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
-            }
-        ]
-    },
-    {
-        "name": "pop_ipage0rd",
-        "description": "Pops from the stack into a location in the address space (indirect zero page addressing mode)",
-        "microcode": [
-            {
-                "NOT_RD_OUT": 0,
                 "NOT_ABL_IN": 0
             },
             {

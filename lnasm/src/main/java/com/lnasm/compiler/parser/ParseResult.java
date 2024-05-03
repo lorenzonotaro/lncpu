@@ -1,4 +1,4 @@
 package com.lnasm.compiler.parser;
 
-public class ParseResult {
+public record ParseResult(ParsedBlock[] blocks, ParserLabelSectionLocator labelSectionLocator) {
 }

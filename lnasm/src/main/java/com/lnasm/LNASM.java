@@ -2,7 +2,6 @@ package com.lnasm;
 
 import com.lnasm.compiler.Compiler;
 import com.lnasm.compiler.common.Line;
-import com.lnasm.compiler.parser.ast.Matcher;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -107,7 +106,7 @@ public class LNASM {
     }
 
     private static void init() {
-        Matcher.init();
+
     }
 
     private static boolean parseArgs(String[] args) {

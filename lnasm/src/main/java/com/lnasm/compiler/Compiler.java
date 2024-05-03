@@ -53,18 +53,6 @@ public class Compiler {
         LinkerConfig linkerConfig = linkerconfigParser.getResult();
         System.out.println(linkerConfig.toString());
 
-        Logger.setProgramState("linker");
-        AbstractLinker linker = null;
-        if("binary".equals(outputFormat)){
-            linker = new BinaryLinker(parser.getLabels());
-        }else if("immediate".equals(outputFormat)){
-            linker = new ImmediateLinker(parser.getLabels());
-        }else{
-            Logger.error("invalid output format '" + outputFormat + "'");
-            return false;
-        }
-
-        this.output = linker.link(blocks);
 
         return this.output != null;
     }

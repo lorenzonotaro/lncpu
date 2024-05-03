@@ -41,40 +41,25 @@ public class Token {
         return String.format("%s:%d:%d", this.location.filename, this.location.lineNumber, this.location.colNumber);
     }
 
-    public short getValueAsShort() {
-        if (literal instanceof Integer){
-            int i = (int) literal;
-            if (inShortRange(i)){
-                return (short) i;
-            } else {
-                throw new CompileException("Value out of range for word: " + i, this);
+    public short ensureShort(){
+        if(type == Type.INTEGER){
+            int value = (Integer) literal;
+            if(IntUtils.inShortRange(value)){
+                return (short) value;
             }
-        } else {
-            throw new CompileException("Expected integer literal", this);
         }
+        throw new CompileException("value out of range for word", this);
     }
 
-    public byte getValueAsByte() {
-        if (literal instanceof Integer){
-            int i = (int) literal;
-            if (inByteRange(i)){
-                return (byte) i;
-            } else {
-                throw new CompileException("Value out of range for byte: " + i, this);
+    public byte ensureByte(){
+        if(type == Type.INTEGER){
+            int value = (Integer) literal;
+            if(IntUtils.inByteRange(value)){
+                return (byte) value;
             }
-        } else {
-            throw new CompileException("Expected integer literal", this);
         }
+        throw new CompileException("value out of range for byte", this);
     }
-
-    private static boolean inByteRange(int i) {
-        return i >= -128 && i < 256;
-    }
-
-    private static boolean inShortRange(int i) {
-        return i >= -32768 && i < 65536;
-    }
-
 
     public enum Type {
         MACRO_DEFINE,
@@ -86,7 +71,7 @@ public class Token {
 
         MACRO_ERROR,
 
-        DIR_ORG,
+        DIR_SECTION,
         DIR_DATA,
         DIR_RES,
 
@@ -184,6 +169,42 @@ public class Token {
                 Token.Type.SS,
                 Token.Type.SP,
         };
+
+        public static final Token.Type[] LNASM_INSTRUCTIONSET = new Token.Type[]{
+                Token.Type.NOP,
+                Token.Type.HLT,
+                Token.Type.MOV,
+                Token.Type.PUSH,
+                Token.Type.POP,
+                Token.Type.ADD,
+                Token.Type.SUB,
+                Token.Type.CMP,
+                Token.Type.AND,
+                Token.Type.OR,
+                Token.Type.XOR,
+                Token.Type.SWAP,
+                Token.Type.NOT,
+                Token.Type.DEC,
+                Token.Type.INC,
+                Token.Type.SHL,
+                Token.Type.SHR,
+                Token.Type.JC,
+                Token.Type.JZ,
+                Token.Type.JN,
+                Token.Type.GOTO,
+                Token.Type.LJC,
+                Token.Type.LJZ,
+                Token.Type.LJN,
+                Token.Type.LGOTO,
+                Token.Type.LCALL,
+                Token.Type.RET,
+                Token.Type.IRET,
+                Token.Type.SID,
+                Token.Type.CID,
+                Token.Type.BRK
+        };
+
+
 
         public static final Token.Type[] LINKER_CONFIG_KEYWORDSET = new Token.Type[]{
                 Token.Type.SECTIONS

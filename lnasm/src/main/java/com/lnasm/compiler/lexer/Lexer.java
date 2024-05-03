@@ -228,8 +228,8 @@ public class Lexer {
     private Token directive() {
         String ident = identifier();
 
-        if (".org".equalsIgnoreCase(ident))
-            return token(Token.Type.DIR_ORG);
+        if (".section".equalsIgnoreCase(ident))
+            return token(Token.Type.DIR_SECTION);
         else if (".data".equalsIgnoreCase(ident))
             return token(Token.Type.DIR_DATA);
         else if (".res".equals(ident))
