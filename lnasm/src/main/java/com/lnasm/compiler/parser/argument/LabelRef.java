@@ -1,7 +1,8 @@
 package com.lnasm.compiler.parser.argument;
 
 import com.lnasm.compiler.common.*;
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.nio.channels.WritableByteChannel;
 
@@ -14,21 +15,19 @@ public class LabelRef extends Argument {
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
-        String sectionName = sectionLocator.getSectionName(labelName);
-        SectionInfo sectionInfo = linker.getConfig().getSectionInfo(sectionName);
+    public int size(ILabelSectionLocator sectionLocator) {
+        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelName);
         return sectionInfo.type == SectionType.PAGE0 ? 1 : 2;
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) {
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) {
 
     }
 
     @Override
-    public String getImmediateEncoding(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
-        String sectionName = sectionLocator.getSectionName(labelName);
-        SectionInfo sectionInfo = linker.getConfig().getSectionInfo(sectionName);
+    public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
+        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelName);
         return sectionInfo.type == SectionType.PAGE0 ? "cst" : "dcst";
     }
 }

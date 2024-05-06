@@ -3,15 +3,13 @@ package com.lnasm.compiler.parser;
 import com.lnasm.compiler.common.AbstractLineParser;
 import com.lnasm.compiler.common.IntUtils;
 import com.lnasm.compiler.common.Token;
+import com.lnasm.compiler.linker.LinkerLabelSectionLocator;
 import com.lnasm.compiler.parser.argument.*;
 import com.lnasm.compiler.parser.argument.Byte;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class LnasmParser extends AbstractLineParser<ParseResult> {
 
@@ -34,8 +32,6 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
     private final List<ParsedBlock> blocks = new ArrayList<>();
 
-    private final ParserLabelSectionLocator labelSectionLocator = new ParserLabelSectionLocator();
-
     @Override
     protected void parseLine() {
         if (!section()) {
@@ -55,10 +51,6 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
                 if(codeElement != null){
                     codeElement.setLabels(currentInstructionLabels);
                     currentInstructions.add(codeElement);
-                    for(String label : currentInstructionLabels) {
-                        labelSectionLocator.put(label, new LabelBlockInfo(currentBlockSectionName, currentInstructions.size() - 1, label));
-                    }
-
                     currentInstructionLabels = new HashSet<>();
                 }
             }
@@ -175,7 +167,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
     @Override
     public ParseResult getResult() {
-        return new ParseResult(blocks.toArray(new ParsedBlock[0]), labelSectionLocator);
+        return new ParseResult(blocks.toArray(new ParsedBlock[0]));
     }
 
     private static void intToBytes(ByteArrayOutputStream baos, Token token) {

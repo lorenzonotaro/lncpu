@@ -1,7 +1,7 @@
 package com.lnasm.compiler.parser.argument;
 
 import com.lnasm.compiler.common.*;
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 public abstract class Argument implements IEncodeable {
     public final Token token;
@@ -12,7 +12,7 @@ public abstract class Argument implements IEncodeable {
         this.type = type;
     }
 
-    public abstract String getImmediateEncoding(ILabelSectionLocator sectionLocator, AbstractLinker linker);
+    public abstract String getImmediateEncoding(ILabelSectionLocator sectionLocator);
 
     public enum Type {
         REGISTER("register"),

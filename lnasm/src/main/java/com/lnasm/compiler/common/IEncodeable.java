@@ -1,12 +1,13 @@
 package com.lnasm.compiler.common;
 
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
 import java.nio.channels.WritableByteChannel;
 
 public interface IEncodeable {
-    int size(ILabelSectionLocator sectionLocator, AbstractLinker linker);
+    int size(ILabelSectionLocator sectionLocator);
 
-    void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) throws IOException;
+    void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException;
 }

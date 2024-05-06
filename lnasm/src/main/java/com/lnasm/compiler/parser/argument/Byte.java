@@ -1,8 +1,8 @@
 package com.lnasm.compiler.parser.argument;
 
-import com.lnasm.compiler.common.ILabelSectionLocator;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.common.Token;
-import com.lnasm.compiler.linker.AbstractLinker;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,17 +17,17 @@ public class Byte extends Argument {
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public int size(ILabelSectionLocator sectionLocator) {
         return 1;
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) throws IOException {
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
         channel.write(ByteBuffer.wrap(new byte[]{value}));
     }
 
     @Override
-    public String getImmediateEncoding(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return "cst";
     }
 }

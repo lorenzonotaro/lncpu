@@ -1,7 +1,7 @@
 package com.lnasm.compiler.parser.argument;
 
-import com.lnasm.compiler.common.ILabelSectionLocator;
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
 import java.nio.channels.WritableByteChannel;
@@ -16,18 +16,18 @@ public class Dereference extends Argument {
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
-        return inner.size(sectionLocator, linker);
+    public int size(ILabelSectionLocator sectionLocator) {
+        return inner.size(sectionLocator);
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) throws IOException {
-        inner.encode(sectionLocator, linker, channel);
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
+        inner.encode(labelResolver, channel, instructionAddress);
     }
 
     @Override
-    public String getImmediateEncoding(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
-        String innerEncoding = inner.getImmediateEncoding(sectionLocator, linker);
+    public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
+        String innerEncoding = inner.getImmediateEncoding(sectionLocator);
         switch(innerEncoding) {
             case "cst":
                 return "page0";

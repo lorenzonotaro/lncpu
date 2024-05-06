@@ -1,7 +1,7 @@
 package com.lnasm.compiler.parser;
 
-import com.lnasm.compiler.common.ILabelSectionLocator;
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
 import java.nio.channels.WritableByteChannel;
@@ -15,12 +15,12 @@ public class EncodedData extends CodeElement{
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public int size(ILabelSectionLocator sectionLocator) {
         return data.length;
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) throws IOException {
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
         channel.write(java.nio.ByteBuffer.wrap(data));
     }
 

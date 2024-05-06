@@ -1,10 +1,10 @@
 package com.lnasm.compiler.parser;
 
 import com.lnasm.compiler.common.CompileException;
-import com.lnasm.compiler.common.ILabelSectionLocator;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.common.OpcodeMap;
 import com.lnasm.compiler.common.Token;
-import com.lnasm.compiler.linker.AbstractLinker;
 import com.lnasm.compiler.parser.argument.Argument;
 import com.lnasm.io.ByteArrayChannel;
 
@@ -23,11 +23,11 @@ public class Instruction extends CodeElement {
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public int size(ILabelSectionLocator sectionLocator) {
         if(isShortJump() && arguments.length == 1 && arguments[0].type == Argument.Type.LABEL){
             return 2;
         } else {
-            return 1 + Stream.of(arguments).mapToInt(arg -> arg.size(sectionLocator, linker)).sum();
+            return 1 + Stream.of(arguments).mapToInt(arg -> arg.size(sectionLocator)).sum();
         }
     }
 
@@ -36,12 +36,12 @@ public class Instruction extends CodeElement {
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) {
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) {
         if(isShortJump() && arguments.length == 1 && arguments[0].type == Argument.Type.LABEL){
             try {
                 channel.write(ByteBuffer.allocateDirect(OpcodeMap.getOpcode(opcode.lexeme + "_cst")));
                 try(ByteArrayChannel innerChannel = new ByteArrayChannel(2, false)){
-                    arguments[0].encode(sectionLocator, linker, channel);
+                    arguments[0].encode(labelResolver, channel, instructionAddress);
                     byte[] innerBytes = innerChannel.toByteArray();
                     channel.write(ByteBuffer.wrap(Arrays.copyOfRange(innerBytes, 1, 2)));
                 }
@@ -49,7 +49,7 @@ public class Instruction extends CodeElement {
                 throw new CompileException("failed to encode instruction", opcode);
             }
         }else{
-            String immediateInstruction = opcode.lexeme + Stream.of(arguments).map(arg -> arg.getImmediateEncoding(sectionLocator, linker)).reduce("", (a, b) -> a + "_" + b);
+            String immediateInstruction = opcode.lexeme + Stream.of(arguments).map(arg -> arg.getImmediateEncoding(labelResolver)).reduce("", (a, b) -> a + "_" + b);
             if (!OpcodeMap.isValid(immediateInstruction)) {
                 throw new CompileException("invalid instruction (" + immediateInstruction + ")", opcode);
             } else {
@@ -57,7 +57,7 @@ public class Instruction extends CodeElement {
                     channel.write(ByteBuffer.allocateDirect(OpcodeMap.getOpcode(immediateInstruction)));
                     //encode the arguments, in reverse order
                     for (int i = arguments.length - 1; i >= 0; i--) {
-                        arguments[i].encode(sectionLocator, linker, channel);
+                        arguments[i].encode(labelResolver, channel, instructionAddress);
                     }
                 } catch (Exception e) {
                     throw new CompileException("failed to encode instruction", opcode);

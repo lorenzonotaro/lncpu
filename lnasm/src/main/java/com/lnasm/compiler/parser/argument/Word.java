@@ -1,7 +1,8 @@
 package com.lnasm.compiler.parser.argument;
 
 import com.lnasm.compiler.common.*;
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -25,12 +26,12 @@ public class Word extends Argument {
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public int size(ILabelSectionLocator sectionLocator) {
         return 2;
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) throws IOException {
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
         channel.write(ByteBuffer.wrap(
                 new byte[]{
                         (byte) (value & 0xFF),
@@ -40,7 +41,7 @@ public class Word extends Argument {
     }
 
     @Override
-    public String getImmediateEncoding(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return "dcst";
     }
 }

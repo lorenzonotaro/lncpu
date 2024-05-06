@@ -1,8 +1,8 @@
 package com.lnasm.compiler.parser.argument;
 
 import com.lnasm.compiler.common.CompileException;
-import com.lnasm.compiler.common.ILabelSectionLocator;
-import com.lnasm.compiler.linker.AbstractLinker;
+import com.lnasm.compiler.linker.ILabelResolver;
+import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.parser.RegisterId;
 
 import java.io.IOException;
@@ -18,18 +18,18 @@ public class Composite extends Argument {
     }
 
     @Override
-    public int size(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
-        return high.size(sectionLocator, linker) + low.size(sectionLocator, linker);
+    public int size(ILabelSectionLocator sectionLocator) {
+        return high.size(sectionLocator) + low.size(sectionLocator);
     }
 
     @Override
-    public void encode(ILabelSectionLocator sectionLocator, AbstractLinker linker, WritableByteChannel channel) throws IOException {
-        high.encode(sectionLocator, linker, channel);
-        low.encode(sectionLocator, linker, channel);
+    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
+        high.encode(labelResolver, channel, instructionAddress);
+        low.encode(labelResolver, channel, instructionAddress);
     }
 
     @Override
-    public String getImmediateEncoding(ILabelSectionLocator sectionLocator, AbstractLinker linker) {
+    public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         if(high.type == Type.BYTE && low.type == Type.BYTE)
             return "dcst";
         else if(high.type == Type.REGISTER && low.type == Type.REGISTER && ((Register)high).reg == RegisterId.RC && ((Register)low).reg == RegisterId.RD)
