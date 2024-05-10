@@ -9,7 +9,6 @@ public class Section {
     public int startAddress;
 
     public SectionType type;
-
     private final ByteArrayChannel channel;
 
     private Section(String name, int startAddress, SectionType type) {

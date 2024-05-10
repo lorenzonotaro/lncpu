@@ -2,8 +2,8 @@ package com.lnasm.compiler.parser;
 
 import com.lnasm.compiler.common.AbstractLineParser;
 import com.lnasm.compiler.common.IntUtils;
+import com.lnasm.compiler.common.LabelInfo;
 import com.lnasm.compiler.common.Token;
-import com.lnasm.compiler.linker.LinkerLabelSectionLocator;
 import com.lnasm.compiler.parser.argument.*;
 import com.lnasm.compiler.parser.argument.Byte;
 
@@ -23,10 +23,10 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
         super(preprocessedLines);
     }
 
-    private String currentBlockSectionName;
+    private Token currentBlockSectionToken = null;
     private List<CodeElement> currentInstructions = new ArrayList<>();
 
-    private Set<String> currentInstructionLabels = new HashSet<>();
+    private Set<LabelInfo> currentInstructionLabels = new HashSet<>();
 
     private String currentParentLabel = null;
 
@@ -35,17 +35,18 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
     @Override
     protected void parseLine() {
         if (!section()) {
-            if (currentBlockSectionName == null || currentInstructions == null) {
+            if (currentBlockSectionToken == null || currentInstructions == null) {
                 throw error(peek(), "no section declared");
             } else if(match(Token.Type.IDENTIFIER)){
-                String label = previous().lexeme;
+                Token labelToken = previous();
+                String label = labelToken.lexeme;
                 consume("expected ':' after label name", Token.Type.COLON);
                 if(currentParentLabel != null && label.startsWith(SUBLABEL_INITIATOR)){
                     label = currentParentLabel + SUBLABEL_SEPARATOR + label;
                 }else{
                     currentParentLabel = label;
                 }
-                currentInstructionLabels.add(label);
+                currentInstructionLabels.add(new LabelInfo(labelToken, label));
             }else{
                 CodeElement codeElement = directive();
                 if(codeElement != null){
@@ -63,12 +64,12 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
         if (match(Token.Type.DIR_SECTION)) {
             var nameToken = consume("expected section name", Token.Type.IDENTIFIER);
 
-            if (currentBlockSectionName != null) {
+            if (currentBlockSectionToken != null) {
                 // end of block
-                blocks.add(new ParsedBlock(currentBlockSectionName, currentInstructions.toArray(new CodeElement[0])));
+                blocks.add(new ParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
             }
 
-            currentBlockSectionName = nameToken.lexeme;
+            currentBlockSectionToken = nameToken;
             currentInstructions = new ArrayList<>();
 
             return true;
@@ -162,7 +163,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
     @Override
     protected void endParse() {
-        blocks.add(new ParsedBlock(currentBlockSectionName, currentInstructions.toArray(new CodeElement[0])));
+        blocks.add(new ParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
     }
 
     @Override
