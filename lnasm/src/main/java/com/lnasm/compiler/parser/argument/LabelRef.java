@@ -7,16 +7,16 @@ import com.lnasm.compiler.linker.ILabelSectionLocator;
 import java.nio.channels.WritableByteChannel;
 
 public class LabelRef extends Argument {
-    public final String labelName;
+    public final Token labelToken;
 
     public LabelRef(Token token) {
         super(token, Type.LABEL);
-        this.labelName = token.lexeme;
+        this.labelToken = token;
     }
 
     @Override
     public int size(ILabelSectionLocator sectionLocator) {
-        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelName);
+        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelToken);
         return sectionInfo.type == SectionType.PAGE0 ? 1 : 2;
     }
 
@@ -27,7 +27,7 @@ public class LabelRef extends Argument {
 
     @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
-        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelName);
+        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelToken);
         return sectionInfo.type == SectionType.PAGE0 ? "cst" : "dcst";
     }
 }
