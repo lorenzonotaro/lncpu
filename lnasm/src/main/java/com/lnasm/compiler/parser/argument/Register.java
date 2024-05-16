@@ -6,7 +6,6 @@ import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.parser.RegisterId;
 
 import java.io.IOException;
-import java.nio.channels.WritableByteChannel;
 
 public class Register extends Argument {
     public final RegisterId reg;
@@ -22,8 +21,8 @@ public class Register extends Argument {
     }
 
     @Override
-    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
-
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+        return new byte[0];
     }
 
     @Override

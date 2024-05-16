@@ -5,8 +5,6 @@ import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.common.Token;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
 
 public class Byte extends Argument {
     public final byte value;
@@ -22,8 +20,8 @@ public class Byte extends Argument {
     }
 
     @Override
-    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
-        channel.write(ByteBuffer.wrap(new byte[]{value}));
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+        return new byte[] { value };
     }
 
     @Override

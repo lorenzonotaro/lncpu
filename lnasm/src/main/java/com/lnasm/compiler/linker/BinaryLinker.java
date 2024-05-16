@@ -11,37 +11,52 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BinaryLinker extends AbstractLinker{
+public class BinaryLinker extends AbstractLinker<Map<String, ByteArrayChannel>>{
+    private Map<String, ByteArrayChannel> outputs;
+
     public BinaryLinker(LinkerConfig config) {
         super(config);
     }
 
     @Override
-    public byte[] link(ParseResult parseResult) {
-        var labelLocator = validateSectionsAndCreateLabelMap(parseResult.blocks());
+    public boolean link(ParseResult parseResult) {
+        try{
+            var labelLocator = validateSectionsAndCreateLabelMap(parseResult.blocks());
 
-        var sectionBuilders = makeSectionBuilders(parseResult, labelLocator);
+            var sectionBuilders = makeSectionBuilders(parseResult, labelLocator);
 
-        validateAddressSpace(sectionBuilders);
+            validateAddressSpace(sectionBuilders);
 
-        var labelResolver = makeLabelResolver(sectionBuilders);
+            var labelResolver = makeLabelResolver(sectionBuilders);
 
-        try {
-            var outputs = link(sectionBuilders, labelResolver);
-            return outputs.get(SectionType.ROM.getDestCode()).toByteArray();
-        } catch (IOException e) {
-            throw new LinkException("error linking sections (%s: %s)".formatted(e.getClass().getSimpleName(), e.getMessage()));
+            this.outputs = link(sectionBuilders, labelResolver);
+
+            return true;
+        }catch(CompileException e) {
+            e.log();
+        }catch(LinkException e){
+            e.log();
         }
+        return false;
     }
 
-    private Map<String, ByteArrayChannel> link(Map<String, SectionBuilder> sectionBuilders, ILabelResolver labelResolver) throws IOException {
-        var result = new HashMap<String, ByteArrayChannel>();
-        for (var section : sectionBuilders.values()) {
-            var sectionTarget = result.computeIfAbsent(section.getSectionInfo().getType().getDestCode(), k -> new ByteArrayChannel(0, false));
-            section.output(sectionTarget, labelResolver);
-        }
+    @Override
+    public Map<String, ByteArrayChannel> getResult() {
+        return outputs;
+    }
 
-        return result;
+    private Map<String, ByteArrayChannel> link(Map<String, SectionBuilder> sectionBuilders, LabelMapLabelResolver labelResolver) {
+        try{
+            var result = new HashMap<String, ByteArrayChannel>();
+            for (var section : sectionBuilders.values()) {
+                var sectionTarget = result.computeIfAbsent(section.getSectionInfo().getType().getDestCode(), k -> new ByteArrayChannel(0, false));
+                section.output(sectionTarget, labelResolver);
+            }
+
+            return result;
+        } catch(IOException e){
+            throw new LinkException("error linking sections (%s: %s)".formatted(e.getClass().getSimpleName(), e.getMessage()));
+        }
     }
 
     private void validateAddressSpace(Map<String, SectionBuilder> sectionBuilders) {
@@ -68,7 +83,7 @@ public class BinaryLinker extends AbstractLinker{
         }
     }
 
-    private ILabelResolver makeLabelResolver(Map<String, SectionBuilder> sectionBuilders) {
+    private LabelMapLabelResolver makeLabelResolver(Map<String, SectionBuilder> sectionBuilders) {
         // build global label map
         Map<String, LabelMapEntry> globalLabelMap = new HashMap<>();
 

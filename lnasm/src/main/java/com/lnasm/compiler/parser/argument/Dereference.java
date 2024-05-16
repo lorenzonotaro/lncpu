@@ -4,7 +4,6 @@ import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
-import java.nio.channels.WritableByteChannel;
 
 public class Dereference extends Argument {
 
@@ -21,8 +20,8 @@ public class Dereference extends Argument {
     }
 
     @Override
-    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
-        inner.encode(labelResolver, channel, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+        return inner.encode(labelResolver, instructionAddress);
     }
 
     @Override

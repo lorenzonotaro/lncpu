@@ -1,12 +1,14 @@
 package com.lnasm.compiler;
 
 import com.lnasm.Logger;
+import com.lnasm.compiler.common.SectionType;
 import com.lnasm.compiler.lexer.Lexer;
 import com.lnasm.compiler.common.Line;
 import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.linker.*;
 import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.ParseResult;
+import com.lnasm.io.ByteArrayChannel;
 
 import java.util.*;
 
@@ -53,9 +55,13 @@ public class Compiler {
 
         Logger.setProgramState("linker");
 
-        AbstractLinker linker = new BinaryLinker(linkerConfig);
+        BinaryLinker linker = new BinaryLinker(linkerConfig);
 
-        this.output = linker.link(parseResult);
+        if(!linker.link(parseResult))
+            return false;
+        else{
+            this.output = linker.getResult().getOrDefault(SectionType.ROM.getDestCode(), new ByteArrayChannel(0, false)).toByteArray();
+        }
 
         return this.output != null;
     }

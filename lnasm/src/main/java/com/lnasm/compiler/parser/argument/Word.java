@@ -6,7 +6,6 @@ import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
 
 public class Word extends Argument {
     public final short value;
@@ -31,13 +30,11 @@ public class Word extends Argument {
     }
 
     @Override
-    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
-        channel.write(ByteBuffer.wrap(
-                new byte[]{
-                        (byte) (value & 0xFF),
-                        (byte) ((value >> 8) & 0xFF)
-                }
-        ));
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+        return new byte[]{
+                (byte) ((value >> 8) & 0xFF),
+                (byte) (value & 0xFF)
+        };
     }
 
     @Override

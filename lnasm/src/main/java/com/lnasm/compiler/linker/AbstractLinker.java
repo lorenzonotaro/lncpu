@@ -1,9 +1,8 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.parser.ParseResult;
 
-public abstract class AbstractLinker {
+public abstract class AbstractLinker<T> {
 
     private final LinkerConfig config;
 
@@ -11,7 +10,9 @@ public abstract class AbstractLinker {
         this.config = config;
     }
 
-    public abstract byte[] link(ParseResult parseResult);
+    public abstract boolean link(ParseResult parseResult);
+
+    public abstract T getResult();
 
     public LinkerConfig getConfig() {
         return config;

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class LnasmParser extends AbstractLineParser<ParseResult> {
 
-    private static final String SUBLABEL_INITIATOR = "_";
+    public static final String SUBLABEL_INITIATOR = "_";
 
     // What is used internally to store sublabels (parent label + SUBLABEL_SEPARATOR + sublabel).
     // The character should be an invalid identifier character, so that sublabels aren't accessible in any way outside of their scope.
@@ -26,7 +26,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
     private Token currentBlockSectionToken = null;
     private List<CodeElement> currentInstructions = new ArrayList<>();
 
-    private Set<LabelInfo> currentInstructionLabels = new HashSet<>();
+    private List<LabelInfo> currentInstructionLabels = new ArrayList<>();
 
     private String currentParentLabel = null;
 
@@ -52,7 +52,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
                 if(codeElement != null){
                     codeElement.setLabels(currentInstructionLabels);
                     currentInstructions.add(codeElement);
-                    currentInstructionLabels = new HashSet<>();
+                    currentInstructionLabels = new ArrayList<>();
                 }
             }
         }

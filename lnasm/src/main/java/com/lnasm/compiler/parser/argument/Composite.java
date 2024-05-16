@@ -6,7 +6,6 @@ import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.parser.RegisterId;
 
 import java.io.IOException;
-import java.nio.channels.WritableByteChannel;
 
 public class Composite extends Argument {
     public final Argument high, low;
@@ -23,9 +22,14 @@ public class Composite extends Argument {
     }
 
     @Override
-    public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) throws IOException {
-        high.encode(labelResolver, channel, instructionAddress);
-        low.encode(labelResolver, channel, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+        byte[] highBytes = high.encode(labelResolver, instructionAddress);
+        byte[] lowBytes = low.encode(labelResolver, instructionAddress);
+
+        byte[] result = new byte[highBytes.length + lowBytes.length];
+        System.arraycopy(highBytes, 0, result, 0, highBytes.length);
+        System.arraycopy(lowBytes, 0, result, highBytes.length, lowBytes.length);
+        return result;
     }
 
     @Override

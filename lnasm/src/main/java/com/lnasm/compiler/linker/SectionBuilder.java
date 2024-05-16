@@ -1,11 +1,13 @@
 package com.lnasm.compiler.linker;
 
+import com.lnasm.compiler.common.LabelInfo;
 import com.lnasm.compiler.common.SectionInfo;
 import com.lnasm.compiler.parser.CodeElement;
 import com.lnasm.compiler.parser.ParsedBlock;
 import com.lnasm.io.ByteArrayChannel;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,10 +87,13 @@ public class SectionBuilder {
         return sectionInfo;
     }
 
-    public void output(ByteArrayChannel sectionTarget, ILabelResolver labelResolver) throws IOException {
+    public void output(ByteArrayChannel sectionTarget, LabelMapLabelResolver labelResolver) throws IOException {
         for (InstructionEntry instruction : instructions) {
+            instruction.instruction.getLabels().stream().filter(l -> !l.name().startsWith("_")).reduce((f, s) -> s).ifPresent(lastParentLabel -> labelResolver.setCurrentParentLabel(lastParentLabel.name()));
+
             sectionTarget.position(sectionStart + instruction.index - sectionInfo.getType().getStart());
-            instruction.instruction.encode(labelResolver, sectionTarget, sectionStart + instruction.index);
+            byte[] buffer = instruction.instruction.encode(labelResolver, sectionStart + instruction.index);
+            sectionTarget.write(ByteBuffer.wrap(buffer));
         }
     }
 
