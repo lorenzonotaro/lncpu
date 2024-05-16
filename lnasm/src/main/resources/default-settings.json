@@ -35,5 +35,14 @@
   "-I": {
     "help": "Set the include path (directories separated by ';'). ",
     "value": ""
+  },
+
+  "-lC": {
+    "help": "Set the linker config file.",
+    "value": ""
+  },
+  "-lc": {
+    "help": "Provide a linker configuration script.",
+    "value": ""
   }
 }

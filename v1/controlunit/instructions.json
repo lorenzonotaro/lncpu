@@ -3120,7 +3120,7 @@
         ]
     },
     {
-        "name": "jc",
+        "name": "jc_cst",
         "description": "Jumps to the given short address (same code segment) if the carry flag is set",
         "microcode": [
             {
@@ -3136,7 +3136,7 @@
         ]
     },
     {
-        "name": "jn",
+        "name": "jn_cst",
         "description": "Jumps to the given short address (same code segment) if the negative flag is set",
         "microcode": [
             {
@@ -3152,7 +3152,7 @@
         ]
     },
     {
-        "name": "jz",
+        "name": "jz_cst",
         "description": "Jumps to the given short address (same code segment) if the zero flag is set",
         "microcode": [
             {
@@ -3168,7 +3168,7 @@
         ]
     },
     {
-        "name": "goto",
+        "name": "goto_cst",
         "description": "Jumps to the given short address (same code segment)",
         "microcode": [
             {
@@ -3184,7 +3184,7 @@
         ]
     },
     {
-        "name": "ljc",
+        "name": "ljc_dcst",
         "description": "Jumps to the given long address if the carry flag is set",
         "microcode": [
             {
@@ -3207,7 +3207,7 @@
         ]
     },
     {
-        "name": "ljn",
+        "name": "ljn_dcst",
         "description": "Jumps to the given long address if the negative flag is set",
         "microcode": [
             {
@@ -3230,7 +3230,7 @@
         ]
     },
     {
-        "name": "ljz",
+        "name": "ljz_dcst",
         "description": "Jumps to the given long address if the zero flag is set",
         "microcode": [
             {
@@ -3253,7 +3253,7 @@
         ]
     },
     {
-        "name": "lgoto",
+        "name": "lgoto_dcst",
         "description": "Jumps to the given long address",
         "microcode": [
             {
@@ -3295,7 +3295,7 @@
         ]
     },
     {
-        "name": "lcall",
+        "name": "lcall_dcst",
         "description": "Calls the given long address",
         "microcode": [
             {

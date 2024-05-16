@@ -1,16 +1,26 @@
 package com.lnasm.compiler;
 
 import com.lnasm.Logger;
+import com.lnasm.compiler.common.SectionType;
+import com.lnasm.compiler.lexer.Lexer;
+import com.lnasm.compiler.common.Line;
+import com.lnasm.compiler.common.Token;
+import com.lnasm.compiler.linker.*;
+import com.lnasm.compiler.parser.LnasmParser;
+import com.lnasm.compiler.parser.ParseResult;
+import com.lnasm.io.ByteArrayChannel;
 
 import java.util.*;
 
 public class Compiler {
     private final List<Line> sourceLines;
+    private final List<Line> linkerConfigLines;
     private final String outputFormat;
     private byte[] output;
 
-    public Compiler(List<Line> sourceLines, String outputFormat) {
+    public Compiler(List<Line> sourceLines, List<Line> linkerConfigLines, String outputFormat) {
         this.sourceLines = sourceLines;
+        this.linkerConfigLines = linkerConfigLines;
         this.outputFormat = outputFormat;
     }
 
@@ -28,23 +38,30 @@ public class Compiler {
         List<Token[]> preprocessedLines = preprocessor.getLines();
 
         Logger.setProgramState("parser");
-        Parser parser = new Parser();
-        if(!parser.parse(preprocessedLines))
+        LnasmParser parser = new LnasmParser(preprocessedLines);
+        if(!parser.parse())
             return false;
-        Set<Block> blocks = parser.getBlocks();
+
+        ParseResult parseResult = parser.getResult();
+
+        Logger.setProgramState("linker-config");
+        Lexer linkerConfigLexer = new Lexer(null, Token.Type.LINKER_CONFIG_KEYWORDSET, false, false);
+        if(!linkerConfigLexer.parse(linkerConfigLines))
+            return false;
+        LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getLines().stream().map(l -> l.toArray(new Token[0])).toList());
+        if(!linkerconfigParser.parse())
+            return false;
+        LinkerConfig linkerConfig = linkerconfigParser.getResult();
 
         Logger.setProgramState("linker");
-        AbstractLinker linker = null;
-        if("binary".equals(outputFormat)){
-            linker = new BinaryLinker(parser.getLabels());
-        }else if("immediate".equals(outputFormat)){
-            linker = new ImmediateLinker(parser.getLabels());
-        }else{
-            Logger.error("invalid output format '" + outputFormat + "'");
-            return false;
-        }
 
-        this.output = linker.link(blocks);
+        BinaryLinker linker = new BinaryLinker(linkerConfig);
+
+        if(!linker.link(parseResult))
+            return false;
+        else{
+            this.output = linker.getResult().getOrDefault(SectionType.ROM.getDestCode(), new ByteArrayChannel(0, false)).toByteArray();
+        }
 
         return this.output != null;
     }
