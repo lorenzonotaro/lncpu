@@ -222,3 +222,5 @@ Opcode	Name	Data length	Clock cycles	Description
 0xdc	iret	1	5	Returns from an interrupt
 0xdd	cid	1	1	Clears the interrupt disable flag
 0xde	sid	1	1	Sets the interrupt disable flag
+0xdf	clc	1	1	Clears the carry flag
+0xe0	sec	1	1	Sets the carry flag

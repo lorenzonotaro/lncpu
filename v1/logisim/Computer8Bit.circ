@@ -4415,7 +4415,7 @@ e7
       <a name="label" val="NOT_PASS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(410,380)" name="Tunnel">
+    <comp lib="0" loc="(400,380)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="NOT_PASS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -5078,7 +5078,7 @@ e 13*1e 16 1e e 13*1e 1a 15*1e
     <wire from="(350,280)" to="(350,520)"/>
     <wire from="(350,280)" to="(460,280)"/>
     <wire from="(350,520)" to="(490,520)"/>
-    <wire from="(410,380)" to="(420,380)"/>
+    <wire from="(400,380)" to="(420,380)"/>
     <wire from="(450,260)" to="(460,260)"/>
     <wire from="(450,350)" to="(450,380)"/>
     <wire from="(450,350)" to="(470,350)"/>
