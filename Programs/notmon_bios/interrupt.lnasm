@@ -1,7 +1,7 @@
 %ifndef     F_INTERRUPT
 %define     F_INTERRUPT
 
-.org            INTVEC
+.section    INTVEC
 IRQ_HANDLER:
     push            RA                          ; preserve RA
     mov             [KBAVAIL],      RA          ; check if IRQ comes from the keyboard (this also resets the IRQ from the device)

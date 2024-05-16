@@ -1,12 +1,7 @@
-
-%ifndef LOC_NUMUTILS
-    %error "Specify numutils location via %define LOC_NUMUTILS <address> before %include"
-%endif
-
 %ifndef F_NUMUTILS
 %define F_NUMUTILS
 
-.org    LOC_NUMUTILS
+.section    NUMUTILS
 
  ; Parses the ASCII value in RA as a hex digit and stores it in RA, 0xFF if invalid.
  ; Modifies registers: RA.

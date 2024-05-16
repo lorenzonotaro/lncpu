@@ -1,13 +1,9 @@
-%ifndef LOC_BIOS
-    %error "Specify BIOS location via %define LOC_BIOS <address> before %include"
-%endif
-
 %ifndef     F_BIOS
 %define     F_BIOS
 
 %include        "defs.lnasm"
 
-.org LOC_BIOS
+.section BIOS
 ;   Resets the buffer write and read pointers.
 ;   Modifies registers: none.
 IO_INIT_BUFFER:
@@ -48,5 +44,14 @@ IO_PUTC:
     mov         RA,         [TTYOUT]        ; write RA to the output device
     ret
 
+
+.section    PAGE0                           ; reserve BIOS page 0 variables
+
+    .res 1
+BUFWPT:
+    .res 1
+
+BUFRPT:
+    .res 1
 
 %endif

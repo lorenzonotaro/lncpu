@@ -1,25 +1,12 @@
 %include "numutils.lnasm"
 %include "ioutils.lnasm"
 
-
-%ifndef LOC_NOTMON
-    %error "Specify notmon location via %define LOC_NOTMON <address> before %include"
-%endif
-
 %ifndef F_NOTMON
 %define F_NOTMON
 
+%define NBUFPG                              0x3e    ; notmon input buffer page (second to last page of memory)
 
-; page 0 variables
-%define ADDR1H                  0x3     ; First address, high byte
-%define ADDR1L                  0x4     ; First address, low byte
-%define ADDR2H                  0x5     ; Second address, high byte
-%define ADDR2L                  0x6     ; Second address, low byte
-%define PRSADRH                 0x7     ; Parsed address, high byte
-%define PRSADRL                 0x8     ; Parsed address, low byte
-%define NBUFPG                  0x3e    ; notmon input buffer page (second to last page of memory)
-
-.org    LOC_NOTMON
+.section    NOTMON
 notmon:
     xor             RB,             RB              ; set RB to 0
     mov             NBUFPG,         RC              ; load NBUFPG:0 into RC:RD (as the write buffer)
@@ -178,7 +165,7 @@ _insp_printaddr:
     lcall           IOUTILS_PUTBYTE
     mov             RD,             RA
     lcall           IOUTILS_PUTBYTE
-    mov             ':'             [TTYOUT]        ; print ": "
+    mov             ':',            [TTYOUT]        ; print ": "
     mov             ' ',            [TTYOUT]
 _insp_skipaddr:
     mov             [RC:RD],        RA              ; print the value, followed by whitespace
@@ -209,6 +196,21 @@ _err:
 _end:
     mov             '\n',           [TTYOUT]
     goto            notmon
+
+
+.section PAGE0
+ADDR1H:
+    .res 1
+ADDR1L:
+    .res 1
+ADDR2H:
+    .res 1
+ADDR2L:
+    .res 1
+PRSADRH:
+    .res 1
+PRSADRL:
+    .res 1
 
 
     

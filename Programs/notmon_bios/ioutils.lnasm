@@ -1,13 +1,9 @@
 %include    "numutils.lnasm"
 
-%ifndef LOC_IOUTILS
-    %error "Specify ioutils location via %define LOC_IOUTILS <address> before %include"
-%endif
-
 %ifndef F_IOUTILS
 %define F_IOUTILS
 
-.org    LOC_IOUTILS
+.section    IOUTILS
 
 ; Outputs a sequence of characters, starting at [RC:RD], until it encounters a 0
 ; Modifies registers: none.
