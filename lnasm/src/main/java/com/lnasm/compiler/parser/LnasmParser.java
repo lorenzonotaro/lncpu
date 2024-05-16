@@ -139,6 +139,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
                 Byte rByte = (Byte) right;
                 return new Word(left.token, ((int) lByte.value << 8) | rByte.value);
             }
+            return new Composite(left, right);
         }
         return left;
     }

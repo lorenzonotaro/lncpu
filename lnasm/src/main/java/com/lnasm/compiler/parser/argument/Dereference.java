@@ -1,5 +1,6 @@
 package com.lnasm.compiler.parser.argument;
 
+import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
 
@@ -35,7 +36,7 @@ public class Dereference extends Argument {
             case "rcrd":
                 return "ircrd";
             default:
-                throw new RuntimeException("invalid dereference argument: " + inner.type);
+                throw new CompileException("invalid dereference argument: " + inner.type, inner.token);
         }
     }
 }

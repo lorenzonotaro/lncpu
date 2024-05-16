@@ -447,7 +447,7 @@
     },
 
     {
-        "name": "mov_ra_ifullrcrd",
+        "name": "mov_ra_ircrd",
         "description": "Copies RA to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
@@ -466,7 +466,7 @@
         ]
     },
     {
-        "name": "mov_rb_ifullrcrd",
+        "name": "mov_rb_ircrd",
         "description": "Copies RB to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
@@ -485,7 +485,7 @@
         ]
     },
     {
-        "name": "mov_rc_ifullrcrd",
+        "name": "mov_rc_ircrd",
         "description": "Copies RC to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
@@ -504,7 +504,7 @@
         ]
     },
     {
-        "name": "mov_rd_ifullrcrd",
+        "name": "mov_rd_ircrd",
         "description": "Copies RD to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
@@ -523,7 +523,7 @@
         ]
     },
     {
-        "name": "mov_ifullrcrd_ra",
+        "name": "mov_ircrd_ra",
         "description": "Copies from location in the address space (full indirect addressing mode) to RA",
         "microcode": [
             {
@@ -543,7 +543,7 @@
         ]
     },
     {
-        "name": "mov_ifullrcrd_rb",
+        "name": "mov_ircrd_rb",
         "description": "Copies from location in the address space (full indirect addressing mode) to RB",
         "microcode": [
             {
@@ -562,7 +562,7 @@
         ]
     },
     {
-        "name": "mov_ifullrcrd_rc",
+        "name": "mov_ircrd_rc",
         "description": "Copies from location in the address space (full indirect addressing mode) to RC",
         "microcode": [
             {
@@ -581,7 +581,7 @@
         ]
     },
     {
-        "name": "mov_ifullrcrd_rd",
+        "name": "mov_ircrd_rd",
         "description": "Copies from location in the address space (full indirect addressing mode) to RD",
         "microcode": [
             {
@@ -600,7 +600,7 @@
         ]
     },
     {
-        "name": "mov_cst_ifullrcrd",
+        "name": "mov_cst_ircrd",
         "description": "Copies a constant to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
@@ -946,7 +946,7 @@
         ]
     },
     {
-        "name": "push_ifullrcrd",
+        "name": "push_ircrd",
         "description": "Pushes a location in the address space (full indirect addressing mode) onto the stack",
         "microcode": [
             {
@@ -1098,7 +1098,7 @@
         ]
     },
     {
-        "name": "pop_ifullrcrd",
+        "name": "pop_ircrd",
         "description": "Pops from the stack into a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
@@ -3276,7 +3276,7 @@
         ]
     },
     {
-        "name": "lgoto_ifullrcrd",
+        "name": "lgoto_rcrd",
         "description": "Jumps to the given long address (full indirect addressing mode)",
         "microcode": [
             {
@@ -3332,7 +3332,7 @@
         ]
     },
     {
-        "name": "lcall_ifullrcrd",
+        "name": "lcall_ircrd",
         "description": "Calls the given long address (full indirect addressing mode)",
         "microcode": [
             {

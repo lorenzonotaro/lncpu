@@ -33,15 +33,15 @@ Opcode	Name	Data length	Clock cycles	Description
 0x1f	mov_page0_rc	2	2	Copies from location in the address space (zero page addressing mode) to RC
 0x20	mov_page0_rd	2	2	Copies from location in the address space (zero page addressing mode) to RD
 0x21	mov_cst_page0	3	3	Copies a constant to a location in the address space (zero page addressing mode)
-0x22	mov_ra_ifullrcrd	1	3	Copies RA to a location in the address space (full indirect addressing mode)
-0x23	mov_rb_ifullrcrd	1	3	Copies RB to a location in the address space (full indirect addressing mode)
-0x24	mov_rc_ifullrcrd	1	3	Copies RC to a location in the address space (full indirect addressing mode)
-0x25	mov_rd_ifullrcrd	1	3	Copies RD to a location in the address space (full indirect addressing mode)
-0x26	mov_ifullrcrd_ra	1	3	Copies from location in the address space (full indirect addressing mode) to RA
-0x27	mov_ifullrcrd_rb	1	3	Copies from location in the address space (full indirect addressing mode) to RB
-0x28	mov_ifullrcrd_rc	1	3	Copies from location in the address space (full indirect addressing mode) to RC
-0x29	mov_ifullrcrd_rd	1	3	Copies from location in the address space (full indirect addressing mode) to RD
-0x2a	mov_cst_ifullrcrd	2	4	Copies a constant to a location in the address space (full indirect addressing mode)
+0x22	mov_ra_ircrd	1	3	Copies RA to a location in the address space (full indirect addressing mode)
+0x23	mov_rb_ircrd	1	3	Copies RB to a location in the address space (full indirect addressing mode)
+0x24	mov_rc_ircrd	1	3	Copies RC to a location in the address space (full indirect addressing mode)
+0x25	mov_rd_ircrd	1	3	Copies RD to a location in the address space (full indirect addressing mode)
+0x26	mov_ircrd_ra	1	3	Copies from location in the address space (full indirect addressing mode) to RA
+0x27	mov_ircrd_rb	1	3	Copies from location in the address space (full indirect addressing mode) to RB
+0x28	mov_ircrd_rc	1	3	Copies from location in the address space (full indirect addressing mode) to RC
+0x29	mov_ircrd_rd	1	3	Copies from location in the address space (full indirect addressing mode) to RD
+0x2a	mov_cst_ircrd	2	4	Copies a constant to a location in the address space (full indirect addressing mode)
 0x2b	mov_ra_abs	3	3	Copies RA to a location in the address space (absolute addressing mode)
 0x2c	mov_rb_abs	3	3	Copies RB to a location in the address space (absolute addressing mode)
 0x2d	mov_rc_abs	3	3	Copies RC to a location in the address space (absolute addressing mode)
@@ -57,7 +57,7 @@ Opcode	Name	Data length	Clock cycles	Description
 0x37	push_rc	1	2	Pushes RC onto the stack
 0x38	push_rd	1	2	Pushes RD onto the stack
 0x39	push_page0	2	4	Pushes a location in the address space (zero page addressing mode) onto the stack
-0x3a	push_ifullrcrd	1	5	Pushes a location in the address space (full indirect addressing mode) onto the stack
+0x3a	push_ircrd	1	5	Pushes a location in the address space (full indirect addressing mode) onto the stack
 0x3b	push_abs	2	5	Pushes a location in the address space (absolute addressing mode) onto the stack
 0x3c	push_cst	2	2	Pushes a constant onto the stack
 0x3d	pop_ra	1	1	Pops from the stack into RA
@@ -65,7 +65,7 @@ Opcode	Name	Data length	Clock cycles	Description
 0x3f	pop_rc	1	1	Pops from the stack into RC
 0x40	pop_rd	1	1	Pops from the stack into RD
 0x41	pop_page0	2	3	Pops from the stack into a location in the address space (zero page addressing mode)
-0x42	pop_ifullrcrd	1	4	Pops from the stack into a location in the address space (full indirect addressing mode)
+0x42	pop_ircrd	1	4	Pops from the stack into a location in the address space (full indirect addressing mode)
 0x43	pop_abs	3	4	Pops from the stack into a location in the address space (absolute addressing mode)
 0x44	add_ra_ra	1	1	Adds RA to RA, stores the result back in RA, then updates the FLAGS accordingly
 0x45	add_ra_rb	1	1	Adds RB to RA, stores the result back in RA, then updates the FLAGS accordingly
@@ -215,9 +215,9 @@ Opcode	Name	Data length	Clock cycles	Description
 0xd5	ljn_dcst	3	4	Jumps to the given long address if the negative flag is set
 0xd6	ljz_dcst	3	4	Jumps to the given long address if the zero flag is set
 0xd7	lgoto_dcst	3	4	Jumps to the given long address
-0xd8	lgoto_ifullrcrd	1	4	Jumps to the given long address (full indirect addressing mode)
+0xd8	lgoto_rcrd	1	4	Jumps to the given long address (full indirect addressing mode)
 0xd9	lcall_dcst	3	6	Calls the given long address
-0xda	lcall_ifullrcrd	1	6	Calls the given long address (full indirect addressing mode)
+0xda	lcall_ircrd	1	6	Calls the given long address (full indirect addressing mode)
 0xdb	ret	1	4	Returns from a call
 0xdc	iret	1	5	Returns from an interrupt
 0xdd	cid	1	1	Clears the interrupt disable flag

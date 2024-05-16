@@ -3,6 +3,7 @@ package com.lnasm.compiler.linker;
 import com.lnasm.compiler.common.LabelInfo;
 import com.lnasm.compiler.common.SectionInfo;
 import com.lnasm.compiler.parser.CodeElement;
+import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.ParsedBlock;
 import com.lnasm.io.ByteArrayChannel;
 
@@ -89,7 +90,7 @@ public class SectionBuilder {
 
     public void output(ByteArrayChannel sectionTarget, LabelMapLabelResolver labelResolver) throws IOException {
         for (InstructionEntry instruction : instructions) {
-            instruction.instruction.getLabels().stream().filter(l -> !l.name().startsWith("_")).reduce((f, s) -> s).ifPresent(lastParentLabel -> labelResolver.setCurrentParentLabel(lastParentLabel.name()));
+            instruction.instruction.getLabels().stream().filter(l -> !l.name().contains(LnasmParser.SUBLABEL_SEPARATOR)).reduce((f, s) -> s).ifPresent(lastParentLabel -> labelResolver.setCurrentParentLabel(lastParentLabel.name()));
 
             sectionTarget.position(sectionStart + instruction.index - sectionInfo.getType().getStart());
             byte[] buffer = instruction.instruction.encode(labelResolver, sectionStart + instruction.index);

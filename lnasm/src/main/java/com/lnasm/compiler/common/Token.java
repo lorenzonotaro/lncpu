@@ -119,6 +119,10 @@ public class Token {
 
         CID,
 
+        CLC,
+
+        SEC,
+
         BRK,
         //registers
         RA,
@@ -161,6 +165,8 @@ public class Token {
                 Token.Type.IRET,
                 Token.Type.SID,
                 Token.Type.CID,
+                Token.Type.CLC,
+                Token.Type.SEC,
                 Token.Type.BRK,
                 Token.Type.RA,
                 Token.Type.RB,
@@ -201,6 +207,8 @@ public class Token {
                 Token.Type.IRET,
                 Token.Type.SID,
                 Token.Type.CID,
+                Token.Type.CLC,
+                Token.Type.SEC,
                 Token.Type.BRK
         };
 
