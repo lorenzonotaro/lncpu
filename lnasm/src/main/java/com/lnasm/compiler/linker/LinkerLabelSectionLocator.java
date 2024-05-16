@@ -9,6 +9,6 @@ import java.util.HashMap;
 public class LinkerLabelSectionLocator extends HashMap<String, LabelSectionInfo> implements ILabelSectionLocator {
     @Override
     public SectionInfo getSectionInfo(Token labelToken) {
-        return get(labelToken).sectionInfo();
+        return get(labelToken.lexeme).sectionInfo();
     }
 }

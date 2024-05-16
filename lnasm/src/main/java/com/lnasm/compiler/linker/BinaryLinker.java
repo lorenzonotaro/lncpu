@@ -37,7 +37,7 @@ public class BinaryLinker extends AbstractLinker{
     private Map<String, ByteArrayChannel> link(Map<String, SectionBuilder> sectionBuilders, ILabelResolver labelResolver) throws IOException {
         var result = new HashMap<String, ByteArrayChannel>();
         for (var section : sectionBuilders.values()) {
-            var sectionTarget = result.computeIfAbsent(section.getSectionInfo().type.getDestCode(), k -> new ByteArrayChannel(0, false));
+            var sectionTarget = result.computeIfAbsent(section.getSectionInfo().getType().getDestCode(), k -> new ByteArrayChannel(0, false));
             section.output(sectionTarget, labelResolver);
         }
 
@@ -50,7 +50,7 @@ public class BinaryLinker extends AbstractLinker{
         for (var entry : sectionBuilders.values()) {
             // for now, simply set the start address to the section start address in the config
             // TODO: implement section modes in linker config
-            entry.setSectionStart(entry.getSectionInfo().start);
+            entry.setSectionStart(entry.getSectionInfo().getStart());
 
             entry.validateSize();
         }

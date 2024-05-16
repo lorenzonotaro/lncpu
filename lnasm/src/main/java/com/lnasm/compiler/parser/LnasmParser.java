@@ -109,9 +109,10 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
         Token opcode = consume("expected instruction identifier", Token.Type.LNASM_INSTRUCTIONSET);
         List<Argument> arguments = new ArrayList<>();
 
-        do{
-            arguments.add(argument());
-        }while(match(Token.Type.COMMA));
+        if(!isAtEnd())
+            do{
+                arguments.add(argument());
+            }while(match(Token.Type.COMMA));
 
         return new Instruction(opcode, arguments.toArray(new Argument[0]));
     }

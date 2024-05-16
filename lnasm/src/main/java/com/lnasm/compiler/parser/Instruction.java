@@ -39,11 +39,11 @@ public class Instruction extends CodeElement {
     public void encode(ILabelResolver labelResolver, WritableByteChannel channel, int instructionAddress) {
         if(isShortJump() && arguments.length == 1 && arguments[0].type == Argument.Type.LABEL){
             try {
-                channel.write(ByteBuffer.allocateDirect(OpcodeMap.getOpcode(opcode.lexeme + "_cst")));
+                channel.write(ByteBuffer.wrap(new byte[]{OpcodeMap.getOpcode(opcode.lexeme + "_cst")}));
                 try(ByteArrayChannel innerChannel = new ByteArrayChannel(2, false)){
                     arguments[0].encode(labelResolver, channel, instructionAddress);
                     byte[] innerBytes = innerChannel.toByteArray();
-                    channel.write(ByteBuffer.wrap(Arrays.copyOfRange(innerBytes, 1, 2)));
+                    channel.write(ByteBuffer.wrap(innerBytes, 1, 1));
                 }
             } catch (Exception e) {
                 throw new CompileException("failed to encode instruction", opcode);
@@ -54,7 +54,7 @@ public class Instruction extends CodeElement {
                 throw new CompileException("invalid instruction (" + immediateInstruction + ")", opcode);
             } else {
                 try {
-                    channel.write(ByteBuffer.allocateDirect(OpcodeMap.getOpcode(immediateInstruction)));
+                    channel.write(ByteBuffer.wrap(new byte[]{OpcodeMap.getOpcode(immediateInstruction)}));
                     //encode the arguments, in reverse order
                     for (int i = arguments.length - 1; i >= 0; i--) {
                         arguments[i].encode(labelResolver, channel, instructionAddress);

@@ -43,15 +43,19 @@ public class Compiler {
         ParseResult parseResult = parser.getResult();
 
         Logger.setProgramState("linker-config");
-        Lexer linkerConfigLexer = new Lexer(null, Token.Type.LINKER_CONFIG_KEYWORDSET, false,false);
+        Lexer linkerConfigLexer = new Lexer(null, Token.Type.LINKER_CONFIG_KEYWORDSET, false, false);
         if(!linkerConfigLexer.parse(linkerConfigLines))
             return false;
         LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getLines().stream().map(l -> l.toArray(new Token[0])).toList());
         if(!linkerconfigParser.parse())
             return false;
         LinkerConfig linkerConfig = linkerconfigParser.getResult();
-        System.out.println(linkerConfig.toString());
 
+        Logger.setProgramState("linker");
+
+        AbstractLinker linker = new BinaryLinker(linkerConfig);
+
+        this.output = linker.link(parseResult);
 
         return this.output != null;
     }

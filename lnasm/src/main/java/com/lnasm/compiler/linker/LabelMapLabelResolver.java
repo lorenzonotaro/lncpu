@@ -28,6 +28,6 @@ public class LabelMapLabelResolver implements ILabelResolver {
         if(entry == null){
             throw new CompileException("unresolved label '%s'".formatted(labelToken), labelToken);
         }
-        return null;
+        return entry.sectionInfo();
     }
 }

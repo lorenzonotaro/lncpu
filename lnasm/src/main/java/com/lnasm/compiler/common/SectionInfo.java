@@ -3,11 +3,11 @@ package com.lnasm.compiler.common;
 public class SectionInfo {
     private static final int PAGE_0_START = 0x2000;
 
-    public final String name;
-    public final int start;
-    public final int maxSize;
+    private String name;
+    private int start;
+    private int maxSize;
 
-    public final SectionType type;
+    private SectionType type;
 
     public SectionInfo(String name, int start, SectionType type) {
         this.name = name;
@@ -23,7 +23,7 @@ public class SectionInfo {
                 throw new IllegalArgumentException("page0 section cannot have a start address");
             }
 
-            start = PAGE_0_START;
+            this.start = PAGE_0_START;
             maxSize = 0xff;
         }else {
             if (start == -1) {
@@ -36,9 +36,25 @@ public class SectionInfo {
 
     public String toString() {
         return "SectionInfo{" +
-                "name='" + name + '\'' +
-                ", start=" + start +
-                ", type=" + type +
+                "name='" + getName() + '\'' +
+                ", start=" + getStart() +
+                ", type=" + getType() +
                 '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public SectionType getType() {
+        return type;
     }
 }

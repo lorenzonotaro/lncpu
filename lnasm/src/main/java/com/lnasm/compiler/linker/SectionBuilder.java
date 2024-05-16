@@ -53,14 +53,14 @@ public class SectionBuilder {
         labelMap = new HashMap<>();
         for (var entry : instructions) {
             for (var label : entry.instruction.getLabels()) {
-                labelMap.put(label.name(), new LabelMapEntry(label, sectionStart + entry.index));
+                labelMap.put(label.name(), new LabelMapEntry(label, sectionInfo, sectionStart + entry.index));
             }
         }
     }
 
     public void validateSize(){
-        if(codeLength > sectionInfo.maxSize){
-            throw new LinkException("section '%s' exceeds max size (%d > %d)".formatted(sectionInfo.name, codeLength, sectionInfo.maxSize));
+        if(codeLength > sectionInfo.getMaxSize()){
+            throw new LinkException("section '%s' exceeds max size (%d > %d)".formatted(sectionInfo.getName(), codeLength, sectionInfo.getMaxSize()));
         }
     }
 
@@ -71,13 +71,13 @@ public class SectionBuilder {
         return labelMap;
     }
 
-    public boolean overlaps(SectionBuilder value) {
+    public boolean overlaps(SectionBuilder other) {
 
-        if(this.sectionStart == -1 || value.sectionStart == -1){
+        if(this.sectionStart == -1 || other.sectionStart == -1){
             throw new IllegalStateException("section start not set");
         }
 
-        return this.sectionStart < value.sectionStart + value.codeLength && value.sectionStart < this.sectionStart + this.codeLength;
+        return this.sectionStart < other.sectionStart + other.codeLength && other.sectionStart < this.sectionStart + this.codeLength;
 
     }
 
@@ -87,7 +87,7 @@ public class SectionBuilder {
 
     public void output(ByteArrayChannel sectionTarget, ILabelResolver labelResolver) throws IOException {
         for (InstructionEntry instruction : instructions) {
-            sectionTarget.position(sectionStart + instruction.index - sectionInfo.type.getStart());
+            sectionTarget.position(sectionStart + instruction.index - sectionInfo.getType().getStart());
             instruction.instruction.encode(labelResolver, sectionTarget, sectionStart + instruction.index);
         }
     }

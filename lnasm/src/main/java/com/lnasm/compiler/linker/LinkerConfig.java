@@ -1,6 +1,5 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.common.Section;
 import com.lnasm.compiler.common.SectionInfo;
 
 import java.util.Arrays;
@@ -20,11 +19,11 @@ public class LinkerConfig{
                 throw new IllegalArgumentException("section cannot be null");
             }
 
-            if (sectionMap.containsKey(section.name)) {
+            if (sectionMap.containsKey(section.getName())) {
                 throw new IllegalArgumentException("section name must be unique");
             }
 
-            sectionMap.put(section.name, section);
+            sectionMap.put(section.getName(), section);
         }
     }
 

@@ -27,6 +27,6 @@ public class Section {
     }
 
     public static Section create(SectionInfo sectionInfo) {
-        return new Section(sectionInfo.name, sectionInfo.start, sectionInfo.type);
+        return new Section(sectionInfo.getName(), sectionInfo.getStart(), sectionInfo.getType());
     }
 }
