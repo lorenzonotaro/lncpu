@@ -24,7 +24,8 @@ public class BinaryLinker extends AbstractLinker<Map<String, ByteArrayChannel>>{
 
             var sectionBuilders = makeSectionBuilders(parseResult, labelLocator);
 
-            validateAddressSpace(sectionBuilders);
+            if(!validateAddressSpace(sectionBuilders))
+                return false;
 
             var labelResolver = makeLabelResolver(sectionBuilders);
 
@@ -58,7 +59,9 @@ public class BinaryLinker extends AbstractLinker<Map<String, ByteArrayChannel>>{
         }
     }
 
-    private void validateAddressSpace(Map<String, SectionBuilder> sectionBuilders) {
+    private boolean validateAddressSpace(Map<String, SectionBuilder> sectionBuilders) {
+
+        boolean success = true;
 
         var groupedByType = sectionBuilders.values().stream().collect(Collectors.groupingBy(
            s -> s.getSectionInfo().getType().getTarget()
@@ -73,14 +76,23 @@ public class BinaryLinker extends AbstractLinker<Map<String, ByteArrayChannel>>{
             var sortedByMode = sections.stream().sorted(Comparator.comparingInt(a -> a.getSectionInfo().getMode().getPrecedence())).toList();
 
             for(var section : sortedByMode){
-                section.validateSize();
-                manager.allocate(section);
+                try{
+                    section.validateSize();
+                    manager.allocate(section);
+                } catch(IllegalStateException e){
+                    new LinkException("linking failed for section '%s': %s".formatted(section.getSectionInfo().getName(), e.getMessage())).log();
+                    success = false;
+                } catch(LinkException e){
+                    e.log();
+                    success = false;
+                }
+
             }
 
             manager.validate();
-            manager.visit();
         }
 
+        return success;
     }
     private LabelMapLabelResolver makeLabelResolver(Map<String, SectionBuilder> sectionBuilders) {
         // build global label map

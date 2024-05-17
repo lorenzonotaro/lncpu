@@ -39,7 +39,11 @@ public class MemoryLayoutManager {
             }
             current = current.next;
         }
-        throw new IllegalStateException("no free space");
+        unableToPlace(sectionBuilder);
+    }
+
+    private void unableToPlace(SectionBuilder sectionBuilder) {
+        throw new LinkException("unable to place section '%s' (%s)".formatted(sectionBuilder.getSectionInfo().getName(), sectionBuilder.getSectionInfo().getMode()));
     }
 
     private boolean allocatePageAlignedInSegment(Segment current, SectionBuilder sectionBuilder) {
@@ -62,7 +66,7 @@ public class MemoryLayoutManager {
             }
             current = current.next;
         }
-        throw new IllegalStateException("no free space");
+        unableToPlace(sectionBuilder);
     }
 
     private void allocateFit(SectionBuilder sectionBuilder) {
@@ -76,7 +80,7 @@ public class MemoryLayoutManager {
             current = current.next;
         }
 
-        throw new IllegalStateException("no free space");
+        unableToPlace(sectionBuilder);
     }
 
     private void allocateFixed(SectionBuilder sectionBuilder) {
@@ -178,15 +182,15 @@ public class MemoryLayoutManager {
 
         private void allocate(int offset, SectionBuilder sectionBuilder){
             if(isAllocated()){
-                throw new IllegalStateException("segment already allocated");
+                throw new IllegalStateException("segment already allocated (section '%s')".formatted(this.sectionBuilder.getSectionInfo().getName()));
             }
 
             if(offset < 0 || offset >= getSize()){
-                throw new IllegalArgumentException("offset out of bounds");
+                throw new IllegalStateException("offset out of bounds");
             }
 
             if(offset + sectionBuilder.getCodeLength() > getSize()){
-                throw new IllegalArgumentException("section too large");
+                throw new IllegalStateException("section too large");
             }
 
             if(offset == 0){
@@ -203,7 +207,7 @@ public class MemoryLayoutManager {
 
         private void split(int offset){
             if(isAllocated()){
-                throw new IllegalStateException("segment already allocated");
+                throw new IllegalStateException("segment already allocated (section '%s')".formatted(sectionBuilder.getSectionInfo().getName()));
             }
 
             if(offset < 0 || offset > getSize()){
