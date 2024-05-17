@@ -4,7 +4,8 @@
         "description": "No operation",
         "microcode": [
             {}
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "hlt",
@@ -13,7 +14,8 @@
             {
                 "NOT_HLT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "brk",
@@ -56,7 +58,8 @@
                 "SP_DIR": 1,
                 "FLAGS_MODE_SEL": "set_i"
             }
-        ]
+        ],
+        "flags_modified": "I"
     },
     {
         "name": "mov_cst_ra",
@@ -68,7 +71,8 @@
                 "NOT_FETCH": 0,
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_rb",
@@ -80,7 +84,8 @@
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_rc",
@@ -92,7 +97,8 @@
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_rd",
@@ -104,7 +110,8 @@
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_sp",
@@ -116,7 +123,8 @@
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_ss",
@@ -128,7 +136,8 @@
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ss_rd",
@@ -138,7 +147,8 @@
                 "NOT_SS_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_sp_rd",
@@ -148,7 +158,8 @@
                 "NOT_SP_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ra_rb",
@@ -158,7 +169,8 @@
                 "NOT_RA_OUT": 0,
                 "NOT_RB_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ra_rc",
@@ -168,7 +180,8 @@
                 "NOT_RA_OUT": 0,
                 "NOT_RC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ra_rd",
@@ -178,7 +191,8 @@
                 "NOT_RA_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rb_ra",
@@ -188,7 +202,8 @@
                 "NOT_RB_OUT": 0,
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rb_rc",
@@ -198,7 +213,8 @@
                 "NOT_RB_OUT": 0,
                 "NOT_RC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rb_rd",
@@ -208,7 +224,8 @@
                 "NOT_RB_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rc_ra",
@@ -218,7 +235,8 @@
                 "NOT_RC_OUT": 0,
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rc_rb",
@@ -228,7 +246,8 @@
                 "NOT_RC_OUT": 0,
                 "NOT_RB_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rc_rd",
@@ -238,7 +257,8 @@
                 "NOT_RC_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_ra",
@@ -248,7 +268,8 @@
                 "NOT_RD_OUT": 0,
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_rb",
@@ -258,7 +279,8 @@
                 "NOT_RD_OUT": 0,
                 "NOT_RB_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_rc",
@@ -268,7 +290,8 @@
                 "NOT_RD_OUT": 0,
                 "NOT_RC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_ss",
@@ -278,7 +301,8 @@
                 "NOT_RD_OUT": 0,
                 "NOT_SS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_sp",
@@ -288,7 +312,8 @@
                 "NOT_RD_OUT": 0,
                 "NOT_SP_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ra_page0",
@@ -305,7 +330,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rb_page0",
@@ -322,7 +348,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rc_page0",
@@ -339,7 +366,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_page0",
@@ -356,7 +384,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_page0_ra",
@@ -373,7 +402,8 @@
                 "NOT_DEVICE_OUT": 0,
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_page0_rb",
@@ -390,7 +420,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_page0_rc",
@@ -407,7 +438,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_page0_rd",
@@ -424,7 +456,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_page0",
@@ -443,9 +476,9 @@
                 "NOT_FETCH": 0,
                 "NOT_PC_INC": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
-
     {
         "name": "mov_ra_ircrd",
         "description": "Copies RA to a location in the address space (full indirect addressing mode)",
@@ -463,7 +496,8 @@
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rb_ircrd",
@@ -480,9 +514,10 @@
             {
                 "NOT_RB_OUT": 0,
                 "NOT_DEVICE_IN": 0,
-                                "ADDR_SEL": "abh:abl"
+                "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rc_ircrd",
@@ -499,9 +534,10 @@
             {
                 "NOT_RC_OUT": 0,
                 "NOT_DEVICE_IN": 0,
-                                "ADDR_SEL": "abh:abl"
+                "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_ircrd",
@@ -518,9 +554,10 @@
             {
                 "NOT_RD_OUT": 0,
                 "NOT_DEVICE_IN": 0,
-                                "ADDR_SEL": "abh:abl"
+                "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ircrd_ra",
@@ -536,11 +573,11 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                                "ADDR_SEL": "abh:abl",
-
+                "ADDR_SEL": "abh:abl",
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ircrd_rb",
@@ -557,9 +594,10 @@
             {
                 "NOT_RB_IN": 0,
                 "NOT_DEVICE_OUT": 0,
-                                "ADDR_SEL": "abh:abl"
+                "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ircrd_rc",
@@ -576,9 +614,10 @@
             {
                 "NOT_RC_IN": 0,
                 "NOT_DEVICE_OUT": 0,
-                                "ADDR_SEL": "abh:abl"
+                "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ircrd_rd",
@@ -597,7 +636,8 @@
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_ircrd",
@@ -614,12 +654,12 @@
             {
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl",
-
                 "NOT_DATA_LATCH_OUT": 0,
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_ra_abs",
@@ -639,11 +679,11 @@
             },
             {
                 "NOT_DEVICE_IN": 0,
-                                "ADDR_SEL": "abh:abl",
-
+                "ADDR_SEL": "abh:abl",
                 "NOT_RA_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rb_abs",
@@ -666,7 +706,8 @@
                 "ADDR_SEL": "abh:abl",
                 "NOT_RB_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rc_abs",
@@ -689,7 +730,8 @@
                 "ADDR_SEL": "abh:abl",
                 "NOT_RC_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_rd_abs",
@@ -712,7 +754,8 @@
                 "ADDR_SEL": "abh:abl",
                 "NOT_RD_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_abs_ra",
@@ -732,11 +775,11 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                                "ADDR_SEL": "abh:abl",
-
+                "ADDR_SEL": "abh:abl",
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_abs_rb",
@@ -759,7 +802,8 @@
                 "ADDR_SEL": "abh:abl",
                 "NOT_RB_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_abs_rc",
@@ -782,7 +826,8 @@
                 "ADDR_SEL": "abh:abl",
                 "NOT_RC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_abs_rd",
@@ -805,7 +850,8 @@
                 "ADDR_SEL": "abh:abl",
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_cst_abs",
@@ -830,7 +876,8 @@
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "mov_page0_page0",
@@ -846,7 +893,8 @@
                 "ADDR_SEL": "page0:abl",
                 "NOT_DEVICE_OUT": 0,
                 "NOT_RT_IN": 0
-            },{
+            },
+            {
                 "NOT_DATA_LATCH_OUT": 0,
                 "NOT_ABL_IN": 0,
                 "NOT_PC_INC": 0,
@@ -857,7 +905,8 @@
                 "NOT_DEVICE_IN": 0,
                 "NOT_RT_OUT": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_ra",
@@ -872,7 +921,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_rb",
@@ -887,7 +937,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_rc",
@@ -902,7 +953,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_rd",
@@ -917,7 +969,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_page0",
@@ -943,7 +996,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_ircrd",
@@ -959,8 +1013,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                                "ADDR_SEL": "abh:abl",
-
+                "ADDR_SEL": "abh:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -972,7 +1025,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_abs",
@@ -1002,7 +1056,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "push_cst",
@@ -1019,7 +1074,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_ra",
@@ -1032,7 +1088,8 @@
                 "ADDR_SEL": "ss:sp",
                 "RA_S": "input"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_rb",
@@ -1045,7 +1102,8 @@
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_rc",
@@ -1058,7 +1116,8 @@
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_rd",
@@ -1071,11 +1130,12 @@
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_page0",
-"description": "Pops from the stack into a location in the address space (zero page addressing mode)",
+        "description": "Pops from the stack into a location in the address space (zero page addressing mode)",
         "microcode": [
             {
                 "NOT_PC_INC": 0,
@@ -1095,7 +1155,8 @@
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "page0:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_ircrd",
@@ -1121,7 +1182,8 @@
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "pop_abs",
@@ -1151,7 +1213,8 @@
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "add_ra_ra",
@@ -1164,7 +1227,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_ra_rb",
@@ -1177,7 +1241,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_ra_rc",
@@ -1190,7 +1255,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_ra_rd",
@@ -1203,7 +1269,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rb_ra",
@@ -1216,7 +1283,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rb_rb",
@@ -1229,7 +1297,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rb_rc",
@@ -1242,7 +1311,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rb_rd",
@@ -1255,7 +1325,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rc_ra",
@@ -1268,7 +1339,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rc_rb",
@@ -1281,7 +1353,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rc_rc",
@@ -1294,7 +1367,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rc_rd",
@@ -1307,7 +1381,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rd_ra",
@@ -1320,7 +1395,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rd_rb",
@@ -1333,7 +1409,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rd_rc",
@@ -1346,7 +1423,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rd_rd",
@@ -1359,7 +1437,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_ra_cst",
@@ -1378,7 +1457,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rb_cst",
@@ -1397,7 +1477,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rc_cst",
@@ -1416,7 +1497,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "add_rd_cst",
@@ -1435,7 +1517,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_ra_ra",
@@ -1448,7 +1531,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_ra_rb",
@@ -1461,7 +1545,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_ra_rc",
@@ -1474,7 +1559,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_ra_rd",
@@ -1487,7 +1573,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rb_ra",
@@ -1500,7 +1587,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rb_rb",
@@ -1513,7 +1601,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rb_rc",
@@ -1526,7 +1615,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rb_rd",
@@ -1539,7 +1629,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rc_ra",
@@ -1552,7 +1643,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rc_rb",
@@ -1565,7 +1657,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rc_rc",
@@ -1578,7 +1671,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rc_rd",
@@ -1591,7 +1685,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rd_ra",
@@ -1604,7 +1699,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rd_rb",
@@ -1617,7 +1713,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rd_rc",
@@ -1630,7 +1727,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rd_rd",
@@ -1643,7 +1741,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_ra_cst",
@@ -1662,7 +1761,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rb_cst",
@@ -1681,7 +1781,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rc_cst",
@@ -1700,7 +1801,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "sub_rd_cst",
@@ -1719,7 +1821,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_ra_ra",
@@ -1731,7 +1834,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_ra_rb",
@@ -1743,7 +1847,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_ra_rc",
@@ -1755,7 +1860,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_ra_rd",
@@ -1767,7 +1873,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rb_ra",
@@ -1779,7 +1886,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rb_rb",
@@ -1791,7 +1899,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rb_rc",
@@ -1803,7 +1912,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rb_rd",
@@ -1815,7 +1925,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rc_ra",
@@ -1827,7 +1938,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rc_rb",
@@ -1839,7 +1951,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rc_rc",
@@ -1851,7 +1964,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rc_rd",
@@ -1863,7 +1977,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rd_ra",
@@ -1875,7 +1990,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rd_rb",
@@ -1887,7 +2003,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rd_rc",
@@ -1899,7 +2016,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rd_rd",
@@ -1911,7 +2029,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_ra_cst",
@@ -1929,7 +2048,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rb_cst",
@@ -1947,7 +2067,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rc_cst",
@@ -1965,7 +2086,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "cmp_rd_cst",
@@ -1983,7 +2105,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "or_ra_ra",
@@ -1996,7 +2119,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_ra_rb",
@@ -2009,7 +2133,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_ra_rc",
@@ -2022,7 +2147,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_ra_rd",
@@ -2035,7 +2161,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rb_ra",
@@ -2048,7 +2175,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rb_rb",
@@ -2061,7 +2189,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rb_rc",
@@ -2074,7 +2203,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rb_rd",
@@ -2087,7 +2217,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rc_ra",
@@ -2100,7 +2231,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rc_rb",
@@ -2113,7 +2245,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rc_rc",
@@ -2126,7 +2259,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rc_rd",
@@ -2139,7 +2273,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rd_ra",
@@ -2152,7 +2287,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rd_rb",
@@ -2165,7 +2301,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rd_rc",
@@ -2178,7 +2315,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rd_rd",
@@ -2191,7 +2329,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_ra_cst",
@@ -2210,7 +2349,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rb_cst",
@@ -2229,7 +2369,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rc_cst",
@@ -2248,7 +2389,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "or_rd_cst",
@@ -2267,7 +2409,8 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "and_ra_ra",
@@ -2280,7 +2423,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_ra_rb",
@@ -2293,7 +2437,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_ra_rc",
@@ -2306,7 +2451,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_ra_rd",
@@ -2319,7 +2465,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rb_ra",
@@ -2332,7 +2479,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rb_rb",
@@ -2345,7 +2493,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rb_rc",
@@ -2358,7 +2507,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rb_rd",
@@ -2371,7 +2521,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rc_ra",
@@ -2384,7 +2535,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rc_rb",
@@ -2397,7 +2549,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rc_rc",
@@ -2410,7 +2563,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rc_rd",
@@ -2423,7 +2577,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rd_ra",
@@ -2436,7 +2591,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rd_rb",
@@ -2449,7 +2605,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rd_rc",
@@ -2462,7 +2619,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rd_rd",
@@ -2475,7 +2633,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_ra_cst",
@@ -2494,7 +2653,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rb_cst",
@@ -2513,7 +2673,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rc_cst",
@@ -2532,7 +2693,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "and_rd_cst",
@@ -2551,7 +2713,8 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_ra_ra",
@@ -2564,7 +2727,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_ra_rb",
@@ -2577,7 +2741,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_ra_rc",
@@ -2590,7 +2755,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_ra_rd",
@@ -2603,7 +2769,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rb_ra",
@@ -2616,7 +2783,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rb_rb",
@@ -2629,7 +2797,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rb_rc",
@@ -2642,7 +2811,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rb_rd",
@@ -2655,7 +2825,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rc_ra",
@@ -2668,7 +2839,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rc_rb",
@@ -2681,7 +2853,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rc_rc",
@@ -2694,7 +2867,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rc_rd",
@@ -2707,7 +2881,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rd_ra",
@@ -2720,7 +2895,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rd_rb",
@@ -2733,7 +2909,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rd_rc",
@@ -2746,7 +2923,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rd_rd",
@@ -2759,7 +2937,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_ra_cst",
@@ -2778,7 +2957,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rb_cst",
@@ -2797,7 +2977,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rc_cst",
@@ -2816,7 +2997,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "xor_rd_cst",
@@ -2835,7 +3017,8 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "not_ra",
@@ -2848,7 +3031,8 @@
                 "OP_SEL": "not",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "not_rb",
@@ -2861,7 +3045,8 @@
                 "OP_SEL": "not",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "not_rc",
@@ -2874,7 +3059,8 @@
                 "OP_SEL": "not",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "not_rd",
@@ -2887,7 +3073,8 @@
                 "OP_SEL": "not",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "inc_ra",
@@ -2900,7 +3087,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "inc_rb",
@@ -2913,7 +3101,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "inc_rc",
@@ -2926,7 +3115,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "inc_rd",
@@ -2939,7 +3129,8 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "dec_ra",
@@ -2952,7 +3143,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "dec_rb",
@@ -2965,7 +3157,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "dec_rc",
@@ -2978,7 +3171,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "dec_rd",
@@ -2991,7 +3185,8 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
             }
-        ]
+        ],
+        "flags_modified": "NZC"
     },
     {
         "name": "shl_ra",
@@ -3000,7 +3195,8 @@
             {
                 "RA_S": "shift_left"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "shr_ra",
@@ -3009,7 +3205,8 @@
             {
                 "RA_S": "shift_right"
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "swap_ra_rb",
@@ -3027,7 +3224,8 @@
                 "NOT_RT_OUT": 0,
                 "NOT_RB_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "swap_ra_rc",
@@ -3045,7 +3243,8 @@
                 "NOT_RT_OUT": 0,
                 "NOT_RC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "swap_ra_rd",
@@ -3063,7 +3262,8 @@
                 "NOT_RT_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "swap_rb_rc",
@@ -3081,7 +3281,8 @@
                 "NOT_RT_OUT": 0,
                 "NOT_RC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "swap_rb_rd",
@@ -3099,7 +3300,8 @@
                 "NOT_RT_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "swap_rc_rd",
@@ -3117,7 +3319,8 @@
                 "NOT_RT_OUT": 0,
                 "NOT_RD_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "jc_cst",
@@ -3133,7 +3336,8 @@
                 "JC": 1,
                 "NOT_PC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "jn_cst",
@@ -3149,7 +3353,8 @@
                 "JN": 1,
                 "NOT_PC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "jz_cst",
@@ -3165,7 +3370,8 @@
                 "JZ": 1,
                 "NOT_PC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "goto_cst",
@@ -3181,7 +3387,8 @@
                 "J": 1,
                 "NOT_PC_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "ljc_dcst",
@@ -3204,7 +3411,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "ljn_dcst",
@@ -3227,7 +3435,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "ljz_dcst",
@@ -3250,7 +3459,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "lgoto_dcst",
@@ -3273,7 +3483,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "lgoto_rcrd",
@@ -3292,7 +3503,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "lcall_dcst",
@@ -3329,7 +3541,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "lcall_ircrd",
@@ -3362,7 +3575,8 @@
                 "NOT_SP_CT": 0,
                 "SP_DIR": 1
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "ret",
@@ -3387,7 +3601,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "iret",
@@ -3419,7 +3634,8 @@
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0
             }
-        ]
+        ],
+        "flags_modified": "-"
     },
     {
         "name": "cid",
@@ -3428,7 +3644,8 @@
             {
                 "FLAGS_MODE_SEL": "reset_i"
             }
-        ]
+        ],
+        "flags_modified": "I"
     },
     {
         "name": "sid",
@@ -3437,7 +3654,8 @@
             {
                 "FLAGS_MODE_SEL": "set_i"
             }
-        ]
+        ],
+        "flags_modified": "I"
     },
     {
         "name": "clc",
@@ -3446,7 +3664,8 @@
             {
                 "FLAGS_MODE_SEL": "reset_c"
             }
-        ]
+        ],
+        "flags_modified": "C"
     },
     {
         "name": "sec",
@@ -3455,7 +3674,7 @@
             {
                 "FLAGS_MODE_SEL": "set_c"
             }
-        ]
+        ],
+        "flags_modified": "C"
     }
-
 ]

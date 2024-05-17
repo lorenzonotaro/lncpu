@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # move EEPROM*.bin to ../../output/eeproms/
-mv EEPROM*.bin ../../output/eeproms/
+cp EEPROM*.bin ../../output/eeproms/
 
 
 # === make lnasm ===
@@ -36,7 +36,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-mv target/lnasm.jar ../output/
+cp target/lnasm.jar ../output/
 
 # === generate lnasm documentation ===
 
@@ -57,7 +57,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-mv target/eeprom-serial-loader.jar ../output/
+cp target/eeprom-serial-loader.jar ../output/
 
 
 echo "Done."

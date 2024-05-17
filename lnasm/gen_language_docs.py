@@ -15,7 +15,7 @@ def main():
 
         for opcode in opcodes[1:]:
             opcode = opcode.strip().split("\t")
-            base_md += "| {} | {} | {} | {} | {} |\n".format(f"{int(opcode[0].replace('0x', ''),16):02x}", immediate_to_lnasm(opcode[1]), opcode[4], opcode[3], "")
+            base_md += "| {} | {} | {} | {} | {} |\n".format(f"{int(opcode[0].replace('0x', ''),16):02x}", immediate_to_lnasm(opcode[1]), opcode[4], opcode[3], ('`' + opcode[5] + '`') if opcode[5] != '-' else '-')
         
         out.write(base_md)
 
