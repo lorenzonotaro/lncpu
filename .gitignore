@@ -31,3 +31,5 @@ Projects/lnasm/out/
 #Control_Unit
 Control_Unit/*.eeprom
 Control_Unit/*.raw
+
+output/*

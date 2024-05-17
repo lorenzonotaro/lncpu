@@ -38,6 +38,12 @@ fi
 
 mv target/lnasm.jar ../output/
 
+# === generate lnasm documentation ===
+
+echo "Generating lnasm instruction set documentation..."
+
+python3 gen_language_docs.py
+
 # === make eeprom-serial-loader ===
 
 cd ../eeprom-serial-loader
