@@ -1,10 +1,6 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.common.CompileException;
-import com.lnasm.compiler.common.SectionInfo;
-import com.lnasm.compiler.common.SectionType;
-import com.lnasm.compiler.common.Token;
-import com.lnasm.compiler.common.AbstractParser;
+import com.lnasm.compiler.common.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +59,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         var name = sectionName.lexeme;
         var start = -1;
         SectionType type = null;
+        SectionMode mode = null;
 
         do{
             var propName = consume("expected property name", Token.Type.IDENTIFIER);
@@ -88,6 +85,15 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
                 }catch(IllegalArgumentException e){
                     throw error(propValue, "unknown section type");
                 }
+            }else if(propName.lexeme.equals("mode")){
+                if(mode != null)
+                    throw error(propName, "duplicate property 'mode'");
+
+                try {
+                    mode = SectionMode.from(propValue.lexeme.toUpperCase());
+                }catch(IllegalArgumentException e) {
+                    throw error(propValue, "unknown section mode");
+                }
             }else{
                 throw error(propName, "unknown property");
             }
@@ -98,7 +104,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         }while(!check(Token.Type.SEMICOLON, Token.Type.R_SQUARE_BRACKET));
 
         try {
-            return new SectionInfo(name, start, type);
+            return new SectionInfo(name, start, type, mode);
         } catch (IllegalArgumentException e) {
             throw error(sectionName, "invalid section: " + e.getMessage());
         }

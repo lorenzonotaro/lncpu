@@ -1,31 +1,27 @@
 package com.lnasm.compiler.common;
 
+import com.lnasm.compiler.linker.LinkerTarget;
+
 public enum SectionType {
-    ROM("rom", 0x0, 0x1fff),
+    ROM("rom", LinkerTarget.ROM),
 
-    RAM("ram", 0x2000, 0x3fff),
+    RAM("ram", LinkerTarget.RAM),
 
-    PAGE0("ram", 0x2000, 0x3fff),;
+    PAGE0("ram", LinkerTarget.RAM);
 
     private final String destCode;
-    private final int start;
-    private final int size;
+    private final LinkerTarget target;
 
-    SectionType(String destCode, int start, int size){
+    SectionType(String destCode, LinkerTarget target){
         this.destCode = destCode;
-        this.start = start;
-        this.size = size;
+        this.target = target;
     }
 
     public String getDestCode() {
         return destCode;
     }
 
-    public int getStart() {
-        return start;
-    }
-
-    public int getSize() {
-        return size;
+    public LinkerTarget getTarget() {
+        return target;
     }
 }

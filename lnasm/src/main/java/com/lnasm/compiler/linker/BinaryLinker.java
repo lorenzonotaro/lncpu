@@ -2,14 +2,13 @@ package com.lnasm.compiler.linker;
 
 import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.common.LabelSectionInfo;
-import com.lnasm.compiler.common.SectionType;
 import com.lnasm.compiler.parser.ParseResult;
 import com.lnasm.compiler.parser.ParsedBlock;
 import com.lnasm.io.ByteArrayChannel;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BinaryLinker extends AbstractLinker<Map<String, ByteArrayChannel>>{
     private Map<String, ByteArrayChannel> outputs;
@@ -61,28 +60,28 @@ public class BinaryLinker extends AbstractLinker<Map<String, ByteArrayChannel>>{
 
     private void validateAddressSpace(Map<String, SectionBuilder> sectionBuilders) {
 
-        // calculate each section start address and check if it respects its max size
-        for (var entry : sectionBuilders.values()) {
-            // for now, simply set the start address to the section start address in the config
-            // TODO: implement section modes in linker config
-            entry.setSectionStart(entry.getSectionInfo().getStart());
+        var groupedByType = sectionBuilders.values().stream().collect(Collectors.groupingBy(
+           s -> s.getSectionInfo().getType().getTarget()
+        ));
 
-            entry.validateSize();
-        }
+        for (var entry : groupedByType.entrySet()) {
 
-        //check if any two sections overlap
-        for (var entry : sectionBuilders.entrySet()) {
-            for (var other : sectionBuilders.entrySet()) {
-                if(entry == other){
-                    continue;
-                }
-                if(entry.getValue().overlaps(other.getValue())){
-                    throw new LinkException("sections '%s' and '%s' overlap".formatted(entry.getKey(), other.getKey()));
-                }
+            var target = entry.getKey();
+            var sections = entry.getValue();
+            MemoryLayoutManager manager = new MemoryLayoutManager(target);
+
+            var sortedByMode = sections.stream().sorted(Comparator.comparingInt(a -> a.getSectionInfo().getMode().getPrecedence())).toList();
+
+            for(var section : sortedByMode){
+                section.validateSize();
+                manager.allocate(section);
             }
-        }
-    }
 
+            manager.validate();
+            manager.visit();
+        }
+
+    }
     private LabelMapLabelResolver makeLabelResolver(Map<String, SectionBuilder> sectionBuilders) {
         // build global label map
         Map<String, LabelMapEntry> globalLabelMap = new HashMap<>();
