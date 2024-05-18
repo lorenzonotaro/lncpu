@@ -5,7 +5,7 @@ public enum SectionMode {
     FIXED(0x1fff, 0, "fixed"),
 
     // automatic positioning, page aligned
-    PAGE_ALIGN(0xff, 1, "page-aligned"),
+    PAGE_ALIGN(0x1fff, 1, "page-aligned"),
 
     // automatic positioning, fit to page
     PAGE_FIT(0xff, 2, "page-fitted"),
