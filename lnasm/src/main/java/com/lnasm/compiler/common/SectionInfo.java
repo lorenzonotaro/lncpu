@@ -35,7 +35,7 @@ public class SectionInfo {
 
             this.start = PAGE_0_START;
             this.mode = SectionMode.FIXED;
-            this.maxSize = 0xFF;
+            this.maxSize = 0x100;
         }else{
             if(mode == null || mode == SectionMode.FIXED){
                 if(start == -1){
