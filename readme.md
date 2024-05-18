@@ -23,4 +23,12 @@ Overview of the repository:
 - [Python 3.x](https://www.python.org/downloads/) is required to generate the EEPROMs for the control unit.
 - [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) and [Digital](https://github.com/hneemann/Digital) are used to simulate the design.
 
+## Building
+
+If you're on Linux, `make.sh` will build everything for you, including lnasm, eeprom-serial-loader and the control unit EEPROMs. Usage
+
+    ./make.sh [--no-eeproms] [-no-eeprom-serial-loader] [--no-lnasm]
+
+
+
 **Note**: I suggest using [my fork of Logisim-evolution](https://github.com/lorenzonotaro/logisim-evolution) to open the Logisim project. It fixes some performance issues and adds Probe breakpoints, useful for debugging the lncpu.

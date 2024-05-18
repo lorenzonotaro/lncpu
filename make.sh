@@ -1,64 +1,102 @@
 cd "$(dirname "$0")"
 
+# config variables
+build_lnasm=true
+build_eeprom_serial_loader=true
+make_eeproms=true
 
-# clear previous output
-rm -rf output/*
+for arg in "$@"; do
+
+    if [ "$arg" == "--no-lnasm" ]; then
+        build_lnasm=false
+    elif [ "$arg" == "--no-eeprom-serial-loader" ]; then
+        build_eeprom_serial_loader=false
+    elif [ "$arg" == "--no-eeproms" ]; then
+        make_eeproms=false
+    fi
+
+done
 
 # make output directory
 mkdir -p output/eeproms/
 
-# === make EEPROMs ===
-cd v1/controlunit
+# === make eeprom-serial-loader ===
 
-echo "Generating EEPROMs..."
+if [ $build_eeprom_serial_loader = true ] ; then
+    
+    cd eeprom-serial-loader
 
-python3 gen_eeproms.py > ../../log.txt
+    echo "Building eeprom-serial-loader..."
 
-if [ $? -ne 0 ]; then
-    echo "Error: EEPROM generation failed"
-    exit 1
+    mvn clean package
+
+    if [ $? -ne 0 ]; then
+        echo "Error: eeprom-serial-loader build failed"
+        exit 1
+    fi
+
+    cp target/eeprom-serial-loader.jar ../output/
+
+    cd ..
 fi
 
-# move EEPROM*.bin to ../../output/eeproms/
-cp EEPROM*.bin ../../output/eeproms/
+# === make EEPROMs ===
 
+if [ $make_eeproms = true ] ; then
+
+    cd v1/controlunit
+
+    echo "Generating EEPROMs..."
+
+    python3 gen_eeproms.py
+
+    if [ $? -ne 0 ]; then
+        echo "Error: EEPROM generation failed"
+        exit 1
+    fi
+
+    # === generate EEPROM binary files ===
+
+    echo "Generating EEPROM binary files..."
+
+    # for each .EEPROM*.eeprom file in v1/controlunit/, run eeprom-serial-loader to generate EEPROM*.bin in the cwd
+    #subprocess.run(f"java -jar \"../../eeprom-serial-loader/target/eeprom-serial-loader.jar\" EEPROM{str(i)}.eeprom --no-gui --export-bin EEPROM{str(i)}.bin", shell=True)
+
+    for eeprom in *.eeprom; do
+        java -jar "../../output/eeprom-serial-loader.jar" "$eeprom" --no-gui --export-bin ../../output/eeproms/"${eeprom/.eeprom/.bin}"
+    done
+
+    # move EEPROM*.bin to ../../output/eeproms/
+    cp EEPROM*.bin ../../output/eeproms/
+
+    cd ../..
+
+fi
 
 # === make lnasm ===
 
-cd ../../lnasm
+if [ $build_lnasm = true ] ; then
 
-echo "Building lnasm..."
+    cd lnasm
 
-mvn clean package > log.txt
+    echo "Building lnasm..."
 
-if [ $? -ne 0 ]; then
-    echo "Error: lnasm build failed"
-    exit 1
+    mvn clean package
+
+    if [ $? -ne 0 ]; then
+        echo "Error: lnasm build failed"
+        exit 1
+    fi
+
+    cp target/lnasm.jar ../output/
+
+    # === generate lnasm documentation ===
+
+    echo "Generating lnasm instruction set documentation..."
+
+    python3 gen_language_docs.py
+
 fi
-
-cp target/lnasm.jar ../output/
-
-# === generate lnasm documentation ===
-
-echo "Generating lnasm instruction set documentation..."
-
-python3 gen_language_docs.py
-
-# === make eeprom-serial-loader ===
-
-cd ../eeprom-serial-loader
-
-echo "Building eeprom-serial-loader..."
-
-mvn clean package > log.txt
-
-if [ $? -ne 0 ]; then
-    echo "Error: eeprom-serial-loader build failed"
-    exit 1
-fi
-
-cp target/eeprom-serial-loader.jar ../output/
-
 
 echo "Done."
 exit 0
