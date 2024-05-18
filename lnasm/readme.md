@@ -143,11 +143,11 @@ For each section you must specify its properties. Section properties include:
   * `RAM`: the section will not be included into the binary output.
   * `PAGE0`: the section represents the first page of RAM, and so will not be linked . `PAGE0` implies that the start address of the section is `0x2000` and the mode is `fixed`: these properties can therefore be omitted.
 * `mode` (default: `fixed`). Possible values:
-  * `fixed`: the section will be placed at a fixed address, specified by the `start` properties (required for `fixed` sections).
+  * `fixed`: the section will be placed at a fixed address, specified by the `start` properties (required).
   * `page_align`: the section will be placed at the first available page-aligned address.
   * `page_fit`: the section will be placed at the first available address that ensures that the section fits in a single page. *Note*: a `page_fit` section cannot be bigger than 256 bytes.
   * `fit`: the section will be placed wherever it fits, regardless of page boundaries.
-* `start` (required for `fixed` sections). The start address of the section.
+* `start` (required if mode is `fixed` or unspecified). The start address of the section.
 * `multi` (default `false`). If `true`, the section can be referenced multiple times in the code via the `.section` directive: each block will be appended to the section.
 
 **Note**: this is useful for modular programs and the page 0 section: each module can reserve its own space in the page 0 section.
