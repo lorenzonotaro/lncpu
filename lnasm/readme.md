@@ -11,17 +11,18 @@ Use [`maven`](https://maven.apache.org/) to assemble a runnable JAR with depende
 
 # Usage
 
+## Command line syntax
+
 To run `lnasm`, use:
 
     java -jar lnasm.jar <source file(s)> [options...]
 
 Run with `--help` to show a list of available options.
 
-# lnasm language
-
+## The basics
 LNASM file have the extension `.lnasm`.
-Each lnasm file must have with a `.org` directive before any code is added.
 
+lnasm source code i
 
 ### Directives
 

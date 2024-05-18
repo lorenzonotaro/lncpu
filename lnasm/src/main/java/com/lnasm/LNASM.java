@@ -5,6 +5,7 @@ import com.lnasm.compiler.common.Line;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class LNASM {
 
     public static final String PROGRAM_NAME = "lnasm";
     public static final String PROGRAM_VERSION = "1.1.0";
+    private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNASM.class.getClassLoader().getResourceAsStream("default-settings.json"));
     public static String[] includeDirs;
@@ -79,10 +81,13 @@ public class LNASM {
         var configScript = settings.get("-lc", String.class);
 
         if("".equals(configScript) && "".equals(configFile)) {
-            throw new IllegalStateException("no linker config specified");
-        } else if(!"".equals(configScript) && !"".equals(configFile)){
+            if(!Files.exists(Path.of(DEFAULT_LINKER_CFG_FILENAME)))
+                throw new IllegalStateException("no linker config provided and no '%s' could be found".formatted(DEFAULT_LINKER_CFG_FILENAME));
+            else configFile = DEFAULT_LINKER_CFG_FILENAME;
+        }
+        if(!"".equals(configScript) && !"".equals(configFile)){
             throw new IllegalStateException("cannot specify both linker config file and script");
-        } else if(!"".equals(configFile)){
+        }else if(!"".equals(configFile)){
             return getLinesFromFile(configFile);
         }else{
             return new ArrayList<>(List.of(new Line("<cmdline>", "<cmdline>", configScript, 1)));
@@ -96,7 +101,7 @@ public class LNASM {
         try {
             strLines = Files.readAllLines(path);
         } catch (IOException e) {
-            throw new FileNotFoundException("Unable to open source file '" + file + "'");
+            throw new FileNotFoundException("unable to open file '" + file + "'");
         }
         for (int i = 0; i < strLines.size(); i++) {
             String code = strLines.get(i);

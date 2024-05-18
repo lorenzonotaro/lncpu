@@ -37,12 +37,12 @@
     "value": ""
   },
 
-  "-lC": {
+  "-lf": {
     "help": "Set the linker config file.",
     "value": ""
   },
   "-lc": {
-    "help": "Provide a linker configuration script.",
+    "help": "Provide a linker configuration script as a command line parameter.",
     "value": ""
   }
 }
