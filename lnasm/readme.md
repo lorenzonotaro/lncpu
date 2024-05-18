@@ -24,6 +24,8 @@ Run with `--help` to show a list of available options.
 
 Lnasm code is a simple assembly language for the `lncpu`. It is a line-based language, with each line representing a single instruction or directive.
 
+Leading and trailing whitespace in each line is ignored, but each line may contain only one instruction or directive. Instructions and directives are case-insensitive.
+
 Lnasm code is organized in sections. Each section is a block of code that can be placed in a specific region in the address space. The rules for section placement are defined in a linker configuration script (see [below](#linker-configuration)).
 
 ### Directives
@@ -146,6 +148,9 @@ For each section you must specify its properties. Section properties include:
   * `page_fit`: the section will be placed at the first available address that ensures that the section fits in a single page. *Note*: a `page_fit` section cannot be bigger than 256 bytes.
   * `fit`: the section will be placed wherever it fits, regardless of page boundaries.
 * `start` (required for `fixed` sections). The start address of the section.
+* `multi` (default `false`). If `true`, the section can be referenced multiple times in the code via the `.section` directive: each block will be appended to the section.
+
+**Note**: this is useful for modular programs and the page 0 section: each module can reserve its own space in the page 0 section.
 
 Example:
 

@@ -77,7 +77,7 @@ public class LNASM {
     }
 
     private static List<Line> getLinkerConfig() throws FileNotFoundException {
-        var configFile = settings.get("-lC", String.class);
+        var configFile = settings.get("-lf", String.class);
         var configScript = settings.get("-lc", String.class);
 
         if("".equals(configScript) && "".equals(configFile)) {

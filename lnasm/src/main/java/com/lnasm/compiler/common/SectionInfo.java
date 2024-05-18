@@ -7,8 +7,11 @@ public class SectionInfo {
     private final int start;
     private final int maxSize;
     private final SectionType type;
+    private final boolean multiWriteAllowed;
 
-    public SectionInfo(String name, int start, SectionType type, SectionMode mode) {
+    public SectionInfo(String name, int start, SectionType type, SectionMode mode, boolean multiWriteAllowed) {
+
+        this.multiWriteAllowed = multiWriteAllowed;
 
         if(name == null){
             throw new IllegalArgumentException("null section name");
@@ -106,4 +109,9 @@ public class SectionInfo {
         result = 31 * result + type.hashCode();
         return result;
     }
+
+    public boolean isMultiWriteAllowed() {
+        return multiWriteAllowed;
+    }
+
 }

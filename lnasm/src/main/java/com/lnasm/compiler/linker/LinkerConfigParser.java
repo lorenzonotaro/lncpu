@@ -60,6 +60,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         var start = -1;
         SectionType type = null;
         SectionMode mode = null;
+        Boolean multiWriteAllowed = null;
 
         do{
             var propName = consume("expected property name", Token.Type.IDENTIFIER);
@@ -94,6 +95,16 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
                 }catch(IllegalArgumentException e) {
                     throw error(propValue, "unknown section mode");
                 }
+            }else if(propName.lexeme.equals("multi")){
+                if (multiWriteAllowed != null)
+                    throw error(propName, "duplicate property 'multi'");
+                if(propValue.lexeme.equals("true")){
+                    multiWriteAllowed = true;
+                }else if(propValue.lexeme.equals("false")){
+                    multiWriteAllowed = false;
+                }else{
+                    throw error(propValue, "invalid value for 'multi' property (true/false)");
+                }
             }else{
                 throw error(propName, "unknown property");
             }
@@ -104,7 +115,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         }while(!check(Token.Type.SEMICOLON, Token.Type.R_SQUARE_BRACKET));
 
         try {
-            return new SectionInfo(name, start, type, mode);
+            return new SectionInfo(name, start, type, mode, multiWriteAllowed != null && multiWriteAllowed);
         } catch (IllegalArgumentException e) {
             throw error(sectionName, "invalid section: " + e.getMessage());
         }

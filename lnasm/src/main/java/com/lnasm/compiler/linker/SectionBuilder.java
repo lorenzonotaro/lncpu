@@ -1,5 +1,6 @@
 package com.lnasm.compiler.linker;
 
+import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.common.SectionInfo;
 import com.lnasm.compiler.parser.CodeElement;
 import com.lnasm.compiler.parser.LnasmParser;
@@ -31,20 +32,31 @@ public class SectionBuilder {
 
     private int sectionStart = -1;
 
+    private boolean alreadyWritten;
+
     public SectionBuilder(SectionInfo info, ILabelSectionLocator locator){
         this.sectionInfo = info;
         this.locator = locator;
         this.codeLength = 0;
         this.instructions = new LinkedList<>();
+        alreadyWritten = false;
     }
 
 
     public void append(ParsedBlock block){
+
+
+        if(alreadyWritten && !sectionInfo.isMultiWriteAllowed()){
+            throw new CompileException("duplicate section '%s' (use 'multi = true' in linker config to append multiple code blocks to the same section)".formatted(sectionInfo.getName()), block.sectionToken);
+        }
+
         for (var instruction : block.instructions) {
             int size = instruction.size(locator);
             instructions.add(new InstructionEntry(this.codeLength, size, instruction));
             this.codeLength += size;
         }
+
+        alreadyWritten = true;
     }
 
     public void setSectionStart(int sectionStart){
@@ -104,6 +116,10 @@ public class SectionBuilder {
 
     public int getCodeLength() {
         return codeLength;
+    }
+
+    public boolean isAlreadyWritten() {
+        return alreadyWritten;
     }
 
     record InstructionEntry(int index, int size, CodeElement instruction){
