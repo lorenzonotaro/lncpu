@@ -70,6 +70,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
             }
 
             currentBlockSectionToken = nameToken;
+            currentParentLabel = null;
             currentInstructions = new ArrayList<>();
 
             return true;
