@@ -5,7 +5,10 @@ import com.lnasm.compiler.common.SectionInfo;
 import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.parser.LnasmParser;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class LabelMapLabelResolver implements ILabelResolver {
     private final Map<String, LabelMapEntry> globalLabelMap;
@@ -43,5 +46,15 @@ public class LabelMapLabelResolver implements ILabelResolver {
 
     public void setCurrentParentLabel(String name) {
         this.currentParentLabel = name;
+    }
+
+    public Map<Integer, Set<String>> createReverseSymbolTable() {
+        var reverseSymbolTable = new HashMap<Integer, Set<String>>();
+
+        for (var entry : globalLabelMap.entrySet()) {
+            reverseSymbolTable.computeIfAbsent(entry.getValue().address(), k -> new HashSet<>()).add(entry.getKey());
+        }
+
+        return reverseSymbolTable;
     }
 }

@@ -60,7 +60,17 @@ public class Compiler {
         if(!linker.link(parseResult))
             return false;
         else{
-            this.output = linker.getResult().getOrDefault(SectionType.ROM.getDestCode(), new ByteArrayChannel(0, false)).toByteArray();
+            this.output = linker.getResult().getOrDefault(LinkerTarget.ROM, new ByteArrayChannel(0, false)).toByteArray();
+        }
+
+        if(this.outputFormat.equals("immediate")){
+            Logger.setProgramState("disassembler");
+            Disassembler disassembler = new Disassembler(linker.createReverseSymbolTable(), linker.createSectionDescriptors(LinkerTarget.ROM));
+            if(disassembler.disassemble(this.output)){
+                this.output = disassembler.getOutput();
+            }else{
+                return false;
+            }
         }
 
         return this.output != null;

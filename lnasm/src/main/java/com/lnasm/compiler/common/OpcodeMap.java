@@ -54,7 +54,12 @@ public class OpcodeMap {
     }
 
     public static String getImmediateName(byte opcode) {
-        return byOpcode.get(opcode).immediateName;
+        var opcodeInfo = byOpcode.get(opcode);
+
+        if(opcodeInfo == null)
+            throw new IllegalArgumentException("invalid opcode: " + opcode);
+
+        return opcodeInfo.immediateName;
     }
 
     private record OpcodeInfo(String immediateName, byte opcode, byte codeLength, byte clockCycles) {

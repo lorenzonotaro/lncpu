@@ -122,6 +122,10 @@ public class SectionBuilder {
         return alreadyWritten;
     }
 
+    public Descriptor getDescriptor() {
+        return new Descriptor(sectionInfo, sectionStart, codeLength);
+    }
+
     record InstructionEntry(int index, int size, CodeElement instruction){
 
     }
@@ -144,5 +148,8 @@ public class SectionBuilder {
         result = 31 * result + sectionInfo.hashCode();
         result = 31 * result + sectionStart;
         return result;
+    }
+
+    public record Descriptor(SectionInfo sectionInfo, int start, int length) {
     }
 }
