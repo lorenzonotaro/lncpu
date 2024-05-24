@@ -60,9 +60,9 @@ public class Disassembler{
                         params.append("%02x ".formatted(output[currentAddress + i]));
                     }
 
-                    currentAddress += instructionLength;
-
                     sb.append(("\t%" + longestLabelLength + "s %06x:\t%-20s %16s\n").formatted(labels, currentAddress, instructionDesc, params));
+
+                    currentAddress += instructionLength;
                 }
 
                 sb.append("\n\n");
