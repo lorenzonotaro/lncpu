@@ -5,7 +5,6 @@ import com.lnasm.compiler.common.Line;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.List;
 public class LNASM {
 
     public static final String PROGRAM_NAME = "lnasm";
-    public static final String PROGRAM_VERSION = "1.2.1";
+    public static final String PROGRAM_VERSION = "1.2.2";
     private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNASM.class.getClassLoader().getResourceAsStream("default-settings.json"));
@@ -52,17 +51,14 @@ public class LNASM {
             }
             lines = getLinesFromSourceFiles();
             linkerConfigLines = getLinkerConfig();
-            Compiler compiler = new Compiler(lines, linkerConfigLines, settings.get("-f", String.class));
+            Compiler compiler = new Compiler(lines, linkerConfigLines);
             if(!compiler.compile())
                 System.exit(1);
             else if(!settings.get("-s", Boolean.class)){
-                Files.write(Path.of(settings.get("-o", String.class)), compiler.getOutput());
+                compiler.writeOutputFiles();
             }
         } catch (FileNotFoundException | IllegalStateException e) {
             Logger.error(e.getMessage());
-            return 1;
-        } catch (IOException e) {
-            Logger.error("unable to write output file (" + e.getMessage() + ")");
             return 1;
         }
         return 0;
@@ -129,6 +125,11 @@ public class LNASM {
                     settings.addSourceFile(arg);
                 }
             }
+
+            if(settings.get("-oI", String.class).equals("") && settings.get("-oI", String.class).equals("")){
+                settings.set("-oB", "a.out");
+            }
+
         }catch(IllegalArgumentException e){
             Logger.error(e.getMessage());
             return false;

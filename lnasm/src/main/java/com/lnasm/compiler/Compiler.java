@@ -1,7 +1,7 @@
 package com.lnasm.compiler;
 
+import com.lnasm.LNASM;
 import com.lnasm.Logger;
-import com.lnasm.compiler.common.SectionType;
 import com.lnasm.compiler.lexer.Lexer;
 import com.lnasm.compiler.common.Line;
 import com.lnasm.compiler.common.Token;
@@ -10,18 +10,19 @@ import com.lnasm.compiler.parser.LnasmParser;
 import com.lnasm.compiler.parser.ParseResult;
 import com.lnasm.io.ByteArrayChannel;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class Compiler {
     private final List<Line> sourceLines;
     private final List<Line> linkerConfigLines;
-    private final String outputFormat;
-    private byte[] output;
+    private final Map<String, byte[]> outputs;
 
-    public Compiler(List<Line> sourceLines, List<Line> linkerConfigLines, String outputFormat) {
+    public Compiler(List<Line> sourceLines, List<Line> linkerConfigLines) {
         this.sourceLines = sourceLines;
         this.linkerConfigLines = linkerConfigLines;
-        this.outputFormat = outputFormat;
+        this.outputs = new HashMap<>();
     }
 
     public boolean compile() {
@@ -59,25 +60,40 @@ public class Compiler {
 
         if(!linker.link(parseResult))
             return false;
-        else{
-            this.output = linker.getResult().getOrDefault(LinkerTarget.ROM, new ByteArrayChannel(0, false)).toByteArray();
+
+        var linkResult = linker.getResult();
+        var binaryResult = linkResult.getOrDefault(LinkerTarget.ROM, new ByteArrayChannel(0, false)).toByteArray();
+        var binOutputFile = "";
+        var immediateOutputFile = "";
+        if(!"".equals(binOutputFile = LNASM.settings.get("-oB", String.class))){
+            this.outputs.put(binOutputFile, binaryResult);
         }
 
-        if(this.outputFormat.equals("immediate")){
+        if(!"".equals(immediateOutputFile = LNASM.settings.get("-oI", String.class))){
             Logger.setProgramState("disassembler");
             Disassembler disassembler = new Disassembler(linker.createReverseSymbolTable(), linker.createSectionDescriptors(LinkerTarget.ROM));
-            if(disassembler.disassemble(this.output)){
-                this.output = disassembler.getOutput();
+            if(disassembler.disassemble(binaryResult)){
+                this.outputs.put(immediateOutputFile, disassembler.getOutput());
             }else{
                 return false;
             }
         }
 
-        return this.output != null;
+        return this.outputs != null;
     }
 
 
-    public byte[] getOutput() {
-        return output;
+    public Map<String, byte[]> getOutputs() {
+        return outputs;
+    }
+
+    public void writeOutputFiles() {
+        for (var entry : this.outputs.entrySet()) {
+            try {
+                Files.write(Path.of(entry.getKey()), entry.getValue());
+            } catch (Exception e) {
+                Logger.error("unable to write output file (" + e.getMessage() + ")");
+            }
+        }
     }
 }
