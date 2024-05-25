@@ -39,7 +39,7 @@ if [ $build_eeprom_serial_loader = true ] ; then
 
     # generate run cmd/bash for eeprom-serial-loader
     echo "java -jar %~dp0\eeprom-serial-loader.jar %*" > "../output/eeprom-serial-loader.bat"
-    echo "java -jar \"$(dirname "$0")/eeprom-serial-loader.jar\" \"$@\"" > "../output/eeprom-serial-loader.sh"
+    echo -e "#!/bin/bash\njava -jar \"$(dirname "$0")/eeprom-serial-loader.jar\" \"\$@\"" > "../output/eeprom-serial-loader"
 
     cd ..
 fi
@@ -96,7 +96,7 @@ if [ $build_lnasm = true ] ; then
 
     # generate run cmd/bash for lnasm
     echo "java -jar %~dp0\lnasm.jar %*" > "../output/lnasm.bat"
-    echo "java -jar \"$(dirname "$0")/lnasm.jar\" \"$@\"" > "../output/lnasm.sh"
+    echo -e "#!/bin/bash\njava -jar \"$(dirname "$0")/lnasm.jar\" \"\$@\"" > "../output/lnasm"
 
     # === generate lnasm documentation ===
 
