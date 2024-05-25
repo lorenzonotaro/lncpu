@@ -133,7 +133,8 @@ public class Preprocessor {
         throw new IOException("file not found");
     }
 
-    private void consumeUntilEndif(List<Token> openingLine, ListIterator<List<Token>> iterator, boolean keep){
+    private void consumeUntilEndif(List<Token> openingLine, ListIterator<List<Token>> iterator, boolean keep) {
+        int ifDepth = 1;
         LinkedList<List<Token>> lines = new LinkedList<>();
         boolean closed = false;
         List<Token> line =  openingLine;
@@ -143,10 +144,15 @@ public class Preprocessor {
                 continue;
             Token macroToken = line.get(0);
             iterator.remove();
-            if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
+            if(macroToken.type.equals(Token.Type.MACRO_ENDIF) && ifDepth == 1){
                 closed = true;
                 break;
             }else{
+                if(macroToken.type.equals(Token.Type.MACRO_IFDEF) || macroToken.type.equals(Token.Type.MACRO_IFNDEF)){
+                    ifDepth++;
+                }else if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
+                    ifDepth--;
+                }
                 lines.add(line);
             }
         }
