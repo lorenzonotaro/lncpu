@@ -1,11 +1,12 @@
 {
-  "-o": {
-    "help": "Specify the output file's name. ",
-    "value": "a.out"
+  "-oB": {
+    "help": "Output binary. This parameter must be followed by the output filename (default: a.out) . ",
+    "value": ""
   },
-  "-f": {
-    "help": "Specify the output format. One of:\n - 'binary': raw binary to be executed by the LNCPU\n  - 'hexdump': hex dump for visualizing opcodes\n - 'immediate': compile into immediate assembly code\n - 'esl': for visualizing in eeprom-serial-loader",
-    "value": "binary"
+
+  "-oI": {
+    "help": "Output immediate code. This parameter must be followed by the output filename. ",
+    "value": ""
   },
 
   "--version": {
