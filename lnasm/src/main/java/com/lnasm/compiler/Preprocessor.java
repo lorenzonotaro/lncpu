@@ -21,6 +21,8 @@ public class Preprocessor {
 
     Preprocessor(List<List<Token>> lines){
         this.lines = lines;
+
+        defines.put("__VERSION__", List.of(Token.__internal(Token.Type.STRING, LNASM.PROGRAM_VERSION)));
     }
 
     boolean preprocess() {

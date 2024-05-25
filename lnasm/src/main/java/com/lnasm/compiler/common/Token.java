@@ -37,6 +37,23 @@ public class Token {
                 '}';
     }
 
+    public static Token __internal(Type type, Object literal){
+        String lexeme = "";
+
+        switch(type){
+            case STRING:
+                lexeme = "\n%s\n".formatted(literal);
+                break;
+            case INTEGER:
+                lexeme = literal.toString();
+                break;
+            default:
+                break;
+        }
+
+        return new Token(type, lexeme, literal, new Location("<internal>", "<interal>", lexeme, 0, 0));
+    }
+
     public String formatLocation(){
         return String.format("%s:%d:%d", this.location.filename, this.location.lineNumber, this.location.colNumber);
     }
