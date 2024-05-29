@@ -23,23 +23,43 @@
             }
         },
         "X_SEL": {
-            "00": {
+            "000": {
                 "name": "ra",
                 "dbus_read": false,
                 "dbus_write": false
             },
-            "01": {
+            "001": {
                 "name": "rb",
                 "dbus_read": false,
                 "dbus_write": false
             },
-            "10": {
+            "010": {
                 "name": "rc",
                 "dbus_read": false,
                 "dbus_write": false
             },
-            "11": {
+            "011": {
                 "name": "rd",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "100": {
+                "name": "rt",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "101": {
+                "name": "1",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "110": {
+                "name": null,
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "111": {
+                "name": null,
                 "dbus_read": false,
                 "dbus_write": false
             }
@@ -366,6 +386,12 @@
         },
         {
             "name": "X_SEL1",
+            "default_value": 0,
+            "behavior": "combinatorial",
+            "behavior_group": "X_SEL"
+        },
+        {
+            "name": "X_SEL2",
             "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "X_SEL"

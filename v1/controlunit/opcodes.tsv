@@ -87,140 +87,167 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0x55	add_rb_cst	2	2	Adds a constant to RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
 0x56	add_rc_cst	2	2	Adds a constant to RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
 0x57	add_rd_cst	2	2	Adds a constant to RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0x58	sub_ra_ra	1	1	Subtracts RA from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x59	sub_ra_rb	1	1	Subtracts RB from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x5a	sub_ra_rc	1	1	Subtracts RC from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x5b	sub_ra_rd	1	1	Subtracts RD from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x5c	sub_rb_ra	1	1	Subtracts RA from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x5d	sub_rb_rb	1	1	Subtracts RB from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x5e	sub_rb_rc	1	1	Subtracts RC from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x5f	sub_rb_rd	1	1	Subtracts RD from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x60	sub_rc_ra	1	1	Subtracts RA from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x61	sub_rc_rb	1	1	Subtracts RB from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x62	sub_rc_rc	1	1	Subtracts RC from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x63	sub_rc_rd	1	1	Subtracts RD from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x64	sub_rd_ra	1	1	Subtracts RA from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0x65	sub_rd_rb	1	1	Subtracts RB from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0x66	sub_rd_rc	1	1	Subtracts RC from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0x67	sub_rd_rd	1	1	Subtracts RD from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0x68	sub_ra_cst	2	2	Subtracts a constant from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x69	sub_rb_cst	2	2	Subtracts a constant from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x6a	sub_rc_cst	2	2	Subtracts a constant from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x6b	sub_rd_cst	2	2	Subtracts a constant from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0x6c	cmp_ra_ra	1	1	Compares RA to RA, then updates the FLAGS accordingly	NZC
-0x6d	cmp_ra_rb	1	1	Compares RA to RB, then updates the FLAGS accordingly	NZC
-0x6e	cmp_ra_rc	1	1	Compares RA to RC, then updates the FLAGS accordingly	NZC
-0x6f	cmp_ra_rd	1	1	Compares RA to RD, then updates the FLAGS accordingly	NZC
-0x70	cmp_rb_ra	1	1	Compares RB to RA, then updates the FLAGS accordingly	NZC
-0x71	cmp_rb_rb	1	1	Compares RB to RB, then updates the FLAGS accordingly	NZC
-0x72	cmp_rb_rc	1	1	Compares RB to RC, then updates the FLAGS accordingly	NZC
-0x73	cmp_rb_rd	1	1	Compares RB to RD, then updates the FLAGS accordingly	NZC
-0x74	cmp_rc_ra	1	1	Compares RC to RA, then updates the FLAGS accordingly	NZC
-0x75	cmp_rc_rb	1	1	Compares RC to RB, then updates the FLAGS accordingly	NZC
-0x76	cmp_rc_rc	1	1	Compares RC to RC, then updates the FLAGS accordingly	NZC
-0x77	cmp_rc_rd	1	1	Compares RC to RD, then updates the FLAGS accordingly	NZC
-0x78	cmp_rd_ra	1	1	Compares RD to RA, then updates the FLAGS accordingly	NZC
-0x79	cmp_rd_rb	1	1	Compares RD to RB, then updates the FLAGS accordingly	NZC
-0x7a	cmp_rd_rc	1	1	Compares RD to RC, then updates the FLAGS accordingly	NZC
-0x7b	cmp_rd_rd	1	1	Compares RD to RD, then updates the FLAGS accordingly	NZC
-0x7c	cmp_ra_cst	2	2	Compares RA to a constant, then updates the FLAGS accordingly	NZC
-0x7d	cmp_rb_cst	2	2	Compares RB to a constant, then updates the FLAGS accordingly	NZC
-0x7e	cmp_rc_cst	2	2	Compares RC to a constant, then updates the FLAGS accordingly	NZC
-0x7f	cmp_rd_cst	2	2	Compares RD to a constant, then updates the FLAGS accordingly	NZC
-0x80	or_ra_ra	1	1	Performs a bitwise OR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	-
-0x81	or_ra_rb	1	1	Performs a bitwise OR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	-
-0x82	or_ra_rc	1	1	Performs a bitwise OR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	-
-0x83	or_ra_rd	1	1	Performs a bitwise OR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	-
-0x84	or_rb_ra	1	1	Performs a bitwise OR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	-
-0x85	or_rb_rb	1	1	Performs a bitwise OR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	-
-0x86	or_rb_rc	1	1	Performs a bitwise OR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	-
-0x87	or_rb_rd	1	1	Performs a bitwise OR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	-
-0x88	or_rc_ra	1	1	Performs a bitwise OR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	-
-0x89	or_rc_rb	1	1	Performs a bitwise OR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	-
-0x8a	or_rc_rc	1	1	Performs a bitwise OR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	-
-0x8b	or_rc_rd	1	1	Performs a bitwise OR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	-
-0x8c	or_rd_ra	1	1	Performs a bitwise OR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	-
-0x8d	or_rd_rb	1	1	Performs a bitwise OR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	-
-0x8e	or_rd_rc	1	1	Performs a bitwise OR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	-
-0x8f	or_rd_rd	1	1	Performs a bitwise OR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	-
-0x90	or_ra_cst	2	2	Performs a bitwise OR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	-
-0x91	or_rb_cst	2	2	Performs a bitwise OR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	-
-0x92	or_rc_cst	2	2	Performs a bitwise OR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	-
-0x93	or_rd_cst	2	2	Performs a bitwise OR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	-
-0x94	and_ra_ra	1	1	Performs a bitwise AND of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x95	and_ra_rb	1	1	Performs a bitwise AND of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x96	and_ra_rc	1	1	Performs a bitwise AND of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x97	and_ra_rd	1	1	Performs a bitwise AND of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0x98	and_rb_ra	1	1	Performs a bitwise AND of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x99	and_rb_rb	1	1	Performs a bitwise AND of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x9a	and_rb_rc	1	1	Performs a bitwise AND of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x9b	and_rb_rd	1	1	Performs a bitwise AND of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0x9c	and_rc_ra	1	1	Performs a bitwise AND of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x9d	and_rc_rb	1	1	Performs a bitwise AND of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x9e	and_rc_rc	1	1	Performs a bitwise AND of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0x9f	and_rc_rd	1	1	Performs a bitwise AND of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xa0	and_rd_ra	1	1	Performs a bitwise AND of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xa1	and_rd_rb	1	1	Performs a bitwise AND of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xa2	and_rd_rc	1	1	Performs a bitwise AND of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xa3	and_rd_rd	1	1	Performs a bitwise AND of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xa4	and_ra_cst	2	2	Performs a bitwise AND of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xa5	and_rb_cst	2	2	Performs a bitwise AND of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xa6	and_rc_cst	2	2	Performs a bitwise AND of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xa7	and_rd_cst	2	2	Performs a bitwise AND of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xa8	xor_ra_ra	1	1	Performs a bitwise XOR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xa9	xor_ra_rb	1	1	Performs a bitwise XOR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xaa	xor_ra_rc	1	1	Performs a bitwise XOR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xab	xor_ra_rd	1	1	Performs a bitwise XOR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xac	xor_rb_ra	1	1	Performs a bitwise XOR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xad	xor_rb_rb	1	1	Performs a bitwise XOR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xae	xor_rb_rc	1	1	Performs a bitwise XOR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xaf	xor_rb_rd	1	1	Performs a bitwise XOR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xb0	xor_rc_ra	1	1	Performs a bitwise XOR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xb1	xor_rc_rb	1	1	Performs a bitwise XOR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xb2	xor_rc_rc	1	1	Performs a bitwise XOR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xb3	xor_rc_rd	1	1	Performs a bitwise XOR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xb4	xor_rd_ra	1	1	Performs a bitwise XOR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xb5	xor_rd_rb	1	1	Performs a bitwise XOR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xb6	xor_rd_rc	1	1	Performs a bitwise XOR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xb7	xor_rd_rd	1	1	Performs a bitwise XOR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xb8	xor_ra_cst	2	2	Performs a bitwise XOR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xb9	xor_rb_cst	2	2	Performs a bitwise XOR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xba	xor_rc_cst	2	2	Performs a bitwise XOR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xbb	xor_rd_cst	2	2	Performs a bitwise XOR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xbc	not_ra	1	1	Performs a bitwise NOT of RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
-0xbd	not_rb	1	1	Performs a bitwise NOT of RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
-0xbe	not_rc	1	1	Performs a bitwise NOT of RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
-0xbf	not_rd	1	1	Performs a bitwise NOT of RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
-0xc0	inc_ra	1	1	Increments RA by 1, then updates the FLAGS accordingly	NZC
-0xc1	inc_rb	1	1	Increments RB by 1, then updates the FLAGS accordingly	NZC
-0xc2	inc_rc	1	1	Increments RC by 1, then updates the FLAGS accordingly	NZC
-0xc3	inc_rd	1	1	Increments RD by 1, then updates the FLAGS accordingly	NZC
-0xc4	dec_ra	1	1	Decrements RA by 1, then updates the FLAGS accordingly	NZC
-0xc5	dec_rb	1	1	Decrements RB by 1, then updates the FLAGS accordingly	NZC
-0xc6	dec_rc	1	1	Decrements RC by 1, then updates the FLAGS accordingly	NZC
-0xc7	dec_rd	1	1	Decrements RD by 1, then updates the FLAGS accordingly	NZC
-0xc8	shl_ra	1	1	Performs a left bitwise shift of RA by 1 bit	-
-0xc9	shr_ra	1	1	Performs a right bitwise shift of RA by 1 bit	-
-0xca	swap_ra_rb	1	3	Swaps the values of RA and RB	-
-0xcb	swap_ra_rc	1	3	Swaps the values of RA and RC	-
-0xcc	swap_ra_rd	1	3	Swaps the values of RA and RD	-
-0xcd	swap_rb_rc	1	3	Swaps the values of RB and RC	-
-0xce	swap_rb_rd	1	3	Swaps the values of RB and RD	-
-0xcf	swap_rc_rd	1	3	Swaps the values of RC and RD	-
-0xd0	jc_cst	2	3	Jumps to the given short address (same code segment) if the carry flag is set	-
-0xd1	jn_cst	2	3	Jumps to the given short address (same code segment) if the negative flag is set	-
-0xd2	jz_cst	2	3	Jumps to the given short address (same code segment) if the zero flag is set	-
-0xd3	goto_cst	2	3	Jumps to the given short address (same code segment)	-
-0xd4	ljc_dcst	3	4	Jumps to the given long address if the carry flag is set	-
-0xd5	ljn_dcst	3	4	Jumps to the given long address if the negative flag is set	-
-0xd6	ljz_dcst	3	4	Jumps to the given long address if the zero flag is set	-
-0xd7	lgoto_dcst	3	4	Jumps to the given long address	-
-0xd8	lgoto_rcrd	1	4	Jumps to the given long address (full indirect addressing mode)	-
-0xd9	lcall_dcst	3	6	Calls the given long address	-
-0xda	lcall_ircrd	1	6	Calls the given long address (full indirect addressing mode)	-
-0xdb	ret	1	4	Returns from a call	-
-0xdc	iret	1	5	Returns from an interrupt	-
-0xdd	cid	1	1	Clears the interrupt disable flag	I
-0xde	sid	1	1	Sets the interrupt disable flag	I
-0xdf	clc	1	1	Clears the carry flag	C
-0xe0	sec	1	1	Sets the carry flag	C
+0x58	add_page0_ra	2	3	Adds RA to a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x59	add_page0_rb	2	3	Adds RB to a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x5a	add_page0_rc	2	3	Adds RC to a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x5b	add_page0_rd	2	3	Adds RD to a location in the address space (zero page addressing mode), stores the result back in the address space (zero page addressing mode), then updates the FLAGS accordingly	NZC
+0x5c	sub_ra_ra	1	1	Subtracts RA from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0x5d	sub_ra_rb	1	1	Subtracts RB from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0x5e	sub_ra_rc	1	1	Subtracts RC from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0x5f	sub_ra_rd	1	1	Subtracts RD from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0x60	sub_rb_ra	1	1	Subtracts RA from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0x61	sub_rb_rb	1	1	Subtracts RB from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0x62	sub_rb_rc	1	1	Subtracts RC from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0x63	sub_rb_rd	1	1	Subtracts RD from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0x64	sub_rc_ra	1	1	Subtracts RA from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0x65	sub_rc_rb	1	1	Subtracts RB from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0x66	sub_rc_rc	1	1	Subtracts RC from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0x67	sub_rc_rd	1	1	Subtracts RD from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0x68	sub_rd_ra	1	1	Subtracts RA from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0x69	sub_rd_rb	1	1	Subtracts RB from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0x6a	sub_rd_rc	1	1	Subtracts RC from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0x6b	sub_rd_rd	1	1	Subtracts RD from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0x6c	sub_ra_cst	2	2	Subtracts a constant from RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0x6d	sub_rb_cst	2	2	Subtracts a constant from RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0x6e	sub_rc_cst	2	2	Subtracts a constant from RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0x6f	sub_rd_cst	2	2	Subtracts a constant from RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0x70	sub_page0_ra	2	3	Subtracts RA from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x71	sub_page0_rb	2	3	Subtracts RD from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x72	sub_page0_rc	2	3	Subtracts RC from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x73	sub_page0_rd	2	3	Subtracts RD from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0x74	cmp_ra_ra	1	1	Compares RA to RA, then updates the FLAGS accordingly	NZC
+0x75	cmp_ra_rb	1	1	Compares RA to RB, then updates the FLAGS accordingly	NZC
+0x76	cmp_ra_rc	1	1	Compares RA to RC, then updates the FLAGS accordingly	NZC
+0x77	cmp_ra_rd	1	1	Compares RA to RD, then updates the FLAGS accordingly	NZC
+0x78	cmp_rb_ra	1	1	Compares RB to RA, then updates the FLAGS accordingly	NZC
+0x79	cmp_rb_rb	1	1	Compares RB to RB, then updates the FLAGS accordingly	NZC
+0x7a	cmp_rb_rc	1	1	Compares RB to RC, then updates the FLAGS accordingly	NZC
+0x7b	cmp_rb_rd	1	1	Compares RB to RD, then updates the FLAGS accordingly	NZC
+0x7c	cmp_rc_ra	1	1	Compares RC to RA, then updates the FLAGS accordingly	NZC
+0x7d	cmp_rc_rb	1	1	Compares RC to RB, then updates the FLAGS accordingly	NZC
+0x7e	cmp_rc_rc	1	1	Compares RC to RC, then updates the FLAGS accordingly	NZC
+0x7f	cmp_rc_rd	1	1	Compares RC to RD, then updates the FLAGS accordingly	NZC
+0x80	cmp_rd_ra	1	1	Compares RD to RA, then updates the FLAGS accordingly	NZC
+0x81	cmp_rd_rb	1	1	Compares RD to RB, then updates the FLAGS accordingly	NZC
+0x82	cmp_rd_rc	1	1	Compares RD to RC, then updates the FLAGS accordingly	NZC
+0x83	cmp_rd_rd	1	1	Compares RD to RD, then updates the FLAGS accordingly	NZC
+0x84	cmp_ra_cst	2	2	Compares RA to a constant, then updates the FLAGS accordingly	NZC
+0x85	cmp_rb_cst	2	2	Compares RB to a constant, then updates the FLAGS accordingly	NZC
+0x86	cmp_rc_cst	2	2	Compares RC to a constant, then updates the FLAGS accordingly	NZC
+0x87	cmp_rd_cst	2	2	Compares RD to a constant, then updates the FLAGS accordingly	NZC
+0x88	cmp_page0_ra	2	3	Compares the given location in the address space (zero page addressing mode) to RA, then updates the FLAGS accordingly	NZC
+0x89	cmp_page0_rb	2	3	Compares the given location in the address space (zero page addressing mode) to RB, then updates the FLAGS accordingly	NZC
+0x8a	cmp_page0_rc	2	3	Compares the given location in the address space (zero page addressing mode) to RC, then updates the FLAGS accordingly	NZC
+0x8b	cmp_page0_rd	2	3	Compares the given location in the address space (zero page addressing mode) to RD, then updates the FLAGS accordingly	NZC
+0x8c	or_ra_ra	1	1	Performs a bitwise OR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	-
+0x8d	or_ra_rb	1	1	Performs a bitwise OR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	-
+0x8e	or_ra_rc	1	1	Performs a bitwise OR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	-
+0x8f	or_ra_rd	1	1	Performs a bitwise OR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	-
+0x90	or_rb_ra	1	1	Performs a bitwise OR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	-
+0x91	or_rb_rb	1	1	Performs a bitwise OR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	-
+0x92	or_rb_rc	1	1	Performs a bitwise OR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	-
+0x93	or_rb_rd	1	1	Performs a bitwise OR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	-
+0x94	or_rc_ra	1	1	Performs a bitwise OR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	-
+0x95	or_rc_rb	1	1	Performs a bitwise OR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	-
+0x96	or_rc_rc	1	1	Performs a bitwise OR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	-
+0x97	or_rc_rd	1	1	Performs a bitwise OR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	-
+0x98	or_rd_ra	1	1	Performs a bitwise OR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	-
+0x99	or_rd_rb	1	1	Performs a bitwise OR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	-
+0x9a	or_rd_rc	1	1	Performs a bitwise OR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	-
+0x9b	or_rd_rd	1	1	Performs a bitwise OR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	-
+0x9c	or_ra_cst	2	2	Performs a bitwise OR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	-
+0x9d	or_rb_cst	2	2	Performs a bitwise OR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	-
+0x9e	or_rc_cst	2	2	Performs a bitwise OR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	-
+0x9f	or_rd_cst	2	2	Performs a bitwise OR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	-
+0xa0	or_page0_ra	2	3	Performs a bitwise OR of a location in the address space (zero page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xa1	or_page0_rb	2	3	Performs a bitwise OR of a location in the address space (zero page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xa2	or_page0_rc	2	3	Performs a bitwise OR of a location in the address space (zero page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xa3	or_page0_rd	2	3	Performs a bitwise OR of a location in the address space (zero page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xa4	and_ra_ra	1	1	Performs a bitwise AND of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa5	and_ra_rb	1	1	Performs a bitwise AND of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa6	and_ra_rc	1	1	Performs a bitwise AND of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa7	and_ra_rd	1	1	Performs a bitwise AND of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa8	and_rb_ra	1	1	Performs a bitwise AND of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xa9	and_rb_rb	1	1	Performs a bitwise AND of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xaa	and_rb_rc	1	1	Performs a bitwise AND of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xab	and_rb_rd	1	1	Performs a bitwise AND of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xac	and_rc_ra	1	1	Performs a bitwise AND of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xad	and_rc_rb	1	1	Performs a bitwise AND of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xae	and_rc_rc	1	1	Performs a bitwise AND of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xaf	and_rc_rd	1	1	Performs a bitwise AND of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xb0	and_rd_ra	1	1	Performs a bitwise AND of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb1	and_rd_rb	1	1	Performs a bitwise AND of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb2	and_rd_rc	1	1	Performs a bitwise AND of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb3	and_rd_rd	1	1	Performs a bitwise AND of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb4	and_ra_cst	2	2	Performs a bitwise AND of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xb5	and_rb_cst	2	2	Performs a bitwise AND of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xb6	and_rc_cst	2	2	Performs a bitwise AND of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xb7	and_rd_cst	2	2	Performs a bitwise AND of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb8	and_page0_ra	2	3	Performs a bitwise AND of a location in the address space (zero page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xb9	and_page0_rb	2	3	Performs a bitwise AND of a location in the address space (zero page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xba	and_page0_rc	2	3	Performs a bitwise AND of a location in the address space (zero page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xbb	and_page0_rd	2	3	Performs a bitwise AND of a location in the address space (zero page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xbc	xor_ra_ra	1	1	Performs a bitwise XOR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xbd	xor_ra_rb	1	1	Performs a bitwise XOR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xbe	xor_ra_rc	1	1	Performs a bitwise XOR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xbf	xor_ra_rd	1	1	Performs a bitwise XOR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xc0	xor_rb_ra	1	1	Performs a bitwise XOR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xc1	xor_rb_rb	1	1	Performs a bitwise XOR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xc2	xor_rb_rc	1	1	Performs a bitwise XOR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xc3	xor_rb_rd	1	1	Performs a bitwise XOR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xc4	xor_rc_ra	1	1	Performs a bitwise XOR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xc5	xor_rc_rb	1	1	Performs a bitwise XOR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xc6	xor_rc_rc	1	1	Performs a bitwise XOR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xc7	xor_rc_rd	1	1	Performs a bitwise XOR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xc8	xor_rd_ra	1	1	Performs a bitwise XOR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xc9	xor_rd_rb	1	1	Performs a bitwise XOR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xca	xor_rd_rc	1	1	Performs a bitwise XOR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xcb	xor_rd_rd	1	1	Performs a bitwise XOR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xcc	xor_ra_cst	2	2	Performs a bitwise XOR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xcd	xor_rb_cst	2	2	Performs a bitwise XOR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xce	xor_rc_cst	2	2	Performs a bitwise XOR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xcf	xor_rd_cst	2	2	Performs a bitwise XOR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xd0	xor_page0_ra	2	3	Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xd1	xor_page0_rb	2	3	Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xd2	xor_page0_rc	2	3	Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xd3	xor_page0_rd	2	3	Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly	NZC
+0xd4	not_ra	1	1	Performs a bitwise NOT of RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xd5	not_rb	1	1	Performs a bitwise NOT of RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xd6	not_rc	1	1	Performs a bitwise NOT of RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xd7	not_rd	1	1	Performs a bitwise NOT of RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xd8	not_page0	2	3	Performs a bitwise NOT of a location in the address space (page 0 addressing mode), stores the result back in the location, then updates the FLAGS accordingly	NZC
+0xd9	inc_ra	1	1	Increments RA by 1, then updates the FLAGS accordingly	NZC
+0xda	inc_rb	1	1	Increments RB by 1, then updates the FLAGS accordingly	NZC
+0xdb	inc_rc	1	1	Increments RC by 1, then updates the FLAGS accordingly	NZC
+0xdc	inc_rd	1	1	Increments RD by 1, then updates the FLAGS accordingly	NZC
+0xdd	inc_page0	2	3	Increments a location in the address space (zero page addressing mode) by 1, then updates the FLAGS accordingly	NZC
+0xde	dec_ra	1	1	Decrements RA by 1, then updates the FLAGS accordingly	NZC
+0xdf	dec_rb	1	1	Decrements RB by 1, then updates the FLAGS accordingly	NZC
+0xe0	dec_rc	1	1	Decrements RC by 1, then updates the FLAGS accordingly	NZC
+0xe1	dec_rd	1	1	Decrements RD by 1, then updates the FLAGS accordingly	NZC
+0xe2	dec_page0	2	3	Decrements a location in the address space (zero page addressing mode) by 1, then updates the FLAGS accordingly	NZC
+0xe3	shl_ra	1	1	Performs a left bitwise shift of RA by 1 bit	-
+0xe4	shr_ra	1	1	Performs a right bitwise shift of RA by 1 bit	-
+0xe5	swap_ra_rb	1	3	Swaps the values of RA and RB	-
+0xe6	swap_ra_rc	1	3	Swaps the values of RA and RC	-
+0xe7	swap_ra_rd	1	3	Swaps the values of RA and RD	-
+0xe8	swap_rb_rc	1	3	Swaps the values of RB and RC	-
+0xe9	swap_rb_rd	1	3	Swaps the values of RB and RD	-
+0xea	swap_rc_rd	1	3	Swaps the values of RC and RD	-
+0xeb	jc_cst	2	3	Jumps to the given short address (same code segment) if the carry flag is set	-
+0xec	jn_cst	2	3	Jumps to the given short address (same code segment) if the negative flag is set	-
+0xed	jz_cst	2	3	Jumps to the given short address (same code segment) if the zero flag is set	-
+0xee	goto_cst	2	3	Jumps to the given short address (same code segment)	-
+0xef	ljc_dcst	3	4	Jumps to the given long address if the carry flag is set	-
+0xf0	ljn_dcst	3	4	Jumps to the given long address if the negative flag is set	-
+0xf1	ljz_dcst	3	4	Jumps to the given long address if the zero flag is set	-
+0xf2	lgoto_dcst	3	4	Jumps to the given long address	-
+0xf3	lgoto_rcrd	1	4	Jumps to the given long address (full indirect addressing mode)	-
+0xf4	lcall_dcst	3	6	Calls the given long address	-
+0xf5	lcall_ircrd	1	6	Calls the given long address (full indirect addressing mode)	-
+0xf6	ret	1	4	Returns from a call	-
+0xf7	iret	1	5	Returns from an interrupt	-
+0xf8	cid	1	1	Clears the interrupt disable flag	I
+0xf9	sid	1	1	Sets the interrupt disable flag	I
+0xfa	clc	1	1	Clears the carry flag	C
+0xfb	sec	1	1	Sets the carry flag	C
