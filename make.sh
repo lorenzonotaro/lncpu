@@ -69,10 +69,7 @@ if [ $make_eeproms = true ] ; then
     for eeprom in *.eeprom; do
         java -jar "../../output/eeprom-serial-loader.jar" "$eeprom" --no-gui --export-bin ../../output/eeproms/"${eeprom/.eeprom/.bin}"
     done
-
-    # move EEPROM*.bin to ../../output/eeproms/
-    cp EEPROM*.bin ../../output/eeproms/
-
+    
     cd ../..
 
 fi
