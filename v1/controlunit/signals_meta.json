@@ -22,6 +22,28 @@
                 "dbus_write": false
             }
         },
+        "SP_MODE_SEL": {
+            "00": {
+                "name": "inactive",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "01": {
+                "name": "inc",
+                "dbus_read": true,
+                "dbus_write": false
+            },
+            "10": {
+                "name": "dec",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "11": {
+                "name": "bus_in",
+                "dbus_read": false,
+                "dbus_write": true
+            }
+        },
         "X_SEL": {
             "000": {
                 "name": "ra",
@@ -315,36 +337,16 @@
             }
         },
         {
-            "name": "NOT_SP_IN",
+            "name": "SP_MODE_SEL0",
             "default_value": 1,
-            "behavior": {
-                "dbus_read": true,
-                "dbus_write": false
-            }
+            "behavior": "combinatorial",
+            "behavior_group": "SP_MODE_SEL"
         },
         {
-            "name": "NOT_SP_OUT",
+            "name": "SP_MODE_SEL1",
             "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": true
-            }
-        },
-        {
-            "name": "NOT_SP_CT",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": false
-            }
-        },
-        {
-            "name": "SP_DIR",
-            "default_value": 0,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": false
-            }
+            "behavior": "combinatorial",
+            "behavior_group": "SP_MODE_SEL"
         },
         {
             "name": "NOT_ABH_IN",
@@ -470,14 +472,6 @@
             "behavior": {
                 "dbus_read": false,
                 "dbus_write": true
-            }
-        },
-        {
-            "name": "NOT_FETCH",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": false
             }
         },
         {
