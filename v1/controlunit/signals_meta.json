@@ -40,8 +40,8 @@
             },
             "11": {
                 "name": "bus_in",
-                "dbus_read": false,
-                "dbus_write": true
+                "dbus_read": true,
+                "dbus_write": false
             }
         },
         "X_SEL": {
@@ -338,15 +338,23 @@
         },
         {
             "name": "SP_MODE_SEL0",
-            "default_value": 1,
+            "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "SP_MODE_SEL"
         },
         {
             "name": "SP_MODE_SEL1",
-            "default_value": 1,
+            "default_value": 0,
             "behavior": "combinatorial",
             "behavior_group": "SP_MODE_SEL"
+        },
+        {
+            "name": "NOT_SP_OUT",
+            "default_value": 1,
+            "behavior": {
+                "dbus_read": false,
+                "dbus_write": true
+            }
         },
         {
             "name": "NOT_ABH_IN",
@@ -543,6 +551,14 @@
             "behavior_group": "ADDR_SEL"
         },
         {
+            "name": "NOT_FETCH",
+            "default_value": 1,
+            "behavior": {
+                "dbus_read": false,
+                "dbus_write": false
+            }
+        },
+        {
             "name": "NOT_DATA_LATCH_OUT",
             "default_value": 1,
             "behavior": {
@@ -593,7 +609,7 @@
             }
         },
         {
-            "name": "CSPC_DIR",
+            "name": "CSPC_UP",
             "default_value": 1,
             "behavior": {
                 "dbus_read": false,

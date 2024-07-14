@@ -1,7 +1,7 @@
 Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0x0	nop	1	1	No operation	-
 0x1	hlt	1	1	Halts the CPU	-
-0x2	brk	1	7	Pushes CS:PC and FLAGS, then calls the interrupt vector	I
+0x2	brk	2	7	Pushes CS:PC and FLAGS, then calls the interrupt vector	I
 0x3	mov_cst_ra	2	2	Moves a constant to RA	-
 0x4	mov_cst_rb	2	2	Moves a constant to RB	-
 0x5	mov_cst_rc	2	2	Moves a constant to RC	-

@@ -25,7 +25,7 @@
                 "NOT_IVH_OUT": 0,
                 "NOT_ABH_IN": 0,
                 "NOT_PC_INC": 0,
-                "CSPC_DIR": 0
+                "CSPC_UP": 0
             },
             {
                 "NOT_IVL_OUT": 0,
@@ -37,15 +37,13 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1,
+                "SP_MODE_SEL": "inc",
                 "NOT_PC_OUT": 0,
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1,
+                "SP_MODE_SEL": "inc",
                 "NOT_FLAGS_OUT": 0,
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
@@ -54,8 +52,7 @@
                 "J": 1,
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0,
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1,
+                "SP_MODE_SEL": "inc",
                 "FLAGS_MODE_SEL": "set_i"
             }
         ],
@@ -119,7 +116,7 @@
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
-                "NOT_SP_IN": 0,
+                "SP_MODE_SEL": "bus_in",
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
@@ -310,7 +307,7 @@
         "microcode": [
             {
                 "NOT_RD_OUT": 0,
-                "NOT_SP_IN": 0
+                "SP_MODE_SEL": "bus_in"
             }
         ],
         "flags_modified": "-"
@@ -918,8 +915,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -934,8 +930,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -950,8 +945,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -966,8 +960,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -993,8 +986,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -1022,8 +1014,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -1053,8 +1044,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -1071,8 +1061,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -1082,8 +1071,7 @@
         "description": "Pops from the stack into RA",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp",
                 "RA_S": "input"
@@ -1096,8 +1084,7 @@
         "description": "Pops from the stack into RB",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_RB_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
@@ -1110,8 +1097,7 @@
         "description": "Pops from the stack into RC",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_RC_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
@@ -1124,8 +1110,7 @@
         "description": "Pops from the stack into RD",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_RD_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
@@ -1144,8 +1129,7 @@
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_RT_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
@@ -1163,8 +1147,7 @@
         "description": "Pops from the stack into a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_RT_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
@@ -1190,8 +1173,7 @@
         "description": "Pops from the stack into a location in the address space (absolute addressing mode)",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp",
                 "NOT_RT_IN": 0
@@ -4221,8 +4203,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1,
+                "SP_MODE_SEL": "inc",
                 "NOT_PC_OUT": 0,
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
@@ -4231,8 +4212,7 @@
                 "J": 1,
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0,
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -4255,8 +4235,7 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1,
+                "SP_MODE_SEL": "inc",
                 "NOT_PC_OUT": 0,
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
@@ -4265,8 +4244,7 @@
                 "J": 1,
                 "NOT_PC_IN": 0,
                 "NOT_CS_IN": 0,
-                "NOT_SP_CT": 0,
-                "SP_DIR": 1
+                "SP_MODE_SEL": "inc"
             }
         ],
         "flags_modified": "-"
@@ -4276,15 +4254,13 @@
         "description": "Returns from a call",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_ABL_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             },
-            {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+            {                
+                "SP_MODE_SEL": "dec",
                 "NOT_ABH_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
@@ -4302,22 +4278,19 @@
         "description": "Returns from an interrupt",
         "microcode": [
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp",
                 "FLAGS_MODE_SEL": "bus_in"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_ABL_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_SP_CT": 0,
-                "SP_DIR": 0,
+                "SP_MODE_SEL": "dec",
                 "NOT_ABH_IN": 0,
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
