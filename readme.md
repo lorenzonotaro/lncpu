@@ -7,9 +7,7 @@ LNCPU is a design for a hobby 8-bit processor.
 ## Project structure
 
 Overview of the repository:
-* [`v1`](v1) is the first implementation of the lncpu. Here you will find the Logisim and Digital (by hneemann) projects, as well as the Python script for generating the control unit EEPROMS.
-
-**Note**: lncpu is currently being ported to Digital for performance reasons and in order to simulate a circuit that is closer to what the actual hardware will look like. At its current state, the ___Digital design is not yet complete and won't work___.
+* [`v1`](v1) is the first implementation of the lncpu. Here you will find the Logisim simulation and the KiCad project (currently under construction), as well as the Python script for generating the control unit EEPROMS.
 
 * [`lnasm`](lnasm) is an assembler written in Java for the lncpu. It is kept up to date with the current implementation.
 
