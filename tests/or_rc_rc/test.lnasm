@@ -1,0 +1,7 @@
+.section CODE
+	mov RC, 0x02
+	mov RC, 0x03
+	or RC, RC
+	hlt 
+	; RC = 0x03
+	

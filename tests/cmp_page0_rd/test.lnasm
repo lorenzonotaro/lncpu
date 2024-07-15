@@ -1,0 +1,11 @@
+.section CODE
+	mov 0x21, RD
+	mov 0x22, [0x20]
+	cmp [0x20], RD
+	hlt 
+	; RD = 0x21
+	; [0x20] = 0x22
+	; Z = 0
+	; N = 0
+	; C = 0
+	

@@ -1,0 +1,9 @@
+.section CODE
+	mov 0x10, RC
+	mov 0x20, RD
+	mov 0x33, [RC:RD]
+	mov [RC:RD], RB
+	hlt
+	; RB = 0x33
+	; [0x1020] = 0x33 
+	

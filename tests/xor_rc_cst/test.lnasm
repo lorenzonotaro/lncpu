@@ -1,0 +1,9 @@
+.section CODE
+	mov 0x01, RC
+	xor RC, 0x02
+	hlt 
+	; RC = 0x03
+	; [0] = 0x01
+	; SP = 0x21
+	; SS = 0x21
+	

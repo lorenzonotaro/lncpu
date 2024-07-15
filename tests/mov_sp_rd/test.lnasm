@@ -1,0 +1,6 @@
+.section CODE
+	mov 0x11, RD
+	mov RD, SP
+	hlt 
+	; SP = 0x11
+	

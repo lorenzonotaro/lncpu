@@ -1,0 +1,6 @@
+.section CODE
+	mov 0x1, RA
+	mov RA, RB
+	hlt 
+	; RB = 0x1
+	

@@ -1,0 +1,6 @@
+.section CODE
+	mov 0x01, RB
+	not RB
+	hlt 
+	; RB = 0xFE
+	

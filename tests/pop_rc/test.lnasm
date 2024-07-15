@@ -1,0 +1,11 @@
+.section CODE
+	mov SS, 0x21
+	mov SP, 0
+	push 0x11
+	push 0x22
+	pop RC
+	hlt 
+	; RC = 0x22
+	; SP = 0x21
+	; [0] = 0x11
+	

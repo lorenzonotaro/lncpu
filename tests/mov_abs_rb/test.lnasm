@@ -1,0 +1,6 @@
+.section CODE
+	mov 0x10, RB
+	mov RB, [0x1000]
+	hlt 
+	; [0x1000] = 0x10 
+	

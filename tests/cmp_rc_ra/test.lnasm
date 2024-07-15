@@ -1,0 +1,16 @@
+.section CODE
+	mov 0x1, RA
+	mov 0x2, RC
+	cmp RC, RA
+	hlt 
+	; RA = 0x1
+	; RB = 0x0
+	; RC = 0x2
+	; RD = 0x0
+	; SP = 0x0
+	; SS = 0x21
+	; [0x2100] = 0x0
+	; Z = 0
+	; N = 1
+	; C = 1
+	

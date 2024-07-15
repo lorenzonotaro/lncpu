@@ -1,0 +1,9 @@
+.section CODE
+	mov 0x01, RA
+	mov 0x02, RC
+	and RA, RC
+	hlt 
+	; RA = 0x00
+	; RC = 0x02
+	; SP = 0x21
+	

@@ -1,0 +1,9 @@
+.section CODE
+	mov 0x01, RC
+	mov 0x02, RD
+	cmp RC, 0x01
+	hlt 
+	; NZ = 0
+	; Z = 1
+	; C = 0
+	

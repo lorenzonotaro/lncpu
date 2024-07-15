@@ -1,0 +1,8 @@
+.section CODE
+	mov 0x01, RA
+	mov 0x02, RD
+	add RA, RD
+	hlt 
+	; RA = 0x03
+	; RD = 0x02
+	

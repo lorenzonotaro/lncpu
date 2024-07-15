@@ -1,0 +1,10 @@
+.section CODE
+	mov 0x1, RC
+	mov 0x2, RB
+	cmp RC, RB
+	hlt 
+	; RC = 0x1
+	; RB = 0x2
+	; ZF = 0x0
+	; CF = 0x1
+	; NF = 0x1

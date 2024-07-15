@@ -1,0 +1,9 @@
+.section CODE
+	mov 0x05, RA
+	sub RA, RA
+	hlt 
+	; RA = 0x05
+	; Z = 1
+	; N = 0
+	; C = 0 
+	

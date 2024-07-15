@@ -1,0 +1,9 @@
+.section CODE
+	mov 0x1, RB
+	mov 0x2, RC
+	or RC, RB
+	hlt 
+	; RC = 0x3
+	; RB = 0x1
+	; SP = 0x21
+	

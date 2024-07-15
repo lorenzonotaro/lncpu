@@ -1,0 +1,6 @@
+.section CODE
+	mov 0x22, RD
+	not RD
+	hlt 
+	; RD = 0xDD
+	

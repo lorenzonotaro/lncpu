@@ -1,0 +1,527 @@
+.section CODE
+	mov 0x21, SS
+	mov 0x0, SP
+	mov 0x1, RA
+	push RA
+	mov 0x1, RA
+	push RA
+	mov 0x2, RA
+	push RA
+	mov 0x3, RA
+	push RA
+	mov 0x4, RA
+	push RA
+	mov 0x5, RA
+	push RA
+	mov 0x6, RA
+	push RA
+	mov 0x7, RA
+	push RA
+	mov 0x8, RA
+	push RA
+	mov 0x9, RA
+	push RA
+	mov 0xA, RA
+	push RA
+	mov 0xB, RA
+	push RA
+	mov 0xC, RA
+	push RA
+	mov 0xD, RA
+	push RA
+	mov 0xE, RA
+	push RA
+	mov 0xF, RA
+	push RA
+	mov 0x10, RA
+	push RA
+	mov 0x11, RA
+	push RA
+	mov 0x12, RA
+	push RA
+	mov 0x13, RA
+	push RA
+	mov 0x14, RA
+	push RA
+	mov 0x15, RA
+	push RA
+	mov 0x16, RA
+	push RA
+	mov 0x17, RA
+	push RA
+	mov 0x18, RA
+	push RA
+	mov 0x19, RA
+	push RA
+	mov 0x1A, RA
+	push RA
+	mov 0x1B, RA
+	push RA
+	mov 0x1C, RA
+	push RA
+	mov 0x1D, RA
+	push RA
+	mov 0x1E, RA
+	push RA
+	mov 0x1F, RA
+	push RA
+	mov 0x20, RA
+	push RA
+	mov 0x21, RA
+	push RA
+	mov 0x22, RA
+	push RA
+	mov 0x23, RA
+	push RA
+	mov 0x24, RA
+	push RA
+	mov 0x25, RA
+	push RA
+	mov 0x26, RA
+	push RA
+	mov 0x27, RA
+	push RA
+	mov 0x28, RA
+	push RA
+	mov 0x29, RA
+	push RA
+	mov 0x2A, RA
+	push RA
+	mov 0x2B, RA
+	push RA
+	mov 0x2C, RA
+	push RA
+	mov 0x2D, RA
+	push RA
+	mov 0x2E, RA
+	push RA
+	mov 0x2F, RA
+	push RA
+	mov 0x30, RA
+	push RA
+	mov 0x31, RA
+	push RA
+	mov 0x32, RA
+	push RA
+	mov 0x33, RA
+	push RA
+	mov 0x34, RA
+	push RA
+	mov 0x35, RA
+	push RA
+	mov 0x36, RA
+	push RA
+	mov 0x37, RA
+	push RA
+	mov 0x38, RA
+	push RA
+	mov 0x39, RA
+	push RA
+	mov 0x3A, RA
+	push RA
+	mov 0x3B, RA
+	push RA
+	mov 0x3C, RA
+	push RA
+	mov 0x3D, RA
+	push RA
+	mov 0x3E, RA
+	push RA
+	mov 0x3F, RA
+	push RA
+	mov 0x40, RA
+	push RA
+	mov 0x41, RA
+	push RA
+	mov 0x42, RA
+	push RA
+	mov 0x43, RA
+	push RA
+	mov 0x44, RA
+	push RA
+	mov 0x45, RA
+	push RA
+	mov 0x46, RA
+	push RA
+	mov 0x47, RA
+	push RA
+	mov 0x48, RA
+	push RA
+	mov 0x49, RA
+	push RA
+	mov 0x4A, RA
+	push RA
+	mov 0x4B, RA
+	push RA
+	mov 0x4C, RA
+	push RA
+	mov 0x4D, RA
+	push RA
+	mov 0x4E, RA
+	push RA
+	mov 0x4F, RA
+	push RA
+	mov 0x50, RA
+	push RA
+	mov 0x51, RA
+	push RA
+	mov 0x52, RA
+	push RA
+	mov 0x53, RA
+	push RA
+	mov 0x54, RA
+	push RA
+	mov 0x55, RA
+	push RA
+	mov 0x56, RA
+	push RA
+	mov 0x57, RA
+	push RA
+	mov 0x58, RA
+	push RA
+	mov 0x59, RA
+	push RA
+	mov 0x5A, RA
+	push RA
+	mov 0x5B, RA
+	push RA
+	mov 0x5C, RA
+	push RA
+	mov 0x5D, RA
+	push RA
+	mov 0x5E, RA
+	push RA
+	mov 0x5F, RA
+	push RA
+	mov 0x60, RA
+	push RA
+	mov 0x61, RA
+	push RA
+	mov 0x62, RA
+	push RA
+	mov 0x63, RA
+	push RA
+	mov 0x64, RA
+	push RA
+	mov 0x65, RA
+	push RA
+	mov 0x66, RA
+	push RA
+	mov 0x67, RA
+	push RA
+	mov 0x68, RA
+	push RA
+	mov 0x69, RA
+	push RA
+	mov 0x6A, RA
+	push RA
+	mov 0x6B, RA
+	push RA
+	mov 0x6C, RA
+	push RA
+	mov 0x6D, RA
+	push RA
+	mov 0x6E, RA
+	push RA
+	mov 0x6F, RA
+	push RA
+	mov 0x70, RA
+	push RA
+	mov 0x71, RA
+	push RA
+	mov 0x72, RA
+	push RA
+	mov 0x73, RA
+	push RA
+	mov 0x74, RA
+	push RA
+	mov 0x75, RA
+	push RA
+	mov 0x76, RA
+	push RA
+	mov 0x77, RA
+	push RA
+	mov 0x78, RA
+	push RA
+	mov 0x79, RA
+	push RA
+	mov 0x7A, RA
+	push RA
+	mov 0x7B, RA
+	push RA
+	mov 0x7C, RA
+	push RA
+	mov 0x7D, RA
+	push RA
+	mov 0x7E, RA
+	push RA
+	mov 0x7F, RA
+	push RA
+	mov 0x80, RA
+	push RA
+	mov 0x81, RA
+	push RA
+	mov 0x82, RA
+	push RA
+	mov 0x83, RA
+	push RA
+	mov 0x84, RA
+	push RA
+	mov 0x85, RA
+	push RA
+	mov 0x86, RA
+	push RA
+	mov 0x87, RA
+	push RA
+	mov 0x88, RA
+	push RA
+	mov 0x89, RA
+	push RA
+	mov 0x8A, RA
+	push RA
+	mov 0x8B, RA
+	push RA
+	mov 0x8C, RA
+	push RA
+	mov 0x8D, RA
+	push RA
+	mov 0x8E, RA
+	push RA
+	mov 0x8F, RA
+	push RA
+	mov 0x90, RA
+	push RA
+	mov 0x91, RA
+	push RA
+	mov 0x92, RA
+	push RA
+	mov 0x93, RA
+	push RA
+	mov 0x94, RA
+	push RA
+	mov 0x95, RA
+	push RA
+	mov 0x96, RA
+	push RA
+	mov 0x97, RA
+	push RA
+	mov 0x98, RA
+	push RA
+	mov 0x99, RA
+	push RA
+	mov 0x9A, RA
+	push RA
+	mov 0x9B, RA
+	push RA
+	mov 0x9C, RA
+	push RA
+	mov 0x9D, RA
+	push RA
+	mov 0x9E, RA
+	push RA
+	mov 0x9F, RA
+	push RA
+	mov 0xA0, RA
+	push RA
+	mov 0xA1, RA
+	push RA
+	mov 0xA2, RA
+	push RA
+	mov 0xA3, RA
+	push RA
+	mov 0xA4, RA
+	push RA
+	mov 0xA5, RA
+	push RA
+	mov 0xA6, RA
+	push RA
+	mov 0xA7, RA
+	push RA
+	mov 0xA8, RA
+	push RA
+	mov 0xA9, RA
+	push RA
+	mov 0xAA, RA
+	push RA
+	mov 0xAB, RA
+	push RA
+	mov 0xAC, RA
+	push RA
+	mov 0xAD, RA
+	push RA
+	mov 0xAE, RA
+	push RA
+	mov 0xAF, RA
+	push RA
+	mov 0xB0, RA
+	push RA
+	mov 0xB1, RA
+	push RA
+	mov 0xB2, RA
+	push RA
+	mov 0xB3, RA
+	push RA
+	mov 0xB4, RA
+	push RA
+	mov 0xB5, RA
+	push RA
+	mov 0xB6, RA
+	push RA
+	mov 0xB7, RA
+	push RA
+	mov 0xB8, RA
+	push RA
+	mov 0xB9, RA
+	push RA
+	mov 0xBA, RA
+	push RA
+	mov 0xBB, RA
+	push RA
+	mov 0xBC, RA
+	push RA
+	mov 0xBD, RA
+	push RA
+	mov 0xBE, RA
+	push RA
+	mov 0xBF, RA
+	push RA
+	mov 0xC0, RA
+	push RA
+	mov 0xC1, RA
+	push RA
+	mov 0xC2, RA
+	push RA
+	mov 0xC3, RA
+	push RA
+	mov 0xC4, RA
+	push RA
+	mov 0xC5, RA
+	push RA
+	mov 0xC6, RA
+	push RA
+	mov 0xC7, RA
+	push RA
+	mov 0xC8, RA
+	push RA
+	mov 0xC9, RA
+	push RA
+	mov 0xCA, RA
+	push RA
+	mov 0xCB, RA
+	push RA
+	mov 0xCC, RA
+	push RA
+	mov 0xCD, RA
+	push RA
+	mov 0xCE, RA
+	push RA
+	mov 0xCF, RA
+	push RA
+	mov 0xD0, RA
+	push RA
+	mov 0xD1, RA
+	push RA
+	mov 0xD2, RA
+	push RA
+	mov 0xD3, RA
+	push RA
+	mov 0xD4, RA
+	push RA
+	mov 0xD5, RA
+	push RA
+	mov 0xD6, RA
+	push RA
+	mov 0xD7, RA
+	push RA
+	mov 0xD8, RA
+	push RA
+	mov 0xD9, RA
+	push RA
+	mov 0xDA, RA
+	push RA
+	mov 0xDB, RA
+	push RA
+	mov 0xDC, RA
+	push RA
+	mov 0xDD, RA
+	push RA
+	mov 0xDE, RA
+	push RA
+	mov 0xDF, RA
+	push RA
+	mov 0xE0, RA
+	push RA
+	mov 0xE1, RA
+	push RA
+	mov 0xE2, RA
+	push RA
+	mov 0xE3, RA
+	push RA
+	mov 0xE4, RA
+	push RA
+	mov 0xE5, RA
+	push RA
+	mov 0xE6, RA
+	push RA
+	mov 0xE7, RA
+	push RA
+	mov 0xE8, RA
+	push RA
+	mov 0xE9, RA
+	push RA
+	mov 0xEA, RA
+	push RA
+	mov 0xEB, RA
+	push RA
+	mov 0xEC, RA
+	push RA
+	mov 0xED, RA
+	push RA
+	mov 0xEE, RA
+	push RA
+	mov 0xEF, RA
+	push RA
+	mov 0xF0, RA
+	push RA
+	mov 0xF1, RA
+	push RA
+	mov 0xF2, RA
+	push RA
+	mov 0xF3, RA
+	push RA
+	mov 0xF4, RA
+	push RA
+	mov 0xF5, RA
+	push RA
+	mov 0xF6, RA
+	push RA
+	mov 0xF7, RA
+	push RA
+	mov 0xF8, RA
+	push RA
+	mov 0xF9, RA
+	push RA
+	mov 0xFA, RA
+	push RA
+	mov 0xFB, RA
+	push RA
+	mov 0xFC, RA
+	push RA
+	mov 0xFD, RA
+	push RA
+	mov 0xFE, RA
+	push RA
+	mov 0xFF, RA
+	push RA
+	cid 
+	hlt 
+	; I = 0
+	; SS = 0x21
+	; SP = 0xFF
+	; [0x2100] = 0xFF
+	; [0x2101] = 0xFE
+	; [0x2102] = 0xFD
+	; ...
+	; [0x21FF] = 0x1
+	; [0x2200] = 0x1
+	

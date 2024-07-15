@@ -1,0 +1,6 @@
+.section CODE
+	mov 0x05, RB
+	or RB, RB
+	hlt 
+	; RB = 0x05
+	

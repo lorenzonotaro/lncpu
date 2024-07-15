@@ -1,0 +1,10 @@
+.section CODE
+	mov 0x05, RA
+	mov 0x02, RB
+	sub RA, RB
+	hlt 
+	; RA = 0x03
+	; RB = 0x02
+	; [0] = 0x05
+	; ...
+	

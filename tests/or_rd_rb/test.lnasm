@@ -1,0 +1,7 @@
+.section CODE
+	mov 0x21, RD
+	mov 0x22, RB
+	or RD, RB
+	hlt 
+	; RD = 0x23
+	; RB = 0x22

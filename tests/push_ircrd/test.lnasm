@@ -1,0 +1,11 @@
+.section CODE
+	mov RC, 0x21
+	mov RD, 0x02
+	mov SS, 0x21
+	mov SP, 0x00
+	mov [RC:RD], 0x11
+	push [RC:RD]
+	hlt 
+	; SP = 0x21
+	; [0x2100] = 0x11 
+	

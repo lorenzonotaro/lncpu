@@ -1,0 +1,7 @@
+.section CODE
+	mov 0x05, RA
+	and RA, RA
+	hlt 
+	; RA = 0x05
+	; FLAGS: -
+	

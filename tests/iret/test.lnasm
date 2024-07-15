@@ -1,0 +1,68 @@
+.section CODE
+	mov 0x21, SS
+	mov 0, SP
+	mov 0x02, RA
+	push RA
+	mov 0x03, RA
+	push RA
+	mov 0x2000, RC
+	mov 0x04, RD
+	mov [RC:RD], RA
+	mov 0x2001, RC
+	mov 0x05, RD
+	mov [RC:RD], RA
+	mov 0x2100, RC
+	mov 0x06, RD
+	mov [RC:RD], RA
+	mov 0x2101, RC
+	mov 0x07, RD
+	mov [RC:RD], RA
+	mov 0x2102, RC
+	mov 0x08, RD
+	mov [RC:RD], RA
+	mov 0x2103, RC
+	mov 0x09, RD
+	mov [RC:RD], RA
+	mov 0x2104, RC
+	mov 0x0A, RD
+	mov [RC:RD], RA
+	mov 0x2105, RC
+	mov 0x0B, RD
+	mov [RC:RD], RA
+	mov 0x2106, RC
+	mov 0x0C, RD
+	mov [RC:RD], RA
+	mov 0x2107, RC
+	mov 0x0D, RD
+	mov [RC:RD], RA
+	mov 0x2108, RC
+	mov 0x0E, RD
+	mov [RC:RD], RA
+	mov 0x2109, RC
+	mov 0x0F, RD
+	mov [RC:RD], RA
+	mov 0x2000, RC
+	mov 0x00, RD
+	mov [RC:RD], RA
+	mov 0x2001, RC
+	mov 0x01, RD
+	mov [RC:RD], RA
+	mov 0x2002, RC
+	mov 0x02, RD
+	mov [RC:RD], RA
+	mov 0x2003, RC
+	mov 0x03, RD
+	mov [RC:RD], RA
+	iret 
+	; SP = 0x21
+	; [0x2100] = 0x02
+	; [0x2101] = 0x03
+	; [0x2000] = 0x00
+	; [0x2001] = 0x01
+	; [0x2002] = 0x02
+	; [0x2003] = 0x03
+	; SS = 0x21
+	; RC = 0x2003
+	; RD = 0x03
+	; RA = 0x03
+	
