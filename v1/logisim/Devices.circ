@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.8.0" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.8.0(https://github.com/logisim-evolution/).
+<project source="3.9.6devlncpu" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.9.6devlncpu(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -449,35 +449,28 @@
       <a name="size" val="30"/>
     </comp>
     <comp lib="1" loc="(530,320)" name="AND Gate">
+      <a name="inputs" val="3"/>
       <a name="size" val="30"/>
-    </comp>
-    <comp lib="4" loc="(350,120)" name="Register">
-      <a name="appearance" val="logisim_evolution"/>
     </comp>
     <wire from="(220,190)" to="(230,190)"/>
     <wire from="(230,190)" to="(230,360)"/>
     <wire from="(230,360)" to="(240,360)"/>
-    <wire from="(270,400)" to="(310,400)"/>
-    <wire from="(280,150)" to="(350,150)"/>
+    <wire from="(270,400)" to="(470,400)"/>
+    <wire from="(280,150)" to="(460,150)"/>
     <wire from="(280,240)" to="(360,240)"/>
     <wire from="(280,300)" to="(350,300)"/>
     <wire from="(280,360)" to="(480,360)"/>
-    <wire from="(310,190)" to="(310,400)"/>
-    <wire from="(310,190)" to="(350,190)"/>
-    <wire from="(330,170)" to="(330,220)"/>
-    <wire from="(330,170)" to="(350,170)"/>
-    <wire from="(330,220)" to="(400,220)"/>
     <wire from="(350,260)" to="(350,300)"/>
     <wire from="(350,260)" to="(360,260)"/>
-    <wire from="(400,220)" to="(400,240)"/>
     <wire from="(400,240)" to="(400,250)"/>
     <wire from="(400,240)" to="(450,240)"/>
-    <wire from="(410,150)" to="(460,150)"/>
     <wire from="(450,240)" to="(450,330)"/>
     <wire from="(450,240)" to="(480,240)"/>
     <wire from="(450,330)" to="(500,330)"/>
     <wire from="(460,150)" to="(460,210)"/>
     <wire from="(460,210)" to="(510,210)"/>
+    <wire from="(470,320)" to="(470,400)"/>
+    <wire from="(470,320)" to="(500,320)"/>
     <wire from="(480,240)" to="(480,260)"/>
     <wire from="(480,260)" to="(500,260)"/>
     <wire from="(480,280)" to="(480,310)"/>
