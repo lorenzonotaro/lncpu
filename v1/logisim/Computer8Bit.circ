@@ -1021,7 +1021,6 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(360,670)" name="Probe">
       <a name="appearance" val="NewPins"/>
-      <a name="breakOnError" val="true"/>
       <a name="radix" val="16"/>
     </comp>
     <comp lib="0" loc="(360,690)" name="Probe">
@@ -5889,8 +5888,11 @@ e d 14*f e d 14*f d e
     <comp lib="1" loc="(120,300)" name="AND Gate"/>
     <comp lib="1" loc="(440,230)" name="NOT Gate"/>
     <comp lib="1" loc="(440,270)" name="NOT Gate"/>
+    <comp lib="1" loc="(610,270)" name="NOT Gate"/>
+    <comp lib="1" loc="(640,270)" name="NOT Gate"/>
     <comp lib="1" loc="(660,350)" name="AND Gate"/>
     <comp lib="1" loc="(660,430)" name="AND Gate"/>
+    <comp lib="1" loc="(670,270)" name="NOT Gate"/>
     <comp lib="1" loc="(750,390)" name="NOT Gate"/>
     <comp lib="1" loc="(750,470)" name="NOT Gate"/>
     <comp lib="4" loc="(230,220)" name="J-K Flip-Flop">
@@ -5924,16 +5926,19 @@ e d 14*f e d 14*f d e
     <wire from="(460,230)" to="(480,230)"/>
     <wire from="(460,250)" to="(480,250)"/>
     <wire from="(540,230)" to="(560,230)"/>
-    <wire from="(540,270)" to="(570,270)"/>
     <wire from="(560,230)" to="(560,370)"/>
-    <wire from="(560,230)" to="(750,230)"/>
+    <wire from="(560,230)" to="(570,230)"/>
     <wire from="(560,370)" to="(610,370)"/>
-    <wire from="(570,270)" to="(570,450)"/>
-    <wire from="(570,270)" to="(750,270)"/>
+    <wire from="(570,230)" to="(570,270)"/>
+    <wire from="(570,230)" to="(750,230)"/>
+    <wire from="(570,270)" to="(580,270)"/>
+    <wire from="(570,310)" to="(570,450)"/>
+    <wire from="(570,310)" to="(710,310)"/>
     <wire from="(570,450)" to="(610,450)"/>
     <wire from="(60,280)" to="(70,280)"/>
     <wire from="(660,350)" to="(700,350)"/>
     <wire from="(660,430)" to="(700,430)"/>
+    <wire from="(670,270)" to="(710,270)"/>
     <wire from="(70,190)" to="(70,280)"/>
     <wire from="(70,190)" to="(750,190)"/>
     <wire from="(700,350)" to="(700,390)"/>
@@ -5942,6 +5947,8 @@ e d 14*f e d 14*f d e
     <wire from="(700,430)" to="(700,470)"/>
     <wire from="(700,430)" to="(750,430)"/>
     <wire from="(700,470)" to="(720,470)"/>
+    <wire from="(710,270)" to="(710,310)"/>
+    <wire from="(710,270)" to="(750,270)"/>
   </circuit>
   <circuit name="DeviceOutputController">
     <a name="appearance" val="logisim_evolution"/>
