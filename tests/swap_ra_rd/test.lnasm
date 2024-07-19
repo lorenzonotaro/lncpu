@@ -1,10 +1,7 @@
-```assembly
-; swap RA, RD - Swaps the values of RA and RD - 
 .section CODE
 	mov 0x2, RA
 	mov 0x3, RD
 	swap RA, RD
-	hlt 
-	; RA = 0x03
-	; RD = 0x02
-```
+	hlt
+; RA = 0x03
+; RD = 0x02

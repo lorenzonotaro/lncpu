@@ -2,26 +2,28 @@
 	mov 0x00, RA
 	ljz 0x2100
 	hlt
+; RA = 0x00
 ; FLAGS = 0b0010
-	
-.section DATA
-	test_address: .data 0x42
+
 .section CODE
 	mov 0x00, RA
-	ljz test_address
+	ljz 0x210A
+	mov 0x42, RA
 	hlt
+; RA = 0x42
 ; FLAGS = 0b0010
 
 .section CODE
 	mov 0xFF, RA
 	ljz 0x2100
 	hlt
+; RA = 0xFF
 ; FLAGS = 0b0000
-	
-.section DATA
-	test_address: .data 0x42
+
 .section CODE
 	mov 0xFF, RA
-	ljz test_address
+	ljz 0x210A
+	mov 0x42, RA
 	hlt
+; RA = 0x42
 ; FLAGS = 0b0000

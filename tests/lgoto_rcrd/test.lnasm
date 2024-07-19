@@ -1,10 +1,10 @@
 .section CODE
-	mov RC, 0x20
-	mov RD, 0x01
-	mov [RC:RD], 0x03
-	mov RC, 0x20
-	mov RD, 0x02
-	mov [RC:RD], 0x00
+	mov 0x20, RC
+	mov 0x01, RD
+	mov 0x03, [RC:RD]
+	mov 0x20, RC
+	mov 0x02, RD
+	mov 0x00, [RC:RD]
 	lgoto RC:RD
 	hlt
 	; PC = 0x2003

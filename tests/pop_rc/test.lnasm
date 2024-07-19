@@ -1,6 +1,6 @@
 .section CODE
-	mov SS, 0x21
-	mov SP, 0x00
+	mov 0x21, SS
+	mov 0x00, SP
 	push 0x11
 	push 0x22
 	pop RC

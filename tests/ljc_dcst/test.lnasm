@@ -1,12 +1,14 @@
 .section CODE
-	mov 0x0, RC
+	mov 0x1, RC
 	mov 0x0, RD
 	sec
-	ljc 0x2100
+	ljc [test_addr]
 	hlt
-	; RC = 0x0
+	; RC = 0x1
 	; RD = 0x0
 	; FLAGS = 0b0001
+	; [0x2101] = 0x00
 .section DATA
-	test_addr: .data 0x21
-	.data 0x00 
+test_addr:
+	.data 0x21
+	.data 0x01

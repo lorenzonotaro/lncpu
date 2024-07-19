@@ -1,5 +1,5 @@
 .section CODE
-	mov RB, 0x11
+	mov 0x11, RB
 	sub RB, RB
 	hlt
 	; RB = 0x00

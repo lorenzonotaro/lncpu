@@ -1,19 +1,43 @@
 .section CODE
-	mov 0x1, RA
-	mov 0x2, RB
+	mov 0x01, RA
+	mov 0x02, RB
 	cmp RA, RB
-	jn 0x05
-	mov 0x3, RA
-	hlt 
-; RA = 0x3
-; FLAGS = 0b0000
+	jn 0x07
+	mov 0x03, RA
+	hlt
+; RA = 0x03
+; FLAGS = 0b0001
 
 .section CODE
 	mov 0xFF, RA
-	mov 0x2, RB
+	mov 0x02, RB
 	cmp RA, RB
-	jn 0x05
-	mov 0x3, RA
-	hlt 
+	jn 0x09
+	mov 0x03, RA
+	hlt
+; RA = 0xFF
+; FLAGS = 0b1000
+.section CODE
+	mov 0x01, RA
+	mov 0x02, RB
+	cmp RA, RB
+	jn jmp_addr
+	mov 0x03, RA
+	hlt
+jmp_addr:
+	mov 0x04, RA
+	hlt
+; RA = 0x04
+; FLAGS = 0b0001
+.section CODE
+	mov 0xFF, RA
+	mov 0x02, RB
+	cmp RA, RB
+	jn jmp_addr
+	mov 0x03, RA
+	hlt
+jmp_addr:
+	mov 0x04, RA
+	hlt
 ; RA = 0xFF
 ; FLAGS = 0b1000 

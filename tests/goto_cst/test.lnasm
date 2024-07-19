@@ -1,5 +1,7 @@
 .section CODE
 	mov 0x07, RA
-	goto RA
-	hlt 
-	; RA = 0x07
+	jmp RA
+
+	mov 0x00, RA 
+	hlt
+; RA = 0x07
