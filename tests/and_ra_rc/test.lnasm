@@ -4,4 +4,4 @@
 	and RA, RC
 	hlt 
 	; RA = 0x00
-	; FLAGS = 0b0010 ; Zero flag set
+	; FLAGS = 0b0010 

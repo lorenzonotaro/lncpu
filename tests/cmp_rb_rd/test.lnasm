@@ -4,6 +4,3 @@
 	cmp RB, RD
 	hlt 
 ; FLAGS = 0b0100
-; C = 0
-; Z = 0
-; N = 1 

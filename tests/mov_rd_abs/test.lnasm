@@ -1,6 +1,5 @@
 .section CODE
 	mov 0x10, RD
-	mov 0x20, [0x1000]
 	mov [0x1000], RD
 	hlt 
 	; RD = 0x10

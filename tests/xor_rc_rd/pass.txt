@@ -1,2 +1,2 @@
-FLAGS = 0b0000 ; N = 0, Z = 0, C = 0
+FLAGS = 0b0010
 RC = 0x3
