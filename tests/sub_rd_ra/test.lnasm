@@ -2,7 +2,6 @@
 	mov 0x02, RD
 	mov 0x01, RA
 	sub RD, RA
-	hlt 
-	; RD = 0x01
-	; RA = 0x01
-	
+	hlt
+; RD = 0x01
+; FLAGS = 0b0000

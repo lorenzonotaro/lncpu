@@ -1,5 +1,4 @@
 .section CODE
 	mov 0x11, SS
 	hlt 
-	; SS = 0x11
-	
+	; SS = 0x11 

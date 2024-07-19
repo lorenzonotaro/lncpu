@@ -4,5 +4,5 @@
 	sub RD, RB
 	hlt 
 	; RD = 0x04
-	; RB = 0x01
+	; FLAGS = 0b0000
 	

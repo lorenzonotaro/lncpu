@@ -2,7 +2,6 @@
 	mov 0x2, RB
 	mov 0x4, RC
 	or RB, RC
-	hlt 
-	; RB = 0x6 
-	; RC = 0x4
-	
+	hlt
+; RB = 0x6
+; FLAGS = 0b0000

@@ -3,5 +3,4 @@
 	shl RA
 	hlt 
 	; RA = 0x04
-	; FLAGS: -
-	
+	; FLAGS = 0b0000 

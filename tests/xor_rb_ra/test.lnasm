@@ -2,7 +2,6 @@
 	mov 0x01, RA
 	mov 0x02, RB
 	xor RB, RA
-	hlt 
-	; RB = 0x03
-	; RA = 0x01
-	
+	hlt
+; RB = 0x03
+; FLAGS = 0b0000

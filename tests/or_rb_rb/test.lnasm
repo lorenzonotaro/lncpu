@@ -3,4 +3,4 @@
 	or RB, RB
 	hlt 
 	; RB = 0x05
-	
+	; FLAGS = 0b0000

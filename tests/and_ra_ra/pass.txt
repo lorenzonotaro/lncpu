@@ -1,1 +1,2 @@
-FLAGS: -
+FLAGS = 0b0010
+RA = 0x05

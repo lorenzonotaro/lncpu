@@ -3,6 +3,5 @@
 	mov 0x22, RD
 	mov 0x33, RD
 	mov [RC:RD], RD
-	hlt 
-	; [0x1122] = 0x33
-	
+	hlt
+; [0x1122] = 0x33 

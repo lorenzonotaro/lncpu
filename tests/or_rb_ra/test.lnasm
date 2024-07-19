@@ -4,5 +4,4 @@
 	or RB, RA
 	hlt 
 	; RB = 0x3
-	; RA = 0x1
-	
+	; FLAGS = 0b0000

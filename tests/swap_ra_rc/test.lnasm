@@ -4,5 +4,4 @@
 	swap RA, RC
 	hlt 
 	; RA = 0x02
-	; RC = 0x01
-	
+	; RC = 0x01 

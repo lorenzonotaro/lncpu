@@ -3,5 +3,5 @@
 	mov 0x22, RB
 	mov RA, RB
 	hlt 
-	; RB = 0x11
-	
+	; RA = 0x11
+	; RB = 0x11 

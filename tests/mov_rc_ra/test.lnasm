@@ -2,5 +2,5 @@
 	mov 0x11, RA
 	mov RA, RC
 	hlt 
-	; RC = 0x11
-	
+	; RA = 0x11
+	; RC = 0x11 

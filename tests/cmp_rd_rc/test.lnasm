@@ -5,7 +5,4 @@
 	hlt 
 	; RD = 0x01
 	; RC = 0x02
-	; NZ = 1
-	; C = 1
-	; Z = 0
-	
+	; FLAGS = 0b0110 

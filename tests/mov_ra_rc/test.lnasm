@@ -2,7 +2,6 @@
 	mov 0x10, RA
 	mov 0x20, RC
 	mov RA, RC
-	hlt 
-	; RB = 0x10
-	; RC = 0x20
-	
+	hlt
+	; RA = 0x10
+	; RC = 0x10 

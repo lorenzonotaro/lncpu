@@ -3,4 +3,4 @@
 	dec RB
 	hlt 
 	; RB = 0x21
-	
+	; FLAGS = 0b0000

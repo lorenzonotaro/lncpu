@@ -1,13 +1,6 @@
 .section CODE
 	mov 0x21, SS
-	mov 0, SP
-	mov 0x1, RA
-	push RA
+	mov 0x00, SP
 	sec 
-	pop RA
 	hlt 
-	; RA = 0x01
-	; SP = 0x21
-	; [0] = 0x01
-	; FLAGS = 0x01
-	
+	; FLAGS = 0b0001 

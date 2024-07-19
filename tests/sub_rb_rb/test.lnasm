@@ -1,8 +1,6 @@
 .section CODE
 	mov RB, 0x11
-	mov RC, 0x11
 	sub RB, RB
-	hlt 
+	hlt
 	; RB = 0x00
-	; RC = 0x11
-	
+	; FLAGS = 0b0010 

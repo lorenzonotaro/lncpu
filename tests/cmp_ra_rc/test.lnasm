@@ -3,13 +3,6 @@
 	mov 0x02, RC
 	cmp RA, RC
 	hlt 
-	; Z = 0
-	; N = 0
-	; C = 0
-	; RA = 0x01
-	; RB = 0x00
-	; RC = 0x02
-	; RD = 0x00
-	; SP = 0x00
-	; SS = 0x21
-	
+; FLAGS = 0b0000
+; RA = 0x01
+; RC = 0x02 

@@ -3,7 +3,4 @@
 	add RA, 0x02
 	hlt 
 	; RA = 0x03
-	; SP = 0x21
-	; [0] = 0x21
-	; ... 
-	
+	; FLAGS = 0b0000

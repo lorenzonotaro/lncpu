@@ -1,5 +1,4 @@
 .section CODE
 	mov 0x11, SP
-	hlt 
+	hlt
 	; SP = 0x11 
-	

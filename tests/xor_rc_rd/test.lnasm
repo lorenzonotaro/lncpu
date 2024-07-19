@@ -2,7 +2,6 @@
 	mov 0x1, RC
 	mov 0x2, RD
 	xor RC, RD
-	hlt 
+	hlt
 	; RC = 0x3
-	; RD = 0x2
-	
+	; FLAGS = 0b0000 ; N = 0, Z = 0, C = 0

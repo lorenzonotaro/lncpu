@@ -1,11 +1,6 @@
 .section CODE
 	mov 0x1, RB
-	mov 0x2, RD
 	cmp RB, 0x1
 	hlt 
-	; RB = 0x1
-	; RD = 0x2
-	; Z = 1
-	; N = 0
-	; C = 0
-	
+; RB = 0x01
+; FLAGS = 0b0010

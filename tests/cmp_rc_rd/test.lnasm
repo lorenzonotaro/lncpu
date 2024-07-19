@@ -3,7 +3,6 @@
 	mov 0x02, RD
 	cmp RC, RD
 	hlt 
-	; NZ = 1
-	; Z = 0
-	; C = 0
-	
+; FLAGS = 0b1000 
+; RC = 0x01
+; RD = 0x02

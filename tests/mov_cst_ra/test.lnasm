@@ -1,5 +1,4 @@
 .section CODE
-	mov 10, RA
+	mov 0x10, RA
 	hlt 
-	; RA = 0x0A
-	
+	; RA = 0x10 

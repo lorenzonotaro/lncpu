@@ -4,5 +4,4 @@
 	mov 0x30, RB
 	mov [RC:RD], RB
 	hlt 
-	; [0x1020] = 0x30
-	
+	; [0x1020] = 0x30 

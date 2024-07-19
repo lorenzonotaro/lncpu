@@ -1,1 +1,2 @@
-FLAGS.N = 0
+FLAGS = 0b0000
+RB = 0x4

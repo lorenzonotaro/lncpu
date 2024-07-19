@@ -4,5 +4,4 @@
 	and RB, RA
 	hlt 
 	; RB = 0x00
-	; RA = 0x01
-	
+	; FLAGS = 0b0010 

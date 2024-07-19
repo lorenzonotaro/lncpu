@@ -2,5 +2,5 @@
 	mov 0x1, RA
 	mov RA, RB
 	hlt 
-	; RB = 0x1
-	
+	; RA = 0x01
+	; RB = 0x01

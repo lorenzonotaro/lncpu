@@ -3,4 +3,4 @@
 	or RD, 0x02
 	hlt 
 	; RD = 0x03
-	
+	; FLAGS = 0b0000

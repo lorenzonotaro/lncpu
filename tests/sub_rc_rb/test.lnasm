@@ -4,5 +4,4 @@
 	sub RC, RB
 	hlt 
 	; RC = 0xFF
-	; RB = 0x02
-	
+	; FLAGS = 0b1001 

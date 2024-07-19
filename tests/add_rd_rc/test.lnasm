@@ -4,5 +4,4 @@
 	add RD, RC
 	hlt 
 	; RD = 0x05
-	; RC = 0x03
-	
+	; FLAGS = 0b0000

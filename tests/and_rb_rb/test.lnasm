@@ -3,5 +3,4 @@
 	and RB, RB
 	hlt 
 	; RB = 0x01
-	; SP = 0x21
-	
+	; FLAGS = 0b0000

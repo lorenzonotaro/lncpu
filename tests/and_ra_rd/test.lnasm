@@ -4,5 +4,4 @@
 	and RA, RD
 	hlt 
 	; RA = 0x00
-	; RD = 0x02
-	
+	; FLAGS = 0b0010 ;Zero flag set

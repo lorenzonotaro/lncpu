@@ -4,5 +4,4 @@
 	xor RC, RB
 	hlt 
 	; RC = 0x03
-	; RB = 0x02
-	
+	; FLAGS = 0b00000000 

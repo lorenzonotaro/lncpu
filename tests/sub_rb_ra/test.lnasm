@@ -4,6 +4,4 @@
 	sub RB, RA
 	hlt 
 	; RB = 0x01
-	; RA = 0x0A
-	; SP = 0x21
-	
+	; FLAGS = 0b0000 

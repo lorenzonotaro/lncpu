@@ -3,5 +3,4 @@
 	shr RA
 	hlt 
 	; RA = 0x01
-	; FLAGS: Z = 0, N = 0, C = 1 
-	
+	; FLAGS = 0b0001 

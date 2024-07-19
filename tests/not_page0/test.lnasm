@@ -1,6 +1,6 @@
 .section CODE
 	mov 0x01, [0x00]
 	not [0x00]
-	hlt 
+	hlt
 	; [0x00] = 0xFE
-	
+	; FLAGS = 0b0010 

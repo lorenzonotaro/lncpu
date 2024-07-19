@@ -1,1 +1,2 @@
-RC = 0xFF
+FLAGS = 0b0100
+RC = 0xdf

@@ -1,6 +1,6 @@
 .section CODE
 	mov 0x22, RD
 	not RD
-	hlt 
+	hlt
 	; RD = 0xDD
-	
+	; FLAGS = 0b0100 

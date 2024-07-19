@@ -4,5 +4,4 @@
 	and RC, RD
 	hlt 
 	; RC = 0x00
-	; RD = 0x02
-	
+	; FLAGS = 0b0110 

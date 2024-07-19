@@ -3,6 +3,5 @@
 	mov 0x2, RC
 	sub RB, RC
 	hlt
-	; RB = 0xFF
-	; RC = 0x2
-	; SP = 0x21
+; RB = 0xFF
+; FLAGS = 0b1001 

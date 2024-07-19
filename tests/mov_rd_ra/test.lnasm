@@ -1,6 +1,6 @@
 .section CODE
-	mov 0x11, RA
-	mov RA, RD
+	mov 0x11, RD
+	mov RD, RA
 	hlt 
-	; RD = 0x11
-	
+	; RA = 0x11
+	; RD = 0x11 

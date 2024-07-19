@@ -4,5 +4,4 @@
 	add RA, RB
 	hlt 
 	; RA = 0x0B
-	; RB = 0x06
-	
+	; FLAGS = 0b0000

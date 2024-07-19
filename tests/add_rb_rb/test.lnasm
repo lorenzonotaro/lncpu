@@ -1,10 +1,6 @@
 .section CODE
 	mov 0x2, RB
-	mov 0x4, RB
 	add RB, RB
 	hlt 
-	; RB = 0x6
-	; FLAGS.Z = 0
-	; FLAGS.C = 0
-	; FLAGS.N = 0
-	
+; RB = 0x4
+; FLAGS = 0b0000
