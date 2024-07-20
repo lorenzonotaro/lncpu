@@ -1,6 +1,4 @@
 .section CODE
-	mov 0x21, SS
-	mov 0x00, SP
 	sec 
 	hlt 
-	; FLAGS = 0b0001 
+; FLAGS = 0b0001 

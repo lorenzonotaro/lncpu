@@ -1,14 +1,16 @@
 .section CODE
-	mov 0x1, RC
-	mov 0x0, RD
-	sec
-	ljc [test_addr]
+	mov 0xFE, RA
+	mov 0x0C, RC
+	add RA, RC
+	ljc TARGET
+	
+	xor RA, RA ; failed to jump
 	hlt
-	; RC = 0x1
-	; RD = 0x0
-	; FLAGS = 0b0001
-	; [0x2101] = 0x00
-.section DATA
-test_addr:
-	.data 0x21
-	.data 0x01
+
+.res 0x500
+
+TARGET:
+	mov 0x42, RA
+	hlt
+
+; RA = 0x42

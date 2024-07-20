@@ -1,8 +1,7 @@
 .section CODE
-	mov 0x11, RC
+	mov 0x21, RC
 	mov 0x22, RD
-	mov 0x33, [RC:RD]
-	mov [RC:RD], RD
+	mov RD, [RC:RD]
 	hlt 
-	; RD = 0x33
-	; [0x1122] = 0x33 
+; RD = 0x22
+; [0x2122] = 0x22

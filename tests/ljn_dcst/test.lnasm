@@ -1,11 +1,14 @@
 .section CODE
-	mov 0x21, SS
-	mov 0x0, SP
 	mov 0x20, RA
 	sub RA, RA
-	ljn 0x080A ; Should not jump
-	mov 0x00, RA
+	ljn TARGET ; Should not jump
+	mov 0x42, RA
 	hlt 
-	; RA = 0x00
-	; SP = 0x00
-	; FLAGS = 0b0010 
+
+.res 500
+TARGET:
+	mov 0x20
+	hlt
+
+; RA = 0x42
+; FLAGS = 0b0010 

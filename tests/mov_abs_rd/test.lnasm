@@ -1,5 +1,9 @@
 .section CODE
-	mov 0x42, RD
-	mov RD, [0x2100]
+	mov [VALUE], RD
 	hlt
-	; [0x2100] = 0x42 
+
+.section DATA
+VALUE:
+.data 0x42
+
+; RD = 0x42

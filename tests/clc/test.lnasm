@@ -1,10 +1,7 @@
 .section CODE
-	clc
 	mov 0x01, RA
 	mov 0x02, RB
-	add RA, RB
+	sub RA, RB
 	clc 
-	add RA, RB
 	hlt 
-	; RA = 0x05
-	; FLAGS = 0b0000 
+; FLAGS = 0b0100 

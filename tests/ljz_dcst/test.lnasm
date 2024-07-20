@@ -1,29 +1,11 @@
 .section CODE
-	mov 0x00, RA
-	ljz 0x2100
-	hlt
-; RA = 0x00
-; FLAGS = 0b0010
+	mov 0x01, RA
+	mov 0x01, RB
+	cmp RA, RB
+	ljz TARGET
 
-.section CODE
-	mov 0x00, RA
-	ljz 0x210A
+.res 0x500
+
+TARGET:
 	mov 0x42, RA
 	hlt
-; RA = 0x42
-; FLAGS = 0b0010
-
-.section CODE
-	mov 0xFF, RA
-	ljz 0x2100
-	hlt
-; RA = 0xFF
-; FLAGS = 0b0000
-
-.section CODE
-	mov 0xFF, RA
-	ljz 0x210A
-	mov 0x42, RA
-	hlt
-; RA = 0x42
-; FLAGS = 0b0000
