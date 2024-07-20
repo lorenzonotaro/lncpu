@@ -13,7 +13,7 @@ import java.util.List;
 public class LNASM {
 
     public static final String PROGRAM_NAME = "lnasm";
-    public static final String PROGRAM_VERSION = "1.2.2";
+    public static final String PROGRAM_VERSION = "1.2.3";
     private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNASM.class.getClassLoader().getResourceAsStream("default-settings.json"));

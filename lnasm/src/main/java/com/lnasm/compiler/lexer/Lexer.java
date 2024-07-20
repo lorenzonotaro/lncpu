@@ -80,6 +80,7 @@ public class Lexer {
                 start = index;
                 return match(advance());
             case '\0':
+                return null;
             case ';':
                 if(comments)
                     return null;
