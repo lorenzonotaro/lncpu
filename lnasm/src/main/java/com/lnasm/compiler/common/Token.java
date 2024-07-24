@@ -102,6 +102,7 @@ public class Token {
         STRING,
         COMMA,
         COLON,
+        DOUBLE_COLON,
         SEMICOLON,
 
         //operators

@@ -176,7 +176,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
     }
 
     private Argument composite() {
-        Argument left = primary();
+        Argument left = numberCast();
         if(match(Token.Type.COLON)) {
             Argument right = primary();
             if(left.type == Argument.Type.BYTE && right.type == Argument.Type.BYTE){
@@ -188,6 +188,20 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
         }
         return left;
     }
+
+    private Argument numberCast() {
+        Argument arg = primary();
+
+        if(match(Token.Type.DOUBLE_COLON)){
+            Token castToken = previous();
+            Token targetType = consume("expected target type", Token.Type.IDENTIFIER);
+            return new NumberCast(arg, castToken, targetType);
+        }
+
+        return arg;
+    }
+
+
 
     private Argument primary() {
         if(check(Token.Type.IDENTIFIER)){

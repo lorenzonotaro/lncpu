@@ -23,7 +23,9 @@ public abstract class Argument implements IEncodeable {
         WORD("word"),
         BYTE("byte"),
         LABEL("label"),
-        BINARY_OP("binary");
+        BINARY_OP("binary"),
+        CAST("cast");
+
 
         public final String name;
 

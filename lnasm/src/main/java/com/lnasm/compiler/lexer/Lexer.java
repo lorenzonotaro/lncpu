@@ -100,6 +100,10 @@ public class Lexer {
             case ',':
                 return token(Token.Type.COMMA);
             case ':':
+                if(peek() == ':'){
+                    advance();
+                    return token(Token.Type.DOUBLE_COLON);
+                }
                 return token(Token.Type.COLON);
             case '+':
                 return token(Token.Type.PLUS);
