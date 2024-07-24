@@ -5,18 +5,17 @@ import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public class Word extends Argument {
     public final short value;
 
     public Word(Token token) {
-        super(token, Type.WORD);
+        super(token, Type.WORD, true);
         this.value = token.ensureShort();
     }
 
     public Word(Token token, int value) {
-        super(token, Type.WORD);
+        super(token, Type.WORD, true);
         if (IntUtils.inShortRange(value)) {
             this.value = (short) (value & 0xFFFF);
         } else {
@@ -41,4 +40,5 @@ public class Word extends Argument {
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return "dcst";
     }
+
 }

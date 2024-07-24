@@ -11,7 +11,7 @@ public class Dereference extends Argument {
     public final Argument inner;
 
     public Dereference(Argument inner) {
-        super(inner.token, Type.DEREFERENCE);
+        super(inner.token, Type.DEREFERENCE, false);
         this.inner = inner;
     }
 

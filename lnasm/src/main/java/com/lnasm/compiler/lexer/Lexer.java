@@ -101,6 +101,36 @@ public class Lexer {
                 return token(Token.Type.COMMA);
             case ':':
                 return token(Token.Type.COLON);
+            case '+':
+                return token(Token.Type.PLUS);
+            case '-':
+                return token(Token.Type.MINUS);
+            case '*':
+                return token(Token.Type.STAR);
+            case '/':
+                return token(Token.Type.SLASH);
+            case '<':
+                if (peek() == '<') {
+                    advance();
+                    return token(Token.Type.BITWISE_LEFT);
+                }
+                throw error("unexpected character", "<");
+            case '>':
+                if (peek() == '>') {
+                    advance();
+                    return token(Token.Type.BITWISE_RIGHT);
+                }
+                throw error("unexpected character", ">");
+            case '&':
+                return token(Token.Type.BITWISE_AND);
+            case '|':
+                return token(Token.Type.BITWISE_OR);
+            case '^':
+                return token(Token.Type.BITWISE_XOR);
+            case '(':
+                return token(Token.Type.L_PAREN);
+            case ')':
+                return token(Token.Type.R_PAREN);
             case '"':
             case '\'':
                 return string(c);

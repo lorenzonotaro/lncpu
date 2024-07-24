@@ -19,8 +19,8 @@ public abstract class AbstractParser<T> {
         else throw error(peek(), errorMsg);
     }
 
-    protected boolean match(Token.Type type) {
-        if (!isAtEnd() && peek().type == type) {
+    protected boolean match(Token.Type... types) {
+        if(check(types)){
             advance();
             return true;
         }

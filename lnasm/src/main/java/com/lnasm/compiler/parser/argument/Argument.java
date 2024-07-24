@@ -6,10 +6,12 @@ import com.lnasm.compiler.linker.ILabelSectionLocator;
 public abstract class Argument implements IEncodeable {
     public final Token token;
     public final Type type;
+    public final boolean numerical;
 
-    public Argument(Token token, Type type) {
+    public Argument(Token token, Type type, boolean numerical) {
         this.token = token;
         this.type = type;
+        this.numerical = numerical;
     }
 
     public abstract String getImmediateEncoding(ILabelSectionLocator sectionLocator);
@@ -20,7 +22,8 @@ public abstract class Argument implements IEncodeable {
         COMPOSITE("composite"),
         WORD("word"),
         BYTE("byte"),
-        LABEL("label");
+        LABEL("label"),
+        BINARY_OP("binary");
 
         public final String name;
 

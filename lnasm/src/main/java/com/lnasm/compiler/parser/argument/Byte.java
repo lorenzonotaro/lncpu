@@ -10,7 +10,7 @@ public class Byte extends Argument {
     public final byte value;
 
     public Byte(Token token) {
-        super(token, Type.BYTE);
+        super(token, Type.BYTE, true);
         this.value = token.ensureByte();
     }
 

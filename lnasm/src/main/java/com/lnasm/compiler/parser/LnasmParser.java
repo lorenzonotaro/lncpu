@@ -124,11 +124,55 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
     private Argument dereference() {
         if(match(Token.Type.L_SQUARE_BRACKET)){
-            Argument inner = composite();
+            Argument inner = bitwiseLogic();
             consume("expected closing bracket", Token.Type.R_SQUARE_BRACKET);
             return new Dereference(inner);
         }
-        return composite();
+        return bitwiseLogic();
+    }
+
+    private Argument bitwiseLogic(){
+        Argument left = bitShift();
+
+        while(match(Token.Type.BITWISE_AND, Token.Type.BITWISE_OR, Token.Type.BITWISE_XOR)){
+            Token operator = previous();
+            left = new BinaryOp(left, bitShift(), operator);
+        }
+
+        return left;
+    }
+
+    private Argument bitShift(){
+        Argument left = addition();
+
+        while(match(Token.Type.BITWISE_LEFT, Token.Type.BITWISE_RIGHT)){
+            Token operator = previous();
+            left = new BinaryOp(left, addition(), operator);
+        }
+
+        return left;
+    }
+
+    private Argument addition() {
+        Argument left = multiplication();
+
+        while(match(Token.Type.PLUS, Token.Type.MINUS)){
+            Token operator = previous();
+            left = new BinaryOp(left, multiplication(), operator);
+        }
+
+        return left;
+    }
+
+    private Argument multiplication() {
+        Argument left = composite();
+
+        while(match(Token.Type.STAR, Token.Type.SLASH)){
+            Token operator = previous();
+            left = new BinaryOp(left, composite(), operator);
+        }
+
+        return left;
     }
 
     private Argument composite() {
@@ -159,6 +203,11 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
             }else{
                 throw error(t, "value out of range");
             }
+        }else if(check(Token.Type.L_PAREN)){
+            advance();
+            Argument inner = argument();
+            consume("expected closing parentheses", Token.Type.R_PAREN);
+            return inner;
         }
         throw error(peek(), "expected argument");
     }

@@ -92,6 +92,9 @@ public class Token {
         DIR_DATA,
         DIR_RES,
 
+        L_PAREN,
+        R_PAREN,
+
         L_SQUARE_BRACKET,
         R_SQUARE_BRACKET,
         IDENTIFIER,
@@ -100,6 +103,26 @@ public class Token {
         COMMA,
         COLON,
         SEMICOLON,
+
+        //operators
+        PLUS,
+
+        MINUS,
+
+        STAR,
+
+        SLASH,
+
+        BITWISE_LEFT,
+
+        BITWISE_RIGHT,
+
+        BITWISE_AND,
+
+        BITWISE_OR,
+
+        BITWISE_XOR,
+
         EQUALS,
         //instructions
         NOP,

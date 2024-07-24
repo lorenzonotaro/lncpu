@@ -11,7 +11,7 @@ public class Register extends Argument {
     public final RegisterId reg;
 
     public Register(Token token) {
-        super(token, Type.REGISTER);
+        super(token, Type.REGISTER, false);
         this.reg = RegisterId.fromString(token.lexeme);
     }
 

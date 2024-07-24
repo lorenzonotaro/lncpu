@@ -10,7 +10,7 @@ public class LabelRef extends Argument {
     public final Token labelToken;
 
     public LabelRef(Token token) {
-        super(token, Type.LABEL);
+        super(token, Type.LABEL, true);
         this.labelToken = token;
     }
 
