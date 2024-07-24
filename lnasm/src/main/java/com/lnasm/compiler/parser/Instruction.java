@@ -70,7 +70,7 @@ public class Instruction extends CodeElement {
         }else{
             String immediateInstruction = opcode.lexeme + Stream.of(arguments).map(arg -> arg.getImmediateEncoding(labelResolver)).reduce("", (a, b) -> a + "_" + b);
             if (!OpcodeMap.isValid(immediateInstruction)) {
-                throw new CompileException("invalid instruction (" + immediateInstruction + ")", opcode);
+                throw new CompileException(invalidInstructionMessage(immediateInstruction), opcode);
             } else {
                 try {
                     result[0] = OpcodeMap.getOpcode(immediateInstruction);
@@ -88,6 +88,24 @@ public class Instruction extends CodeElement {
         }
 
         return result;
+    }
+
+    private String invalidInstructionMessage(String immediateInstruction) {
+        StringBuilder sb = new StringBuilder("invalid instruction (" + OpcodeMap.toLnasmPseudocode(immediateInstruction) + ").");
+
+        String[] similar = OpcodeMap.getSimilarInstructions(immediateInstruction);
+
+        if (similar.length > 0) {
+            sb.append(" Did you mean: \n\n");
+            for (int i = 0; i < similar.length; i++) {
+                sb.append("\t\t").append(OpcodeMap.toLnasmPseudocode(similar[i])).append("\n");
+            }
+        }
+
+        sb.append("\n");
+
+
+        return sb.toString();
     }
 
     private Argument[] sortArgumentsForEncoding(Argument[] arguments, ILabelResolver labelResolver) {

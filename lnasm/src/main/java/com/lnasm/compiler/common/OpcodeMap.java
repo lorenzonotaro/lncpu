@@ -4,10 +4,12 @@ import com.lnasm.LNASM;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OpcodeMap {
     private static final Map<String, OpcodeInfo> byImmediateName = new HashMap<>();
@@ -60,6 +62,51 @@ public class OpcodeMap {
             throw new IllegalArgumentException("invalid opcode: " + opcode);
 
         return opcodeInfo.immediateName;
+    }
+
+    private static String immediateParamToLnasm(String immediateParam){
+        return switch(immediateParam){
+            case "cst" -> "<byte>";
+            case "dcst" -> "<word>";
+            case "page0" -> "[<page 0 address>]";
+            case "abs" -> "[<full address>]";
+            case "ircrd" -> "[RC:RD]";
+            case "rcrd" -> "RC:RD";
+            default -> immediateParam.toUpperCase();
+        };
+    }
+
+    public static String toLnasmPseudocode(String immediateInstruction) {
+        String[] splitted = immediateInstruction.split("_");
+
+        if(splitted.length < 1)
+            return "invalid instruction";
+        else{
+            String opcode = splitted[0];
+            String[] immediateParams = new String[splitted.length - 1];
+            System.arraycopy(splitted, 1, immediateParams, 0, immediateParams.length);
+            return opcode + " " + Stream.of(immediateParams).map(OpcodeMap::immediateParamToLnasm).collect(Collectors.joining(", "));
+        }
+    }
+
+    public static String[] getSimilarInstructions(String immediateInstruction) {
+
+        String[] splitted = immediateInstruction.split("_");
+        if (splitted.length == 1 && byImmediateName.containsKey(splitted[0])) {
+            return new String[] { splitted[0] };
+        } else if (splitted.length == 2) {
+            return new ArrayList<>(byImmediateName.keySet().stream()
+                    .filter(name -> name.startsWith(splitted[0] + "_") && !name.equals(immediateInstruction))
+                    .toList()).toArray(new String[0]);
+        } else if (splitted.length == 3) {
+            return new ArrayList<>(byImmediateName.keySet().stream()
+                    .filter(
+                            name -> name.startsWith(splitted[0] + "_" + splitted[1]) ||
+                                    (name.startsWith(splitted[0] + "_") && name.endsWith(splitted[2])))
+                    .toList()).toArray(new String[0]);
+        }
+
+        return new String[0];
     }
 
     private record OpcodeInfo(String immediateName, byte opcode, byte codeLength, byte clockCycles) {
