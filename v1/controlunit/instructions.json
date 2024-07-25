@@ -1473,7 +1473,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RC_IN": 0,
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
@@ -1493,7 +1493,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RD_IN": 0,
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
@@ -1881,7 +1881,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RC_IN": 0,
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
@@ -1901,7 +1901,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RD_IN": 0,
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
@@ -2669,7 +2669,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RC_IN": 0,
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
@@ -2689,7 +2689,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RD_IN": 0,
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
@@ -3077,7 +3077,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RC_IN": 0,
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
@@ -3097,7 +3097,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RD_IN": 0,
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
@@ -3485,7 +3485,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RC_IN": 0,
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
@@ -3505,7 +3505,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "NOT_RD_IN": 0,
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
