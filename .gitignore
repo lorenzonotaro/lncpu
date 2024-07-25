@@ -29,8 +29,8 @@ a.out
 Projects/lnasm/out/
 
 #Control_Unit
-Control_Unit/*.eeprom
-Control_Unit/*.raw
+v1/controlunit/*.eeprom
+v1/controlunit/*.bin
 
 output/*
 
