@@ -70,3 +70,5 @@ fp-info-cache
 # Autorouter files (exported from Pcbnew)
 *.dsn
 *.ses
+lnasm/linker.cfg
+lnasm/test.lnasm
