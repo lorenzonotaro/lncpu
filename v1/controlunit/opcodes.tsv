@@ -242,9 +242,9 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0xf0	ljn_dcst	3	4	Jumps to the given long address if the negative flag is set	-
 0xf1	ljz_dcst	3	4	Jumps to the given long address if the zero flag is set	-
 0xf2	lgoto_dcst	3	4	Jumps to the given long address	-
-0xf3	lgoto_rcrd	1	4	Jumps to the given long address (full indirect addressing mode)	-
+0xf3	lgoto_rcrd	1	4	Jumps to the long address specified by RC:RD	-
 0xf4	lcall_dcst	3	6	Calls the given long address	-
-0xf5	lcall_ircrd	1	6	Calls the given long address (full indirect addressing mode)	-
+0xf5	lcall_rcrd	1	6	Calls the long address specified by RC:RD	-
 0xf6	ret	1	4	Returns from a call	-
 0xf7	iret	1	5	Returns from an interrupt	-
 0xf8	cid	1	1	Clears the interrupt disable flag	I

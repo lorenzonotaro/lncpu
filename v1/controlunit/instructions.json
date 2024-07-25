@@ -4163,7 +4163,7 @@
     },
     {
         "name": "lgoto_rcrd",
-        "description": "Jumps to the given long address (full indirect addressing mode)",
+        "description": "Jumps to the long address specified by RC:RD",
         "microcode": [
             {
                 "NOT_RC_OUT": 0,
@@ -4218,8 +4218,8 @@
         "flags_modified": "-"
     },
     {
-        "name": "lcall_ircrd",
-        "description": "Calls the given long address (full indirect addressing mode)",
+        "name": "lcall_rcrd",
+        "description": "Calls the long address specified by RC:RD",
         "microcode": [
             {
                 "NOT_RC_OUT": 0,

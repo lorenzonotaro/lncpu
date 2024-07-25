@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.9.10devlncpu" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.9.10devlncpu(https://github.com/logisim-evolution/).
+<project source="3.9.11devlncpu" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.9.11devlncpu(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#C8BComponents.circ" name="12"/>
-  <lib desc="file#Devices.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="file#C8BComponents.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1515,8 +1515,8 @@ end TCL_Generic;
     <comp lib="10" loc="(730,210)" name="Switch">
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="13" loc="(1080,1790)" name="KeyboardAdapter"/>
-    <comp lib="13" loc="(1630,1810)" name="TTYAdapter"/>
+    <comp lib="12" loc="(1080,1790)" name="KeyboardAdapter"/>
+    <comp lib="12" loc="(1630,1810)" name="TTYAdapter"/>
     <comp lib="4" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
@@ -2465,8 +2465,8 @@ end TCL_Generic;
     <comp lib="1" loc="(310,370)" name="NOR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>

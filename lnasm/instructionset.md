@@ -248,9 +248,9 @@
 | f0 | `ljn <dcst>` | Jumps to the given long address if the negative flag is set | 4 | - |
 | f1 | `ljz <dcst>` | Jumps to the given long address if the zero flag is set | 4 | - |
 | f2 | `lgoto <dcst>` | Jumps to the given long address | 4 | - |
-| f3 | `lgoto RC:RD` | Jumps to the given long address (full indirect addressing mode) | 4 | - |
+| f3 | `lgoto RC:RD` | Jumps to the long address specified by RC:RD | 4 | - |
 | f4 | `lcall <dcst>` | Calls the given long address | 6 | - |
-| f5 | `lcall [RC:RD]` | Calls the given long address (full indirect addressing mode) | 6 | - |
+| f5 | `lcall RC:RD` | Calls the long address specified by RC:RD | 6 | - |
 | f6 | `ret ` | Returns from a call | 4 | - |
 | f7 | `iret ` | Returns from an interrupt | 5 | - |
 | f8 | `cid ` | Clears the interrupt disable flag | 1 | `I` |
