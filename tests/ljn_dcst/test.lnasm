@@ -7,7 +7,7 @@
 
 .res 500
 TARGET:
-	mov 0x20
+	mov 0x20, RA
 	hlt
 
 ; RA = 0x42

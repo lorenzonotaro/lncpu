@@ -6,4 +6,4 @@
 	hlt
 ; [0x20] = 0x33
 ; RD = 0x22
-; FLAGS = 0b0010
+; FLAGS = 0b00000

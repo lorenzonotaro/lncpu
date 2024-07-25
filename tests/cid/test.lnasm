@@ -1,4 +1,5 @@
 .section CODE
+	sid
 	cid
 	hlt
-; FLAGS = 0b1000
+; FLAGS = 0b0000

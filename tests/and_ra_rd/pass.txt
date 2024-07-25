@@ -1,2 +1,2 @@
-FLAGS = 0b0100 ;Zero flag set
-RA = 0x00
+FLAGS = 0b0100
+RA = 0xFF

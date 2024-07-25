@@ -1,3 +1,3 @@
 RD = 0x02
 RC = 0x01
-FLAGS = 0b1000
+FLAGS = 0b0101

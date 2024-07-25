@@ -1,2 +1,2 @@
-FLAGS = 0b0000
-RD = 0x04
+FLAGS = 0b0101
+RD = 0xFF

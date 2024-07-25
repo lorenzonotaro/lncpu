@@ -1,6 +1,6 @@
 .section CODE
 	mov 0b0001101, RA
-	mov 0x0110101, RB
+	mov 0b0110101, RB
 	or RA, RB
 	hlt 
 ; RA = 0b0111101

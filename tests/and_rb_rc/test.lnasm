@@ -3,5 +3,5 @@
 	mov 0x02, RC
 	and RB, RC
 	hlt 
-	; RB = 0x00
-	; FLAGS = 0b0100 
+; RB = 0x00
+; FLAGS = 0b0000 

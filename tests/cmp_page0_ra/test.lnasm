@@ -5,4 +5,4 @@
 	hlt 
 	; RA = 0x01
 	; [0x2000] = 0x02
-	; FLAGS = 0b0010 
+	; FLAGS = 0b0101 

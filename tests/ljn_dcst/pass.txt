@@ -1,3 +1,2 @@
 FLAGS = 0b0010
-SP = 0x00
-RA = 0x00
+RA = 0x42

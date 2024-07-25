@@ -1,3 +1,1 @@
-SP = 0x00
-SS = 0x21
-FLAGS = 0b0001
+FLAGS = 0b0000

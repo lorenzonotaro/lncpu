@@ -2,7 +2,7 @@
 	lcall test
 	hlt
 test:
-	mov RA, 0x22
+	mov 0x22, RA
 	ret
 	hlt
 

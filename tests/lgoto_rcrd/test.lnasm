@@ -1,11 +1,5 @@
 .section CODE
-	mov 0x20, RC
-	mov 0x01, RD
-	mov 0x03, [RC:RD]
-	mov 0x20, RC
-	mov 0x02, RD
-	mov 0x00, [RC:RD]
-	lgoto RC:RD
-	hlt
-	; [0x2001] = 0x03
-	; [0x2002] = 0x00 
+	mov 0x01, [0x3ffe] ; put HLT in 3ffe
+	mov 0x3f, RC
+	mov 0xfe, RD
+	lgoto [RC:RD] ; jump to 3ffe

@@ -1,2 +1,1 @@
-FLAGS = 0b1000
-RA = 0xFF
+RA = 0x42

@@ -1,2 +1,2 @@
-FLAGS = 0b0000
-RB = 0x03
+FLAGS = 0b0100
+RB = 0xA6

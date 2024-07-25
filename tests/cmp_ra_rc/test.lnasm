@@ -3,6 +3,6 @@
 	mov 0x02, RC
 	cmp RA, RC
 	hlt 
-; FLAGS = 0b0000
+; FLAGS = 0b0101
 ; RA = 0x01
 ; RC = 0x02 

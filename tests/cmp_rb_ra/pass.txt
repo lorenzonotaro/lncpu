@@ -1,3 +1,3 @@
 RB = 0x03
 RA = 0x02
-FLAGS = 0b0001
+FLAGS = 0b0000
