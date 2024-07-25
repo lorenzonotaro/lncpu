@@ -6,6 +6,9 @@
 # Log file
 *.log
 
+# VS Code
+.vscode/
+
 # BlueJ files
 *.ctxt
 
@@ -26,13 +29,23 @@ hs_err_pid*
 
 # lnasm
 a.out
-Projects/lnasm/out/
+lnasm/target/
+*/a.out
+*/immediate.txt
+*/a.txt
+*/a.out.txt
 
-#Control_Unit
+# eeprom-serial-loader
+eeprom-serial-loader/target/
+
+#v1
 v1/controlunit/*.eeprom
 v1/controlunit/*.bin
+v1/Datasheets
 
 output/*
+
+Documents/
 
 # KiCad
 # Temporary files
