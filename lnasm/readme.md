@@ -100,7 +100,55 @@ Labels starting with `_` are interpreted as sublabels (if preceded by a label th
     B:
         goto        _sub15          ; <---- ERROR!             
 
-Currently, labels can only be used in jump instructions.
+When used, labels are evaluated as:
+
+* `dcst` (16-bit words) if they point to a non-page 0 section.
+* `cst` (byte) if they point to a page 0 section.
+
+### Expressions
+
+Lnasm supports basic arithmetic and logic binary operators. In order of decreasing precedence:
+
+1. multipication (`*`) and division (`/`)
+2. addition (`+`) and subtraction (`-`)
+3. left (`<<`) and right (`>>`) bitwise shift
+4. bitwise logic OR (`|`), AND (`&`) and XOR (`^`)
+
+Parethesis can be used to clarify expressions.
+
+Valid operands for binary operator are:
+
+* 8-bit (`cst`) and 16-bit (`dcst`) values.
+* labels
+
+**Note**: expressions preserve the type (byte or word) of the left operand. You may need to [cast](#Casts) to the desired type.
+
+### Casts
+
+The cast operator `::` allow you to trucate 16-bit words to 8-bit values and to extend 8-bit values to 16-bit words. 
+
+The cast operator has the highest precedence, second only to primary expressions (identifiers, constant values, string literals).
+
+Examples:
+
+    ; 0xFF::16, 0xFF::word evaluate to 0x00FF
+    ; 0x1234::8, 0x1234::byte evaluate to 0x34
+
+    ; You can combine binary operators and casts.
+    ; The following example loads RC:RD with the label SUBROUTINE and then calls it
+
+    ...
+
+    mov     (SUBROUTINE >> 8)::byte, RC
+    mov     (SUBROUTINE & 0xFF)::byte, RD ; The & operator is not really necessary since the cast operator truncates the 8 MSB
+    lcall   RC:RD
+
+    ...
+
+    .section OTHER_CODE
+    SUBROUTINE:
+        ...
+        ret
 
 ### Comments
 
