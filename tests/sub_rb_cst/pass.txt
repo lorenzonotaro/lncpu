@@ -1,2 +1,2 @@
-FLAGS = 0b1001
+FLAGS = 0b0101
 RB = 0xFF

@@ -1,2 +1,2 @@
-FLAGS = 0b0100
+FLAGS = 0b0010
 RD = 0x00

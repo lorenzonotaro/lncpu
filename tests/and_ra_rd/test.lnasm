@@ -3,5 +3,5 @@
 	mov 0b01010101, RD
 	and RA, RD
 	hlt 
-; RA = 0xFF
-; FLAGS = 0b0100
+; RA = 0x00
+; FLAGS = 0b0010

@@ -2,8 +2,11 @@
 	mov 0x01, RA
 	mov 0x01, RB
 	cmp RA, RB
-	jz 0x04
-	mov 0x03, RA
+	jz test
 	hlt
-; RA = 0x01
-; FLAGS = 0b0010
+
+test:
+	mov 0x03, RC
+	hlt
+
+; RC = 0x03

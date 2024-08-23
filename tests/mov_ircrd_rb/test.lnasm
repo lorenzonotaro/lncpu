@@ -1,8 +1,11 @@
 .section CODE
-	mov 0x42, [0x2020]
-	mov 0x20, RC
-	mov 0x20, RD
+	mov (VALUE >> 8)::byte, RC
+	mov VALUE::byte, RD
 	mov [RC:RD], RB
-	hlt 
-; [0x2020] = 0x42
-; RC = 0x42
+	hlt
+
+.section DATA
+VALUE:
+	.data 0x42
+
+; RB = 0x42

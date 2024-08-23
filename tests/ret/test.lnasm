@@ -1,9 +1,10 @@
 .section CODE
-	lcall test
+	mov		0x21, SS
+	mov		0x0, SP
+	lcall 	test
 	hlt
 test:
 	mov 0x22, RA
 	ret
-	hlt
 
 ; RA = 0x22

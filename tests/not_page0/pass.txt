@@ -1,2 +1,2 @@
-FLAGS = 0b0010
+FLAGS = 0b0100
 [0x00] = 0xFE

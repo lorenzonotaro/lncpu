@@ -58,7 +58,7 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0x38	push_rd	1	2	Pushes RD onto the stack	-
 0x39	push_page0	2	4	Pushes a location in the address space (zero page addressing mode) onto the stack	-
 0x3a	push_ircrd	1	5	Pushes a location in the address space (full indirect addressing mode) onto the stack	-
-0x3b	push_abs	2	5	Pushes a location in the address space (absolute addressing mode) onto the stack	-
+0x3b	push_abs	3	5	Pushes a location in the address space (absolute addressing mode) onto the stack	-
 0x3c	push_cst	2	2	Pushes a constant onto the stack	-
 0x3d	pop_ra	1	1	Pops from the stack into RA	-
 0x3e	pop_rb	1	1	Pops from the stack into RB	-

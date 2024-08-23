@@ -1,7 +1,7 @@
 .section CODE
 	mov 0x21, SS
 	mov 0x00, SP
-	push [0x42]
+	push 0x42
 	pop RA
 	hlt
 ; RA = 0x42

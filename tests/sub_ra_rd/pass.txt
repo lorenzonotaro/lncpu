@@ -1,2 +1,2 @@
-FLAGS = 0b1001
-RA = 0xFF
+FLAGS = 0b0101
+RA = 0xCA

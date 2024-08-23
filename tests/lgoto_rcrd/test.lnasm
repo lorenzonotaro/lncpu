@@ -2,4 +2,7 @@
 	mov 0x01, [0x3ffe] ; put HLT in 3ffe
 	mov 0x3f, RC
 	mov 0xfe, RD
-	lgoto [RC:RD] ; jump to 3ffe
+	lgoto RC:RD ; jump to 3ffe
+
+; RC = 0x3f
+; RD = 0xfe

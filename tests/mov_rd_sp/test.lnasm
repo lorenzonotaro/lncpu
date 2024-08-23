@@ -2,5 +2,5 @@
 	mov 0x11, RD
 	mov RD, SP
 	hlt 
-	; RD = 0x11
-	; SP = 0x11 
+; RD = 0x11
+; SP = 0x11 

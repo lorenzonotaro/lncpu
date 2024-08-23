@@ -3,5 +3,5 @@
 	mov 0b11010010, RC
 	or RC, RB
 	hlt 
-; RC = 0b11010010
+; RC = 0b11011111
 ; FLAGS = 0b0100

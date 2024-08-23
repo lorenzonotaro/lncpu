@@ -2,5 +2,5 @@
 	mov 0x1, RA
 	xor RA, RA
 	hlt 
-	; RA = 0x00
-	; FLAGS = 0b0110 
+; RA = 0x00
+; FLAGS = 0b0010 

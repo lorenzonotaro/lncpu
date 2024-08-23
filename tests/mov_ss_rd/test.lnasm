@@ -1,7 +1,6 @@
 .section CODE
-	mov 0x11, RD
-	xor RD, RD ; RD = 0
-	mov RD, SS
+	mov 0x11, SS
+	mov SS, RD
 	hlt 
 ; SS = 0x11
 ; RD = 0x11
