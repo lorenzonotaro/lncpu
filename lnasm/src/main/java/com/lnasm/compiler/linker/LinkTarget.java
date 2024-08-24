@@ -9,7 +9,7 @@ public enum LinkTarget {
     D4(0xa000, 0xbfff, false),
     D5(0xc000, 0xdfff, false),
     D6(0xe000, 0xffff, false),
-    __VIRTUAL__(0x10000, 0xFFFFFFFF, false);
+    __VIRTUAL__(0, 0xFFFF, false);
 
     public final int start;
 

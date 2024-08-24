@@ -1,9 +1,6 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.common.CompileException;
-import com.lnasm.compiler.common.LabelSectionInfo;
-import com.lnasm.compiler.common.Token;
-import com.lnasm.compiler.common.SectionInfo;
+import com.lnasm.compiler.common.*;
 
 import java.util.HashMap;
 
@@ -15,15 +12,14 @@ public class LinkerLabelSectionLocator extends HashMap<String, LabelSectionInfo>
     }
 
     @Override
-    public SectionInfo getSectionInfo(Token labelToken) {
+    public SectionResolution getSectionInfo(Token labelToken) {
         LabelSectionInfo labelSectionInfo = get(labelToken.lexeme);
         if(labelSectionInfo == null){
             var info = config.getSectionInfo(labelToken.lexeme);
             if (info == null)
                 throw new CompileException("unresolved label '%s'".formatted(labelToken.lexeme), labelToken);
-
-            return info;
+            return new SectionResolution(info, true);
         }
-        return labelSectionInfo.sectionInfo();
+        return new SectionResolution(labelSectionInfo.sectionInfo(), false);
     }
 }

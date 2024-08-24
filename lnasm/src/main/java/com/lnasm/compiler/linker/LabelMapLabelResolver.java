@@ -1,7 +1,8 @@
 package com.lnasm.compiler.linker;
 
 import com.lnasm.compiler.common.CompileException;
-import com.lnasm.compiler.common.SectionInfo;
+import com.lnasm.compiler.common.LabelResolution;
+import com.lnasm.compiler.common.SectionResolution;
 import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.parser.LnasmParser;
 
@@ -22,7 +23,7 @@ public class LabelMapLabelResolver implements ILabelResolver {
     }
 
     @Override
-    public int resolve(Token labelToken) {
+    public LabelResolution resolve(Token labelToken) {
         LabelMapEntry entry = computeLabel(labelToken.lexeme);
         if(entry == null){
             var section = sectionBuilders.get(labelToken.lexeme);
@@ -31,12 +32,12 @@ public class LabelMapLabelResolver implements ILabelResolver {
                 if(section.getSectionInfo().isDataPage() && section.getSectionInfo().isVirtual()){
                     throw new CompileException("cannot evaluate section start for virtual data page section '%s'".formatted(labelToken.lexeme), labelToken);
                 }
-                return section.getStart();
+                return new LabelResolution(section.getSectionInfo(), section.getStart(), true);
             }
 
             throw new CompileException("unresolved label '%s'".formatted(labelToken.lexeme), labelToken);
         }
-        return entry.address();
+        return new LabelResolution(entry.sectionInfo(), entry.address(), false);
     }
 
     private LabelMapEntry computeLabel(String lexeme) {
@@ -47,19 +48,19 @@ public class LabelMapLabelResolver implements ILabelResolver {
     }
 
     @Override
-    public SectionInfo getSectionInfo(Token labelToken) {
+    public SectionResolution getSectionInfo(Token labelToken) {
         LabelMapEntry entry = computeLabel(labelToken.lexeme);
         if(entry == null){
 
             var section = sectionBuilders.get(labelToken.lexeme);
 
             if(section != null){
-                return section.getSectionInfo();
+                return new SectionResolution(section.getSectionInfo(), true);
             }
 
             throw new CompileException("unresolved label '%s'".formatted(labelToken.lexeme), labelToken);
         }
-        return entry.sectionInfo();
+        return new SectionResolution(entry.sectionInfo(), false);
     }
 
     public void setCurrentParentLabel(String name) {

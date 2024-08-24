@@ -17,15 +17,17 @@ public class LabelRef extends Argument {
 
     @Override
     public int size(ILabelSectionLocator sectionLocator) {
-        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelToken);
-        return sectionInfo.isDataPage() ? 1 : 2;
+        SectionResolution resolution = sectionLocator.getSectionInfo(labelToken);
+        return resolution.sectionInfo().isDataPage() && !resolution.isSectionName() ? 1 : 2;
     }
 
     @Override
     public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
-        int targetLabel = labelResolver.resolve(labelToken);
+        LabelResolution resolution = labelResolver.resolve(labelToken);
 
-        if(labelResolver.getSectionInfo(labelToken).isDataPage()){
+        var targetLabel = resolution.address();
+
+        if(resolution.sectionInfo().isDataPage() && !resolution.isSectionName()){
             return new byte[] { (byte) (targetLabel & 0xFF) };
         }
 
@@ -34,7 +36,7 @@ public class LabelRef extends Argument {
 
     @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
-        SectionInfo sectionInfo = sectionLocator.getSectionInfo(labelToken);
-        return sectionInfo.isDataPage() ? "cst" : "dcst";
+        var resolution = sectionLocator.getSectionInfo(labelToken);
+        return resolution.sectionInfo().isDataPage() && !resolution.isSectionName() ? "cst" : "dcst";
     }
 }
