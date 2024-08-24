@@ -4,6 +4,7 @@ import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
+import com.lnasm.compiler.linker.LinkInfo;
 
 import java.io.IOException;
 
@@ -46,10 +47,10 @@ public class BinaryOp extends Argument{
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
 
-        byte[] leftBytes = left.encode(labelResolver, instructionAddress);
-        byte[] rightBytes = right.encode(labelResolver, instructionAddress);
+        byte[] leftBytes = left.encode(labelResolver, linkInfo, instructionAddress);
+        byte[] rightBytes = right.encode(labelResolver, linkInfo, instructionAddress);
 
         long leftVal = decode(leftBytes);
         long rightVal = decode(rightBytes);

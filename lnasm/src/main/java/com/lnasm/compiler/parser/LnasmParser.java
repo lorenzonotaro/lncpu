@@ -206,7 +206,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
     private Argument primary() {
         if(check(Token.Type.IDENTIFIER)){
             return new LabelRef(advance());
-        }else if(check(Token.Type.RA, Token.Type.RB, Token.Type.RC, Token.Type.RD, Token.Type.SS, Token.Type.SP)) {
+        }else if(check(Token.Type.RA, Token.Type.RB, Token.Type.RC, Token.Type.RD, Token.Type.SS, Token.Type.SP, Token.Type.DS)) {
             return new Register(advance());
         }else if(check(Token.Type.INTEGER)){
             Token t = advance();

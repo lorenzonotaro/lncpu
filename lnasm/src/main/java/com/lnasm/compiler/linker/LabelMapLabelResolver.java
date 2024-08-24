@@ -12,17 +12,28 @@ import java.util.Set;
 
 public class LabelMapLabelResolver implements ILabelResolver {
     private final Map<String, LabelMapEntry> globalLabelMap;
+    private final Map<String, SectionBuilder> sectionBuilders;
 
     private String currentParentLabel;
 
-    public LabelMapLabelResolver(Map<String, LabelMapEntry> globalLabelMap) {
+    public LabelMapLabelResolver(Map<String, LabelMapEntry> globalLabelMap, Map<String, SectionBuilder> sectionBuilders) {
         this.globalLabelMap = globalLabelMap;
+        this.sectionBuilders = sectionBuilders;
     }
 
     @Override
     public int resolve(Token labelToken) {
         LabelMapEntry entry = computeLabel(labelToken.lexeme);
         if(entry == null){
+            var section = sectionBuilders.get(labelToken.lexeme);
+
+            if(section != null){
+                if(section.getSectionInfo().isDataPage() && section.getSectionInfo().isVirtual()){
+                    throw new CompileException("cannot evaluate section start for virtual data page section '%s'".formatted(labelToken.lexeme), labelToken);
+                }
+                return section.getStart();
+            }
+
             throw new CompileException("unresolved label '%s'".formatted(labelToken.lexeme), labelToken);
         }
         return entry.address();
@@ -39,6 +50,13 @@ public class LabelMapLabelResolver implements ILabelResolver {
     public SectionInfo getSectionInfo(Token labelToken) {
         LabelMapEntry entry = computeLabel(labelToken.lexeme);
         if(entry == null){
+
+            var section = sectionBuilders.get(labelToken.lexeme);
+
+            if(section != null){
+                return section.getSectionInfo();
+            }
+
             throw new CompileException("unresolved label '%s'".formatted(labelToken.lexeme), labelToken);
         }
         return entry.sectionInfo();

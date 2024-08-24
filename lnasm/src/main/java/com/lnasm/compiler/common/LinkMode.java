@@ -1,6 +1,6 @@
 package com.lnasm.compiler.common;
 
-public enum SectionMode {
+public enum LinkMode {
     // fixed position, set by user in config
     FIXED(0x2000, 0, "fixed"),
 
@@ -8,7 +8,7 @@ public enum SectionMode {
     PAGE_ALIGN(0x2000, 1, "page-aligned"),
 
     // automatic positioning, fit to page
-    PAGE_FIT(0xff, 2, "page-fitted"),
+    PAGE_FIT(0x100, 2, "page-fitted"),
 
     // automatic positioning, fit wherever possible
     FIT(0x2000, 3, "fit");
@@ -17,13 +17,13 @@ public enum SectionMode {
     private final int maxSize;
     private final int precedence;
 
-    SectionMode(int maxSize, int precedence, String name) {
+    LinkMode(int maxSize, int precedence, String name) {
         this.maxSize = maxSize;
         this.precedence = precedence;
     }
 
-    public static SectionMode from(String input) {
-        return SectionMode.valueOf(input.toUpperCase());
+    public static LinkMode from(String input) {
+        return LinkMode.valueOf(input.toUpperCase());
     }
 
     public int getMaxSize() {

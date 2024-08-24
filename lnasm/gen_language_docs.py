@@ -25,8 +25,8 @@ def convert_immediate_param(param: str):
         return "<byte>"
     elif param == "dcst":
         return "<dcst>"
-    elif param == "page0":
-        return "[<page0 address>]"
+    elif param == "datap":
+        return "[<data page address>]"
     elif param == "abs":
         return "[<full address>]"
     elif param == "ircrd":

@@ -1,24 +1,24 @@
 package com.lnasm.compiler.linker;
 
-import com.lnasm.compiler.common.SectionMode;
-
 import java.util.Objects;
 
 public class MemoryLayoutManager {
 
 
-    private final LinkerTarget device;
+    private final LinkTarget device;
 
     private Segment head;
 
-    public MemoryLayoutManager(LinkerTarget device) {
+    public MemoryLayoutManager(LinkTarget device) {
         this.device = device;
         head = new Segment(device.start, device.end);
 
     }
 
     public void allocate(SectionBuilder sectionBuilder){
-        switch(sectionBuilder.getSectionInfo().getMode()){
+        if(sectionBuilder.getSectionInfo().isVirtual()){
+            sectionBuilder.setSectionStart(0);
+        }else switch(sectionBuilder.getSectionInfo().getMode()){
             case FIXED -> allocateFixed(sectionBuilder);
             case PAGE_ALIGN -> allocatePageAlign(sectionBuilder);
             case PAGE_FIT -> allocatePageFit(sectionBuilder);

@@ -3,6 +3,7 @@ package com.lnasm.compiler.parser.argument;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.common.Token;
+import com.lnasm.compiler.linker.LinkInfo;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public class Byte extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
         return new byte[] { value };
     }
 

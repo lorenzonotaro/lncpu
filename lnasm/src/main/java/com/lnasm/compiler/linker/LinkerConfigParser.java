@@ -58,16 +58,25 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
 
         var name = sectionName.lexeme;
         var start = -1;
-        SectionType type = null;
-        SectionMode mode = null;
+        LinkTarget target = null;
+        LinkMode mode = null;
         Boolean multiWriteAllowed = null;
+        Boolean dataPage = null;
+        Boolean virtual = null;
 
         do{
             var propName = consume("expected property name", Token.Type.IDENTIFIER);
+            Token propValue;
 
-            consume("expected '='", Token.Type.EQUALS);
+            if(propName.lexeme.equals("datapage") || propName.lexeme.equals("virtual") || propName.lexeme.equals("multi")){
+                if(match(Token.Type.EQUALS)) {
+                    propValue = consume("expected property value", Token.Type.IDENTIFIER);
+                }else propValue = new Token(Token.Type.IDENTIFIER, "true", "true", previous().location);
+            }else{
+                consume("expected '='", Token.Type.EQUALS);
+                propValue = consume("expected property value", Token.Type.IDENTIFIER, Token.Type.INTEGER);
+            }
 
-            var propValue = consume("expected property value", Token.Type.IDENTIFIER, Token.Type.INTEGER);
 
             if(propName.lexeme.equals("start")){
                 if(start != -1)
@@ -77,21 +86,21 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
                 if(start < 0 || start > 0xFFFF)
                     throw error(propValue, "start address out of range (0-0xFFFF)");
 
-            }else if(propName.lexeme.equals("type")){
-                if(type != null)
-                    throw error(propName, "duplicate property 'type'");
+            }else if(propName.lexeme.equals("target")){
+                if(target != null)
+                    throw error(propName, "duplicate property 'target'");
 
                 try {
-                    type = SectionType.valueOf(propValue.lexeme.toUpperCase());
+                    target = LinkTarget.valueOf(propValue.lexeme.toUpperCase());
                 }catch(IllegalArgumentException e){
-                    throw error(propValue, "unknown section type");
+                    throw error(propValue, "unknown section target");
                 }
             }else if(propName.lexeme.equals("mode")){
                 if(mode != null)
                     throw error(propName, "duplicate property 'mode'");
 
                 try {
-                    mode = SectionMode.from(propValue.lexeme.toUpperCase());
+                    mode = LinkMode.from(propValue.lexeme.toUpperCase());
                 }catch(IllegalArgumentException e) {
                     throw error(propValue, "unknown section mode");
                 }
@@ -105,6 +114,26 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
                 }else{
                     throw error(propValue, "invalid value for 'multi' property (true/false)");
                 }
+            }else if(propName.lexeme.equals("datapage")) {
+                if (dataPage != null)
+                    throw error(propName, "duplicate property 'datapage'");
+                if (propValue.lexeme.equals("true")) {
+                    dataPage = true;
+                } else if (propValue.lexeme.equals("false")) {
+                    dataPage = false;
+                } else {
+                    throw error(propValue, "invalid value for 'datapage' property (true/false)");
+                }
+            }else if(propName.lexeme.equals("virtual")){
+                if(virtual != null)
+                    throw error(propName, "duplicate property 'virtual'");
+                if(propValue.lexeme.equals("true")){
+                    virtual = true;
+                }else if(propValue.lexeme.equals("false")){
+                    virtual = false;
+                }else{
+                    throw error(propValue, "invalid value for 'virtual' property (true/false)");
+                }
             }else{
                 throw error(propName, "unknown property");
             }
@@ -115,7 +144,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         }while(!check(Token.Type.SEMICOLON, Token.Type.R_SQUARE_BRACKET));
 
         try {
-            return new SectionInfo(name, start, type, mode, multiWriteAllowed != null && multiWriteAllowed);
+            return new SectionInfo(name, start, target, mode, multiWriteAllowed != null && multiWriteAllowed, dataPage != null && dataPage, virtual != null && virtual);
         } catch (IllegalArgumentException e) {
             throw error(sectionName, "invalid section: " + e.getMessage());
         }

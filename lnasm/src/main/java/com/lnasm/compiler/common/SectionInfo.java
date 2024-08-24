@@ -1,69 +1,74 @@
 package com.lnasm.compiler.common;
 
+import com.lnasm.compiler.linker.LinkTarget;
+
 public class SectionInfo {
-    private static final int PAGE_0_START = 0x2000;
-    private final SectionMode mode;
+    private final LinkMode mode;
     private final String name;
     private final int start;
     private final int maxSize;
-    private final SectionType type;
+    private final LinkTarget target;
     private final boolean multiWriteAllowed;
+    private final boolean dataPage, virtual;
 
-    public SectionInfo(String name, int start, SectionType type, SectionMode mode, boolean multiWriteAllowed) {
+    public SectionInfo(String name, int start, LinkTarget target, LinkMode mode, boolean multiWriteAllowed, boolean dataPage, boolean virtual) {
 
-        this.multiWriteAllowed = multiWriteAllowed;
+        int maxSize;
 
-        if(name == null){
-            throw new IllegalArgumentException("null section name");
-        }
+        if(name == null)
+            throw new IllegalArgumentException("empty section name");
 
-        if(type == null){
-            throw new IllegalArgumentException("null section type");
-        }
+        if(virtual && (!dataPage || start != -1 || target != null || mode != null))
+            throw new IllegalArgumentException("virtual only applies to data pages. Virtual sections cannot have a target, mode or start address");
 
-        this.name = name;
-        this.type = type;
-
-        if(type == SectionType.PAGE0){
-            if(start != PAGE_0_START && start != -1){
-                throw new IllegalArgumentException("page0 must start at 0x2000");
+        // fixed or no mode specified, start address must be specified
+        if(start != -1 && (mode == LinkMode.FIXED || mode == null)){
+            mode = LinkMode.FIXED;
+            if (target == null) {
+                target = LinkTarget.fromAddress(start);
+            }else if(!target.contains(start)){
+                throw new IllegalArgumentException("start address (%04x) is outside of target address space (%04x-%04x)".formatted(start, target.start, target.end));
             }
 
-            if(mode != SectionMode.FIXED && mode != null){
-                throw new IllegalArgumentException("page0 must be fixed");
-            }
+            if(dataPage){
 
-            this.start = PAGE_0_START;
-            this.mode = SectionMode.FIXED;
-            this.maxSize = 0x100;
-        }else{
-            if(mode == null || mode == SectionMode.FIXED){
-                if(start == -1){
-                    throw new IllegalArgumentException("fixed section must have a start address");
-                }
+                if((start & 0xFF) != 0)
+                    throw new IllegalArgumentException("data page sections must start at a page boundary");
 
-                this.start = start;
-                this.mode = SectionMode.FIXED;
-                this.maxSize = SectionMode.FIXED.getMaxSize();
+                maxSize = 0x100;
             }else{
-                if(start != -1){
-                    throw new IllegalArgumentException("non-fixed section cannot have a start address");
-                }
-
-                this.start = -1;
-                this.mode = mode;
-                this.maxSize = mode.getMaxSize();
+                maxSize = target.end - start + 1;
             }
+        }else if(mode != LinkMode.FIXED && mode != null){
+            if(target == null)
+                throw new IllegalArgumentException("target address space must be specified for mode %s".formatted(mode));
+
+            if(start != -1)
+                throw new IllegalArgumentException("start address cannot be specified for mode %s".formatted(mode));
+
+            if(dataPage){
+                if(mode != LinkMode.PAGE_ALIGN)
+                    throw new IllegalArgumentException("data page sections must use mode page_align");
+                maxSize = 0x100;
+            }else{
+                maxSize = target.getMaxSize();
+            }
+        }else if (dataPage && virtual){
+            maxSize = 0x100;
+            target = LinkTarget.__VIRTUAL__;
+        }else{
+            throw new IllegalArgumentException("invalid section configuration");
         }
 
-    }
+        this.maxSize = maxSize;
+        this.name = name;
+        this.multiWriteAllowed = multiWriteAllowed;
+        this.mode = mode;
+        this.target = target;
+        this.start = start;
+        this.dataPage = dataPage;
+        this.virtual = virtual;
 
-    public String toString() {
-        return "SectionInfo{" +
-                "name='" + getName() + '\'' +
-                ", start=" + getStart() +
-                ", type=" + getType() +
-                '}';
     }
 
     public String getName() {
@@ -78,40 +83,24 @@ public class SectionInfo {
         return maxSize;
     }
 
-    public SectionType getType() {
-        return type;
-    }
 
-    public SectionMode getMode() {
+    public LinkMode getMode() {
         return mode;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SectionInfo that = (SectionInfo) o;
-
-        if (start != that.start) return false;
-        if (maxSize != that.maxSize) return false;
-        if (mode != that.mode) return false;
-        if (!name.equals(that.name)) return false;
-        return type == that.type;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = mode.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + start;
-        result = 31 * result + maxSize;
-        result = 31 * result + type.hashCode();
-        return result;
     }
 
     public boolean isMultiWriteAllowed() {
         return multiWriteAllowed;
     }
 
+    public boolean isDataPage() {
+        return dataPage;
+    }
+
+    public boolean isVirtual() {
+        return virtual;
+    }
+
+    public LinkTarget getTarget() {
+        return target;
+    }
 }

@@ -172,6 +172,7 @@ public class Token {
         RD,
         SS,
         SP,
+        DS,
 
         // Linker config keywords
         SECTIONS;
@@ -215,6 +216,7 @@ public class Token {
                 Token.Type.RD,
                 Token.Type.SS,
                 Token.Type.SP,
+                Token.Type.DS
         };
 
         public static final Token.Type[] LNASM_INSTRUCTIONSET = new Token.Type[]{

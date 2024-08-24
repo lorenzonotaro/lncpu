@@ -23,16 +23,6 @@
     "value": false
   },
 
-  "-Wshort-jump-out-of-range": {
-    "help": "Disables short jump out of range compile warning.",
-    "value": false
-  },
-
-  "-Woptimizable-long-jump": {
-    "help": "Disables long jump used on label in current segment compile warning.",
-    "value": false
-  },
-
   "-I": {
     "help": "Set the include path (directories separated by ';'). ",
     "value": ""
@@ -45,5 +35,15 @@
   "-lc": {
     "help": "Provide a linker configuration script as a command line parameter.",
     "value": ""
+  },
+
+  "-Wdata-page-access-before-setup": {
+    "help": "Disables data page access before setup compile warning.",
+    "value": false
+  },
+
+  "-Wstack-access-before-setup": {
+    "help": "Disables stack access before setup compile warning.",
+    "value": false
   }
 }

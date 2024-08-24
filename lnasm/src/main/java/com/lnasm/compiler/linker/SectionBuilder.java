@@ -89,27 +89,16 @@ public class SectionBuilder {
         }
         return labelMap;
     }
-
-    public boolean overlaps(SectionBuilder other) {
-
-        if(this.sectionStart == -1 || other.sectionStart == -1){
-            throw new IllegalStateException("section start not set");
-        }
-
-        return this.sectionStart < other.sectionStart + other.codeLength && other.sectionStart < this.sectionStart + this.codeLength;
-
-    }
-
     public SectionInfo getSectionInfo() {
         return sectionInfo;
     }
 
-    public void output(ByteArrayChannel sectionTarget, LabelMapLabelResolver labelResolver) throws IOException {
+    public void output(ByteArrayChannel sectionTarget, LabelMapLabelResolver labelResolver, LinkInfo linkInfo) throws IOException {
         for (InstructionEntry instruction : instructions) {
             instruction.instruction.getLabels().stream().filter(l -> !l.name().contains(LnasmParser.SUBLABEL_SEPARATOR)).reduce((f, s) -> s).ifPresent(lastParentLabel -> labelResolver.setCurrentParentLabel(lastParentLabel.name()));
 
-            sectionTarget.position(sectionStart + instruction.index - sectionInfo.getType().getTarget().start);
-            byte[] buffer = instruction.instruction.encode(labelResolver, sectionStart + instruction.index);
+            sectionTarget.position(sectionStart + instruction.index - sectionInfo.getTarget().start);
+            byte[] buffer = instruction.instruction.encode(labelResolver, linkInfo, sectionStart + instruction.index);
             sectionTarget.write(ByteBuffer.wrap(buffer));
         }
     }

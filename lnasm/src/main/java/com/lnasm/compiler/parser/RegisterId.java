@@ -1,7 +1,7 @@
 package com.lnasm.compiler.parser;
 
 public enum RegisterId {
-    RA(true), RB(true), RC(true), RD(true), SS(false), SP(false);
+    RA(true), RB(true), RC(true), RD(true), SS(false), SP(false), DS(false);
 
     public final boolean generalPurpose;
 

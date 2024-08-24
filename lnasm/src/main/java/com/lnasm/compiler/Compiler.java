@@ -62,7 +62,7 @@ public class Compiler {
             return false;
 
         var linkResult = linker.getResult();
-        var binaryResult = linkResult.getOrDefault(LinkerTarget.ROM, new ByteArrayChannel(0, false)).toByteArray();
+        var binaryResult = linkResult.getOrDefault(LinkTarget.ROM, new ByteArrayChannel(0, false)).toByteArray();
         var binOutputFile = "";
         var immediateOutputFile = "";
         if(!"".equals(binOutputFile = LNASM.settings.get("-oB", String.class))){
@@ -71,7 +71,7 @@ public class Compiler {
 
         if(!"".equals(immediateOutputFile = LNASM.settings.get("-oI", String.class))){
             Logger.setProgramState("disassembler");
-            Disassembler disassembler = new Disassembler(linker.createReverseSymbolTable(), linker.createSectionDescriptors(LinkerTarget.ROM));
+            Disassembler disassembler = new Disassembler(linker.createReverseSymbolTable(), linker.createSectionDescriptors(LinkTarget.ROM));
             if(disassembler.disassemble(binaryResult)){
                 this.outputs.put(immediateOutputFile, disassembler.getOutput());
             }else{

@@ -3,6 +3,7 @@ package com.lnasm.compiler.parser.argument;
 import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
+import com.lnasm.compiler.linker.LinkInfo;
 
 import java.io.IOException;
 
@@ -21,8 +22,8 @@ public class Dereference extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
-        return inner.encode(labelResolver, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+        return inner.encode(labelResolver, linkInfo, instructionAddress);
     }
 
     @Override
@@ -30,7 +31,7 @@ public class Dereference extends Argument {
         String innerEncoding = inner.getImmediateEncoding(sectionLocator);
         switch(innerEncoding) {
             case "cst":
-                return "page0";
+                return "datap";
             case "dcst":
                 return "abs";
             case "rcrd":

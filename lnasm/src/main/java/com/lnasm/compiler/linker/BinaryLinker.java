@@ -10,17 +10,18 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChannel>>{
-    private Map<LinkerTarget, ByteArrayChannel> outputs;
+public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChannel>>{
+    private Map<LinkTarget, ByteArrayChannel> outputs;
 
     private LabelMapLabelResolver labelResolver;
 
-    private List<SectionBuilder.Descriptor> sectionDescriptors;
+    private final LinkInfo linkInfo;
 
     private Map<String, SectionBuilder> sectionBuilders;
 
     public BinaryLinker(LinkerConfig config) {
         super(config);
+        linkInfo = new LinkInfo();
     }
 
     @Override
@@ -37,8 +38,6 @@ public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChan
 
             this.outputs = link(sectionBuilders, labelResolver);
 
-            sectionBuilders.values().stream().map(SectionBuilder::getDescriptor).toList();
-
             return true;
         }catch(CompileException e) {
             e.log();
@@ -49,16 +48,16 @@ public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChan
     }
 
     @Override
-    public Map<LinkerTarget, ByteArrayChannel> getResult() {
+    public Map<LinkTarget, ByteArrayChannel> getResult() {
         return outputs;
     }
 
-    private Map<LinkerTarget, ByteArrayChannel> link(Map<String, SectionBuilder> sectionBuilders, LabelMapLabelResolver labelResolver) {
+    private Map<LinkTarget, ByteArrayChannel> link(Map<String, SectionBuilder> sectionBuilders, LabelMapLabelResolver labelResolver) {
         try{
-            var result = new HashMap<LinkerTarget, ByteArrayChannel>();
+            var result = new HashMap<LinkTarget, ByteArrayChannel>();
             for (var section : sectionBuilders.values()) {
-                var sectionTarget = result.computeIfAbsent(section.getSectionInfo().getType().getTarget(), k -> new ByteArrayChannel(0, false));
-                section.output(sectionTarget, labelResolver);
+                var sectionTarget = result.computeIfAbsent(section.getSectionInfo().getTarget(), k -> new ByteArrayChannel(0, false));
+                section.output(sectionTarget, labelResolver, linkInfo);
             }
 
             return result;
@@ -72,13 +71,20 @@ public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChan
         boolean success = true;
 
         var groupedByType = sectionBuilders.values().stream().collect(Collectors.groupingBy(
-           s -> s.getSectionInfo().getType().getTarget()
+           s -> s.getSectionInfo().getTarget()
         ));
 
         for (var entry : groupedByType.entrySet()) {
-
             var target = entry.getKey();
             var sections = entry.getValue();
+
+            if(target.equals(LinkTarget.__VIRTUAL__)){
+                // do not consider virtual sections in the memory manager
+                for(var section : sections){
+                    section.setSectionStart(0);
+                }
+            }
+
             MemoryLayoutManager manager = new MemoryLayoutManager(target);
 
             var sortedByMode = sections.stream().sorted(Comparator.comparingInt(a -> a.getSectionInfo().getMode().getPrecedence())).toList();
@@ -118,7 +124,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChan
             }
         }
 
-        return new LabelMapLabelResolver(globalLabelMap);
+        return new LabelMapLabelResolver(globalLabelMap, sectionBuilders);
     }
 
     private Map<String, SectionBuilder> makeSectionBuilders(ParseResult parseResult, LinkerLabelSectionLocator labelLocator) {
@@ -138,7 +144,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChan
     }
 
     private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(ParsedBlock[] blocks) {
-        LinkerLabelSectionLocator locator = new LinkerLabelSectionLocator();
+        LinkerLabelSectionLocator locator = new LinkerLabelSectionLocator(getConfig());
         for (ParsedBlock block : blocks) {
             var sectionInfo = getConfig().getSectionInfo(block.sectionName);
             if (sectionInfo == null){
@@ -160,11 +166,11 @@ public class BinaryLinker extends AbstractLinker<Map<LinkerTarget, ByteArrayChan
         return labelResolver.createReverseSymbolTable();
     }
 
-    public List<SectionBuilder.Descriptor> createSectionDescriptors(LinkerTarget target) {
+    public List<SectionBuilder.Descriptor> createSectionDescriptors(LinkTarget target) {
         if(labelResolver == null)
             throw new IllegalStateException("linker not setup");
         return this.sectionBuilders.values().stream()
-                .filter(s -> s.getSectionInfo().getType().getTarget() == target)
+                .filter(s -> s.getSectionInfo().getTarget() == target)
                 .map(SectionBuilder::getDescriptor)
                 .sorted(Comparator.comparingInt(SectionBuilder.Descriptor::start)).toList();
     }

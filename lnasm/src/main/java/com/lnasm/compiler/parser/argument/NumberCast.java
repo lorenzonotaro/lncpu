@@ -4,6 +4,7 @@ import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.common.Token;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
+import com.lnasm.compiler.linker.LinkInfo;
 
 import java.io.IOException;
 
@@ -35,8 +36,8 @@ public class NumberCast extends Argument{
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
-        byte[] sourceEncoded = source.encode(labelResolver, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+        byte[] sourceEncoded = source.encode(labelResolver, linkInfo, instructionAddress);
         byte[] result = new byte[targetSize];
 
         for (int i = 0; i < targetSize; i++) {

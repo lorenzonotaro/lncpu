@@ -137,6 +137,19 @@
         "flags_modified": "-"
     },
     {
+        "name": "mov_cst_ds",
+        "description": "Moves a constant to DS",
+        "microcode": [
+            {
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_DS_IN": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
         "name": "mov_ss_rd",
         "description": "Moves SS to RD",
         "microcode": [
@@ -153,6 +166,17 @@
         "microcode": [
             {
                 "NOT_SP_OUT": 0,
+                "NOT_RD_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_ds_rd",
+        "description": "Moves DS to RD",
+        "microcode": [
+            {
+                "NOT_DS_OUT": 0,
                 "NOT_RD_IN": 0
             }
         ],
@@ -313,8 +337,19 @@
         "flags_modified": "-"
     },
     {
-        "name": "mov_ra_page0",
-        "description": "Copies RA to a location in the address space (zero page addressing mode)",
+        "name": "mov_rd_ds",
+        "description": "Moves RD to DS",
+        "microcode": [
+            {
+                "NOT_RD_OUT": 0,
+                "NOT_DS_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_ra_datap",
+        "description": "Copies RA to a location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -324,15 +359,15 @@
             },
             {
                 "NOT_RA_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_rb_page0",
-        "description": "Copies RB to a location in the address space (zero page addressing mode)",
+        "name": "mov_rb_datap",
+        "description": "Copies RB to a location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -342,15 +377,15 @@
             },
             {
                 "NOT_RB_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_rc_page0",
-        "description": "Copies RC to a location in the address space (zero page addressing mode)",
+        "name": "mov_rc_datap",
+        "description": "Copies RC to a location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -360,15 +395,15 @@
             },
             {
                 "NOT_RC_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_rd_page0",
-        "description": "Copies RD to a location in the address space (zero page addressing mode)",
+        "name": "mov_rd_datap",
+        "description": "Copies RD to a location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -378,15 +413,15 @@
             },
             {
                 "NOT_RD_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_page0_ra",
-        "description": "Copies from location in the address space (zero page addressing mode) to RA",
+        "name": "mov_datap_ra",
+        "description": "Copies from location in the address space (data page addressing mode) to RA",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -395,7 +430,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0,
                 "RA_S": "input"
             }
@@ -403,8 +438,8 @@
         "flags_modified": "-"
     },
     {
-        "name": "mov_page0_rb",
-        "description": "Copies from location in the address space (zero page addressing mode) to RB",
+        "name": "mov_datap_rb",
+        "description": "Copies from location in the address space (data page addressing mode) to RB",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -414,15 +449,15 @@
             },
             {
                 "NOT_RB_IN": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_page0_rc",
-        "description": "Copies from location in the address space (zero page addressing mode) to RC",
+        "name": "mov_datap_rc",
+        "description": "Copies from location in the address space (data page addressing mode) to RC",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -432,15 +467,15 @@
             },
             {
                 "NOT_RC_IN": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_page0_rd",
-        "description": "Copies from location in the address space (zero page addressing mode) to RD",
+        "name": "mov_datap_rd",
+        "description": "Copies from location in the address space (data page addressing mode) to RD",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -450,15 +485,15 @@
             },
             {
                 "NOT_RD_IN": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
         ],
         "flags_modified": "-"
     },
     {
-        "name": "mov_cst_page0",
-        "description": "Copies a constant to a location in the address space (zero page addressing mode)",
+        "name": "mov_cst_datap",
+        "description": "Copies a constant to a location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -468,7 +503,7 @@
             },
             {
                 "NOT_DATA_LATCH_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0,
                 "NOT_FETCH": 0,
                 "NOT_PC_INC": 0
@@ -877,8 +912,8 @@
         "flags_modified": "-"
     },
     {
-        "name": "mov_page0_page0",
-        "description": "Copies a location in the address space (zero page addressing mode) to another location in the address space (zero page addressing mode)",
+        "name": "mov_datap_datap",
+        "description": "Copies a location in the address space (data page addressing mode) to another location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
@@ -887,7 +922,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0,
                 "NOT_RT_IN": 0
             },
@@ -898,7 +933,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0,
                 "NOT_RT_OUT": 0
             }
@@ -966,8 +1001,8 @@
         "flags_modified": "-"
     },
     {
-        "name": "push_page0",
-        "description": "Pushes a location in the address space (zero page addressing mode) onto the stack",
+        "name": "push_datap",
+        "description": "Pushes a location in the address space (data page addressing mode) onto the stack",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -977,7 +1012,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1121,8 +1156,8 @@
         "flags_modified": "-"
     },
     {
-        "name": "pop_page0",
-        "description": "Pops from the stack into a location in the address space (zero page addressing mode)",
+        "name": "pop_datap",
+        "description": "Pops from the stack into a location in the address space (data page addressing mode)",
         "microcode": [
             {
                 "NOT_PC_INC": 0,
@@ -1139,7 +1174,7 @@
             {
                 "NOT_RT_OUT": 0,
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "-"
@@ -1505,8 +1540,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "add_page0_ra",
-        "description": "Adds RA to a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "add_datap_ra",
+        "description": "Adds RA to a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1516,7 +1551,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1525,14 +1560,14 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "add_page0_rb",
-        "description": "Adds RB to a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "add_datap_rb",
+        "description": "Adds RB to a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1542,7 +1577,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1551,14 +1586,14 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "add_page0_rc",
-        "description": "Adds RC to a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "add_datap_rc",
+        "description": "Adds RC to a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1568,7 +1603,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1577,14 +1612,14 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "add_page0_rd",
-        "description": "Adds RD to a location in the address space (zero page addressing mode), stores the result back in the address space (zero page addressing mode), then updates the FLAGS accordingly",
+        "name": "add_datap_rd",
+        "description": "Adds RD to a location in the address space (data page addressing mode), stores the result back in the address space (data page addressing mode), then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1594,7 +1629,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1603,7 +1638,7 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -1913,8 +1948,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "sub_page0_ra",
-        "description": "Subtracts RA from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "sub_datap_ra",
+        "description": "Subtracts RA from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1924,7 +1959,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1933,14 +1968,14 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "sub_page0_rb",
-        "description": "Subtracts RD from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "sub_datap_rb",
+        "description": "Subtracts RD from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1950,7 +1985,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1959,14 +1994,14 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "sub_page0_rc",
-        "description": "Subtracts RC from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "sub_datap_rc",
+        "description": "Subtracts RC from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -1976,7 +2011,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1985,14 +2020,14 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "sub_page0_rd",
-        "description": "Subtracts RD from a location in the address space (zero page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "sub_datap_rd",
+        "description": "Subtracts RD from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2002,7 +2037,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2011,7 +2046,7 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -2301,8 +2336,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "cmp_page0_ra",
-        "description": "Compares the given location in the address space (zero page addressing mode) to RA, then updates the FLAGS accordingly",
+        "name": "cmp_datap_ra",
+        "description": "Compares the given location in the address space (data page addressing mode) to RA, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2312,7 +2347,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2325,8 +2360,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "cmp_page0_rb",
-        "description": "Compares the given location in the address space (zero page addressing mode) to RB, then updates the FLAGS accordingly",
+        "name": "cmp_datap_rb",
+        "description": "Compares the given location in the address space (data page addressing mode) to RB, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2336,7 +2371,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2349,8 +2384,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "cmp_page0_rc",
-        "description": "Compares the given location in the address space (zero page addressing mode) to RC, then updates the FLAGS accordingly",
+        "name": "cmp_datap_rc",
+        "description": "Compares the given location in the address space (data page addressing mode) to RC, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2360,7 +2395,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2373,8 +2408,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "cmp_page0_rd",
-        "description": "Compares the given location in the address space (zero page addressing mode) to RD, then updates the FLAGS accordingly",
+        "name": "cmp_datap_rd",
+        "description": "Compares the given location in the address space (data page addressing mode) to RD, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2384,7 +2419,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2701,8 +2736,8 @@
         "flags_modified": "-"
     },
     {
-        "name": "or_page0_ra",
-        "description": "Performs a bitwise OR of a location in the address space (zero page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "or_datap_ra",
+        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2712,7 +2747,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2721,14 +2756,14 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "or_page0_rb",
-        "description": "Performs a bitwise OR of a location in the address space (zero page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "or_datap_rb",
+        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2738,7 +2773,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2747,14 +2782,14 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "or_page0_rc",
-        "description": "Performs a bitwise OR of a location in the address space (zero page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "or_datap_rc",
+        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2764,7 +2799,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2773,14 +2808,14 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "or_page0_rd",
-        "description": "Performs a bitwise OR of a location in the address space (zero page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "or_datap_rd",
+        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -2790,7 +2825,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -2799,7 +2834,7 @@
                 "OP_SEL": "or",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3109,8 +3144,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "and_page0_ra",
-        "description": "Performs a bitwise AND of a location in the address space (zero page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "and_datap_ra",
+        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3120,7 +3155,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3129,14 +3164,14 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "and_page0_rb",
-        "description": "Performs a bitwise AND of a location in the address space (zero page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "and_datap_rb",
+        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3146,7 +3181,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3155,14 +3190,14 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "and_page0_rc",
-        "description": "Performs a bitwise AND of a location in the address space (zero page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "and_datap_rc",
+        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3172,7 +3207,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3181,14 +3216,14 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "and_page0_rd",
-        "description": "Performs a bitwise AND of a location in the address space (zero page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "and_datap_rd",
+        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3198,7 +3233,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3207,7 +3242,7 @@
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3517,8 +3552,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "xor_page0_ra",
-        "description": "Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "xor_datap_ra",
+        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3528,7 +3563,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3537,14 +3572,14 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "xor_page0_rb",
-        "description": "Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "xor_datap_rb",
+        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3554,7 +3589,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3563,14 +3598,14 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "xor_page0_rc",
-        "description": "Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "xor_datap_rc",
+        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3580,7 +3615,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3589,14 +3624,14 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
     },
     {
-        "name": "xor_page0_rd",
-        "description": "Performs a bitwise XOR of a location in the address space (zero page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
+        "name": "xor_datap_rd",
+        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3606,7 +3641,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3615,7 +3650,7 @@
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3677,7 +3712,7 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "not_page0",
+        "name": "not_datap",
         "description": "Performs a bitwise NOT of a location in the address space (page 0 addressing mode), stores the result back in the location, then updates the FLAGS accordingly",
         "microcode": [
             {
@@ -3688,7 +3723,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3696,7 +3731,7 @@
                 "OP_SEL": "not",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3758,8 +3793,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "inc_page0",
-        "description": "Increments a location in the address space (zero page addressing mode) by 1, then updates the FLAGS accordingly",
+        "name": "inc_datap",
+        "description": "Increments a location in the address space (data page addressing mode) by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3769,7 +3804,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3778,7 +3813,7 @@
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3840,8 +3875,8 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "dec_page0",
-        "description": "Decrements a location in the address space (zero page addressing mode) by 1, then updates the FLAGS accordingly",
+        "name": "dec_datap",
+        "description": "Decrements a location in the address space (data page addressing mode) by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
                 "NOT_ABL_IN": 0,
@@ -3851,7 +3886,7 @@
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "page0:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -3860,7 +3895,7 @@
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in",
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "page0:abl"
+                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"

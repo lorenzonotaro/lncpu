@@ -68,7 +68,7 @@ public class OpcodeMap {
         return switch(immediateParam){
             case "cst" -> "<byte>";
             case "dcst" -> "<word>";
-            case "page0" -> "[<page 0 address>]";
+            case "datap" -> "[<data page address>]";
             case "abs" -> "[<full address>]";
             case "ircrd" -> "[RC:RD]";
             case "rcrd" -> "RC:RD";

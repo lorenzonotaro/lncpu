@@ -3,6 +3,7 @@ package com.lnasm.compiler.parser.argument;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
 import com.lnasm.compiler.common.Token;
+import com.lnasm.compiler.linker.LinkInfo;
 import com.lnasm.compiler.parser.RegisterId;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class Register extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
         return new byte[0];
     }
 

@@ -13,7 +13,7 @@
 #define PROTOCOL_SIGNATURE "EEPROMLD"
 
 /* Name and revision of this loader. */
-#define VERSION "AT28C64B, rev6\0"
+#define VERSION "AT28C64B, rev7\0"
 
 /* The baud rate, as specified in the protocol.*/
 #define BAUD_RATE 115200
@@ -44,6 +44,12 @@
 /* The most significant digit of the address bus. */
 #define A12        8
 
+/* Green LED */
+#define LED_OK     13
+
+/* Red LED */
+#define LED_ERROR  2
+
 /* The duration of the clock pulse, in μs. */
 #define PULSE_DURATION 1
 
@@ -56,6 +62,9 @@
 /* This will store the payload every time we receive one from the client. */
 byte payload[PAYLOAD];
 
+bool _error, _success;
+unsigned long lastErrorTime, lastSuccessTime;
+
 void setup() {
   Serial.begin(BAUD_RATE);
 
@@ -67,6 +76,8 @@ void setup() {
   pinMode(ROM_NOT_OE, OUTPUT);
   pinMode(ROM_NOT_WE, OUTPUT);
   pinMode(A12, OUTPUT);
+  pinMode(LED_OK, OUTPUT);
+  pinMode(LED_ERROR, OUTPUT);
 
   //set each pin to their default (inactive) value
   digitalWrite(CLOCK, LOW);
@@ -76,6 +87,11 @@ void setup() {
   digitalWrite(ROM_NOT_WE, HIGH);
   digitalWrite(A12, LOW);
 
+  // Cycle LEDs to indicate setup complete
+  _error = _success = true;
+  lastErrorTime = lastSuccessTime = millis();
+  digitalWrite(LED_OK, HIGH);
+  digitalWrite(LED_ERROR, HIGH);
 }
 
 /* In the loop, the Arduino will be waiting for a request from the client and will act accordingly. */
@@ -99,7 +115,7 @@ void loop() {
         for(int i = 0; i < ROM_SIZE / PAYLOAD / 2; ++i){
           Serial.write('n');
           if(!read_payload_from_serial()){
-            Serial.write('!');
+            error();
             return;
           }
           write_eeprom();
@@ -109,20 +125,21 @@ void loop() {
         for(int i = 0; i < ROM_SIZE / PAYLOAD / 2; ++i){ //write cycle
           Serial.write('n'); //send control character
           if(!read_payload_from_serial()){
-            Serial.write('!'); //error during serial read
+            error(); //error during serial read
             return;
           }
           write_eeprom();
         }
         digitalWrite(A12, LOW);
         Serial.write('k'); //send confirmation character
+        success();
         break;
       case 'r':
         reset_counter();
         digitalWrite(A12, LOW);
         for(int i = 0; i < ROM_SIZE / PAYLOAD / 2; ++i){
           if(Serial.readBytes(&b, 1) <= 0 || b != 'n'){
-            Serial.write('!');
+            error();
             return;
           }
           read_payload_from_eeprom();
@@ -132,7 +149,7 @@ void loop() {
         digitalWrite(A12, HIGH);
         for(int i = 0; i < ROM_SIZE / PAYLOAD / 2; ++i){
           if(Serial.readBytes(&b, 1) <= 0 || b != 'n'){
-            Serial.write('!');
+            error();
             return;
           }
           read_payload_from_eeprom();
@@ -143,6 +160,14 @@ void loop() {
       default:
         Serial.write('?');
     }
+  }
+  if(_error && (millis() - lastErrorTime > 1000)){
+    digitalWrite(LED_ERROR, LOW);
+    _error = false;
+  }
+  if(_success && (millis() - lastSuccessTime > 1000)){
+    digitalWrite(LED_OK, LOW);
+    _success = false;
   }
 }
 
@@ -206,16 +231,16 @@ byte readBus(){
 }
 
 void writeBus(byte val){
-  //The first digit of PORTB (pin number 8) is being used for A12, so we want to save whatever value is in that bit
+  //The first and sixth digit of PORTB (pin number 8 and 13) so we want to save whatever values are in those bits
   //We want the last 4 bits of val (B00001111) to be positioned B00011110 in PORTB: shift 1 to the left
-  PORTB = (PORTB & 1) | ((val << 1) & PORT_BITMASK);
+  PORTB = (PORTB & B00100001) | ((val << 1) & PORT_BITMASK);
   //We want the first 4 bits of val (B11110000) to be positioned B00011110 in PORTC: shift 3 to the right
   PORTC = (val >> 3) & PORT_BITMASK;
 }
 
 void busMode(int mode){
   DDRC = DDRB = mode == OUTPUT ? 0xFF : 0x00;  
-  DDRB |= 1; //The first digit of PORTB (pin number 8) is being used for A12: it's always output
+  DDRB |= B00100001; //The first and sixth digit of PORTB (pin number 8 and 13) are being used for A12 and OK LED: they are always outputs
 }
 
 void pulse(int pin){
@@ -235,4 +260,17 @@ void write16(unsigned int val){
   buf[0] = (val >> 8) & 0xFF;
   buf[1] = val & 0xFF;
   Serial.write(buf, 2);
+}
+
+void error(){
+  Serial.write('!');
+  digitalWrite(LED_ERROR, HIGH);
+  _error = true;
+  lastErrorTime = millis();
+}
+
+void success(){
+  _success = true;
+  digitalWrite(LED_OK, HIGH);
+  lastSuccessTime = millis();
 }

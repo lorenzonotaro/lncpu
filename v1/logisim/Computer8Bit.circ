@@ -99,6 +99,27 @@ end TCL_Generic;
     <a name="circuit" val="main"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="2048000.0"/>
+    <comp lib="0" loc="(1000,1030)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="DBUS"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(1000,1070)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="NOT_DS_IN"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(1000,1090)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="NOT_DS_OUT"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(1000,1110)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="PHI1"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
     <comp lib="0" loc="(1010,420)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="PHI1"/>
@@ -166,13 +187,13 @@ end TCL_Generic;
       <a name="labelfont" val="SansSerif bold 8"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(1160,880)" name="Tunnel">
+    <comp lib="0" loc="(1160,900)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="SP_VAL"/>
       <a name="labelfont" val="SansSerif bold 8"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="0" loc="(1160,900)" name="Tunnel">
+    <comp lib="0" loc="(1160,920)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="SS_VAL"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -183,7 +204,7 @@ end TCL_Generic;
       <a name="label" val="NOT_ABL_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(1180,870)" name="Splitter">
+    <comp lib="0" loc="(1180,890)" name="Splitter">
       <a name="bit1" val="0"/>
       <a name="bit10" val="1"/>
       <a name="bit11" val="1"/>
@@ -203,6 +224,11 @@ end TCL_Generic;
       <a name="incoming" val="16"/>
       <a name="spacing" val="2"/>
     </comp>
+    <comp lib="0" loc="(1220,1050)" name="Tunnel">
+      <a name="label" val="DBUS"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+      <a name="width" val="8"/>
+    </comp>
     <comp lib="0" loc="(1240,680)" name="Tunnel">
       <a name="label" val="DBUS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -216,23 +242,23 @@ end TCL_Generic;
       <a name="label" val="RESET"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(1280,950)" name="Tunnel">
+    <comp lib="0" loc="(1280,970)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="PHI1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(1290,890)" name="Tunnel">
+    <comp lib="0" loc="(1290,910)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="CS_PC"/>
       <a name="labelfont" val="SansSerif bold 8"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="0" loc="(1290,910)" name="Tunnel">
+    <comp lib="0" loc="(1290,930)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="ADDR_SEL0"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(1290,930)" name="Tunnel">
+    <comp lib="0" loc="(1290,950)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="ADDR_SEL1"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -1214,6 +1240,14 @@ end TCL_Generic;
       <a name="facing" val="north"/>
       <a name="pull" val="1"/>
     </comp>
+    <comp lib="0" loc="(840,1430)" name="Tunnel">
+      <a name="label" val="NOT_DS_IN"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(840,1450)" name="Tunnel">
+      <a name="label" val="NOT_DS_OUT"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
     <comp lib="0" loc="(850,250)" name="Splitter">
       <a name="appear" val="center"/>
       <a name="bit1" val="0"/>
@@ -1437,6 +1471,11 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(860,990)" name="Tunnel">
       <a name="label" val="NOT_PC_IN"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(990,1050)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="C4"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(990,250)" name="Splitter">
@@ -1891,6 +1930,9 @@ end TCL_Generic;
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="Data bus"/>
     </comp>
+    <comp loc="(1220,1030)" name="BufferedRegister">
+      <a name="label" val="DS"/>
+    </comp>
     <comp loc="(1260,310)" name="ResetCircuit"/>
     <comp loc="(1260,380)" name="DeviceOEPhaseSelector"/>
     <comp loc="(1510,830)" name="AddressSelector"/>
@@ -1973,12 +2015,14 @@ end TCL_Generic;
     <wire from="(1160,750)" to="(1190,750)"/>
     <wire from="(1170,640)" to="(1170,700)"/>
     <wire from="(1170,730)" to="(1190,730)"/>
-    <wire from="(1180,870)" to="(1290,870)"/>
+    <wire from="(1180,890)" to="(1290,890)"/>
     <wire from="(1190,680)" to="(1190,710)"/>
     <wire from="(1190,680)" to="(1240,680)"/>
     <wire from="(1210,780)" to="(1210,800)"/>
     <wire from="(1210,780)" to="(1260,780)"/>
     <wire from="(1210,800)" to="(1240,800)"/>
+    <wire from="(1220,870)" to="(1220,1030)"/>
+    <wire from="(1220,870)" to="(1290,870)"/>
     <wire from="(1230,820)" to="(1230,850)"/>
     <wire from="(1230,850)" to="(1290,850)"/>
     <wire from="(1240,800)" to="(1240,830)"/>
@@ -1986,7 +2030,7 @@ end TCL_Generic;
     <wire from="(1250,710)" to="(1260,710)"/>
     <wire from="(1260,310)" to="(1270,310)"/>
     <wire from="(1260,710)" to="(1260,780)"/>
-    <wire from="(1280,950)" to="(1290,950)"/>
+    <wire from="(1280,970)" to="(1290,970)"/>
     <wire from="(1290,1010)" to="(1290,1230)"/>
     <wire from="(1290,1010)" to="(1550,1010)"/>
     <wire from="(1290,1230)" to="(1410,1230)"/>
@@ -2093,7 +2137,7 @@ end TCL_Generic;
     <wire from="(2020,950)" to="(2070,950)"/>
     <wire from="(2020,970)" to="(2030,970)"/>
     <wire from="(2040,1780)" to="(2260,1780)"/>
-    <wire from="(2040,990)" to="(2040,1440)"/>
+    <wire from="(2040,990)" to="(2040,1500)"/>
     <wire from="(2040,990)" to="(2070,990)"/>
     <wire from="(2070,950)" to="(2070,990)"/>
     <wire from="(2100,580)" to="(2100,650)"/>
@@ -2264,10 +2308,10 @@ end TCL_Generic;
     <wire from="(60,500)" to="(70,500)"/>
     <wire from="(60,530)" to="(70,530)"/>
     <wire from="(60,560)" to="(70,560)"/>
-    <wire from="(600,1440)" to="(2040,1440)"/>
+    <wire from="(600,1500)" to="(2040,1500)"/>
     <wire from="(600,370)" to="(600,690)"/>
     <wire from="(600,370)" to="(620,370)"/>
-    <wire from="(600,690)" to="(600,1440)"/>
+    <wire from="(600,690)" to="(600,1500)"/>
     <wire from="(670,210)" to="(700,210)"/>
     <wire from="(700,210)" to="(700,220)"/>
     <wire from="(700,240)" to="(700,260)"/>
@@ -2365,6 +2409,7 @@ end TCL_Generic;
     <wire from="(910,2010)" to="(1110,2010)"/>
     <wire from="(960,220)" to="(960,230)"/>
     <wire from="(960,230)" to="(980,230)"/>
+    <wire from="(990,1050)" to="(1000,1050)"/>
     <wire from="(990,230)" to="(1010,230)"/>
     <wire from="(990,250)" to="(990,260)"/>
     <wire from="(990,260)" to="(1030,260)"/>
@@ -4485,6 +4530,18 @@ f0 ee bc db ee bc 3e 33
       <a name="label" val="CSPC_UP"/>
       <a name="output" val="true"/>
     </comp>
+    <comp lib="0" loc="(1240,1870)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="NOT_DS_IN"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(1240,1890)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="NOT_DS_OUT"/>
+      <a name="output" val="true"/>
+    </comp>
     <comp lib="0" loc="(1370,1450)" name="Tunnel">
       <a name="label" val="NOT_PASS"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -5399,9 +5456,9 @@ e d 14*f e d 14*f d e
       <a name="radix" val="16"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="0" loc="(510,450)" name="Constant">
-      <a name="facing" val="north"/>
-      <a name="value" val="0x20"/>
+    <comp lib="0" loc="(510,450)" name="Pin">
+      <a name="appearance" val="NewPins"/>
+      <a name="label" val="DS_IN"/>
       <a name="width" val="8"/>
     </comp>
     <comp lib="0" loc="(530,430)" name="Splitter">
@@ -5492,19 +5549,19 @@ e d 14*f e d 14*f d e
       <a name="select" val="2"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="8" loc="(395,470)" name="Text">
+    <comp lib="8" loc="(310,526)" name="Text">
       <a name="font" val="Consolas bold 16"/>
-      <a name="text" val="01: 20:ABL"/>
+      <a name="text" val="01: DS:ABL"/>
     </comp>
-    <comp lib="8" loc="(395,490)" name="Text">
+    <comp lib="8" loc="(310,546)" name="Text">
       <a name="font" val="Consolas bold 16"/>
       <a name="text" val="10: SS:SP"/>
     </comp>
-    <comp lib="8" loc="(395,510)" name="Text">
+    <comp lib="8" loc="(310,566)" name="Text">
       <a name="font" val="Consolas bold 16"/>
       <a name="text" val="11: CS:PC"/>
     </comp>
-    <comp lib="8" loc="(405,450)" name="Text">
+    <comp lib="8" loc="(320,506)" name="Text">
       <a name="font" val="Consolas bold 16"/>
       <a name="text" val="00: ABH:ABL"/>
     </comp>

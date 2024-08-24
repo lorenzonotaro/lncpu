@@ -3,6 +3,7 @@ package com.lnasm.compiler.parser.argument;
 import com.lnasm.compiler.common.CompileException;
 import com.lnasm.compiler.linker.ILabelResolver;
 import com.lnasm.compiler.linker.ILabelSectionLocator;
+import com.lnasm.compiler.linker.LinkInfo;
 import com.lnasm.compiler.parser.RegisterId;
 
 import java.io.IOException;
@@ -26,9 +27,9 @@ public class Composite extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) throws IOException {
-        byte[] highBytes = high.encode(labelResolver, instructionAddress);
-        byte[] lowBytes = low.encode(labelResolver, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+        byte[] highBytes = high.encode(labelResolver, linkInfo, instructionAddress);
+        byte[] lowBytes = low.encode(labelResolver, linkInfo, instructionAddress);
 
         byte[] result = new byte[highBytes.length + lowBytes.length];
         System.arraycopy(highBytes, 0, result, 0, highBytes.length);

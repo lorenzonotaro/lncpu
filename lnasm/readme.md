@@ -125,7 +125,7 @@ Valid operands for binary operator are:
 
 ### Casts
 
-The cast operator `::` allow you to trucate 16-bit words to 8-bit values and to extend 8-bit values to 16-bit words. 
+The cast operator `::` allows you to trucate 16-bit words to 8-bit values and to extend 8-bit values to 16-bit words. 
 
 The cast operator has the highest precedence, second only to primary expressions (identifiers, constant values, string literals).
 
@@ -189,7 +189,7 @@ For each section you must specify its properties. Section properties include:
 * `type`. This is **mandatory**, as each section must have a type specified. Possible values:
   * `ROM`: the section will be placed in ROM and will be included into the binary output. Address space: `0x0000` to `0x1fff`. Max section size is 0x2000 bytes.
   * `RAM`: the section will not be included into the binary output. Address space: `0x2000` to `0x3fff`. Max section size is 0x2000 bytes.
-  * `PAGE0`: the section represents the first page of RAM, thus will not be included in the binary output. `PAGE0` implies that the start address of the section is `0x2000` and the mode is `fixed`: these properties can therefore be omitted.
+  * `DATAPAGE`: the section represents the first page of RAM, thus will not be included in the binary output. `PAGE0` implies that the start address of the section is `0x2000` and the mode is `fixed`: these properties can therefore be omitted.
   Address space: `0x2000` to `0x20ff`. Max section size is 0x100 bytes.
 * `mode` (default: `fixed`). Possible values:
   * `fixed`: the section will be placed at a fixed address, specified by the `start` properties (required).

@@ -219,7 +219,7 @@
                 "dbus_write": false
             },
             "01": {
-                "name": "page0:abl",
+                "name": "ds:abl",
                 "dbus_read": false,
                 "dbus_write": false
             },
@@ -614,6 +614,22 @@
             "behavior": {
                 "dbus_read": false,
                 "dbus_write": false
+            }
+        },
+        {
+            "name": "NOT_DS_IN",
+            "default_value": 1,
+            "behavior": {
+                "dbus_read": true,
+                "dbus_write": false
+            }
+        },
+        {
+            "name": "NOT_DS_OUT",
+            "default_value": 1,
+            "behavior": {
+                "dbus_read": false,
+                "dbus_write": true
             }
         }
     ]
