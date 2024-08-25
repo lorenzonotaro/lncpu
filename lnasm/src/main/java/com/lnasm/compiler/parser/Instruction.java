@@ -90,6 +90,7 @@ public class Instruction extends CodeElement {
                 linkInfo.ssSet = true;
             }
 
+            
             if(immediateInstruction.contains("datap") && !linkInfo.dsSet && !LNASM.settings.get("-Wdata-page-access-before-setup", Boolean.class)){
                 Logger.compileWarning("data page addressing mode before setting up DS register", opcode);
             }

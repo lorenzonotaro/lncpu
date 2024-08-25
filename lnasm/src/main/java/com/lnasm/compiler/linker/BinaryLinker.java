@@ -130,14 +130,18 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
     private Map<String, SectionBuilder> makeSectionBuilders(ParseResult parseResult, LinkerLabelSectionLocator labelLocator) {
         var sectionBuilders = new HashMap<String, SectionBuilder>();
 
-        for (ParsedBlock block : parseResult.blocks()) {
-            var sectionInfo = getConfig().getSectionInfo(block.sectionName);
-            if (sectionInfo == null){
+        for (var sectionInfo : getConfig().getSectionInfos()) {
+            sectionBuilders.put(sectionInfo.getName(), new SectionBuilder(sectionInfo, labelLocator));
+        }
+
+        for (ParsedBlock block : parseResult.blocks()){
+            SectionBuilder sb = sectionBuilders.get(block.sectionName);
+
+            if(sb == null){
                 throw new CompileException("section not found in linker config", block.sectionToken);
-            }else{
-                var sectionBuilder = sectionBuilders.computeIfAbsent(block.sectionName, k -> new SectionBuilder(sectionInfo, labelLocator));
-                sectionBuilder.append(block);
             }
+
+            sb.append(block);
         }
 
         return sectionBuilders;

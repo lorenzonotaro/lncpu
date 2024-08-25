@@ -39,11 +39,11 @@
 
   "-Wdata-page-access-before-setup": {
     "help": "Disables data page access before setup compile warning.",
-    "value": false
+    "value": true
   },
 
   "-Wstack-access-before-setup": {
     "help": "Disables stack access before setup compile warning.",
-    "value": false
+    "value": true
   }
 }

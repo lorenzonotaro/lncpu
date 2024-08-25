@@ -37,4 +37,8 @@ public class LinkerConfig{
     public SectionInfo getSectionInfo(String name) {
         return sectionMap.get(name);
     }
+
+    public SectionInfo[] getSectionInfos() {
+        return sections;
+    }
 }

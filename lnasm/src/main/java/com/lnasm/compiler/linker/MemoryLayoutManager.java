@@ -214,7 +214,7 @@ public class MemoryLayoutManager {
                 throw new IllegalArgumentException("offset out of bounds");
                 }
 
-            if(offset == 0 || offset == getSize() - 1){
+            if(offset == getSize() - 1){
                 return;
             }
 
