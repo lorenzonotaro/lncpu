@@ -102,8 +102,10 @@ Labels starting with `_` are interpreted as sublabels (if preceded by a label th
 
 When used, labels are evaluated as:
 
-* `dcst` (16-bit words) if they point to a non-page 0 section.
-* `cst` (byte) if they point to a page 0 section.
+* `dcst` (16-bit words) if they point to a non-data page section.
+* `cst` (byte) if they point to a data page section.
+
+*Note*: section names can be referenced just like labels. They always evaluate to the start of the section as specified in the linker configuration (`dcst`), even if the section is a data page section.
 
 ### Expressions
 
@@ -178,34 +180,28 @@ If no options are provided, lnasm looks for a file called `linker.cfg` in the cu
 The format of a configuration script is as follows:
 
     SECTIONS[
-      <section name>: type = <section type>[, <property> = <value>, ...] ;
-      <section name>: type = <section type>[, <property> = <value>, ...] ;
+      <section name>: property1 = value1, property2 = value2, ...;
+      ...
     ]
 
 Each section name must be unique, may contain letters, numbers and underscores and cannot start with a digit.
 
-For each section you must specify its properties. Section properties include:
+Use the following properties to define a section:
 
-* `type`. This is **mandatory**, as each section must have a type specified. Possible values:
-  * `ROM`: the section will be placed in ROM and will be included into the binary output. Address space: `0x0000` to `0x1fff`. Max section size is 0x2000 bytes.
-  * `RAM`: the section will not be included into the binary output. Address space: `0x2000` to `0x3fff`. Max section size is 0x2000 bytes.
-  * `DATAPAGE`: the section represents the first page of RAM, thus will not be included in the binary output. `PAGE0` implies that the start address of the section is `0x2000` and the mode is `fixed`: these properties can therefore be omitted.
-  Address space: `0x2000` to `0x20ff`. Max section size is 0x100 bytes.
-* `mode` (default: `fixed`). Possible values:
-  * `fixed`: the section will be placed at a fixed address, specified by the `start` properties (required).
-  * `page_align`: the section will be placed at the first available page-aligned address.
-  * `page_fit`: the section will be placed at the first available address that ensures that the section fits in a single page. *Note*: a `page_fit` section cannot be bigger than 256 bytes.
-  * `fit`: the section will be placed wherever it fits, regardless of page boundaries.
-* `start` (required if mode is `fixed` or unspecified). The start address of the section.
-* `multi` (default `false`). If `true`, the section can be referenced multiple times in the code via the `.section` directive: each block will be appended to the section.
-
-**Note**: this is useful for modular programs and the page 0 section: each module can reserve its own space in the page 0 section.
-
+* `mode`: the placement mode of the section. Possible values are:
+  * `fixed`: the section is placed at a fixed address. You must specify the start address using the `start` property.
+  * `page_align`: the section is placed at the first available address that is page-aligned (`xx00`). You must specify the target device using the `target` property.
+  * `page_fit`: the section is placed at the first available address that fits its size and so that the section does not cross a page boundary. You must specify the target device using the `target` property.
+  * `fit`: the section is placed at the first available address that fits its size, regardless of page boundaries. You must specify the target device using the `target` property.
+* `target`: the target device for the section. This property is mandatory for `page_align`, `page_fit` and `fit` sections. One of `ROM`, `RAM`, `D1` through `D6`.
+* `datapage`: if present, indicates that the section represents a data page. All labels in this section will evaluate to a `cst` (byte) value.
+* `virtual`: only applicable to a `datapage`. If present, the section will not be placed in the address space. It may be used as a dynamic data page, whose address is determined at runtime via the `DS` register.
+* `multi`: if present, the section can be referenced multiple times. Each 'block' will be appended to the final binary. This is useful for data pages, as each module can reserve its own space in the data page.
+* 
 Example:
 
     SECTIONS[
-      CODE: type = ROM, mode = fixed, start = 0x0000;
-      DATA: type = RAM, mode = fit;
-      PAGE0: type = PAGE0;
-      INTVEC: type = ROM, mode = fixed, start = 0x1f00;
+      STARTUP_CODE: mode = fixed, start = 0x0000;
+      PROGRAM: mode = page_fit, target = ROM;
+      DATA_PAGE: mode = page_align, target = RAM, datapage;
     ]
