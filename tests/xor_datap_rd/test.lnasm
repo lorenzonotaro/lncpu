@@ -1,0 +1,8 @@
+.section CODE
+	mov 0x20, DS
+	mov 0x20, RD
+	mov 0x11, [0x20]
+	xor [0x20], RD
+	hlt
+; [0x2020] = 0x31
+; FLAGS = 0b0000 

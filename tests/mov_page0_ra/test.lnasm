@@ -1,5 +1,0 @@
-.section CODE
-	mov 0x10, [0x01]
-	mov [0x01], RA
-	hlt
-; RA = 0x10

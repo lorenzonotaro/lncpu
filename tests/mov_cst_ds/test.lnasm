@@ -1,0 +1,6 @@
+.section CODE
+
+    mov 0x42,   DS
+    hlt
+
+; DS = 0x42

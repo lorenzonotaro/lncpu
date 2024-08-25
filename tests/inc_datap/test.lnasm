@@ -1,0 +1,7 @@
+.section CODE
+	mov 0x20, DS
+	mov 0x01, [0x00]
+	inc [0x00]
+	hlt 
+; [0x2000] = 0x02
+; FLAGS = 0b0000

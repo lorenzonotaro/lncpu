@@ -1,5 +1,0 @@
-.section CODE
-	mov 0x10, [0x11]
-	mov [0x11], RB
-	hlt
-; RB = 0x10

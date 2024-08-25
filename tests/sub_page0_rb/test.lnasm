@@ -1,7 +1,0 @@
-.section CODE
-	mov 0x20, RB
-	mov 0x10, [0x20]
-	sub [0x20], RB
-	hlt
-; [0x20] = 0xF0
-; FLAGS = 0b0101 
