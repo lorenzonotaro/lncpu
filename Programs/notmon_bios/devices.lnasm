@@ -1,0 +1,15 @@
+%ifndef F_DEVICES
+%define F_DEVICES
+
+.section DEV_KEYBOARD
+KBAVAIL:
+    .res 1
+KBNEXT:
+    .res 1
+
+
+.section DEV_TTY
+TTYOUT:
+    .res 1
+
+%endif
