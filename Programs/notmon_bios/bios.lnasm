@@ -1,7 +1,7 @@
 %ifndef     F_BIOS
 %define     F_BIOS
 
-%include        "defs.lnasm"
+%include        "devices.lnasm"
 
 .section BIOS
 ;   Resets the buffer write and read pointers.
@@ -23,7 +23,7 @@ IO_GETC:
     jz          _notavail                   ; if they are equal, there are no available characters
     push        RC                          ; preserve RC, RD
     push        RD
-    mov         INPBUF,     RC              ; move the input buffer page into RC
+    mov         (INPUT_BUFFER >> 8)::byte,     RC ; move the input buffer page into RC
     mov         RB,         RD              ; and the buffer read pointer in RB
     mov         [RC:RD],    RA              ; read the character from the buffer and store it RA
     inc         RD                          ; increment the buffer read pointer and store it back

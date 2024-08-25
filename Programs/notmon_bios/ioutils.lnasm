@@ -1,3 +1,4 @@
+%include    "devices.lnasm"
 %include    "numutils.lnasm"
 
 %ifndef F_IOUTILS

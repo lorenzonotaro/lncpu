@@ -1,6 +1,8 @@
 %ifndef     F_INTERRUPT
 %define     F_INTERRUPT
 
+%include "devices.lnasm"
+
 .section    INTVEC
 IRQ_HANDLER:
     push            RA                          ; preserve RA
@@ -14,7 +16,7 @@ IRQ_HANDLER:
     push            RC                          ; preserve RC, and RD
     push            RD
 
-    mov             INPBUF,         RC          ; load the buffer page and write pointer into RC:RD
+    mov             (INPUT_BUFFER >> 8)::byte,  RC ; load the buffer page and write pointer into RC:RD
     mov             [BUFWPT],       RD
     mov             RA,             [RC:RD]     ; read the character from the buffer
     inc             RD                          ; advance the write pointer and store it back

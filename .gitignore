@@ -1,6 +1,12 @@
 # Compiled class file
 *.class
 
+# Compiled lnasm
+*.out
+a.out
+a.txt
+*.immediate.txt
+
 .idea
 
 # Log file
