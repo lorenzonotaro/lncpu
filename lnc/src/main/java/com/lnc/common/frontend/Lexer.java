@@ -10,21 +10,21 @@ public class Lexer {
     private int index;
     private int start;
 
-    private Token.Type[] keywordSet;
+    private TokenType[] keywordSet;
 
     private final boolean preprocessorDirectives;
 
     private final boolean comments;
 
     public Lexer() {
-        this(null, Token.Type.LNASM_KEYWORDSET, true, true);
+        this(null, TokenType.LNASM_KEYWORDSET, true, true);
     }
 
-    public Lexer(Token.Type[] keywordSet) {
+    public Lexer(TokenType[] keywordSet) {
         this(null, keywordSet, true, true);
     }
 
-    public Lexer(Token macroSubToken, Token.Type[] keywordSet, boolean preprocessorDirectives, boolean comments) {
+    public Lexer(Token macroSubToken, TokenType[] keywordSet, boolean preprocessorDirectives, boolean comments) {
         this.macroSubToken = macroSubToken;
         this.keywordSet = keywordSet;
         this.preprocessorDirectives = preprocessorDirectives;
@@ -79,7 +79,7 @@ public class Lexer {
             case ';':
                 if(comments)
                     return null;
-                else return token(Token.Type.SEMICOLON);
+                else return token(TokenType.SEMICOLON);
             case '.':
                 return directive();
             case '%':
@@ -87,49 +87,49 @@ public class Lexer {
                     return macro();
                 else throw error("unexpected character", "%");
             case '[':
-                return token(Token.Type.L_SQUARE_BRACKET);
+                return token(TokenType.L_SQUARE_BRACKET);
             case ']':
-                return token(Token.Type.R_SQUARE_BRACKET);
+                return token(TokenType.R_SQUARE_BRACKET);
             case '=':
-                return token(Token.Type.EQUALS);
+                return token(TokenType.EQUALS);
             case ',':
-                return token(Token.Type.COMMA);
+                return token(TokenType.COMMA);
             case ':':
                 if(peek() == ':'){
                     advance();
-                    return token(Token.Type.DOUBLE_COLON);
+                    return token(TokenType.DOUBLE_COLON);
                 }
-                return token(Token.Type.COLON);
+                return token(TokenType.COLON);
             case '+':
-                return token(Token.Type.PLUS);
+                return token(TokenType.PLUS);
             case '-':
-                return token(Token.Type.MINUS);
+                return token(TokenType.MINUS);
             case '*':
-                return token(Token.Type.STAR);
+                return token(TokenType.STAR);
             case '/':
-                return token(Token.Type.SLASH);
+                return token(TokenType.SLASH);
             case '<':
                 if (peek() == '<') {
                     advance();
-                    return token(Token.Type.BITWISE_LEFT);
+                    return token(TokenType.BITWISE_LEFT);
                 }
                 throw error("unexpected character", "<");
             case '>':
                 if (peek() == '>') {
                     advance();
-                    return token(Token.Type.BITWISE_RIGHT);
+                    return token(TokenType.BITWISE_RIGHT);
                 }
                 throw error("unexpected character", ">");
             case '&':
-                return token(Token.Type.BITWISE_AND);
+                return token(TokenType.BITWISE_AND);
             case '|':
-                return token(Token.Type.BITWISE_OR);
+                return token(TokenType.BITWISE_OR);
             case '^':
-                return token(Token.Type.BITWISE_XOR);
+                return token(TokenType.BITWISE_XOR);
             case '(':
-                return token(Token.Type.L_PAREN);
+                return token(TokenType.L_PAREN);
             case ')':
-                return token(Token.Type.R_PAREN);
+                return token(TokenType.R_PAREN);
             case '"':
             case '\'':
                 return string(c);
@@ -152,11 +152,11 @@ public class Lexer {
 
     private Token name() {
         String ident = identifier();
-        for (Token.Type type : keywordSet) {
+        for (TokenType type : keywordSet) {
             if (type.name().equalsIgnoreCase(ident))
                 return token(type);
         }
-        return token(Token.Type.IDENTIFIER, ident);
+        return token(TokenType.IDENTIFIER, ident);
     }
 
     private CompileException error(String message, String lexeme) {
@@ -178,9 +178,9 @@ public class Lexer {
         String val = escapeString(line.code.substring(start + 1, index - 1));
 
         if(val.length() == 1)
-            return token(Token.Type.INTEGER, lexeme, (int) val.charAt(0) & 0xFF);
+            return token(TokenType.INTEGER, lexeme, (int) val.charAt(0) & 0xFF);
 
-        return token(Token.Type.STRING, lexeme, val);
+        return token(TokenType.STRING, lexeme, val);
     }
 
     private String escapeString(String str){
@@ -231,26 +231,26 @@ public class Lexer {
 
         if(num.length() == 0)
             throw error("invalid integer", lexeme);
-        return token(Token.Type.INTEGER, lexeme, Integer.parseInt(num, base));
+        return token(TokenType.INTEGER, lexeme, Integer.parseInt(num, base));
     }
 
     private Token macro() {
         String ident = identifier();
 
         if ("%include".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_INCLUDE);
+            return token(TokenType.MACRO_INCLUDE);
         if ("%define".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_DEFINE);
+            return token(TokenType.MACRO_DEFINE);
         if ("%undef".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_UNDEFINE);
+            return token(TokenType.MACRO_UNDEFINE);
         if ("%ifdef".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_IFDEF);
+            return token(TokenType.MACRO_IFDEF);
         if ("%ifndef".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_IFNDEF);
+            return token(TokenType.MACRO_IFNDEF);
         if ("%endif".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_ENDIF);
+            return token(TokenType.MACRO_ENDIF);
         if ("%error".equalsIgnoreCase(ident))
-            return token(Token.Type.MACRO_ERROR);
+            return token(TokenType.MACRO_ERROR);
 
         throw error("invalid macro", ident);
     }
@@ -259,23 +259,23 @@ public class Lexer {
         String ident = identifier();
 
         if (".section".equalsIgnoreCase(ident))
-            return token(Token.Type.DIR_SECTION);
+            return token(TokenType.DIR_SECTION);
         else if (".data".equalsIgnoreCase(ident))
-            return token(Token.Type.DIR_DATA);
+            return token(TokenType.DIR_DATA);
         else if (".res".equals(ident))
-            return token(Token.Type.DIR_RES);
+            return token(TokenType.DIR_RES);
         throw error("invalid directive", ident);
     }
 
-    private Token token(Token.Type type, String lexeme, Object literal) {
+    private Token token(TokenType type, String lexeme, Object literal) {
         return new Token(macroSubToken, type, lexeme, literal, Location.of(line, start + 1));
     }
 
-    private Token token(Token.Type type, String lexeme) {
+    private Token token(TokenType type, String lexeme) {
         return token(type, lexeme, null);
     }
 
-    private Token token(Token.Type type) {
+    private Token token(TokenType type) {
         return token(type, line.code.substring(start, index), null);
     }
 

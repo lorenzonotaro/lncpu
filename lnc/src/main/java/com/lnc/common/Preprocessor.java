@@ -1,11 +1,7 @@
 package com.lnc.common;
 
 import com.lnc.LNC;
-import com.lnc.common.frontend.CompileException;
-import com.lnc.common.frontend.Lexer;
-import com.lnc.common.frontend.Line;
-import com.lnc.common.frontend.Location;
-import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,7 +18,7 @@ public class Preprocessor {
     public Preprocessor(List<List<Token>> lines){
         this.lines = lines;
 
-        defines.put("__VERSION__", List.of(Token.__internal(Token.Type.STRING, LNC.PROGRAM_VERSION)));
+        defines.put("__VERSION__", List.of(Token.__internal(TokenType.STRING, LNC.PROGRAM_VERSION)));
     }
 
     public boolean preprocess() {
@@ -44,7 +40,7 @@ public class Preprocessor {
         Token macroToken;
         if (!line.isEmpty()) {
             macroToken = line.get(0);
-            if (macroToken.type.equals(Token.Type.MACRO_DEFINE)) {
+            if (macroToken.type.equals(TokenType.MACRO_DEFINE)) {
                 if(line.size() >= 2){
                     String macroName = line.get(1).lexeme;
                     if (defines.containsKey(macroName))
@@ -53,7 +49,7 @@ public class Preprocessor {
                     iterator.remove();
                     needsReprocessing = true;
                 }else throw new CompileException("invalid macro syntax", macroToken);
-            } else if (macroToken.type.equals(Token.Type.MACRO_UNDEFINE)) {
+            } else if (macroToken.type.equals(TokenType.MACRO_UNDEFINE)) {
                 if(line.size() == 2) {
                     String macroName = line.get(1).lexeme;
                     if (!defines.containsKey(macroName)) {
@@ -62,7 +58,7 @@ public class Preprocessor {
                     defines.remove(macroName);
                     iterator.remove();
                 }else throw new CompileException("invalid macro syntax", macroToken);
-            } else if (macroToken.type.equals(Token.Type.MACRO_INCLUDE)){
+            } else if (macroToken.type.equals(TokenType.MACRO_INCLUDE)){
                 if(line.size() == 2){
                     String fileName = (String) line.get(1).literal;
                     try {
@@ -76,30 +72,30 @@ public class Preprocessor {
                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
                     }
                 }else throw new CompileException("invalid macro syntax", macroToken);
-            } else if(macroToken.type.equals(Token.Type.MACRO_IFDEF)){
+            } else if(macroToken.type.equals(TokenType.MACRO_IFDEF)){
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = defines.containsKey(macroName);
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
-            } else if(macroToken.type.equals(Token.Type.MACRO_IFNDEF)){
+            } else if(macroToken.type.equals(TokenType.MACRO_IFNDEF)){
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = !defines.containsKey(macroName);
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
-            } else if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
+            } else if(macroToken.type.equals(TokenType.MACRO_ENDIF)){
                 throw new CompileException("unexpected %endif", macroToken);
-            }else if(macroToken.type.equals(Token.Type.MACRO_ERROR)){
-                if(line.size() == 2 && line.get(1).type == Token.Type.STRING){
+            }else if(macroToken.type.equals(TokenType.MACRO_ERROR)){
+                if(line.size() == 2 && line.get(1).type == TokenType.STRING){
                     throw new CompileException(line.get(1).literal.toString(), macroToken);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             }else {
                 iterator.set(line.stream().flatMap(l -> {
                     List<Token> macroValue = null;
-                    boolean isMacroIdent = l.type == Token.Type.IDENTIFIER && (macroValue = defines.get(l.lexeme)) != null;
+                    boolean isMacroIdent = l.type == TokenType.IDENTIFIER && (macroValue = defines.get(l.lexeme)) != null;
                     if (isMacroIdent) {
                         needsReprocessing = true;
                         return macroValue.stream().map(t -> new Token(t, l));
@@ -146,13 +142,13 @@ public class Preprocessor {
                 continue;
             Token macroToken = line.get(0);
             iterator.remove();
-            if(macroToken.type.equals(Token.Type.MACRO_ENDIF) && ifDepth == 1){
+            if(macroToken.type.equals(TokenType.MACRO_ENDIF) && ifDepth == 1){
                 closed = true;
                 break;
             }else{
-                if(macroToken.type.equals(Token.Type.MACRO_IFDEF) || macroToken.type.equals(Token.Type.MACRO_IFNDEF)){
+                if(macroToken.type.equals(TokenType.MACRO_IFDEF) || macroToken.type.equals(TokenType.MACRO_IFNDEF)){
                     ifDepth++;
-                }else if(macroToken.type.equals(Token.Type.MACRO_ENDIF)){
+                }else if(macroToken.type.equals(TokenType.MACRO_ENDIF)){
                     ifDepth--;
                 }
                 lines.add(line);

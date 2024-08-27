@@ -8,18 +8,18 @@ public abstract class AbstractParser<T> {
         return new CompileException(errorMsg, token);
     }
 
-    protected boolean check(Token.Type... types) {
+    protected boolean check(TokenType... types) {
         if (isAtEnd()) return false;
-        Token.Type peekType = peek().type;
+        TokenType peekType = peek().type;
         return Arrays.stream(types).anyMatch(t -> t == peekType);
     }
 
-    protected Token consume(String errorMsg, Token.Type... types) {
+    protected Token consume(String errorMsg, TokenType... types) {
         if (check(types)) return advance();
         else throw error(peek(), errorMsg);
     }
 
-    protected boolean match(Token.Type... types) {
+    protected boolean match(TokenType... types) {
         if(check(types)){
             advance();
             return true;

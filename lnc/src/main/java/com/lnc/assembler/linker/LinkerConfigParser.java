@@ -4,6 +4,7 @@ import com.lnc.assembler.common.*;
 import com.lnc.common.frontend.AbstractParser;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
     public boolean parse() {
 
         try{
-            consume("expected 'SECTIONS'", Token.Type.SECTIONS);
+            consume("expected 'SECTIONS'", TokenType.SECTIONS);
             var sections = sections();
             this.linkerConfig = new LinkerConfig(sections);
         }catch(CompileException e){
@@ -39,25 +40,25 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
     }
 
     private SectionInfo[] sections() {
-        consume("expected '['", Token.Type.L_SQUARE_BRACKET);
+        consume("expected '['", TokenType.L_SQUARE_BRACKET);
 
         var sections = new ArrayList<SectionInfo>();
 
         do{
             var si = sectionInfo();
             sections.add(si);
-            if(check(Token.Type.SEMICOLON))
+            if(check(TokenType.SEMICOLON))
                 advance();
-        }while(!check(Token.Type.R_SQUARE_BRACKET));
+        }while(!check(TokenType.R_SQUARE_BRACKET));
 
-        consume("expected '['", Token.Type.R_SQUARE_BRACKET);
+        consume("expected '['", TokenType.R_SQUARE_BRACKET);
 
         return sections.toArray(new SectionInfo[0]);
     }
 
     private SectionInfo sectionInfo() {
-        var sectionName = consume("expected section name", Token.Type.IDENTIFIER);
-        consume("expected ':'", Token.Type.COLON);
+        var sectionName = consume("expected section name", TokenType.IDENTIFIER);
+        consume("expected ':'", TokenType.COLON);
 
         var name = sectionName.lexeme;
         var start = -1;
@@ -68,16 +69,16 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         Boolean virtual = null;
 
         do{
-            var propName = consume("expected property name", Token.Type.IDENTIFIER);
+            var propName = consume("expected property name", TokenType.IDENTIFIER);
             Token propValue;
 
             if(propName.lexeme.equals("datapage") || propName.lexeme.equals("virtual") || propName.lexeme.equals("multi")){
-                if(match(Token.Type.EQUALS)) {
-                    propValue = consume("expected property value", Token.Type.IDENTIFIER);
-                }else propValue = new Token(Token.Type.IDENTIFIER, "true", "true", previous().location);
+                if(match(TokenType.EQUALS)) {
+                    propValue = consume("expected property value", TokenType.IDENTIFIER);
+                }else propValue = new Token(TokenType.IDENTIFIER, "true", "true", previous().location);
             }else{
-                consume("expected '='", Token.Type.EQUALS);
-                propValue = consume("expected property value", Token.Type.IDENTIFIER, Token.Type.INTEGER);
+                consume("expected '='", TokenType.EQUALS);
+                propValue = consume("expected property value", TokenType.IDENTIFIER, TokenType.INTEGER);
             }
 
 
@@ -141,10 +142,10 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
                 throw error(propName, "unknown property");
             }
 
-            if(check(Token.Type.COMMA))
+            if(check(TokenType.COMMA))
                 advance();
 
-        }while(!check(Token.Type.SEMICOLON, Token.Type.R_SQUARE_BRACKET));
+        }while(!check(TokenType.SEMICOLON, TokenType.R_SQUARE_BRACKET));
 
         try {
             return new SectionInfo(name, start, target, mode, multiWriteAllowed != null && multiWriteAllowed, dataPage != null && dataPage, virtual != null && virtual);

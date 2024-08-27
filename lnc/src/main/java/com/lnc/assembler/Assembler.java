@@ -9,6 +9,7 @@ import com.lnc.assembler.linker.*;
 import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.assembler.parser.ParseResult;
 import com.lnc.common.Preprocessor;
+import com.lnc.common.frontend.TokenType;
 import com.lnc.common.io.ByteArrayChannel;
 
 import java.nio.file.Files;
@@ -47,7 +48,7 @@ public class Assembler {
         ParseResult parseResult = parser.getResult();
 
         Logger.setProgramState("linker-config");
-        Lexer linkerConfigLexer = new Lexer(null, Token.Type.LINKER_CONFIG_KEYWORDSET, false, false);
+        Lexer linkerConfigLexer = new Lexer(null, TokenType.LINKER_CONFIG_KEYWORDSET, false, false);
         if(!linkerConfigLexer.parse(linkerConfigLines))
             return false;
         LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getLines().stream().map(l -> l.toArray(new Token[0])).toList());

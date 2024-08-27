@@ -9,6 +9,7 @@ import com.lnc.assembler.common.OpcodeMap;
 import com.lnc.common.frontend.Token;
 import com.lnc.assembler.linker.LinkInfo;
 import com.lnc.assembler.parser.argument.Argument;
+import com.lnc.common.frontend.TokenType;
 
 import java.io.IOException;
 import java.util.*;
@@ -47,7 +48,7 @@ public class Instruction extends CodeElement {
     }
 
     private boolean isShortJump() {
-        return opcode.type == Token.Type.JZ || opcode.type == Token.Type.JC || opcode.type == Token.Type.JN || opcode.type == Token.Type.GOTO;
+        return opcode.type == TokenType.JZ || opcode.type == TokenType.JC || opcode.type == TokenType.JN || opcode.type == TokenType.GOTO;
     }
 
     @Override
