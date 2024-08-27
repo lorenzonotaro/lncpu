@@ -5,7 +5,9 @@
 *.out
 a.out
 a.txt
-*.immediate.txt
+immediate.txt
+*immediate.txt
+test.lnasm
 
 .idea
 

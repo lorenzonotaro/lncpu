@@ -18,14 +18,54 @@
         "flags_modified": "-"
     },
     {
-        "name": "brk",
-        "description": "Pushes CS:PC and FLAGS, then calls the interrupt vector",
+        "name": "$brk$",
+        "description": "Reserved opcode (hardware interrupt). Do not use.",
         "microcode": [
             {
                 "NOT_IVH_OUT": 0,
                 "NOT_ABH_IN": 0,
                 "NOT_PC_INC": 0,
                 "CSPC_UP": 0
+            },
+            {
+                "NOT_IVL_OUT": 0,
+                "NOT_ABL_IN": 0
+            },
+            {
+                "NOT_CS_OUT": 0,
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {
+                "SP_MODE_SEL": "inc",
+                "NOT_PC_OUT": 0,
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {
+                "SP_MODE_SEL": "inc",
+                "NOT_FLAGS_OUT": 0,
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {
+                "J": 1,
+                "NOT_PC_IN": 0,
+                "NOT_CS_IN": 0,
+                "SP_MODE_SEL": "inc",
+                "FLAGS_MODE_SEL": "set_i"
+            }
+        ],
+        "flags_modified": "I"
+    },
+    
+    {
+        "name": "int",
+        "description": "Software interrupt. Pushes CS:PC and FLAGS, then calls the interrupt vector",
+        "microcode": [
+            {
+                "NOT_IVH_OUT": 0,
+                "NOT_ABH_IN": 0
             },
             {
                 "NOT_IVL_OUT": 0,

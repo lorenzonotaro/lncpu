@@ -128,6 +128,7 @@ public class Token {
         //instructions
         NOP,
         HLT,
+        INT,
         MOV,
         PUSH,
         POP,
@@ -179,6 +180,7 @@ public class Token {
         public static final Token.Type[] LNASM_KEYWORDSET = new Token.Type[]{
                 Token.Type.NOP,
                 Token.Type.HLT,
+                Token.Type.INT,
                 Token.Type.MOV,
                 Token.Type.PUSH,
                 Token.Type.POP,
@@ -222,6 +224,7 @@ public class Token {
         public static final Token.Type[] LNASM_INSTRUCTIONSET = new Token.Type[]{
                 Token.Type.NOP,
                 Token.Type.HLT,
+                Token.Type.INT,
                 Token.Type.MOV,
                 Token.Type.PUSH,
                 Token.Type.POP,
