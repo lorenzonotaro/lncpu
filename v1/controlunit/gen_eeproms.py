@@ -12,7 +12,6 @@ import hashlib
 import json
 
 OPCODES_TSV = 'opcodes.tsv'
-COPY_OPCODES_TSV_TO_LNASM = True
 EEPROM_FILES = []
 EEPROM_HASHES = []
 
@@ -185,12 +184,6 @@ with open('instructions.json') as file, open(OPCODES_TSV, mode='w') as opcodes_t
         for i in range(instr_addr, EEPROM_SIZE, 16):
             for j in range(0, INSTR_SIZE):
                 write_to_eeproms(i + j, 'FILLER_NOP', SIGNALS)
-
-# copy opcodes.tsv to lnasm if necessary
-
-if COPY_OPCODES_TSV_TO_LNASM:
-    print("Copying opcodes.tsv to lnasm project....")
-    shutil.copy(OPCODES_TSV, '../../lnasm/src/main/resources/opcodes.tsv')
 
 def sha256sum(filename):
     h  = hashlib.sha256()

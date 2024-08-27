@@ -1,15 +1,15 @@
 cd "$(dirname "$0")"
 
 # config variables
-build_lnasm=true
+build_lnc=true
 build_eeprom_serial_loader=true
 make_eeproms=true
 
 for arg in "$@"; do
 
-    if [ "$arg" == "--no-lnasm" ]; then
-        build_lnasm=false
-    elif [ "$arg" == "--no-eeprom-serial-loader" ]; then
+    if [ "$arg" == "--no-lnc" ]; then
+        build_lnc=false
+    elif [ "$arg" == "--no-eeprom-serial-loader" ] || [ "$arg" == "--no-esl" ]; then
         build_eeprom_serial_loader=false
     elif [ "$arg" == "--no-eeproms" ]; then
         make_eeproms=false
@@ -59,6 +59,10 @@ if [ $make_eeproms = true ] ; then
         exit 1
     fi
 
+    # === copy opcodes.tsv to lnc ===
+    echo "Copying opcodes.tsv to lnc..."
+    cp opcodes.tsv ../../lnc/src/main/resources/
+
     # === generate EEPROM binary files ===
 
     echo "Generating EEPROM binary files..."
@@ -74,26 +78,26 @@ if [ $make_eeproms = true ] ; then
 
 fi
 
-# === make lnasm ===
+# === make lnc ===
 
-if [ $build_lnasm = true ] ; then
+if [ $build_lnc = true ] ; then
 
-    cd lnasm
+    cd lnc
 
-    echo "Building lnasm..."
+    echo "Building lnc..."
 
     mvn clean package
 
     if [ $? -ne 0 ]; then
-        echo "Error: lnasm build failed"
+        echo "Error: lnc build failed"
         exit 1
     fi
 
-    cp target/lnasm.jar ../output/
+    cp target/lnc.jar ../output/
 
-    # generate run cmd/bash for lnasm
-    echo "java -jar %~dp0\lnasm.jar %*" > "../output/lnasm.bat"
-    echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lnasm.jar\" \"\$@\"" > "../output/lnasm"
+    # generate run cmd/bash for lnc
+    echo "java -jar %~dp0\lnc.jar %*" > "../output/lnc.bat"
+    echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lnc.jar\" \"\$@\"" > "../output/lnc"
 
     # === generate lnasm documentation ===
 
