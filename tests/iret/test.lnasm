@@ -1,0 +1,13 @@
+.section CODE
+    mov 0x0,    SP
+    mov 0x21,   SS
+    int
+    mov 0x12,   RB
+    hlt
+
+.section INTVEC
+    mov 0x24,   RA
+    iret
+
+; RA = 0x24
+; RB = 0x12
