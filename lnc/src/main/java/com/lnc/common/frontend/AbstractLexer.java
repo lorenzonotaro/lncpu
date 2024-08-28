@@ -46,8 +46,11 @@ public abstract class AbstractLexer<T>
             case '\0':
                 return null;
             case ';':
-                if(config.singleLineCommentsConfig() == LexerConfig.SingleLineCommentsConfig.ASM_STYLE)
+                if(config.singleLineCommentsConfig() == LexerConfig.SingleLineCommentsConfig.ASM_STYLE) {
+                    while (peek() != '\n' && !isAtEnd())
+                        advance();
                     return null;
+                }
                 else return token(TokenType.SEMICOLON);
             case '.':
                 return directive();
@@ -55,6 +58,10 @@ public abstract class AbstractLexer<T>
                 return token(TokenType.L_SQUARE_BRACKET);
             case ']':
                 return token(TokenType.R_SQUARE_BRACKET);
+            case '{':
+                return token(TokenType.L_CURLY_BRACE);
+            case '}':
+                return token(TokenType.R_CURLY_BRACE);
             case '=':
                 return token(TokenType.EQUALS);
             case ',':
@@ -68,12 +75,28 @@ public abstract class AbstractLexer<T>
             case '+':
                 return token(TokenType.PLUS);
             case '-':
+                if(peek() == '>'){
+                    advance();
+                    return token(TokenType.ARROW);
+                }
                 return token(TokenType.MINUS);
             case '*':
                 return token(TokenType.STAR);
             case '/':
-                if(peek() == '/')
+                if(peek() == '/' && config.singleLineCommentsConfig() == LexerConfig.SingleLineCommentsConfig.C_STYLE){
+                    while (peek() != '\n' && !isAtEnd())
+                        advance();
                     return null;
+                }else if(peek() == '*' && config.multiLineCommentsConfig() == LexerConfig.MultiLineCommentsConfig.C_STYLE){
+                    do {
+                        advance();
+                    } while (!(peek() == '*' && peek(1) == '/') && !isAtEnd());
+                    if(isAtEnd())
+                        throw error("unterminated comment", "EOF");
+                    advance();
+                    advance();
+                    return null;
+                }
                 return token(TokenType.SLASH);
             case '<':
                 if (peek() == '<') {
@@ -120,10 +143,11 @@ public abstract class AbstractLexer<T>
         }
     }
 
+
     private Token name() {
         String ident = identifier();
         for (TokenType type : config.keywordSet()) {
-            if (stringEquals(type.name(), ident))
+            if (stringEquals(type.getStrValue(), ident))
                 return token(type);
         }
         return token(TokenType.IDENTIFIER, ident);
@@ -256,9 +280,11 @@ public abstract class AbstractLexer<T>
     }
 
     protected char peek() {
-        if (isAtEnd())
-            return '\0';
-        return source.charAt(index);
+        return peek(0);
+    }
+
+    private char peek(int lookAhead) {
+        return index + lookAhead >= source.length() ? '\0' : source.charAt(index + lookAhead);
     }
 
     protected void reset(String source) {

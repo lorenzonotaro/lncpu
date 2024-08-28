@@ -17,6 +17,9 @@ public enum TokenType {
     L_PAREN,
     R_PAREN,
 
+    L_CURLY_BRACE,
+    R_CURLY_BRACE,
+
     L_SQUARE_BRACKET,
     R_SQUARE_BRACKET,
     IDENTIFIER,
@@ -47,6 +50,9 @@ public enum TokenType {
     BITWISE_XOR,
 
     EQUALS,
+
+    ARROW,
+
     //instructions
     NOP,
     HLT,
@@ -98,7 +104,31 @@ public enum TokenType {
     DS,
 
     // Linker config keywords
-    SECTIONS;
+    SECTIONS,
+
+    // lnc keywords
+    I8("i8"),
+    UI8("ui8"),
+    CHAR("char"),
+    DPAGE("dpage"),
+    VOID("void"),
+    BOOL("bool"),
+    STRUCT("struct"),
+    IF("if"),
+    ELSE("else"),
+    WHILE("while"),
+    FOR("for"),
+    RETURN("return"),
+    BREAK("break"),
+    CONTINUE("continue"),
+    SWITCH("switch"),
+    CASE("case"),
+    DEFAULT("default"),
+    TYPEDEF("typedef"),
+    SIZEOF("sizeof"),
+    STATIC("static")
+    ;
+
     public static final TokenType[] LNASM_KEYWORDSET = new TokenType[]{
             TokenType.NOP,
             TokenType.HLT,
@@ -184,4 +214,41 @@ public enum TokenType {
     public static final TokenType[] LINKER_CONFIG_KEYWORDSET = new TokenType[]{
             TokenType.SECTIONS
     };
+
+    public static final TokenType[] LNC_KEYWORDSET = new TokenType[]{
+            TokenType.I8,
+            TokenType.UI8,
+            TokenType.CHAR,
+            TokenType.DPAGE,
+            TokenType.VOID,
+            TokenType.BOOL,
+            TokenType.STRUCT,
+            TokenType.IF,
+            TokenType.ELSE,
+            TokenType.WHILE,
+            TokenType.FOR,
+            TokenType.RETURN,
+            TokenType.BREAK,
+            TokenType.CONTINUE,
+            TokenType.SWITCH,
+            TokenType.CASE,
+            TokenType.DEFAULT,
+            TokenType.TYPEDEF,
+            TokenType.SIZEOF,
+            TokenType.STATIC
+    };
+
+    private final String strValue;
+
+    private TokenType(String strValue) {
+        this.strValue = strValue;
+    }
+
+    private TokenType(){
+        this.strValue = name();
+    }
+
+    public String getStrValue() {
+        return strValue;
+    }
 }
