@@ -43,7 +43,7 @@ public class LNC {
     }
 
     private static int runFromSourceFiles() {
-        List<Line> lines, linkerConfigLines;
+
         try {
             includeDirs = settings.get("-I", String.class).split(";");
 
@@ -51,15 +51,13 @@ public class LNC {
                 Logger.error("no source files.");
                 return 1;
             }
-            lines = getLinesFromSourceFiles();
-            linkerConfigLines = getLinkerConfig();
-            Assembler assembler = new Assembler(lines, linkerConfigLines);
+            Assembler assembler = new Assembler(settings.getSourceFiles().stream().map(Path::of).toList(), getLinkerConfig());
             if(!assembler.compile())
                 System.exit(1);
             else if(!settings.get("-s", Boolean.class)){
                 assembler.writeOutputFiles();
             }
-        } catch (FileNotFoundException | IllegalStateException e) {
+        } catch (IllegalStateException | IOException e) {
             Logger.error(e.getMessage());
             return 1;
         }
@@ -74,7 +72,7 @@ public class LNC {
         return lines;
     }
 
-    private static List<Line> getLinkerConfig() throws FileNotFoundException {
+    private static String getLinkerConfig() throws IOException {
         var configFile = settings.get("-lf", String.class);
         var configScript = settings.get("-lc", String.class);
 
@@ -86,9 +84,9 @@ public class LNC {
         if(!"".equals(configScript) && !"".equals(configFile)){
             throw new IllegalStateException("cannot specify both linker config file and script");
         }else if(!"".equals(configFile)){
-            return getLinesFromFile(configFile);
+            return Files.readString(Path.of(configFile));
         }else{
-            return new ArrayList<>(List.of(new Line("<cmdline>", "<cmdline>", configScript, 1)));
+            return configScript;
         }
     }
 
@@ -128,7 +126,7 @@ public class LNC {
                 }
             }
 
-            if(settings.get("-oI", String.class).equals("") && settings.get("-oI", String.class).equals("")){
+            if(settings.get("-oI", String.class).isEmpty() && settings.get("-oB", String.class).isEmpty()){
                 settings.set("-oB", "a.out");
             }
 

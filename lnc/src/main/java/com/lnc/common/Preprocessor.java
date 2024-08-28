@@ -4,6 +4,7 @@ import com.lnc.LNC;
 import com.lnc.common.frontend.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,10 +14,12 @@ public class Preprocessor {
 
     boolean needsReprocessing = false;
     private final List<List<Token>> lines;
+    private final LexerConfig macroIncludeConfig;
     Map<String, List<Token>> defines = new HashMap<>();
 
-    public Preprocessor(List<List<Token>> lines){
+    public Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig){
         this.lines = lines;
+        this.macroIncludeConfig = macroIncludeConfig;
 
         defines.put("__VERSION__", List.of(Token.__internal(TokenType.STRING, LNC.PROGRAM_VERSION)));
     }
@@ -62,11 +65,11 @@ public class Preprocessor {
                 if(line.size() == 2){
                     String fileName = (String) line.get(1).literal;
                     try {
-                        List<Line> lines = LNC.getLinesFromFile(resolvePath(fileName, line.get(1).location));
-                        Lexer lexer = new Lexer(); //TODO: file locations aren't accurate? see immediate mode compilation
-                        if(lexer.parse(lines)){
+                        var path = resolvePath(fileName, line.get(1).location);
+                        LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig); //TODO: file locations aren't accurate? see immediate mode compilation
+                        if(lexer.parse(Files.readString(path), path)){
                             iterator.remove();
-                            addLines(new LinkedList<>(lexer.getLines()), iterator);
+                            addLines(new LinkedList<>(lexer.getResult()), iterator);
                         } else throw new CompileException("%include failed for file '" + fileName + "'", macroToken);
                     } catch (IOException e) {
                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
@@ -105,25 +108,25 @@ public class Preprocessor {
         }
     }
 
-    private String resolvePath(String fileName, Location includerLocation) throws IOException {
+    private Path resolvePath(String fileName, Location includerLocation) throws IOException {
         // 1. Check if we can resolve the path starting from the current file's path
         Path resolvedPath = Path.of(includerLocation.filepath).toAbsolutePath().getParent().resolve(fileName);
 
         if(resolvedPath.toFile().exists()){
-            return resolvedPath.toString();
+            return resolvedPath;
         }
 
         // 2. Check if we can resolve the path starting from the current working directory
         resolvedPath = Path.of(fileName);
         if(resolvedPath.toFile().exists()){
-            return resolvedPath.toString();
+            return resolvedPath;
         }
 
         // 3. Check if we can resolve the path starting from the include directories
         for(String includeDir : LNC.includeDirs){
             resolvedPath = Path.of(includeDir).resolve(fileName);
             if(resolvedPath.toFile().exists()){
-                return resolvedPath.toString();
+                return resolvedPath;
             }
         }
 

@@ -1,73 +1,42 @@
 package com.lnc.common.frontend;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
 
-public class Lexer {
-    private final Token macroSubToken;
-    private List<List<Token>> lines;
-    private Line line;
-    private int index;
-    private int start;
+public abstract class AbstractLexer<T>
+{
+    protected String source;
+    protected int start = 0;
+    protected int index = 0;
 
-    private TokenType[] keywordSet;
+    protected final Token macroSubToken;
+    protected final LexerConfig config;
 
-    private final boolean preprocessorDirectives;
-
-    private final boolean comments;
-
-    public Lexer() {
-        this(null, TokenType.LNASM_KEYWORDSET, true, true);
-    }
-
-    public Lexer(TokenType[] keywordSet) {
-        this(null, keywordSet, true, true);
-    }
-
-    public Lexer(Token macroSubToken, TokenType[] keywordSet, boolean preprocessorDirectives, boolean comments) {
+    public AbstractLexer(Token macroSubToken, LexerConfig config) {
         this.macroSubToken = macroSubToken;
-        this.keywordSet = keywordSet;
-        this.preprocessorDirectives = preprocessorDirectives;
-        this.comments = comments;
-        lines = new ArrayList<>();
+        this.config = config;
     }
 
-    public boolean parse(List<Line> sourceLines){
-        lines.clear();
-        boolean success = true;
-        this.lines = new ArrayList<>();
-        for (Line line : sourceLines) {
-            try {
-                List<Token> tokens = this.parseLine(line);
-                lines.add(tokens);
-            }catch (CompileException e){
-                e.log();
-                success = false;
-            }
-        }
-        return success;
+    private Token token(TokenType type, String lexeme, Object literal) {
+        return new Token(macroSubToken, type, lexeme, literal, getLocation());
     }
 
-    public List<List<Token>> getLines(){
-        return lines;
+    private Token token(TokenType type, String lexeme) {
+        return token(type, lexeme, null);
     }
 
-    List<Token> parseLine(Line line) {
-        reset(line);
-
-        List<Token> tokens = new ArrayList<>(10);
-
-        Token t;
-        while (!isAtEnd() && (t = match(advance())) != null) {
-            tokens.add(t);
-            start = index;
-        }
-
-        return tokens;
+    private Token token(TokenType type) {
+        return token(type, source.substring(start, index), null);
     }
 
-    private Token match(char c) {
+    protected final Token next() {
+        Token t = match(advance());
+        start = index;
+        return t;
+    }
+
+    protected Token match(char c) {
         switch (c) {
+            case '\n':
             case '\t':
             case ' ':
             case '\r':
@@ -77,15 +46,11 @@ public class Lexer {
             case '\0':
                 return null;
             case ';':
-                if(comments)
+                if(config.singleLineCommentsConfig() == LexerConfig.SingleLineCommentsConfig.ASM_STYLE)
                     return null;
                 else return token(TokenType.SEMICOLON);
             case '.':
                 return directive();
-            case '%':
-                if (preprocessorDirectives)
-                    return macro();
-                else throw error("unexpected character", "%");
             case '[':
                 return token(TokenType.L_SQUARE_BRACKET);
             case ']':
@@ -107,6 +72,8 @@ public class Lexer {
             case '*':
                 return token(TokenType.STAR);
             case '/':
+                if(peek() == '/')
+                    return null;
                 return token(TokenType.SLASH);
             case '<':
                 if (peek() == '<') {
@@ -134,6 +101,9 @@ public class Lexer {
             case '\'':
                 return string(c);
             default:
+                if((config.preprocessorConfig() == LexerConfig.PreprocessorConfig.ASM_STYLE && c == '%') ||
+                        (config.preprocessorConfig() == LexerConfig.PreprocessorConfig.C_STYLE && c == '#'))
+                    return macro();
                 if (Character.isLetter(c) || c == '_')
                     return name();
                 if (c == '0') {
@@ -152,15 +122,15 @@ public class Lexer {
 
     private Token name() {
         String ident = identifier();
-        for (TokenType type : keywordSet) {
-            if (type.name().equalsIgnoreCase(ident))
+        for (TokenType type : config.keywordSet()) {
+            if (stringEquals(type.name(), ident))
                 return token(type);
         }
         return token(TokenType.IDENTIFIER, ident);
     }
 
     private CompileException error(String message, String lexeme) {
-        return new CompileException(message, lexeme, Location.of(line, start + 1));
+        return new CompileException(message, lexeme, getLocation());
     }
 
     private Token string(char terminator) {
@@ -174,8 +144,8 @@ public class Lexer {
 
         advance();
 
-        String lexeme = line.code.substring(start, index);
-        String val = escapeString(line.code.substring(start + 1, index - 1));
+        String lexeme = source.substring(start, index);
+        String val = escapeString(source.substring(start + 1, index - 1));
 
         if(val.length() == 1)
             return token(TokenType.INTEGER, lexeme, (int) val.charAt(0) & 0xFF);
@@ -225,86 +195,85 @@ public class Lexer {
         while (Character.isDigit(c = peek()) || (base == 16 && (Character.isLetter(c))))
             advance();
 
-        String lexeme = line.code.substring(lStart, index);
+        String lexeme = source.substring(lStart, index);
 
-        String num = line.code.substring(start, index);
+        String num = source.substring(start, index);
 
-        if(num.length() == 0)
+        if(num.isEmpty())
             throw error("invalid integer", lexeme);
         return token(TokenType.INTEGER, lexeme, Integer.parseInt(num, base));
     }
 
     private Token macro() {
-        String ident = identifier();
+        String ident = identifier().substring(1);
 
-        if ("%include".equalsIgnoreCase(ident))
+        if(stringEquals("include", ident))
             return token(TokenType.MACRO_INCLUDE);
-        if ("%define".equalsIgnoreCase(ident))
+        if(stringEquals("define", ident))
             return token(TokenType.MACRO_DEFINE);
-        if ("%undef".equalsIgnoreCase(ident))
+        if(stringEquals("undef", ident))
             return token(TokenType.MACRO_UNDEFINE);
-        if ("%ifdef".equalsIgnoreCase(ident))
+        if(stringEquals("ifdef", ident))
             return token(TokenType.MACRO_IFDEF);
-        if ("%ifndef".equalsIgnoreCase(ident))
+        if(stringEquals("ifndef", ident))
             return token(TokenType.MACRO_IFNDEF);
-        if ("%endif".equalsIgnoreCase(ident))
+        if(stringEquals("endif", ident))
             return token(TokenType.MACRO_ENDIF);
-        if ("%error".equalsIgnoreCase(ident))
+        if(stringEquals("error", ident))
             return token(TokenType.MACRO_ERROR);
 
         throw error("invalid macro", ident);
     }
 
     private Token directive() {
-        String ident = identifier();
+        String ident = identifier().substring(1);
 
-        if (".section".equalsIgnoreCase(ident))
+        if (stringEquals("section", ident))
             return token(TokenType.DIR_SECTION);
-        else if (".data".equalsIgnoreCase(ident))
+        if (stringEquals("data", ident))
             return token(TokenType.DIR_DATA);
-        else if (".res".equals(ident))
+        if (stringEquals("res", ident))
             return token(TokenType.DIR_RES);
+
         throw error("invalid directive", ident);
     }
 
-    private Token token(TokenType type, String lexeme, Object literal) {
-        return new Token(macroSubToken, type, lexeme, literal, Location.of(line, start + 1));
-    }
-
-    private Token token(TokenType type, String lexeme) {
-        return token(type, lexeme, null);
-    }
-
-    private Token token(TokenType type) {
-        return token(type, line.code.substring(start, index), null);
-    }
-
-    private String identifier() {
+    protected String identifier() {
         char c;
         while (Character.isLetterOrDigit(c = peek()) || c == '_')
             advance();
-        return line.code.substring(start, index);
+        return source.substring(start, index);
     }
 
-    private boolean isAtEnd() {
-        return (index >= line.code.length());
+    protected boolean isAtEnd() {
+        return (index >= source.length());
     }
 
-    private char advance() {
+    protected char advance() {
         if (isAtEnd())
             return '\0';
-        return line.code.charAt(index++);
+        return source.charAt(index++);
     }
 
-    private char peek() {
+    protected char peek() {
         if (isAtEnd())
             return '\0';
-        return line.code.charAt(index);
+        return source.charAt(index);
     }
 
-    private void reset(Line line) {
-        this.line = line;
+    protected void reset(String source) {
+        this.source = source;
         this.start = 0;
         this.index = 0;
     }
+
+    private boolean stringEquals(String a, String b) {
+        return a.equals(b) || (!config.caseSensitive() && a.equalsIgnoreCase(b));
+    }
+
+    public abstract Location getLocation();
+
+    protected abstract boolean parse(String source, Path file);
+
+    public abstract T getResult();
 }

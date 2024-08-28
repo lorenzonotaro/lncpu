@@ -22,4 +22,12 @@ public class Line {
         this.filename = path.getFileName().toString();
     }
 
+    public static Line[] fromSource(String source, Path file) {
+        String[] lines = source.split("\n");
+        Line[] result = new Line[lines.length];
+        for (int i = 0; i < lines.length; i++) {
+            result[i] = new Line(file, lines[i], i + 1);
+        }
+        return result;
+    }
 }

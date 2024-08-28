@@ -230,7 +230,8 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
     @Override
     protected void endParse() {
-        blocks.add(new ParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
+        if(!currentInstructions.isEmpty())
+            blocks.add(new ParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
     }
 
     @Override
