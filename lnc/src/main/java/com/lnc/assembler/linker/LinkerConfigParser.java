@@ -1,18 +1,13 @@
 package com.lnc.assembler.linker;
 
 import com.lnc.assembler.common.*;
-import com.lnc.common.frontend.AbstractParser;
-import com.lnc.common.frontend.CompileException;
-import com.lnc.common.frontend.Token;
-import com.lnc.common.frontend.TokenType;
+import com.lnc.common.frontend.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
-    private final Token[] tokens;
-    private int index;
+public class LinkerConfigParser extends FullSourceParser<LinkerConfig> {
     private LinkerConfig linkerConfig;
 
     public LinkerConfigParser(List<Token[]> lines) {
@@ -20,8 +15,7 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
     }
 
     public LinkerConfigParser(Token[] tokens) {
-        this.tokens = tokens;
-        this.index = 0;
+        super(tokens);
     }
 
     @Override
@@ -152,30 +146,6 @@ public class LinkerConfigParser extends AbstractParser<LinkerConfig> {
         } catch (IllegalArgumentException e) {
             throw error(sectionName, "invalid section: " + e.getMessage());
         }
-    }
-
-    @Override
-    protected boolean isAtEnd() {
-        return index >= tokens.length;
-    }
-
-    @Override
-    protected Token advance() {
-        if(isAtEnd())
-            throw error(previous(), "unexpected end of file");
-        return tokens[index++];
-    }
-
-    @Override
-    protected Token previous() {
-        return tokens[index - 1];
-    }
-
-    @Override
-    protected Token peek() {
-        if(isAtEnd())
-            throw error(previous(), "unexpected end of file");
-        return tokens[index];
     }
 
 

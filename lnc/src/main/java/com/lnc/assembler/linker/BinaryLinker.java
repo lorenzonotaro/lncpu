@@ -2,8 +2,8 @@ package com.lnc.assembler.linker;
 
 import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.common.LabelSectionInfo;
-import com.lnc.assembler.parser.ParseResult;
-import com.lnc.assembler.parser.ParsedBlock;
+import com.lnc.assembler.parser.LnasmParseResult;
+import com.lnc.assembler.parser.LnasmParsedBlock;
 import com.lnc.common.io.ByteArrayChannel;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
     }
 
     @Override
-    public boolean link(ParseResult parseResult) {
+    public boolean link(LnasmParseResult parseResult) {
         try{
             var labelLocator = validateSectionsAndCreateLabelMap(parseResult.blocks());
 
@@ -127,14 +127,14 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         return new LabelMapLabelResolver(globalLabelMap, sectionBuilders);
     }
 
-    private Map<String, SectionBuilder> makeSectionBuilders(ParseResult parseResult, LinkerLabelSectionLocator labelLocator) {
+    private Map<String, SectionBuilder> makeSectionBuilders(LnasmParseResult parseResult, LinkerLabelSectionLocator labelLocator) {
         var sectionBuilders = new HashMap<String, SectionBuilder>();
 
         for (var sectionInfo : getConfig().getSectionInfos()) {
             sectionBuilders.put(sectionInfo.getName(), new SectionBuilder(sectionInfo, labelLocator));
         }
 
-        for (ParsedBlock block : parseResult.blocks()){
+        for (LnasmParsedBlock block : parseResult.blocks()){
             SectionBuilder sb = sectionBuilders.get(block.sectionName);
 
             if(sb == null){
@@ -147,9 +147,9 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         return sectionBuilders;
     }
 
-    private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(ParsedBlock[] blocks) {
+    private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(LnasmParsedBlock[] blocks) {
         LinkerLabelSectionLocator locator = new LinkerLabelSectionLocator(getConfig());
-        for (ParsedBlock block : blocks) {
+        for (LnasmParsedBlock block : blocks) {
             var sectionInfo = getConfig().getSectionInfo(block.sectionName);
             if (sectionInfo == null){
                 throw new CompileException("section not found in linker config", block.sectionToken);

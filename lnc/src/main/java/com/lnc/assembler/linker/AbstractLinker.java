@@ -1,6 +1,6 @@
 package com.lnc.assembler.linker;
 
-import com.lnc.assembler.parser.ParseResult;
+import com.lnc.assembler.parser.LnasmParseResult;
 
 public abstract class AbstractLinker<T> {
 
@@ -10,7 +10,7 @@ public abstract class AbstractLinker<T> {
         this.config = config;
     }
 
-    public abstract boolean link(ParseResult parseResult);
+    public abstract boolean link(LnasmParseResult parseResult);
 
     public abstract T getResult();
 

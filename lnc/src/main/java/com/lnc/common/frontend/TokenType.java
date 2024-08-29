@@ -126,7 +126,9 @@ public enum TokenType {
     DEFAULT("default"),
     TYPEDEF("typedef"),
     SIZEOF("sizeof"),
-    STATIC("static")
+    STATIC("static"),
+    EXTERN("extern"),
+    CONST("const"),
     ;
 
     public static final TokenType[] LNASM_KEYWORDSET = new TokenType[]{
@@ -235,7 +237,9 @@ public enum TokenType {
             TokenType.DEFAULT,
             TokenType.TYPEDEF,
             TokenType.SIZEOF,
-            TokenType.STATIC
+            TokenType.STATIC,
+            TokenType.EXTERN,
+            TokenType.CONST
     };
 
     private final String strValue;

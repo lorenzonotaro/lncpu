@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class LnasmParser extends AbstractLineParser<ParseResult> {
+public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
     public static final String SUBLABEL_INITIATOR = "_";
 
@@ -31,7 +31,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
     private String currentParentLabel = null;
 
-    private final List<ParsedBlock> blocks = new ArrayList<>();
+    private final List<LnasmParsedBlock> blocks = new ArrayList<>();
 
     @Override
     protected void parseLine() {
@@ -67,7 +67,7 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
 
             if (currentBlockSectionToken != null) {
                 // end of block
-                blocks.add(new ParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
+                blocks.add(new LnasmParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
             }
 
             currentBlockSectionToken = nameToken;
@@ -231,12 +231,12 @@ public class LnasmParser extends AbstractLineParser<ParseResult> {
     @Override
     protected void endParse() {
         if(!currentInstructions.isEmpty())
-            blocks.add(new ParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
+            blocks.add(new LnasmParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
     }
 
     @Override
-    public ParseResult getResult() {
-        return new ParseResult(blocks.toArray(new ParsedBlock[0]));
+    public LnasmParseResult getResult() {
+        return new LnasmParseResult(blocks.toArray(new LnasmParsedBlock[0]));
     }
 
     private static void intToBytes(ByteArrayOutputStream baos, Token token) {

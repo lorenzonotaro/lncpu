@@ -5,7 +5,7 @@ import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
 import com.lnc.assembler.linker.*;
 import com.lnc.assembler.parser.LnasmParser;
-import com.lnc.assembler.parser.ParseResult;
+import com.lnc.assembler.parser.LnasmParseResult;
 import com.lnc.common.Preprocessor;
 import com.lnc.common.io.ByteArrayChannel;
 
@@ -53,7 +53,7 @@ public class Assembler {
         if(!parser.parse())
             return false;
 
-        ParseResult parseResult = parser.getResult();
+        LnasmParseResult parseResult = parser.getResult();
 
         Logger.setProgramState("linker-config");
         FullSourceLexer linkerConfigLexer = new FullSourceLexer(null, new LexerConfig(

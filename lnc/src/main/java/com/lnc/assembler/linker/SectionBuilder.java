@@ -4,7 +4,7 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.parser.CodeElement;
 import com.lnc.assembler.parser.LnasmParser;
-import com.lnc.assembler.parser.ParsedBlock;
+import com.lnc.assembler.parser.LnasmParsedBlock;
 import com.lnc.common.io.ByteArrayChannel;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class SectionBuilder {
     }
 
 
-    public void append(ParsedBlock block){
+    public void append(LnasmParsedBlock block){
 
 
         if(alreadyWritten && !sectionInfo.isMultiWriteAllowed()){
