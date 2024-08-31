@@ -10,8 +10,8 @@ public class Location extends Line{
         this.colNumber = colNumber;
     }
 
-    public Location(String file, String filename, String lexeme, int line, int col) {
-        super(file, filename, lexeme, line);
+    public Location(String file, String filename, String code, int line, int col) {
+        super(file, filename, code, line);
         this.colNumber = col;
     }
 

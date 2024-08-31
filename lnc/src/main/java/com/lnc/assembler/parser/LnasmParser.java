@@ -135,7 +135,7 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
     private Argument bitwiseLogic(){
         Argument left = bitShift();
 
-        while(match(TokenType.BITWISE_AND, TokenType.BITWISE_OR, TokenType.BITWISE_XOR)){
+        while(match(TokenType.AMPERSAND, TokenType.BITWISE_OR, TokenType.BITWISE_XOR)){
             Token operator = previous();
             left = new BinaryOp(left, bitShift(), operator);
         }

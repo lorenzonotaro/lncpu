@@ -1,0 +1,12 @@
+void fib(ui8 n, ui8 *dest){
+    ui8 a = 0;
+    ui8 b = 1;
+    for(ui8 i = 0; i < n; i++){
+        ui8 c = a + b;
+        a = b;
+        b = c;
+    }
+    *dest = a;
+}
+
+ui8 a = b;

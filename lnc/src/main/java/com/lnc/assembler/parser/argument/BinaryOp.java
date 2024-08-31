@@ -34,7 +34,7 @@ public class BinaryOp extends Argument{
             case SLASH -> Operator.DIV;
             case BITWISE_LEFT -> Operator.SHL;
             case BITWISE_RIGHT -> Operator.SHR;
-            case BITWISE_AND -> Operator.AND;
+            case AMPERSAND -> Operator.AND;
             case BITWISE_OR -> Operator.OR;
             case BITWISE_XOR -> Operator.XOR;
             default -> throw new CompileException("Invalid operator", token);

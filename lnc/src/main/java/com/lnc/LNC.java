@@ -1,6 +1,7 @@
 package com.lnc;
 
 import com.lnc.assembler.Assembler;
+import com.lnc.cc.Compiler;
 import com.lnc.common.frontend.Line;
 import com.lnc.common.Logger;
 import com.lnc.common.ProgramSettings;
@@ -51,13 +52,19 @@ public class LNC {
                 Logger.error("no source files.");
                 return 1;
             }
-            Assembler assembler = new Assembler(settings.getSourceFiles().stream().map(Path::of).toList(), getLinkerConfig());
+            /*Assembler assembler = new Assembler(settings.getSourceFiles().stream().map(Path::of).toList(), getLinkerConfig());
             if(!assembler.compile())
                 System.exit(1);
             else if(!settings.get("-s", Boolean.class)){
                 assembler.writeOutputFiles();
-            }
-        } catch (IllegalStateException | IOException e) {
+            }*/
+
+            Compiler compiler = new Compiler(settings.getSourceFiles().stream().map(Path::of).toList());
+
+            if(!compiler.compile())
+                return 1;
+
+        } catch (IllegalStateException/* | IOException*/ e) {
             Logger.error(e.getMessage());
             return 1;
         }

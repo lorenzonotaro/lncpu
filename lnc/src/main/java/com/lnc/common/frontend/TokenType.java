@@ -33,7 +33,11 @@ public enum TokenType {
     //operators
     PLUS,
 
+    DOUBLE_PLUS,
+
     MINUS,
+
+    DOUBLE_MINUS,
 
     STAR,
 
@@ -43,11 +47,13 @@ public enum TokenType {
 
     BITWISE_RIGHT,
 
-    BITWISE_AND,
+    AMPERSAND,
 
     BITWISE_OR,
 
     BITWISE_XOR,
+
+    BITWISE_NOT,
 
     LOGICAL_AND,
 
@@ -70,6 +76,8 @@ public enum TokenType {
     LESS_THAN_OR_EQUAL,
 
     ARROW,
+
+    DOT,
 
     //instructions
     NOP,

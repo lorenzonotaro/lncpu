@@ -21,7 +21,7 @@ public class FullSourceLexer extends AbstractLexer<List<Token>>{
         if(file == null){
             return new Location("<>", "<>", source, line, start - lastLf);
         }
-        return new Location(file.toAbsolutePath().toString(), file.getFileName().toString(), source.substring(lastLf - 1, index), line, index - lastLf + 1);
+        return new Location(file.toAbsolutePath().toString(), file.getFileName().toString(), source.substring(lastLf, index), line, index - lastLf + 1);
     }
 
     @Override

@@ -53,7 +53,9 @@ public abstract class AbstractLexer<T>
                 }
                 else return token(TokenType.SEMICOLON);
             case '.':
-                return directive();
+                if(config.directivesEnabled())
+                    return directive();
+                return token(TokenType.DOT);
             case '[':
                 return token(TokenType.L_SQUARE_BRACKET);
             case ']':
@@ -77,11 +79,18 @@ public abstract class AbstractLexer<T>
                 }
                 return token(TokenType.COLON);
             case '+':
+                if (peek() == '+') {
+                    advance();
+                    return token(TokenType.DOUBLE_PLUS);
+                }
                 return token(TokenType.PLUS);
             case '-':
                 if(peek() == '>'){
                     advance();
                     return token(TokenType.ARROW);
+                }else if (peek() == '-') {
+                    advance();
+                    return token(TokenType.DOUBLE_MINUS);
                 }
                 return token(TokenType.MINUS);
             case '*':
@@ -125,7 +134,7 @@ public abstract class AbstractLexer<T>
                     advance();
                     return token(TokenType.LOGICAL_AND);
                 }
-                return token(TokenType.BITWISE_AND);
+                return token(TokenType.AMPERSAND);
             case '|':
                 if (peek() == '|') {
                     advance();
@@ -134,6 +143,8 @@ public abstract class AbstractLexer<T>
                 return token(TokenType.BITWISE_OR);
             case '^':
                 return token(TokenType.BITWISE_XOR);
+            case '~':
+                return token(TokenType.BITWISE_NOT);
             case '(':
                 return token(TokenType.L_PAREN);
             case ')':
