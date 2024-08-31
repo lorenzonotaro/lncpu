@@ -49,7 +49,25 @@ public enum TokenType {
 
     BITWISE_XOR,
 
+    LOGICAL_AND,
+
+    LOGICAL_OR,
+
+    LOGICAL_NOT,
+
     EQUALS,
+
+    NOT_EQUALS,
+
+    DOUBLE_EQUALS,
+
+    GREATER_THAN,
+
+    LESS_THAN,
+
+    GREATER_THAN_OR_EQUAL,
+
+    LESS_THAN_OR_EQUAL,
 
     ARROW,
 

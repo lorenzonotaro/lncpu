@@ -63,6 +63,10 @@ public abstract class AbstractLexer<T>
             case '}':
                 return token(TokenType.R_CURLY_BRACE);
             case '=':
+                if (peek() == '=') {
+                    advance();
+                    return token(TokenType.DOUBLE_EQUALS);
+                }
                 return token(TokenType.EQUALS);
             case ',':
                 return token(TokenType.COMMA);
@@ -102,17 +106,31 @@ public abstract class AbstractLexer<T>
                 if (peek() == '<') {
                     advance();
                     return token(TokenType.BITWISE_LEFT);
+                } else if (peek() == '=') {
+                    advance();
+                    return token(TokenType.LESS_THAN_OR_EQUAL);
                 }
-                throw error("unexpected character", "<");
+                return token(TokenType.LESS_THAN);
             case '>':
                 if (peek() == '>') {
                     advance();
                     return token(TokenType.BITWISE_RIGHT);
+                }else if (peek() == '=') {
+                    advance();
+                    return token(TokenType.GREATER_THAN_OR_EQUAL);
                 }
-                throw error("unexpected character", ">");
+                return token(TokenType.GREATER_THAN);
             case '&':
+                if (peek() == '&') {
+                    advance();
+                    return token(TokenType.LOGICAL_AND);
+                }
                 return token(TokenType.BITWISE_AND);
             case '|':
+                if (peek() == '|') {
+                    advance();
+                    return token(TokenType.LOGICAL_OR);
+                }
                 return token(TokenType.BITWISE_OR);
             case '^':
                 return token(TokenType.BITWISE_XOR);
@@ -120,6 +138,12 @@ public abstract class AbstractLexer<T>
                 return token(TokenType.L_PAREN);
             case ')':
                 return token(TokenType.R_PAREN);
+            case '!':
+                if (peek() == '=') {
+                    advance();
+                    return token(TokenType.NOT_EQUALS);
+                }
+                return token(TokenType.LOGICAL_NOT);
             case '"':
             case '\'':
                 return string(c);
