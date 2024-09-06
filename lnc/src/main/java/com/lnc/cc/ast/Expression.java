@@ -12,4 +12,6 @@ public abstract class Expression {
         UNARY, BINARY, MEMBER_ACCESS, SUBSCRIPT, CALL, IDENTIFIER, NUMERICAL, STRING, ASSIGNMENT
 
     }
+
+    public abstract <E> E accept(IExpressionVisitor<E> visitor);
 }

@@ -15,4 +15,8 @@ public class IfStatement extends Statement {
         this.elseStatement = elseStatement;
     }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

@@ -9,4 +9,8 @@ public class BlockStatement extends Statement {
         this.statements = statements;
     }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

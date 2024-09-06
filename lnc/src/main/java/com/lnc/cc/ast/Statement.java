@@ -19,4 +19,6 @@ public abstract class Statement {
         BREAK,
         CONTINUE
     }
+
+    public abstract <S> S accept(IStatementVisitor<S> visitor);
 }

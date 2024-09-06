@@ -11,4 +11,8 @@ public class AssignmentExpression extends Expression {
         this.right = right;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }

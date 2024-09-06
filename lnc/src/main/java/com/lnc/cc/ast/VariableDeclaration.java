@@ -14,4 +14,8 @@ public class VariableDeclaration extends Declaration {
         this.initializer = initializer;
     }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

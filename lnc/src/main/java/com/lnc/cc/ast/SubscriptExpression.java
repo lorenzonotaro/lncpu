@@ -10,4 +10,8 @@ public class SubscriptExpression extends Expression {
         this.index = index;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }

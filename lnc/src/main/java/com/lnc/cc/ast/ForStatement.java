@@ -14,4 +14,8 @@ public class ForStatement extends Statement {
         this.body = body;
     }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

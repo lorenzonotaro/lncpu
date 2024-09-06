@@ -10,4 +10,8 @@ public class CallExpression extends Expression {
         this.arguments = arguments;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }

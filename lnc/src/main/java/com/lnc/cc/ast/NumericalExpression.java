@@ -20,4 +20,8 @@ public class NumericalExpression extends Expression {
         this.value = value;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }

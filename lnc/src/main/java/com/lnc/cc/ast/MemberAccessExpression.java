@@ -14,4 +14,8 @@ public class MemberAccessExpression extends Expression {
         this.accessOperator = accessOperator;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }

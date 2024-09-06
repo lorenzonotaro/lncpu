@@ -10,4 +10,8 @@ public class StringExpression extends Expression {
         this.token = token;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }

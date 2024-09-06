@@ -10,4 +10,8 @@ public class ExpressionStatement extends Statement {
         this.expression = expression;
     }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

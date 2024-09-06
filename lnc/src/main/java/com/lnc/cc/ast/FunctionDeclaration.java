@@ -19,4 +19,8 @@ public class FunctionDeclaration extends Declaration {
         return body == null;
     }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

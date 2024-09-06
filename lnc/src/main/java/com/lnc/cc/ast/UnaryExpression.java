@@ -14,6 +14,11 @@ public class UnaryExpression extends Expression {
         this.associativity = associativity;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
+
     public enum Operator {
         NEGATE,
         NOT,

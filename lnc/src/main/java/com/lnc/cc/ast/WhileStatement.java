@@ -13,4 +13,8 @@ public class WhileStatement extends Statement {
             this.statement = statement;
         }
 
+    @Override
+    public <S> S accept(IStatementVisitor<S> visitor) {
+        return visitor.accept(this);
+    }
 }

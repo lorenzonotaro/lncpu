@@ -44,6 +44,8 @@ public class Compiler {
         if (!parser.parse())
             return false;
 
+        Logger.setProgramState("analyser");
+
         return true;
     }
 

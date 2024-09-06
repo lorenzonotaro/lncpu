@@ -16,6 +16,11 @@ public class BinaryExpression extends Expression {
         this.operator = operator;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
+
     public enum Operator {
         ADD,
         SUB,

@@ -10,4 +10,8 @@ public class IdentifierExpression extends Expression {
         this.ident = ident;
     }
 
+    @Override
+    public <E> E accept(IExpressionVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
 }
