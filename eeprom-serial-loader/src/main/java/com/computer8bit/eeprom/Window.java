@@ -3,11 +3,14 @@ package com.computer8bit.eeprom;
 import com.computer8bit.eeprom.data.EEPROMDataByte;
 import com.computer8bit.eeprom.data.EEPROMDataSet;
 import com.computer8bit.eeprom.data.FileIO;
+import com.computer8bit.eeprom.serial.DataCheckFailedException;
 import com.computer8bit.eeprom.serial.PortDescriptor;
 import com.computer8bit.eeprom.serial.SerialException;
 import com.computer8bit.eeprom.serial.SerialInterface;
 import com.computer8bit.eeprom.table.DataTable;
 import com.computer8bit.eeprom.table.DataTableModel;
+import com.computer8bit.eeprom.table.DiffDataTable;
+import com.computer8bit.eeprom.table.IDataTableSelectionListener;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -26,7 +29,7 @@ import java.util.*;
 
 import static com.computer8bit.eeprom.table.ViewMode.*;
 
-public class Window {
+public class Window implements IDataTableSelectionListener {
 
     private static final int ROW_WIDTH = 16;
     private final JFrame frame;
@@ -36,7 +39,7 @@ public class Window {
 
     private JComboBox<PortDescriptor> serialPortSelection;
     private JButton refreshSerialPorts;
-    private JTable dataTable;
+    private DataTable dataTable;
     private JSpinner dataSizeSpinner;
     private JLabel serialPortStatus;
     private JButton writeEEPROMButton;
@@ -198,11 +201,44 @@ public class Window {
                 }
                 serialInterface.writeData(dataSet.getDataAsBytes(), progressBar::setValue, operationStatusLabel::setText, checkContentsAfterWriting.isSelected());
                 operationStatusLabel.setText("Done.");
+            } catch (DataCheckFailedException ex) {
+                int result = JOptionPane.showOptionDialog(
+                        this.frame,
+                        "Error while uploading data to EEPROM: data check failed",
+                        "Error",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.ERROR_MESSAGE,
+                        null,
+                        new String[]{"Show differences...", "Ok"},
+                        "Ok"
+                );
+
+                if (result == JOptionPane.YES_OPTION) {
+                    EEPROMDataSet readData = new EEPROMDataSet(ex.getReadData().length);
+                    readData.setData(ex.getReadData());
+
+                    openDiffDialog(readData);
+                }
             } catch (SerialException ex) {
                 JOptionPane.showMessageDialog(null, "Unable to write to EEPROM: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
+    }
+
+    private void openDiffDialog(EEPROMDataSet readData) {
+        JFrame diffFrame = new JFrame("Data check failed");
+        diffFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JTable diffTable = new DiffDataTable(this.dataSet, readData, ROW_WIDTH);
+
+        panel.add(new JScrollPane(diffTable), BorderLayout.CENTER);
+
+        diffFrame.setContentPane(panel);
+        diffFrame.pack();
+        diffFrame.setVisible(true);
     }
 
     private void saveFilePressed(ActionEvent actionEvent) {
@@ -322,17 +358,15 @@ public class Window {
     }
 
     private void setupTable() {
-        dataTable = new DataTable(this, dataSet, ROW_WIDTH);
+        dataTable = new DataTable(dataSet, ROW_WIDTH);
+        dataTable.addSelectionListener(this);
     }
 
     JMenuBar getMenuBar() {
         return menuBar;
     }
 
-    public void updateByteEditor(EventObject e) {
-
-        int row = dataTable.getSelectedRow();
-        int col = dataTable.getSelectedColumn();
+    public void onSelectionChanged(int row, int col) {
         int address = row * ROW_WIDTH + col - 1;
         if (row >= 0 && col >= 1 && address >= 0 && address < dataSet.getData().length) {
             byteEditor.setDataByte(dataSet.getByteAt(address));
@@ -500,4 +534,5 @@ public class Window {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
+
 }

@@ -124,7 +124,7 @@ public class SerialInterface {
 
                 statusFunction.accept("Checking data...");
                 if (Arrays.compareUnsigned(readData, 0, data.length, data, 0, data.length) != 0)
-                    throw new SerialException("data check failed");
+                    throw new DataCheckFailedException(readData);
             }
         } finally {
             activePort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, DEFAULT_TIMEOUT, 0);

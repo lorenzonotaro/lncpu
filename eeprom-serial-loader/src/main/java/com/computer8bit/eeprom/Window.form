@@ -141,7 +141,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="9b91c" class="javax.swing.JTable" binding="dataTable" custom-create="true">
+                  <component id="9b91c" class="com.computer8bit.eeprom.table.DataTable" binding="dataTable" custom-create="true">
                     <constraints/>
                     <properties>
                       <surrendersFocusOnKeystroke value="false"/>

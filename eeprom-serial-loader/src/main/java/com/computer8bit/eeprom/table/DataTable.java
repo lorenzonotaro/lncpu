@@ -1,27 +1,27 @@
 package com.computer8bit.eeprom.table;
 
 import com.computer8bit.eeprom.data.EEPROMDataSet;
-import com.computer8bit.eeprom.Window;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_LEFT;
 
 public class DataTable extends JTable implements MouseListener {
-    private final DataTableModel tableModel;
-    private final Window window;
+
+    private final List<IDataTableSelectionListener> listeners = new ArrayList<>();
+
     private final int rowWidth;
 
-    public DataTable(Window window, EEPROMDataSet dataSet, int rowWidth) {
-        this.window = window;
+    public DataTable(EEPROMDataSet dataSet, int rowWidth) {
         this.rowWidth = rowWidth;
-        tableModel = new DataTableModel(dataSet, rowWidth);
         this.setComponentPopupMenu(new TablePopupMenu(this, dataSet));
-        this.setModel(tableModel);
+        this.setModel(new DataTableModel(dataSet, rowWidth));
         this.setShowGrid(false);
         this.setSelectionForeground(Color.WHITE);
         this.setSelectionBackground(Color.LIGHT_GRAY);
@@ -33,7 +33,7 @@ public class DataTable extends JTable implements MouseListener {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
                 if(e.getKeyCode() >= VK_LEFT && e.getKeyCode() <= VK_DOWN)
-                    EventQueue.invokeLater(() -> window.updateByteEditor(e));
+                    EventQueue.invokeLater(() -> fireSelectionChanged());
             }
         });
         this.setDefaultRenderer(String.class, new DefaultTableCellRenderer(){
@@ -42,10 +42,10 @@ public class DataTable extends JTable implements MouseListener {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                setBackground(window.getContentPane().getBackground());
+                setBackground(UIManager.getColor("Table.background"));
                 if (column == 0)
                     setFont(font);
-                else if(tableModel.isZero(value.toString()))
+                else if(((DataTableModel) getModel()).isZero(value.toString()))
                     setBackground(unsetColor);
                 if(isSelected)
                     setBackground(Color.LIGHT_GRAY);
@@ -56,7 +56,7 @@ public class DataTable extends JTable implements MouseListener {
             this.getColumnModel().getColumn(i).setHeaderValue(" ");
         }
         this.addMouseListener(this);
-        this.getSelectionModel().addListSelectionListener(window::updateByteEditor);
+        this.getSelectionModel().addListSelectionListener(e -> fireSelectionChanged());
 
         this.getTableHeader().setVisible(true);
         this.getTableHeader().setReorderingAllowed(false);
@@ -64,12 +64,18 @@ public class DataTable extends JTable implements MouseListener {
 
     }
 
+    private void fireSelectionChanged() {
+        for (IDataTableSelectionListener listener : listeners) {
+            listener.onSelectionChanged(getSelectedRow(), getSelectedColumn());
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        window.updateByteEditor(e);
         if(e.isPopupTrigger() && columnAtPoint(e.getPoint()) > 0){
             getComponentPopupMenu().show(this, e.getX(), e.getY());
         }
+        SwingUtilities.invokeLater(this::fireSelectionChanged);
     }
 
     @Override
@@ -94,5 +100,13 @@ public class DataTable extends JTable implements MouseListener {
 
     public int toDatasetIndex(int r, int c) {
         return r * rowWidth + c - 1;
+    }
+
+    public void addSelectionListener(IDataTableSelectionListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeSelectionListener(IDataTableSelectionListener listener) {
+        listeners.remove(listener);
     }
 }

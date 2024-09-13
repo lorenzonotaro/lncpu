@@ -12,7 +12,7 @@ public class DataTableModel extends AbstractTableModel {
 
     private ViewMode viewMode;
     private EEPROMDataSet data;
-    private int rowWidth;
+    protected int rowWidth;
 
     DataTableModel(EEPROMDataSet data, int rowWidth){
         super();
