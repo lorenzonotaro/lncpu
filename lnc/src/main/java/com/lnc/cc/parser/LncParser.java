@@ -77,6 +77,8 @@ public class LncParser extends FullSourceParser<Declaration[]> {
             if(match(TokenType.SEMICOLON)){
                 return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), null);
             }else if(match(TokenType.L_CURLY_BRACE)) {
+                if(variableDeclaration.declarator.typeQualifier().isExtern())
+                    throw new CompileException("extern function cannot have a body", variableDeclaration.name);
                 return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), block());
             }else {
                 throw new CompileException("expected function body or ';'", peek());

@@ -3,13 +3,13 @@ package com.lnc.cc.ast;
 import com.lnc.common.frontend.Token;
 
 public class UnaryExpression extends Expression {
-    public final Expression expression;
+    public final Expression operand;
     public final Operator operator;
     public final Associativity associativity;
 
-    public UnaryExpression(Expression expression, Operator operator, Associativity associativity) {
+    public UnaryExpression(Expression operand, Operator operator, Associativity associativity) {
         super(Expression.Type.UNARY);
-        this.expression = expression;
+        this.operand = operand;
         this.operator = operator;
         this.associativity = associativity;
     }

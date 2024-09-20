@@ -4,7 +4,7 @@ import com.lnc.common.frontend.Token;
 
 public class MemberAccessExpression extends Expression {
     public final Expression left;
-    private final Token right;
+    public final Token right;
     private final Token accessOperator;
 
     public MemberAccessExpression(Expression left, Token right, Token accessOperator) {

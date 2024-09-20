@@ -4,10 +4,10 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
 public class BinaryExpression extends Expression {
-    private final Expression left;
-    private final Expression right;
+    public final Expression left;
+    public final Expression right;
 
-    private final Operator operator;
+    public final Operator operator;
 
     public BinaryExpression(Expression left, Expression right, Operator operator) {
         super(Expression.Type.BINARY);

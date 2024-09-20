@@ -4,11 +4,11 @@ package com.lnc.cc.ast;
 
 public class ReturnStatement extends Statement {
 
-    public final Expression expression;
+    public final Expression value;
 
-    public ReturnStatement(Expression expression) {
+    public ReturnStatement(Expression value) {
         super(Statement.Type.RETURN);
-        this.expression = expression;
+        this.value = value;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.lnc.cc;
 
+import com.lnc.cc.anaylsis.Analyzer;
+import com.lnc.cc.anaylsis.LocalResolver;
 import com.lnc.cc.ast.Declaration;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.common.Logger;
@@ -46,7 +48,9 @@ public class Compiler {
 
         Logger.setProgramState("analyser");
 
-        return true;
+        Analyzer analyzer = new Analyzer();
+
+        return analyzer.analize(parser.getResult());
     }
 
     private List<Token> parseSourceFiles(FullSourceLexer lexer, List<Path> sourceFiles) {
