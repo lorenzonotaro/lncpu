@@ -27,7 +27,7 @@ public abstract class FullSourceParser<T> extends AbstractParser<T> {
     }
 
     @Override
-    protected Token peek() {
+    public Token peek() {
         if (isAtEnd())
             throw error(previous(), "unexpected end of file");
         return tokens[index];

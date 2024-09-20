@@ -1,10 +1,5 @@
 package com.lnc.cc.anaylsis;
 
-import com.lnc.cc.types.Declarator;
-import com.lnc.cc.types.TypeSpecifier;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Scope {
     private final Scope parent;

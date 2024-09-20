@@ -133,12 +133,12 @@ public enum TokenType {
     SECTIONS,
 
     // lnc keywords
-    I8("i8"),
-    UI8("ui8"),
+    T_INT("int"),
+    UNSIGNED("unsigned"),
+    SIGNED("signed"),
     CHAR("char"),
     DPAGE("dpage"),
     VOID("void"),
-    BOOL("bool"),
     STRUCT("struct"),
     IF("if"),
     ELSE("else"),
@@ -244,12 +244,12 @@ public enum TokenType {
     };
 
     public static final TokenType[] LNC_KEYWORDSET = new TokenType[]{
-            TokenType.I8,
-            TokenType.UI8,
+            TokenType.T_INT,
+            TokenType.UNSIGNED,
+            TokenType.SIGNED,
             TokenType.CHAR,
             TokenType.DPAGE,
             TokenType.VOID,
-            TokenType.BOOL,
             TokenType.STRUCT,
             TokenType.IF,
             TokenType.ELSE,
