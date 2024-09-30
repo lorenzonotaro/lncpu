@@ -13,24 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class LncParser extends FullSourceParser<Declaration[]> {
-
-    private final List<Declaration> result;
+public class LncParser extends FullSourceParser<AST> {
 
     private static final TokenType[] SYNC_TOKENS = Stream.of(
             TypeQualifier.VALID_TOKENS,
             TypeSpecifier.VALID_TOKENS,
             new TokenType[]{TokenType.SEMICOLON, TokenType.L_CURLY_BRACE, TokenType.R_CURLY_BRACE}
     ).flatMap(Stream::of).toArray(TokenType[]::new);
+    private final AST ast;
 
     public LncParser(Token[] tokens) {
         super(tokens);
-        this.result = new ArrayList<>();
+        this.ast = new AST();
     }
 
     @Override
-    public Declaration[] getResult() {
-        return result.toArray(new Declaration[0]);
+    public AST getResult() {
+        return ast;
     }
 
     @Override
@@ -38,7 +37,7 @@ public class LncParser extends FullSourceParser<Declaration[]> {
         boolean success = true;
         while(!isAtEnd()) {
             try{
-                result.add(externalDeclaration());
+                ast.addDeclaration(externalDeclaration());
             } catch (CompileException e) {
                 e.log();
                 sync();
@@ -205,8 +204,9 @@ public class LncParser extends FullSourceParser<Declaration[]> {
     private Expression assignment() {
         var left = logicalOr();
         if(match(TokenType.EQUALS)){
+            var operator = previous();
             var right = assignment();
-            return new AssignmentExpression(left, right);
+            return new AssignmentExpression(left, operator, right);
         }
         return left;
     }
@@ -214,8 +214,9 @@ public class LncParser extends FullSourceParser<Declaration[]> {
     private Expression logicalOr() {
         var left = logicalAnd();
         while(match(TokenType.LOGICAL_OR)){
+            var operator = previous();
             var right = logicalAnd();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.OR);
+            left = new BinaryExpression(left, right, operator);
         }
         return left;
     }
@@ -223,8 +224,9 @@ public class LncParser extends FullSourceParser<Declaration[]> {
     private Expression logicalAnd() {
         var left = bitwiseOr();
         while(match(TokenType.LOGICAL_AND)){
+            var operator = previous();
             var right = bitwiseOr();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.AND);
+            left = new BinaryExpression(left, right, operator);
         }
         return left;
     }
@@ -232,8 +234,9 @@ public class LncParser extends FullSourceParser<Declaration[]> {
     private Expression bitwiseOr() {
         var left = bitwiseXor();
         while(match(TokenType.BITWISE_OR)){
+            var operator = previous();
             var right = bitwiseXor();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.OR);
+            left = new BinaryExpression(left, right, operator);
         }
         return left;
     }
@@ -241,8 +244,9 @@ public class LncParser extends FullSourceParser<Declaration[]> {
     private Expression bitwiseXor() {
         var left = bitwiseAnd();
         while(match(TokenType.BITWISE_XOR)){
+            var operator = previous();
             var right = bitwiseAnd();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.XOR);
+            left = new BinaryExpression(left, right, operator);
         }
         return left;
     }
@@ -250,8 +254,9 @@ public class LncParser extends FullSourceParser<Declaration[]> {
     private Expression bitwiseAnd() {
         var left = equality();
         while(match(TokenType.AMPERSAND)){
+            var operator = previous();
             var right = equality();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.AND);
+            left = new BinaryExpression(left, right, operator);
         }
         return left;
     }
@@ -261,7 +266,7 @@ public class LncParser extends FullSourceParser<Declaration[]> {
         while(match(TokenType.DOUBLE_EQUALS, TokenType.NOT_EQUALS)){
             Token op = previous();
             var right = comparison();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.fromTokenType(op));
+            left = new BinaryExpression(left, right, op);
         }
         return left;
     }
@@ -271,7 +276,7 @@ public class LncParser extends FullSourceParser<Declaration[]> {
         while(match(TokenType.GREATER_THAN, TokenType.LESS_THAN, TokenType.GREATER_THAN_OR_EQUAL, TokenType.LESS_THAN_OR_EQUAL)){
             var op = previous();
             var right = shift();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.fromTokenType(op));
+            left = new BinaryExpression(left, right, op);
         }
         return left;
     }
@@ -281,7 +286,7 @@ public class LncParser extends FullSourceParser<Declaration[]> {
         while(match(TokenType.BITWISE_LEFT, TokenType.BITWISE_RIGHT)){
             var op = previous();
             var right = addition();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.fromTokenType(op));
+            left = new BinaryExpression(left, right, op);
         }
         return left;
     }
@@ -291,7 +296,7 @@ public class LncParser extends FullSourceParser<Declaration[]> {
         while(match(TokenType.PLUS, TokenType.MINUS)){
             Token op = previous();
             var right = multiplication();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.fromTokenType(op));
+            left = new BinaryExpression(left, right, op);
         }
         return left;
     }
@@ -301,7 +306,7 @@ public class LncParser extends FullSourceParser<Declaration[]> {
         while(match(TokenType.STAR, TokenType.SLASH)){
             var op = previous();
             var right = leftUnary();
-            left = new BinaryExpression(left, right, BinaryExpression.Operator.fromTokenType(op));
+            left = new BinaryExpression(left, right, op);
         }
         return left;
     }

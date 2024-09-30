@@ -17,4 +17,9 @@ public class PointerType extends TypeSpecifier {
     public String toString(){
         return baseType.toString() + " *";
     }
+
+    @Override
+    public int size() {
+        return 8;
+    }
 }

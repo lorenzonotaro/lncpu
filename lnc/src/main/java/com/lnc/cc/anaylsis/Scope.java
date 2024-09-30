@@ -7,19 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Scope {
-    private final FunctionDeclaration context;
     private final Scope parent;
 
     private final Map<String, Symbol> symbols = new HashMap<>();
 
-    public Scope(FunctionDeclaration context, Scope parent){
-        this.context = context;
+    public Scope(Scope parent){
         this.parent = parent;
-    }
-
-    public Scope(FunctionDeclaration context){
-        this.context = context;
-        this.parent = null;
     }
 
     public Scope getRoot(){
@@ -54,9 +47,5 @@ public class Scope {
             return parent.resolve(name);
         }
         return null;
-    }
-
-    public FunctionDeclaration getContext() {
-        return context;
     }
 }

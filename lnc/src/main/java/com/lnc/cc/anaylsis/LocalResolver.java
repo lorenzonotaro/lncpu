@@ -1,25 +1,24 @@
 package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.*;
-import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
 public class LocalResolver implements IASTVisitor<Void, Void> {
-    private final Scope global;
-    
+    private final AST ast;
+
     private Scope currentScope;
     private boolean success;
 
-    public LocalResolver(){
-        this.global = new Scope(null);
-        this.currentScope = global;
+    public LocalResolver(AST ast){
+        this.ast = ast;
+        this.currentScope = ast.getGlobalScope();
         this.success = true;
     }
 
-    public boolean resolveLocals(Declaration[] declarations){
+    public boolean resolveLocals(){
 
-        for(Declaration declaration : declarations){
+        for(Declaration declaration : ast.getDeclarations()){
             declaration.accept(this);
         }
 
@@ -36,12 +35,8 @@ public class LocalResolver implements IASTVisitor<Void, Void> {
         return symbol;
     }
 
-    public void enterFunction(FunctionDeclaration function){
-        currentScope = new Scope(function, currentScope);
-    }
-
     public void pushLocalScope(){
-        currentScope = new Scope(currentScope.getContext(), currentScope);
+        currentScope = new Scope(currentScope);
     }
 
     public void popLocalScope(){
@@ -128,6 +123,8 @@ public class LocalResolver implements IASTVisitor<Void, Void> {
 
         pushLocalScope();
 
+        blockStatement.setScope(currentScope);
+
         for(Statement statement : blockStatement.statements){
             statement.accept(this);
         }
@@ -172,16 +169,19 @@ public class LocalResolver implements IASTVisitor<Void, Void> {
 
 
         if (functionDeclaration.body != null) {
-            enterFunction(functionDeclaration);
+            pushLocalScope();
+
+            functionDeclaration.setScope(currentScope);
 
             for(VariableDeclaration parameter : functionDeclaration.parameters){
                 parameter.accept(this);
             }
 
             functionDeclaration.body.accept(this);
+
+            popLocalScope();
         }
 
-        popLocalScope();
 
         return null;
     }

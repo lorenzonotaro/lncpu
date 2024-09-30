@@ -15,6 +15,10 @@ public class Logger {
         err.printf("%s(%s): error: %s\n", LNC.PROGRAM_NAME, programState, str);
     }
 
+    public static void compileError(String str, Token loc){
+        error(String.format("in file %s: %s", loc.formatLocation(), str));
+    }
+
     public static void warning(String str){
         out.printf("%s(%s): warning: %s\n", LNC.PROGRAM_NAME, programState, str);
     }

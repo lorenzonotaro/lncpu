@@ -48,9 +48,9 @@ public class Compiler {
 
         Logger.setProgramState("analyser");
 
-        Analyzer analyzer = new Analyzer();
+        Analyzer analyzer = new Analyzer(parser.getResult());
 
-        return analyzer.analize(parser.getResult());
+        return analyzer.analize();
     }
 
     private List<Token> parseSourceFiles(FullSourceLexer lexer, List<Path> sourceFiles) {

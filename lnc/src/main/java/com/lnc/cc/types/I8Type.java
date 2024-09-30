@@ -10,4 +10,9 @@ public class I8Type extends TypeSpecifier {
     public String toString(){
         return "i8";
     }
+
+    @Override
+    public int size() {
+        return 8;
+    }
 }

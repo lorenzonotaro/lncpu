@@ -10,4 +10,9 @@ public class CharType extends TypeSpecifier {
     public String toString(){
         return "char";
     }
+
+    @Override
+    public int size() {
+        return 8;
+    }
 }

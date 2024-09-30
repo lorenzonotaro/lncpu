@@ -7,13 +7,16 @@ public class BinaryExpression extends Expression {
     public final Expression left;
     public final Expression right;
 
+    public final Token token;
+
     public final Operator operator;
 
-    public BinaryExpression(Expression left, Expression right, Operator operator) {
+    public BinaryExpression(Expression left, Expression right, Token opToken) {
         super(Expression.Type.BINARY);
         this.left = left;
         this.right = right;
-        this.operator = operator;
+        this.token = opToken;
+        this.operator = Operator.fromTokenType(opToken);
     }
 
     @Override

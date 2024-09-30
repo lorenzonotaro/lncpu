@@ -10,4 +10,9 @@ public class VoidType extends TypeSpecifier {
     public String toString(){
         return "void";
     }
+
+    @Override
+    public int size() {
+        return 0;
+    }
 }
