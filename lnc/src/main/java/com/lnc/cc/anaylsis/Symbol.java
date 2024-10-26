@@ -9,13 +9,11 @@ import java.util.Objects;
 public class Symbol {
     private final Token token;
     private final TypeSpecifier type;
-    private final boolean isFunction;
     private final boolean isForward;
 
-    public Symbol(Token token, TypeSpecifier type, boolean isFunction, boolean isForward) {
+    public Symbol(Token token, TypeSpecifier type, boolean isForward) {
         this.token = token;
         this.type = type;
-        this.isFunction = isFunction;
         this.isForward = isForward;
     }
 
@@ -27,9 +25,6 @@ public class Symbol {
         return type;
     }
 
-    public boolean isFunction() {
-        return isFunction;
-    }
 
     public boolean isForward() {
         return isForward;
@@ -45,14 +40,13 @@ public class Symbol {
         if (o == null || getClass() != o.getClass()) return false;
 
         Symbol symbol = (Symbol) o;
-        return isFunction == symbol.isFunction && isForward == symbol.isForward && Objects.equals(token, symbol.token) && Objects.equals(type, symbol.type);
+        return isForward == symbol.isForward && token.equals(symbol.token) && type.equals(symbol.type);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(token);
-        result = 31 * result + Objects.hashCode(type);
-        result = 31 * result + Boolean.hashCode(isFunction);
+        int result = token.hashCode();
+        result = 31 * result + type.hashCode();
         result = 31 * result + Boolean.hashCode(isForward);
         return result;
     }

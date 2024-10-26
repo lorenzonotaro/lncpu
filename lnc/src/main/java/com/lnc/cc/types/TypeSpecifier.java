@@ -15,7 +15,7 @@ public abstract class TypeSpecifier {
         TokenType.T_INT,
         TokenType.UNSIGNED,
         TokenType.SIGNED,
-        TokenType.STRUCT
+        TokenType.STRUCT,
     };
 
     public TypeSpecifier(Type type){
@@ -79,7 +79,8 @@ public abstract class TypeSpecifier {
         CHAR,
         I8,
         UI8,
-        POINTER
+        POINTER,
+        FUNCTION
     }
 
 }

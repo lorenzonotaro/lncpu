@@ -7,10 +7,10 @@ public class UnaryExpression extends Expression {
     public final Operator operator;
     public final Associativity associativity;
 
-    public UnaryExpression(Expression operand, Operator operator, Associativity associativity) {
-        super(Expression.Type.UNARY);
+    public UnaryExpression(Expression operand, Token token, Associativity associativity) {
+        super(Expression.Type.UNARY, token);
         this.operand = operand;
-        this.operator = operator;
+        this.operator = Operator.fromTokenType(token);
         this.associativity = associativity;
     }
 

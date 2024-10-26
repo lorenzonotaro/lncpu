@@ -2,9 +2,7 @@ package com.lnc.cc.ast;
 
 import com.lnc.cc.anaylsis.Scope;
 
-public class BlockStatement extends Statement {
-
-    private Scope scope;
+public class BlockStatement extends ScopedStatement {
 
     public final Statement[] statements;
 
@@ -18,14 +16,4 @@ public class BlockStatement extends Statement {
         return visitor.accept(this);
     }
 
-    public Scope getScope() {
-        return scope;
-    }
-
-    public void setScope(Scope scope) {
-        if(this.scope != null){
-            throw new IllegalStateException("Scope already set");
-        }
-        this.scope = scope;
-    }
 }

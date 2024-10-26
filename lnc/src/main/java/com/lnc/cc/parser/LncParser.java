@@ -315,7 +315,7 @@ public class LncParser extends FullSourceParser<AST> {
         if(match(TokenType.MINUS, TokenType.LOGICAL_NOT, TokenType.BITWISE_NOT, TokenType.STAR, TokenType.AMPERSAND, TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS, TokenType.SIZEOF)){
             var op = previous();
             var right = leftUnary();
-            return new UnaryExpression(right, UnaryExpression.Operator.fromTokenType(op), UnaryExpression.Associativity.LEFT);
+            return new UnaryExpression(right, op, UnaryExpression.Associativity.LEFT);
         }
         return rightUnary();
     }
@@ -324,7 +324,7 @@ public class LncParser extends FullSourceParser<AST> {
         var left = memberAccess();
         if(match(TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS)){
             var op = previous();
-            return new UnaryExpression(left, UnaryExpression.Operator.fromTokenType(op), UnaryExpression.Associativity.RIGHT);
+            return new UnaryExpression(left, op, UnaryExpression.Associativity.RIGHT);
         }
         return left;
     }

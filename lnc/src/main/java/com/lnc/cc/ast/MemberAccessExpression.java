@@ -5,10 +5,10 @@ import com.lnc.common.frontend.Token;
 public class MemberAccessExpression extends Expression {
     public final Expression left;
     public final Token right;
-    private final Token accessOperator;
+    public final Token accessOperator;
 
     public MemberAccessExpression(Expression left, Token right, Token accessOperator) {
-        super(Type.MEMBER_ACCESS);
+        super(Type.MEMBER_ACCESS, accessOperator);
         this.left = left;
         this.right = right;
         this.accessOperator = accessOperator;

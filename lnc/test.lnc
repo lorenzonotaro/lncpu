@@ -2,14 +2,5 @@
 extern unsigned int na;
 
 void fib(unsigned int n, unsigned int *dest){
-    unsigned int a = 0;
-    unsigned int b = 1;
-    for(unsigned int i = 0; i < na; i++){
-        unsigned int c = a + i;
-        a = b;
-        b = c;
-    }
-    *dest = a;
+    *n = 0;
 }
-
-unsigned int a = b;

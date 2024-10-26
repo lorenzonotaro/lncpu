@@ -9,7 +9,7 @@ public class AssignmentExpression extends Expression {
     public Token operator;
 
     public AssignmentExpression(Expression left, Token operator, Expression right) {
-        super(Expression.Type.ASSIGNMENT);
+        super(Expression.Type.ASSIGNMENT, operator);
         this.left = left;
         this.operator = operator;
         this.right = right;

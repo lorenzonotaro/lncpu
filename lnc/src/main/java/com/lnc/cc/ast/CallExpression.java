@@ -5,7 +5,7 @@ public class CallExpression extends Expression {
     public final Expression[] arguments;
 
     public CallExpression(Expression callee, Expression[] arguments) {
-        super(Type.CALL);
+        super(Type.CALL, callee.token);
         this.callee = callee;
         this.arguments = arguments;
     }

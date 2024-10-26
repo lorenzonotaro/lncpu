@@ -1,6 +1,6 @@
 package com.lnc.cc.ast;
 
-public class ForStatement extends Statement {
+public class ForStatement extends ScopedStatement {
     public final Statement initializer;
     public final Expression condition;
     public final Expression increment;
