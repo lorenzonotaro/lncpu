@@ -1,7 +1,5 @@
-package com.lnc.cc.anaylsis;
+package com.lnc.cc.common;
 
-
-import com.lnc.cc.ast.FunctionDeclaration;
 
 import java.util.HashMap;
 import java.util.Map;

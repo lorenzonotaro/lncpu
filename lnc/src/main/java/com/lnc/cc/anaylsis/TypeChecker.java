@@ -1,6 +1,7 @@
 package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.*;
+import com.lnc.cc.common.ScopedASTVisitor;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.I8Type;
 import com.lnc.cc.types.PointerType;
@@ -51,7 +52,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         }
 
         if (callExpression.arguments.length != function.parameterTypes.length) {
-            throw new CompileException("function expects " + function.parameterTypes.length + " arguments, but " + callExpression.arguments.length + " were given", callExpression.token);
+            throw new CompileException("function expects " + function.parameterTypes.length + " arguments, but " + callExpression.arguments.length + (callExpression.arguments.length == 1 ? " was" : " were") + " given", callExpression.token);
         }
 
         for (int i = 0; i < callExpression.arguments.length; i++) {
@@ -97,6 +98,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             }else{
                 throw new CompileException("dereferencing non-pointer type", unaryExpression.token);
             }
+        }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
+            TypeSpecifier operandType = unaryExpression.operand.accept(this);
+            return new PointerType(operandType);
         }
 
         return unaryExpression.operand.accept(this);
@@ -112,7 +116,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         }
 
         if(type.size() == expectedType.size()) {
-            Logger.compileWarning("implicit conversion from " + type + " to " + expectedType, location);
+            Logger.compileWarning("implicit conversion from '" + type + "' to '" + expectedType + "'.", location);
             return;
         }
 

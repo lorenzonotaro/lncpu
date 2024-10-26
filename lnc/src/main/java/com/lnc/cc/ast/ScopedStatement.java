@@ -1,6 +1,6 @@
 package com.lnc.cc.ast;
 
-import com.lnc.cc.anaylsis.Scope;
+import com.lnc.cc.common.Scope;
 
 public abstract class ScopedStatement extends Statement {
     private Scope scope;

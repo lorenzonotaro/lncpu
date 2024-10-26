@@ -1,7 +1,5 @@
 package com.lnc.cc.ast;
 
-import com.lnc.cc.anaylsis.Scope;
-
 public class BlockStatement extends ScopedStatement {
 
     public final Statement[] statements;

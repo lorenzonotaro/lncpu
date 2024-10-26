@@ -8,7 +8,7 @@ public class I8Type extends TypeSpecifier {
 
     @Override
     public String toString(){
-        return "i8";
+        return "int";
     }
 
     @Override

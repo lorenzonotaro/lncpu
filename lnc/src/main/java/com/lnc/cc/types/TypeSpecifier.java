@@ -70,7 +70,7 @@ public abstract class TypeSpecifier {
 
     public abstract int size();
 
-    public final boolean compatible(TypeSpecifier other) {
+    public boolean compatible(TypeSpecifier other) {
         return other != null && other.getClass().equals(this.getClass());
     }
 

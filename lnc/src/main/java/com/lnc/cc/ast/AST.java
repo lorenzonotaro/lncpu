@@ -1,7 +1,7 @@
 package com.lnc.cc.ast;
 
 
-import com.lnc.cc.anaylsis.Scope;
+import com.lnc.cc.common.Scope;
 
 import java.util.ArrayList;
 import java.util.List;

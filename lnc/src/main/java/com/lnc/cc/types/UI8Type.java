@@ -8,7 +8,7 @@ public class UI8Type extends TypeSpecifier {
 
     @Override
     public String toString(){
-        return "ui8";
+        return "unsigned int";
     }
 
     @Override

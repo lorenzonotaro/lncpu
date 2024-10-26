@@ -1,6 +1,8 @@
 package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.*;
+import com.lnc.cc.common.ScopedASTVisitor;
+import com.lnc.cc.common.Symbol;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.common.frontend.CompileException;
 
@@ -86,12 +88,11 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     @Override
     public Void accept(VariableDeclaration variableDeclaration) {
 
-        super.accept(variableDeclaration);
-
-        Symbol symbol = new Symbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern());
+        Symbol symbol = new Symbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), true);
 
         define(symbol);
 
+        super.accept(variableDeclaration);
 
         return null;
     }

@@ -1,10 +1,10 @@
-package com.lnc.cc.anaylsis;
+package com.lnc.cc.common;
 
 import com.lnc.cc.ast.*;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
-public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
+public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
     protected final AST ast;
     protected Scope currentScope;
 
@@ -47,7 +47,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
 
         for(Statement statement : blockStatement.statements){
             try{
-                statement.accept(this);
+                visitStatement(statement);
             } catch (CompileException e){
                 e.log();
                 success = false;
@@ -85,7 +85,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
 
         if(functionDeclaration.body != null){
             try{
-                functionDeclaration.body.accept(this);
+                visitStatement(functionDeclaration.body);
             } catch (CompileException e){
                 e.log();
                 success = false;
@@ -105,7 +105,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
         }
 
         try{
-            ifStatement.thenStatement.accept(this);
+            visitStatement(ifStatement.thenStatement);
         } catch (CompileException e){
             e.log();
             success = false;
@@ -113,7 +113,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
 
         try{
             if(ifStatement.elseStatement != null){
-                ifStatement.elseStatement.accept(this);
+                visitStatement(ifStatement.elseStatement);
             }
         }catch (CompileException e){
             e.log();
@@ -146,7 +146,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
 
         try{
             if(forStatement.initializer != null){
-                forStatement.initializer.accept(this);
+                visitStatement(forStatement.initializer);
             }
         }catch (CompileException e){
             e.log();
@@ -173,7 +173,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
 
         try{
             if(forStatement.body != null){
-                forStatement.body.accept(this);
+                visitStatement(forStatement.body);
             }
         }catch (CompileException e){
             e.log();
@@ -208,7 +208,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
         }
 
         try{
-            whileStatement.statement.accept(this);
+            visitStatement(whileStatement.statement);
         }catch (CompileException e){
             e.log();
             success = false;
@@ -236,7 +236,7 @@ public abstract class ScopedASTVisitor<T> implements IASTVisitor<Void, T> {
     public boolean visit() {
 
         for (Declaration declaration : ast.getDeclarations()) {
-            declaration.accept(this);
+            visitStatement(declaration);
         }
 
         return success();

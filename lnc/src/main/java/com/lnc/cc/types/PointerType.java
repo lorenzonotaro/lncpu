@@ -15,11 +15,20 @@ public class PointerType extends TypeSpecifier {
 
     @Override
     public String toString(){
-        return baseType.toString() + " *";
+        String baseType = this.baseType.toString();
+        return baseType + (baseType.endsWith("*") ? "" : " ") + "*";
     }
 
     @Override
     public int size() {
         return 8;
+    }
+
+    @Override
+    public boolean compatible(TypeSpecifier other) {
+        if (other instanceof PointerType otherPointer) {
+            return baseType.compatible(otherPointer.baseType);
+        }
+        return false;
     }
 }

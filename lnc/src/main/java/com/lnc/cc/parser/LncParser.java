@@ -51,6 +51,10 @@ public class LncParser extends FullSourceParser<AST> {
     private Declaration externalDeclaration() {
         var statement = variableDeclaration(true, false);
 
+        if(statement == null){
+            return null;
+        }
+
         if(statement.type != Statement.Type.DECLARATION){
             throw new CompileException("expected external declaration (variable or function)", peek());
         }
@@ -62,7 +66,7 @@ public class LncParser extends FullSourceParser<AST> {
 
             while(!check(TokenType.R_PAREN)){
                 var decl = variableDeclaration(false, false);
-                if(decl.type != Statement.Type.DECLARATION && ((Declaration) decl).declarationType != Declaration.Type.VARIABLE){
+                if(decl == null || decl.type != Statement.Type.DECLARATION || ((Declaration) decl).declarationType != Declaration.Type.VARIABLE){
                     throw new CompileException("expected parameter declaration", peek());
                 }
                 parameters.add((VariableDeclaration) decl);
@@ -103,7 +107,18 @@ public class LncParser extends FullSourceParser<AST> {
 
         Token ident = consume("expected identifier", TokenType.IDENTIFIER);
 
-        VariableDeclaration decl = new VariableDeclaration(declarator, ident, allowInitializer && match(TokenType.EQUALS) ? expression() : null);
+        VariableDeclaration decl;
+
+        if(allowInitializer && match(TokenType.EQUALS)){
+
+            var equals = previous();
+
+            var initializer = expression();
+
+            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer));
+        }else{
+            decl = new VariableDeclaration(declarator, ident, null);
+        }
 
         if(expectSemicolon){
             consume("expected ';'", TokenType.SEMICOLON);
@@ -135,7 +150,10 @@ public class LncParser extends FullSourceParser<AST> {
     private BlockStatement block(){
         var statements = new ArrayList<Statement>();
         while(!check(TokenType.R_CURLY_BRACE) && !isAtEnd()){
-            statements.add(declaration());
+            var decl = declaration();
+            if(decl != null){
+                statements.add(decl);
+            }
         }
         consume("expected '}'", TokenType.R_CURLY_BRACE);
         return new BlockStatement(statements.toArray(new Statement[0]));
@@ -191,6 +209,11 @@ public class LncParser extends FullSourceParser<AST> {
             var body = statement();
             return new ForStatement(initializer, condition, increment, body);
         }else{
+
+            if(match(TokenType.SEMICOLON)){
+                return null;
+            }
+
             var expression = expression();
             consume("expected ';'", TokenType.SEMICOLON);
             return new ExpressionStatement(expression);

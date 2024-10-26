@@ -7,9 +7,9 @@ import com.lnc.common.frontend.Token;
 
 public class VariableDeclaration extends Declaration {
 
-    public final Expression initializer;
+    public final AssignmentExpression initializer;
 
-    public VariableDeclaration(Declarator declarator, Token name, Expression initializer) {
+    public VariableDeclaration(Declarator declarator, Token name, AssignmentExpression initializer) {
         super(Declaration.Type.VARIABLE, declarator, name);
         this.initializer = initializer;
     }

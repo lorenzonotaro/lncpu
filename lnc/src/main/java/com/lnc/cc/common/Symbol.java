@@ -1,15 +1,12 @@
-package com.lnc.cc.anaylsis;
+package com.lnc.cc.common;
 
-import com.lnc.cc.types.Declarator;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
-
-import java.util.Objects;
 
 public class Symbol {
     private final Token token;
     private final TypeSpecifier type;
-    private final boolean isForward;
+    private boolean isForward;
 
     public Symbol(Token token, TypeSpecifier type, boolean isForward) {
         this.token = token;
@@ -49,5 +46,9 @@ public class Symbol {
         result = 31 * result + type.hashCode();
         result = 31 * result + Boolean.hashCode(isForward);
         return result;
+    }
+
+    public void setForward(boolean forward) {
+        this.isForward = forward;
     }
 }

@@ -1,6 +1,10 @@
 
 extern unsigned int na;
 
+int test(int a, int b){
+    return a + b;
+}
+
 void fib(unsigned int n, unsigned int *dest){
-    *n = 0;
+    int **a = test(1, *dest);
 }
