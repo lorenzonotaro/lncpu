@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AST {
 
-    private final Scope globalScope = new Scope(null);
+    private final Scope globalScope = Scope.createRoot("__global__");
 
     private final List<Declaration> declarations = new ArrayList<>();
 

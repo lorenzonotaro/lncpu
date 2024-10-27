@@ -1,0 +1,25 @@
+package com.lnc.cc.ir;
+
+public class Load extends IRInstruction {
+    private final VirtualRegister vr;
+    private final Location operand;
+
+    public Load(VirtualRegister vr, Location operand) {
+        super();
+        this.vr = vr;
+        this.operand = operand;
+    }
+
+    public VirtualRegister getVR() {
+        return vr;
+    }
+
+    public Location getOperand() {
+        return operand;
+    }
+
+    @Override
+    public String toString() {
+        return "load " + vr + " <- " + operand;
+    }
+}

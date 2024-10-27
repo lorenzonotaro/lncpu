@@ -1,6 +1,8 @@
 package com.lnc.cc;
 
 import com.lnc.cc.anaylsis.Analyzer;
+import com.lnc.cc.ast.AST;
+import com.lnc.cc.ir.IRGenerator;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
@@ -46,9 +48,20 @@ public class Compiler {
 
         Logger.setProgramState("analyser");
 
-        Analyzer analyzer = new Analyzer(parser.getResult());
+        AST ast = parser.getResult();
 
-        return analyzer.analyze();
+        Analyzer analyzer = new Analyzer(ast);
+
+        if(!analyzer.analyze()){
+            return false;
+        }
+
+        Logger.setProgramState("irgen");
+
+        IRGenerator irGenerator = new IRGenerator(ast);
+
+        return irGenerator.visit();
+
     }
 
     private List<Token> parseSourceFiles(FullSourceLexer lexer, List<Path> sourceFiles) {

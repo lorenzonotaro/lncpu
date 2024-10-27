@@ -14,7 +14,6 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     public TypeChecker(AST ast) {
         super(ast);
-        setCurrentScope(ast.getGlobalScope());
     }
 
     @Override

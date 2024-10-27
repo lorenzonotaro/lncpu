@@ -10,7 +10,6 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
     public LocalResolver(AST ast){
         super(ast);
-        setCurrentScope(ast.getGlobalScope());
     }
 
 

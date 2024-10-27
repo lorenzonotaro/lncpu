@@ -1,10 +1,13 @@
-
-extern unsigned int na;
-
-int test(int a, int b){
-    return a + b;
-}
-
-void fib(unsigned int n, unsigned int *dest){
-    int **a = test(1, *dest);
+int main(){
+    int a = 1;
+    {
+        int b;
+    }
+    {
+        int c;
+        {
+            int d;
+            int a;
+        }
+    }
 }

@@ -4,14 +4,12 @@ import com.lnc.cc.ast.*;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
-public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
-    protected final AST ast;
+public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
     protected Scope currentScope;
 
-    private boolean success = true;
-
     public ScopedASTVisitor(AST ast) {
-        this.ast = ast;
+        super(ast);
+        currentScope = ast.getGlobalScope();
     }
 
     public Symbol resolveSymbol(Token token) {
@@ -23,6 +21,13 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
         Symbol symbol = currentScope.resolve(token.lexeme);
 
         if (symbol == null) {
+
+            Symbol globalSymbol = getAST().getGlobalScope().resolve(token.lexeme);
+
+            if(globalSymbol != null){
+                return globalSymbol;
+            }
+
             throw new CompileException("undefined symbol", token);
         }
 
@@ -33,28 +38,21 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
         this.currentScope = scope;
     }
 
+
     public Scope getCurrentScope(){
         return currentScope;
     }
 
     public Void accept(BlockStatement blockStatement) {
 
-        if (blockStatement.getScope() != null) {
-            setCurrentScope(blockStatement.getScope());
-        } else {
-            blockStatement.setScope(pushLocalScope());
-        }
-
         for(Statement statement : blockStatement.statements){
             try{
                 visitStatement(statement);
             } catch (CompileException e){
                 e.log();
-                success = false;
+                fail();
             }
         }
-
-        popLocalScope();
 
         return null;
     }
@@ -65,7 +63,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             expressionStatement.expression.accept(this);
         }catch(CompileException e){
             e.log();
-            success = false;
+            fail();
         }
         return null;
     }
@@ -78,7 +76,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
                     parameter.accept(this);
                 } catch (CompileException e){
                     e.log();
-                    success = false;
+                    fail();
                 }
             }
         }
@@ -88,7 +86,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
                 visitStatement(functionDeclaration.body);
             } catch (CompileException e){
                 e.log();
-                success = false;
+                fail();
             }
         }
 
@@ -101,14 +99,14 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             ifStatement.condition.accept(this);
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         try{
             visitStatement(ifStatement.thenStatement);
         } catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         try{
@@ -117,7 +115,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         return null;
@@ -131,7 +129,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         return null;
@@ -139,10 +137,6 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
 
     @Override
     public Void accept(ForStatement forStatement) {
-        if(forStatement.getScope() != null)
-            setCurrentScope(forStatement.getScope());
-        else
-            forStatement.setScope(pushLocalScope());
 
         try{
             if(forStatement.initializer != null){
@@ -150,7 +144,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         try{
@@ -159,7 +153,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         try{
@@ -168,7 +162,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         try{
@@ -177,10 +171,8 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
-
-        popLocalScope();
 
         return null;
     }
@@ -192,7 +184,7 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             }
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
         return null;
 
@@ -204,14 +196,14 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
             whileStatement.condition.accept(this);
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         try{
             visitStatement(whileStatement.statement);
         }catch (CompileException e){
             e.log();
-            success = false;
+            fail();
         }
 
         return null;
@@ -222,23 +214,32 @@ public abstract class ScopedASTVisitor<T> implements VoidStatementVisitor<T> {
     }
 
     public Scope pushLocalScope() {
-        return currentScope = new Scope(currentScope);
+        return currentScope = currentScope.createChild();
     }
 
     public void popLocalScope() {
         currentScope = currentScope.getParent();
+
+        if(currentScope == null){
+            currentScope = getAST().getGlobalScope();
+        }
     }
 
-    protected boolean success() {
-        return success;
-    }
+    @Override
+    public void visitStatement(Statement statement) {
 
-    public boolean visit() {
-
-        for (Declaration declaration : ast.getDeclarations()) {
-            visitStatement(declaration);
+        if(statement instanceof IScopedStatement ss){
+            if(ss.getScope() != null){
+                setCurrentScope(ss.getScope());
+            } else {
+                ss.setScope(pushLocalScope());
+            }
         }
 
-        return success();
+        super.visitStatement(statement);
+
+        if(statement instanceof IScopedStatement ss){
+            popLocalScope();
+        }
     }
 }

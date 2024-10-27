@@ -1,6 +1,8 @@
 package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.AST;
+import com.lnc.cc.ast.FunctionDeclaration;
+import com.lnc.cc.common.FlatSymbolTable;
 
 public class Analyzer {
 

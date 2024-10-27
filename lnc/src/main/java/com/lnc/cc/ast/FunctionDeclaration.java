@@ -5,7 +5,7 @@ import com.lnc.cc.types.Declarator;
 import com.lnc.common.frontend.Token;
 
 
-public class FunctionDeclaration extends Declaration {
+public class FunctionDeclaration extends Declaration implements IScopedStatement {
 
     private Scope scope;
 
@@ -27,10 +27,12 @@ public class FunctionDeclaration extends Declaration {
         return visitor.accept(this);
     }
 
+    @Override
     public Scope getScope() {
         return scope;
     }
 
+    @Override
     public void setScope(Scope scope) {
         if(this.scope != null){
             throw new IllegalStateException("Scope already set");

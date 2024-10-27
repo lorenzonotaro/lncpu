@@ -2,9 +2,17 @@ package com.lnc.cc.common;
 
 import com.lnc.cc.ast.*;
 
-public interface VoidStatementVisitor<E> extends IASTVisitor<Void, E> {
+public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
+
+    private final AST ast;
+    private boolean success = true;
+
+    public ASTVisitor(AST ast) {
+        this.ast = ast;
+    }
+
     @Override
-    default Void accept(BlockStatement blockStatement){
+    public Void accept(BlockStatement blockStatement){
         for (Statement statement : blockStatement.statements) {
             visitStatement(statement);
         }
@@ -12,13 +20,13 @@ public interface VoidStatementVisitor<E> extends IASTVisitor<Void, E> {
     }
 
     @Override
-    default Void accept(ExpressionStatement expressionStatement){
+    public Void accept(ExpressionStatement expressionStatement){
         expressionStatement.expression.accept(this);
         return null;
     }
 
     @Override
-    default Void accept(ForStatement forStatement){
+    public Void accept(ForStatement forStatement){
         visitStatement(forStatement.initializer);
         forStatement.condition.accept(this);
         forStatement.increment.accept(this);
@@ -27,13 +35,13 @@ public interface VoidStatementVisitor<E> extends IASTVisitor<Void, E> {
     }
 
     @Override
-    default Void accept(FunctionDeclaration functionDeclaration){
+    public Void accept(FunctionDeclaration functionDeclaration){
         visitStatement(functionDeclaration.body);
         return null;
     }
 
     @Override
-    default Void accept(IfStatement ifStatement){
+    public Void accept(IfStatement ifStatement){
         ifStatement.condition.accept(this);
         visitStatement(ifStatement.thenStatement);
         if (ifStatement.elseStatement != null) {
@@ -43,13 +51,13 @@ public interface VoidStatementVisitor<E> extends IASTVisitor<Void, E> {
     }
 
     @Override
-    default Void accept(ReturnStatement returnStatement){
+    public Void accept(ReturnStatement returnStatement){
         returnStatement.value.accept(this);
         return null;
     }
 
     @Override
-    default Void accept(VariableDeclaration variableDeclaration){
+    public Void accept(VariableDeclaration variableDeclaration){
         if (variableDeclaration.initializer != null) {
             variableDeclaration.initializer.accept(this);
         }
@@ -57,13 +65,35 @@ public interface VoidStatementVisitor<E> extends IASTVisitor<Void, E> {
     }
 
     @Override
-    default Void accept(WhileStatement whileStatement){
+    public Void accept(WhileStatement whileStatement){
         whileStatement.condition.accept(this);
         visitStatement(whileStatement.statement);
         return null;
     }
 
-    default void visitStatement(Statement statement){
+    public void visitStatement(Statement statement){
         statement.accept(this);
+    }
+
+    protected AST getAST() {
+        return ast;
+    }
+
+
+    protected boolean success() {
+        return success;
+    }
+
+    protected void fail(){
+        success = false;
+    }
+
+    public boolean visit() {
+
+        for (Declaration declaration : ast.getDeclarations()) {
+            visitStatement(declaration);
+        }
+
+        return success();
     }
 }

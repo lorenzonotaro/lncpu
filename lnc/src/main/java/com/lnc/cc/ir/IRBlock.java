@@ -1,16 +1,41 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ast.FunctionDeclaration;
+import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
-import com.lnc.cc.ast.ScopedStatement;
+import com.lnc.cc.common.Symbol;
+import com.lnc.common.frontend.Token;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class IRBlock {
-    private final IRBlock parent;
-    private final ScopedStatement scopedStatement;
-    private final Scope scope;
+    private final FunctionDeclaration functionDeclaration;
 
-    public IRBlock(IRBlock parent, ScopedStatement scopedStatement) {
-        this.parent = parent;
-        this.scopedStatement = scopedStatement;
-        this.scope = scopedStatement.getScope();
+    private final List<IRInstruction> instructions = new LinkedList<>();
+
+    private final FlatSymbolTable symbolTable;
+
+    private int virtualRegisterCounter = 0;
+
+    public IRBlock(FunctionDeclaration functionDeclaration) {
+        this.functionDeclaration = functionDeclaration;
+        this.symbolTable = FlatSymbolTable.flatten(functionDeclaration.getScope());
+    }
+
+    public FlatSymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    public Symbol resolveSymbol(Scope scope, String symbolName) {
+        return symbolTable.resolveSymbol(scope, symbolName);
+    }
+
+    public VirtualRegister createVirtualRegister() {
+        return new VirtualRegister(virtualRegisterCounter++);
+    }
+
+    public void emit(IRInstruction instruction) {
+        instructions.add(instruction);
     }
 }

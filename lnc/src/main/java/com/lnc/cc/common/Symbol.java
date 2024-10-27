@@ -7,6 +7,7 @@ public class Symbol {
     private final Token token;
     private final TypeSpecifier type;
     private boolean isForward;
+    private Scope scope;
 
     public Symbol(Token token, TypeSpecifier type, boolean isForward) {
         this.token = token;
@@ -50,5 +51,13 @@ public class Symbol {
 
     public void setForward(boolean forward) {
         this.isForward = forward;
+    }
+
+    public void setScope(Scope scope) {
+        this.scope = scope;
+    }
+
+    public Scope getScope() {
+        return scope;
     }
 }
