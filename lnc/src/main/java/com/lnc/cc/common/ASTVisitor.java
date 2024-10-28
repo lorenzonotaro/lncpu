@@ -67,7 +67,7 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     @Override
     public Void accept(WhileStatement whileStatement){
         whileStatement.condition.accept(this);
-        visitStatement(whileStatement.statement);
+        visitStatement(whileStatement.body);
         return null;
     }
 

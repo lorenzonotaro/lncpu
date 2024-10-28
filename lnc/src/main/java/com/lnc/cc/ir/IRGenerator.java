@@ -12,11 +12,11 @@ import java.util.List;
 public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
 
-    private final List<IRBlock> blocks = new ArrayList<>();
+    private final List<IRUnit> blocks = new ArrayList<>();
 
     private FlatSymbolTable globalSymbolTable;
 
-    private IRBlock currentBlock;
+    private IRUnit currentUnit;
 
     public IRGenerator(AST ast) {
         super(ast);
@@ -27,28 +27,149 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public Void accept(WhileStatement whileStatement) {
-        return super.accept(whileStatement);
-    }
 
-    @Override
-    public Void accept(VariableDeclaration variableDeclaration) {
-        return super.accept(variableDeclaration);
+        return null;
     }
 
     @Override
     public Void accept(ForStatement forStatement) {
-        return super.accept(forStatement);
+
+        if (forStatement.initializer != null)
+            visitStatement(forStatement.initializer);
+
+        IRBlock startBlock = currentUnit.newBlock();
+        IRBlock bodyBlock = currentUnit.newBlock();
+        IRBlock continueBlock = currentUnit.newBlock();
+
+        currentUnit.getCurrentBlock().setNext(startBlock);
+
+        currentUnit.setCurrentBlock(startBlock);
+        branchIfFalse(forStatement.condition, continueBlock, bodyBlock, null);
+
+        currentUnit.setCurrentBlock(bodyBlock);
+        visitStatement(forStatement.body);
+        if (forStatement.increment != null)
+            forStatement.increment.accept(this);
+
+        emit(new Goto(startBlock));
+
+        currentUnit.setCurrentBlock(continueBlock);
+
+
+        return null;
+
     }
 
     @Override
     public Void accept(ReturnStatement returnStatement) {
-        return super.accept(returnStatement);
+        IROperand value = returnStatement.value.accept(this);
+        emit(new Ret(value));
+        return null;
     }
 
     @Override
     public Void accept(IfStatement ifStatement) {
-        return super.accept(ifStatement);
+
+        IRBlock thenBlock = currentUnit.newBlock();
+        IRBlock elseBlock = ifStatement.elseStatement == null ? null : currentUnit.newBlock();
+        IRBlock continueBlock = currentUnit.newBlock();
+
+        if(elseBlock == null){
+            branchIfFalse(ifStatement.condition, continueBlock, thenBlock, null);
+
+            currentUnit.setCurrentBlock(thenBlock);
+            visitStatement(ifStatement.thenStatement);
+
+        }else{
+            branchIfFalse(ifStatement.condition, elseBlock, thenBlock, continueBlock);
+
+            currentUnit.setCurrentBlock(thenBlock);
+            visitStatement(ifStatement.thenStatement);
+
+            emit(new Goto(continueBlock));
+
+            currentUnit.setCurrentBlock(elseBlock);
+            visitStatement(ifStatement.elseStatement);
+        }
+
+        currentUnit.setCurrentBlock(continueBlock);
+
+        return null;
     }
+
+
+    private void branchIfTrue(Expression cond, IRBlock target, IRBlock fallThrough, IRBlock continueBlock) {
+        switch(cond.type){
+            case BINARY -> {
+                BinaryExpression binaryExpression = (BinaryExpression) cond;
+                IROperand left = binaryExpression.left.accept(this);
+                IROperand right = binaryExpression.right.accept(this);
+
+                switch(binaryExpression.operator){
+                    case EQ -> {
+                        emit(new Jeq(left, right, target, fallThrough, continueBlock));
+                    }
+                    case NE -> {
+                        emit(new Jne(left, right, target, fallThrough, continueBlock));
+                    }
+                    case GT -> {
+                        emit(new Jgt(left, right, target, fallThrough, continueBlock));
+                    }
+                    case GE -> {
+                        emit(new Jge(left, right, target, fallThrough, continueBlock));
+                    }
+                    case LT -> {
+                        emit(new Jlt(left, right, target, fallThrough, continueBlock));
+                    }
+                    case LE -> {
+                        emit(new Jle(left, right, target, fallThrough, continueBlock));
+                    }
+                    default -> throw new IllegalStateException("Unexpected binary operator: " + binaryExpression.operator);
+                }
+            }
+            default -> {
+                IROperand condition = cond.accept(this);
+                emit(new Jne(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
+            }
+        }
+    }
+
+    private void branchIfFalse(Expression cond, IRBlock target, IRBlock fallThrough, IRBlock continueBlock) {
+        switch(cond.type){
+            case BINARY -> {
+                BinaryExpression binaryExpression = (BinaryExpression) cond;
+                IROperand left = binaryExpression.left.accept(this);
+                IROperand right = binaryExpression.right.accept(this);
+
+                switch(binaryExpression.operator){
+                    case EQ -> {
+                        emit(new Jne(left, right, target, fallThrough, continueBlock));
+                    }
+                    case NE -> {
+                        emit(new Jeq(left, right, target, fallThrough, continueBlock));
+                    }
+                    case GT -> {
+                        emit(new Jle(left, right, target, fallThrough, continueBlock));
+                    }
+                    case GE -> {
+                        emit(new Jlt(left, right, target, fallThrough, continueBlock));
+                    }
+                    case LT -> {
+                        emit(new Jge(left, right, target, fallThrough, continueBlock));
+                    }
+                    case LE -> {
+                        emit(new Jgt(left, right, target, fallThrough, continueBlock));
+                    }
+                    default -> throw new IllegalStateException("Unexpected binary operator: " + binaryExpression.operator);
+                }
+            }
+            default -> {
+                IROperand condition = cond.accept(this);
+                emit(new Jeq(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
+            }
+        }
+    }
+
 
     @Override
     public Void accept(FunctionDeclaration functionDeclaration) {
@@ -61,8 +182,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         Symbol symbol;
 
-        if(currentBlock != null){
-            symbol = currentBlock.resolveSymbol(scope, token.lexeme);
+        if(currentUnit != null){
+            symbol = currentUnit.resolveSymbol(scope, token.lexeme);
             if(symbol != null){
                 return symbol;
             }
@@ -90,8 +211,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){
-            currentBlock = new IRBlock(functionDeclaration);
-            blocks.add(currentBlock);
+            currentUnit = new IRUnit(functionDeclaration);
+            blocks.add(currentUnit);
         }
 
         super.visitStatement(statement);
@@ -99,6 +220,17 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand accept(AssignmentExpression assignmentExpression) {
+
+        var value = assignmentExpression.right.accept(this);
+
+        var dest = assignmentExpression.left.accept(this);
+
+        if(dest.type == IROperand.Type.LOCATION){
+            emit(new Store((Location) dest, value));
+        }else{
+            emit(new Move(dest, value));
+        }
+
         return null;
     }
 
@@ -114,12 +246,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand accept(IdentifierExpression identifierExpression) {
-        return null;
+        Symbol symbol = resolveSymbol(identifierExpression.token);
+        return new Location(symbol);
     }
 
     @Override
     public IROperand accept(MemberAccessExpression memberAccessExpression) {
-        return null;
+        throw new CompileException("member access expressions not supported", memberAccessExpression.token);
     }
 
     @Override
@@ -155,19 +288,53 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         switch (unaryExpression.operator){
             case NOT -> {
                 emit(new Not(operand));
+                return operand;
             }
-
+            case NEGATE -> {
+                emit(new Neg(operand));
+                return operand;
+            }
+            case DEREFERENCE -> {
+                throw new Error("dereference IR not implemented");
+            }
+            case ADDRESS_OF -> {
+                throw new Error("address of IR not implemented");
+            }
+            case INCREMENT -> {
+                if(unaryExpression.associativity == UnaryExpression.Associativity.LEFT){
+                    emit(new Inc(operand));
+                    return operand;
+                }else{
+                    var vr = allocVR();
+                    emit(new Move(vr, operand));
+                    emit(new Inc(operand));
+                    return vr;
+                }
+            }
+            case DECREMENT -> {
+                if(unaryExpression.associativity == UnaryExpression.Associativity.LEFT){
+                    emit(new Dec(operand));
+                    return operand;
+                }else{
+                    var vr = allocVR();
+                    emit(new Move(vr, operand));
+                    emit(new Dec(operand));
+                    return vr;
+                }
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + unaryExpression.operator);
         }
-
-        //TODO: implement other unary operators
-        return null;
     }
 
     private VirtualRegister allocVR() {
-        return currentBlock.createVirtualRegister();
+        return currentUnit.createVirtualRegister();
     }
 
-    public void emit(IRInstruction instruction){
-        currentBlock.emit(instruction);
+    private void emit(IRInstruction instruction){
+        currentUnit.emit(instruction);
+    }
+
+    public List<IRUnit> getUnits() {
+        return blocks;
     }
 }

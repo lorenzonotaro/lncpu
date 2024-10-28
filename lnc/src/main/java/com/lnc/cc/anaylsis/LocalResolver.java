@@ -85,6 +85,16 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
+    public void visitStatement(Statement statement) {
+
+        if(statement instanceof FunctionDeclaration functionDeclaration){
+            define(new Symbol(functionDeclaration.name, FunctionType.of(functionDeclaration), false));
+        }
+
+        super.visitStatement(statement);
+    }
+
+    @Override
     public Void accept(VariableDeclaration variableDeclaration) {
 
         Symbol symbol = new Symbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), true);
@@ -95,16 +105,4 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
         return null;
     }
-
-    @Override
-    public Void accept(FunctionDeclaration functionDeclaration) {
-        Symbol symbol = new Symbol(functionDeclaration.name, FunctionType.of(functionDeclaration), functionDeclaration.body == null);
-
-        define(symbol);
-
-        super.accept(functionDeclaration);
-
-        return null;
-    }
-
 }

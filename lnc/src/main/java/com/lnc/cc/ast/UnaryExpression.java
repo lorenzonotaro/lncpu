@@ -2,7 +2,7 @@ package com.lnc.cc.ast;
 
 import com.lnc.common.frontend.Token;
 
-public class UnaryExpression extends Expression {
+public class    UnaryExpression extends Expression {
     public final Expression operand;
     public final Operator operator;
     public final Associativity associativity;

@@ -1,18 +1,20 @@
 package com.lnc.cc.ir;
 
-public class Not extends IRInstruction {
+public class Neg extends IRInstruction {
     private final IROperand operand;
 
-    public Not(IROperand operand) {
+    public Neg(IROperand operand) {
+        super();
         this.operand = operand;
     }
+
     public IROperand getOperand() {
         return operand;
     }
 
     @Override
     public String toString() {
-        return "not " + operand;
+        return String.format("neg %s", operand);
     }
 
     @Override

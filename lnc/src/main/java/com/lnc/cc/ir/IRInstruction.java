@@ -1,4 +1,5 @@
 package com.lnc.cc.ir;
 
-public class IRInstruction {
+public abstract class IRInstruction {
+    public abstract <E> E accept(IIRVisitor<E> visitor);
 }

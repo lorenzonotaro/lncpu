@@ -1,0 +1,20 @@
+package com.lnc.cc.ir;
+
+public class Dec extends IRInstruction {
+    private final IROperand operand;
+
+    public Dec(IROperand operand) {
+        super();
+        this.operand = operand;
+    }
+
+    @Override
+    public <E> E accept(IIRVisitor<E> visitor) {
+        return visitor.accept(this);
+    }
+
+    @Override
+    public String toString() {
+        return "dec " + operand;
+    }
+}

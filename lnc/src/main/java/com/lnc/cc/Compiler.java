@@ -3,6 +3,7 @@ package com.lnc.cc;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
 import com.lnc.cc.ir.IRGenerator;
+import com.lnc.cc.ir.IRPrinter;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
@@ -60,7 +61,16 @@ public class Compiler {
 
         IRGenerator irGenerator = new IRGenerator(ast);
 
-        return irGenerator.visit();
+        boolean success = irGenerator.visit();
+
+        if(success){
+            for (var unit : irGenerator.getUnits()) {
+                IRPrinter printer = new IRPrinter();
+                printer.print(unit);
+            }
+        }
+
+        return success;
 
     }
 

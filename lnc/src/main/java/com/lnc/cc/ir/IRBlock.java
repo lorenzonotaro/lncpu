@@ -1,41 +1,53 @@
 package com.lnc.cc.ir;
 
-import com.lnc.cc.ast.FunctionDeclaration;
-import com.lnc.cc.common.FlatSymbolTable;
-import com.lnc.cc.common.Scope;
-import com.lnc.cc.common.Symbol;
-import com.lnc.common.frontend.Token;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IRBlock {
-    private final FunctionDeclaration functionDeclaration;
 
-    private final List<IRInstruction> instructions = new LinkedList<>();
+    private final IRUnit unit;
 
-    private final FlatSymbolTable symbolTable;
+    private IRBlock next;
 
-    private int virtualRegisterCounter = 0;
+    private final int id;
 
-    public IRBlock(FunctionDeclaration functionDeclaration) {
-        this.functionDeclaration = functionDeclaration;
-        this.symbolTable = FlatSymbolTable.flatten(functionDeclaration.getScope());
+    private final List<IRInstruction> instructions = new ArrayList<>();
+
+    public IRBlock(IRUnit unit, int id) {
+        this.unit = unit;
+        this.id = id;
     }
 
-    public FlatSymbolTable getSymbolTable() {
-        return symbolTable;
-    }
-
-    public Symbol resolveSymbol(Scope scope, String symbolName) {
-        return symbolTable.resolveSymbol(scope, symbolName);
-    }
-
-    public VirtualRegister createVirtualRegister() {
-        return new VirtualRegister(virtualRegisterCounter++);
-    }
 
     public void emit(IRInstruction instruction) {
         instructions.add(instruction);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<IRInstruction> getInstructions() {
+        return instructions;
+    }
+
+    public void setNext(IRBlock next) {
+        this.next = next;
+    }
+
+    public boolean hasNext() {
+        return next != null;
+    }
+
+    public IRBlock getNext() {
+        return next;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "S" + id;
     }
 }

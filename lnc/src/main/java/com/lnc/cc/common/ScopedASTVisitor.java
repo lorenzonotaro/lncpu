@@ -200,7 +200,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         }
 
         try{
-            visitStatement(whileStatement.statement);
+            visitStatement(whileStatement.body);
         }catch (CompileException e){
             e.log();
             fail();
@@ -231,7 +231,9 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         if(statement instanceof IScopedStatement ss){
             if(ss.getScope() != null){
                 setCurrentScope(ss.getScope());
-            } else {
+            } else if (ss instanceof FunctionDeclaration fd) {
+                ss.setScope(currentScope = Scope.createRoot(fd.name.lexeme));
+            }else{
                 ss.setScope(pushLocalScope());
             }
         }

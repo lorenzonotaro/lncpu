@@ -1,13 +1,11 @@
 int main(){
-    int a = 1;
-    {
-        int b;
-    }
-    {
-        int c;
-        {
-            int d;
-            int a;
+     for(int i = 5; i >= 0; i--){
+        if(i == 0){
+             return 0;
+        }else{
+             return 15;
         }
-    }
+     }
+
+     return 1;
 }

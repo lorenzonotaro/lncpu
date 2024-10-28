@@ -9,7 +9,7 @@ public class FunctionType extends TypeSpecifier {
     public final TypeSpecifier returnType;
     public final TypeSpecifier[] parameterTypes;
 
-    public FunctionType(TypeSpecifier returnType, TypeSpecifier[] parameterTypes) {
+    private FunctionType(TypeSpecifier returnType, TypeSpecifier[] parameterTypes) {
         super(Type.FUNCTION);
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;

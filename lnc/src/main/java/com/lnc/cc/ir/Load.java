@@ -20,6 +20,11 @@ public class Load extends IRInstruction {
 
     @Override
     public String toString() {
-        return "load " + vr + " <- " + operand;
+        return "load " + operand + " -> " + vr;
+    }
+
+    @Override
+    public <E> E accept(IIRVisitor<E> visitor) {
+        return visitor.accept(this);
     }
 }

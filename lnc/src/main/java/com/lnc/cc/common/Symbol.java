@@ -60,4 +60,10 @@ public class Symbol {
     public Scope getScope() {
         return scope;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s [%s]", token.lexeme, type);
+    }
+
 }

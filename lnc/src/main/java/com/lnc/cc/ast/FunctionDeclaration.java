@@ -39,4 +39,21 @@ public class FunctionDeclaration extends Declaration implements IScopedStatement
         }
         this.scope = scope;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(name.lexeme).append("(");
+        for (int i = 0; i < parameters.length; i++) {
+            sb.append(parameters[i]);
+            if (i < parameters.length - 1) {
+                sb.append(", ");
+            }
+        }
+
+        sb.append(")");
+
+        return sb.toString();
+    }
 }

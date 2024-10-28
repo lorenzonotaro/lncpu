@@ -48,7 +48,28 @@ public class FlatSymbolTable {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (Map.Entry<String, Symbol> entry : symbols.entrySet()) {
+            sb.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
+        }
+
+        return sb.toString();
+    }
+
     public Symbol resolveSymbol(Scope scope, String symbolName) {
-        return symbols.get("__" + scope.getId() + "__" + symbolName);
+        Scope sc = scope;
+
+        while(sc != null){
+            Symbol symbol = symbols.get("__" + sc.getId() + "__" + symbolName);
+            if(symbol != null){
+                return symbol;
+            }
+            sc = sc.getParent();
+        }
+
+        return null;
     }
 }
