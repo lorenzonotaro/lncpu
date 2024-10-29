@@ -30,4 +30,8 @@ public interface IIRVisitor<E> {
     E accept(Neg neg);
 
     E accept(Not not);
+
+    E accept(Bin bin);
+
+    E accept(Call call);
 }

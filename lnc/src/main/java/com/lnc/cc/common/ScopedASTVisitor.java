@@ -6,6 +6,7 @@ import com.lnc.common.frontend.Token;
 
 public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
     protected Scope currentScope;
+    private FunctionDeclaration currentFunction;
 
     public ScopedASTVisitor(AST ast) {
         super(ast);
@@ -81,12 +82,16 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
             }
         }
 
+
         if(functionDeclaration.body != null){
             try{
+                this.currentFunction = functionDeclaration;
                 visitStatement(functionDeclaration.body);
             } catch (CompileException e){
                 e.log();
                 fail();
+            } finally {
+                this.currentFunction = null;
             }
         }
 
@@ -243,5 +248,9 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         if(statement instanceof IScopedStatement ss){
             popLocalScope();
         }
+    }
+
+    public FunctionDeclaration getCurrentFunction() {
+        return currentFunction;
     }
 }

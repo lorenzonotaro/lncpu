@@ -2,24 +2,29 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
+import com.lnc.cc.types.FunctionType;
+import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
 
     private final List<IRUnit> blocks = new ArrayList<>();
 
-    private FlatSymbolTable globalSymbolTable;
+    private final FlatSymbolTable globalSymbolTable;
+    private final Scope globalScope;
 
     private IRUnit currentUnit;
 
     public IRGenerator(AST ast) {
         super(ast);
+        this.globalScope = ast.getGlobalScope();
         globalSymbolTable = FlatSymbolTable.flatten(ast.getGlobalScope());
     }
 
@@ -27,6 +32,22 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public Void accept(WhileStatement whileStatement) {
+
+        IRBlock startBlock = currentUnit.newBlock();
+        IRBlock bodyBlock = currentUnit.newBlock();
+        IRBlock continueBlock = currentUnit.newBlock();
+
+        currentUnit.getCurrentBlock().setNext(startBlock);
+
+        currentUnit.setCurrentBlock(startBlock);
+        branchIfFalse(whileStatement.condition, continueBlock, bodyBlock, null);
+
+        currentUnit.setCurrentBlock(bodyBlock);
+        visitStatement(whileStatement.body);
+
+        emit(new Goto(startBlock));
+
+        currentUnit.setCurrentBlock(continueBlock);
 
         return null;
     }
@@ -62,7 +83,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public Void accept(ReturnStatement returnStatement) {
-        IROperand value = returnStatement.value.accept(this);
+        IROperand value = null;
+        if(returnStatement.value != null){
+            value = returnStatement.value.accept(this);
+        }
         emit(new Ret(value));
         return null;
     }
@@ -97,76 +121,26 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         return null;
     }
 
-
-    private void branchIfTrue(Expression cond, IRBlock target, IRBlock fallThrough, IRBlock continueBlock) {
-        switch(cond.type){
-            case BINARY -> {
-                BinaryExpression binaryExpression = (BinaryExpression) cond;
-                IROperand left = binaryExpression.left.accept(this);
-                IROperand right = binaryExpression.right.accept(this);
-
-                switch(binaryExpression.operator){
-                    case EQ -> {
-                        emit(new Jeq(left, right, target, fallThrough, continueBlock));
-                    }
-                    case NE -> {
-                        emit(new Jne(left, right, target, fallThrough, continueBlock));
-                    }
-                    case GT -> {
-                        emit(new Jgt(left, right, target, fallThrough, continueBlock));
-                    }
-                    case GE -> {
-                        emit(new Jge(left, right, target, fallThrough, continueBlock));
-                    }
-                    case LT -> {
-                        emit(new Jlt(left, right, target, fallThrough, continueBlock));
-                    }
-                    case LE -> {
-                        emit(new Jle(left, right, target, fallThrough, continueBlock));
-                    }
-                    default -> throw new IllegalStateException("Unexpected binary operator: " + binaryExpression.operator);
-                }
-            }
-            default -> {
-                IROperand condition = cond.accept(this);
-                emit(new Jne(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
-            }
-        }
-    }
-
     private void branchIfFalse(Expression cond, IRBlock target, IRBlock fallThrough, IRBlock continueBlock) {
-        switch(cond.type){
-            case BINARY -> {
-                BinaryExpression binaryExpression = (BinaryExpression) cond;
-                IROperand left = binaryExpression.left.accept(this);
-                IROperand right = binaryExpression.right.accept(this);
+        if (Objects.requireNonNull(cond.type) == Expression.Type.BINARY) {
+            BinaryExpression binaryExpression = (BinaryExpression) cond;
+            IROperand left = binaryExpression.left.accept(this);
+            IROperand right = binaryExpression.right.accept(this);
 
-                switch(binaryExpression.operator){
-                    case EQ -> {
-                        emit(new Jne(left, right, target, fallThrough, continueBlock));
-                    }
-                    case NE -> {
-                        emit(new Jeq(left, right, target, fallThrough, continueBlock));
-                    }
-                    case GT -> {
-                        emit(new Jle(left, right, target, fallThrough, continueBlock));
-                    }
-                    case GE -> {
-                        emit(new Jlt(left, right, target, fallThrough, continueBlock));
-                    }
-                    case LT -> {
-                        emit(new Jge(left, right, target, fallThrough, continueBlock));
-                    }
-                    case LE -> {
-                        emit(new Jgt(left, right, target, fallThrough, continueBlock));
-                    }
-                    default -> throw new IllegalStateException("Unexpected binary operator: " + binaryExpression.operator);
+            switch (binaryExpression.operator) {
+                case EQ -> emit(new Jne(left, right, target, fallThrough, continueBlock));
+                case NE -> emit(new Jeq(left, right, target, fallThrough, continueBlock));
+                case GT -> emit(new Jle(left, right, target, fallThrough, continueBlock));
+                case GE -> emit(new Jlt(left, right, target, fallThrough, continueBlock));
+                case LT -> emit(new Jge(left, right, target, fallThrough, continueBlock));
+                case LE -> emit(new Jgt(left, right, target, fallThrough, continueBlock));
+                default -> {
+                    emit(new Jne(left, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
                 }
             }
-            default -> {
-                IROperand condition = cond.accept(this);
-                emit(new Jeq(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
-            }
+        } else {
+            IROperand condition = cond.accept(this);
+            emit(new Jeq(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
         }
     }
 
@@ -188,7 +162,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 return symbol;
             }
 
-            symbol = globalSymbolTable.resolveSymbol(scope, token.lexeme);
+            symbol = globalSymbolTable.resolveSymbol(globalScope, token.lexeme);
 
 
             if(symbol != null){
@@ -236,12 +210,57 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand accept(BinaryExpression binaryExpression) {
-        return null;
+
+        IROperand left = binaryExpression.left.accept(this);
+        IROperand right = binaryExpression.right.accept(this);
+
+        if(left.type == IROperand.Type.LOCATION) {
+            var vr = allocVR();
+            emit(new Load(vr, (Location) left));
+            left = vr;
+        }
+
+        if(right.type == IROperand.Type.LOCATION) {
+            var vr = allocVR();
+            emit(new Load(vr, (Location) right));
+            right = vr;
+        }
+
+        emit(new Bin(left, right, binaryExpression.operator));
+
+        return left;
     }
 
     @Override
     public IROperand accept(CallExpression callExpression) {
-        return null;
+
+        var args = new ArrayList<IROperand>();
+
+        for (Expression arg : callExpression.arguments) {
+            args.add(arg.accept(this));
+        }
+
+        IROperand callee = callExpression.callee.accept(this);
+
+        VirtualRegister destVr = null;
+
+        if(callee.type == IROperand.Type.LOCATION){
+            Symbol symbol = ((Location) callee).getSymbol();
+
+            if(symbol.getType().type != TypeSpecifier.Type.FUNCTION){
+                throw new CompileException("symbol is not a function: " + symbol.getName(), callExpression.token);
+            }
+
+            if (((FunctionType) symbol.getType()).returnType.type != TypeSpecifier.Type.VOID) {
+                destVr = allocVR();
+            }
+        }else{
+            destVr = allocVR();
+        }
+
+        emit(new Call(destVr, callee, args.toArray(new IROperand[0])));
+
+        return destVr;
     }
 
     @Override
@@ -279,11 +298,6 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public IROperand accept(UnaryExpression unaryExpression) {
         IROperand operand = unaryExpression.operand.accept(this);
 
-        if(operand.type == IROperand.Type.LOCATION){
-            var vr = allocVR();
-            emit(new Load(vr, (Location) operand));
-            operand = vr;
-        }
 
         switch (unaryExpression.operator){
             case NOT -> {
@@ -294,12 +308,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 emit(new Neg(operand));
                 return operand;
             }
-            case DEREFERENCE -> {
-                throw new Error("dereference IR not implemented");
-            }
-            case ADDRESS_OF -> {
-                throw new Error("address of IR not implemented");
-            }
+            case DEREFERENCE -> throw new Error("dereference IR not implemented");
+            case ADDRESS_OF -> throw new Error("address of IR not implemented");
             case INCREMENT -> {
                 if(unaryExpression.associativity == UnaryExpression.Associativity.LEFT){
                     emit(new Inc(operand));
@@ -317,7 +327,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                     return operand;
                 }else{
                     var vr = allocVR();
-                    emit(new Move(vr, operand));
+                    emit(new Move(operand, vr));
                     emit(new Dec(operand));
                     return vr;
                 }

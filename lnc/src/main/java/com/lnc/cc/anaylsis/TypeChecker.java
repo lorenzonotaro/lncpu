@@ -121,5 +121,30 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         throw new CompileException("incompatible types: " + type + " and " + expectedType, location);
     }
+
+    @Override
+    public Void accept(ReturnStatement returnStatement) {
+        TypeSpecifier returnType = returnStatement.value == null ? null : returnStatement.value.accept(this);
+
+        var currentFunction = getCurrentFunction();
+
+        if(currentFunction == null){
+            throw new CompileException("return statement outside of function", returnStatement.token);
+        }
+
+        TypeSpecifier expectedReturnType = currentFunction.declarator.typeSpecifier();
+
+        if(returnType == null && expectedReturnType.type == TypeSpecifier.Type.VOID){
+            return null;
+        }else if(returnType == null){
+            throw new CompileException("return with no value when function expects '" + expectedReturnType + "'", returnStatement.token);
+        }else if(expectedReturnType.type == TypeSpecifier.Type.VOID){
+            throw new CompileException("return with a value in function returning void", returnStatement.token);
+        }
+
+        check(returnType, expectedReturnType, returnStatement.token);
+
+        return null;
+    }
 }
 

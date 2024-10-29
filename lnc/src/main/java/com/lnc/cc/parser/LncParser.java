@@ -168,11 +168,12 @@ public class LncParser extends FullSourceParser<AST> {
         if(match(TokenType.L_CURLY_BRACE)){
             return block();
         }else if(match(TokenType.RETURN)){
+            Token token = previous();
             if(check(TokenType.SEMICOLON)){
-                return new ReturnStatement(null);
+                return new ReturnStatement(token,null);
             }else{
                 var expr = expression();
-                return new ReturnStatement(expr);
+                return new ReturnStatement(token, expr);
             }
         }else if(match(TokenType.IF)){
             consume("expected '('", TokenType.L_PAREN);

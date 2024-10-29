@@ -1,11 +1,45 @@
-int main(){
-     for(int i = 5; i >= 0; i--){
-        if(i == 0){
-             return 0;
-        }else{
-             return 15;
-        }
-     }
+// test program to test a simple c compiler: test if-else statement, for loops, while loops, function calls
 
-     return 1;
+extern void test(int a, int b, int c);
+extern void print_int(int x);
+extern int read_int();
+
+void main(){
+    int a = 1;
+    int b = 2;
+    int c = 3;
+
+    if(a == 1){
+        a = 2;
+    }else{
+        a = 3;
+    }
+
+    if(b == 2){
+        b = 3;
+    }else{
+        b = 4;
+    }
+
+    if(c == 3){
+        c = 4;
+    }else{
+        c = 5;
+    }
+
+    //test arithmetic expressions
+    test((a + b) * c, (a - b) / c, (a * b) + c);
+
+    int i;
+    for(i = 0; i < 10; i = i + 1){
+        print_int(i);
+    }
+
+    i = 0;
+    while(i < 10){
+        print_int(i);
+        i = i + 1;
+    }
+
+    return;
 }

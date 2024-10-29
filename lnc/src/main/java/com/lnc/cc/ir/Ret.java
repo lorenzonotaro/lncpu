@@ -13,7 +13,7 @@ public class Ret extends IRInstruction {
 
     @Override
     public String toString() {
-        return "ret " + value;
+        return "ret" + (value != null ? " " + value : "");
     }
 
     @Override

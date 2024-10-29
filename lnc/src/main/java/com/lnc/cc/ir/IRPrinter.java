@@ -140,6 +140,23 @@ public class IRPrinter extends BranchingIRVisitor{
         return null;
     }
 
+    @Override
+    public Void accept(Bin bin) {
+
+        System.out.println("    " + bin);
+
+        return null;
+
+    }
+
+    @Override
+    public Void accept(Call call) {
+
+        System.out.println("    " + call);
+
+        return null;
+    }
+
     protected void visit(IRBlock target) {
 
         if(target != null)
