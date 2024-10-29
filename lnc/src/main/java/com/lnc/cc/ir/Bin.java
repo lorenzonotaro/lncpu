@@ -12,6 +12,15 @@ public class Bin extends IRInstruction {
         this.left = left;
         this.right = right;
         this.operator = operator;
+
+        if(left.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)left).checkReleased();
+        }
+
+        if(right.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)right).checkReleased();
+        }
+
     }
 
     @Override

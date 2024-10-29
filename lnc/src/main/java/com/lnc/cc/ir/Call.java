@@ -11,6 +11,20 @@ public class Call extends IRInstruction {
         this.returnTarget = returnTarget;
         this.callee = callee;
         this.arguments = arguments;
+
+        if(returnTarget != null && returnTarget.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)returnTarget).checkReleased();
+        }
+
+        if(callee.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)callee).checkReleased();
+        }
+
+        for (int i = 0; i < arguments.length; i++) {
+            if(arguments[i].type == IROperand.Type.VIRTUAL_REGISTER){
+                ((VirtualRegister)arguments[i]).checkReleased();
+            }
+        }
     }
 
     public IROperand getReturnTarget() {

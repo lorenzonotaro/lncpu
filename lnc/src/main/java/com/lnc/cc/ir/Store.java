@@ -8,6 +8,10 @@ public class Store extends IRInstruction {
         super();
         this.dest = dest;
         this.value = value;
+
+        if(value.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)value).checkReleased();
+        }
     }
 
     public Location getDest() {

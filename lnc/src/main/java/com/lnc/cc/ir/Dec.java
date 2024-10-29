@@ -6,6 +6,10 @@ public class Dec extends IRInstruction {
     public Dec(IROperand operand) {
         super();
         this.operand = operand;
+
+        if(operand.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)operand).checkReleased();
+        }
     }
 
     @Override

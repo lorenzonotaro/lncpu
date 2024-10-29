@@ -8,6 +8,9 @@ public class Load extends IRInstruction {
         super();
         this.vr = vr;
         this.operand = operand;
+
+        vr.checkReleased();
+
     }
 
     public VirtualRegister getVR() {

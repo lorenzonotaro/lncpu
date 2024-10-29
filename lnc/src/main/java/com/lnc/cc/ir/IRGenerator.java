@@ -69,8 +69,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         currentUnit.setCurrentBlock(bodyBlock);
         visitStatement(forStatement.body);
-        if (forStatement.increment != null)
-            forStatement.increment.accept(this);
+        if (forStatement.increment != null) {
+            IROperand operand = forStatement.increment.accept(this);
+
+            if(operand.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) operand);
+            }
+        }
 
         emit(new Goto(startBlock));
 
@@ -88,6 +93,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             value = returnStatement.value.accept(this);
         }
         emit(new Ret(value));
+
+        if(value != null && value.type == IROperand.Type.VIRTUAL_REGISTER){
+            releaseVR((VirtualRegister) value);
+        }
+
         return null;
     }
 
@@ -138,9 +148,22 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                     emit(new Jne(left, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
                 }
             }
+
+            if(left.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) left);
+            }
+
+            if(right.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) right);
+            }
+
         } else {
             IROperand condition = cond.accept(this);
             emit(new Jeq(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
+
+            if(condition.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) condition);
+            }
         }
     }
 
@@ -205,7 +228,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             emit(new Move(dest, value));
         }
 
-        return null;
+        if(value.type == IROperand.Type.VIRTUAL_REGISTER){
+            releaseVR((VirtualRegister) value);
+        }
+
+        return dest;
     }
 
     @Override
@@ -227,6 +254,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
 
         emit(new Bin(left, right, binaryExpression.operator));
+
+        if(right.type == IROperand.Type.VIRTUAL_REGISTER){
+            releaseVR((VirtualRegister) right);
+        }
 
         return left;
     }
@@ -259,6 +290,17 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
 
         emit(new Call(destVr, callee, args.toArray(new IROperand[0])));
+
+        if(callee.type == IROperand.Type.VIRTUAL_REGISTER){
+            assert callee instanceof VirtualRegister;
+            releaseVR((VirtualRegister) callee);
+        }
+
+        for (IROperand arg : args) {
+            if(arg.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) arg);
+            }
+        }
 
         return destVr;
     }
@@ -337,7 +379,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     private VirtualRegister allocVR() {
-        return currentUnit.createVirtualRegister();
+        return currentUnit.getVirtualRegisterManager().getRegister();
+    }
+
+    private void releaseVR(VirtualRegister vr) {
+        currentUnit.getVirtualRegisterManager().releaseRegister(vr);
     }
 
     private void emit(IRInstruction instruction){

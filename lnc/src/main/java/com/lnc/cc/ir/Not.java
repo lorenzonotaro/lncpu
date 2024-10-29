@@ -5,6 +5,11 @@ public class Not extends IRInstruction {
 
     public Not(IROperand operand) {
         this.operand = operand;
+
+        if(operand.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)operand).checkReleased();
+        }
+
     }
     public IROperand getOperand() {
         return operand;

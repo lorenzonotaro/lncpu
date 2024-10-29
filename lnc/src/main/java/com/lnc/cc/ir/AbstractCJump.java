@@ -13,6 +13,15 @@ public abstract class AbstractCJump extends AbstractBranchInstr {
         this.right = right;
         this.fallThrough = fallThrough;
         this.continueTo = continueTo;
+
+        if(left.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)left).checkReleased();
+        }
+
+        if(right.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)right).checkReleased();
+        }
+
     }
 
     public IRBlock getFallThrough() {

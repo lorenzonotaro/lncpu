@@ -5,6 +5,11 @@ public class Ret extends IRInstruction {
 
     public Ret(IROperand value) {
         this.value = value;
+
+        if(value != null && value.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)value).checkReleased();
+        }
+
     }
 
     public IROperand getValue() {

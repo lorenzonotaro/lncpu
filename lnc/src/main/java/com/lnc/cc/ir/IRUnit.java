@@ -5,9 +5,6 @@ import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
 import com.lnc.cc.common.Symbol;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class IRUnit {
     private final FunctionDeclaration functionDeclaration;
 
@@ -17,12 +14,15 @@ public class IRUnit {
 
     private final FlatSymbolTable symbolTable;
 
-    private int virtualRegisterCounter = 0, blockCounter = 0;
+    private int blockCounter = 0;
+
+    private final VirtualRegisterManager virtualRegisterManager;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
         this.functionDeclaration = functionDeclaration;
         this.symbolTable = FlatSymbolTable.flatten(functionDeclaration.getScope());
+        virtualRegisterManager = new VirtualRegisterManager();
     }
 
     public FlatSymbolTable getSymbolTable() {
@@ -33,8 +33,8 @@ public class IRUnit {
         return symbolTable.resolveSymbol(scope, symbolName);
     }
 
-    public VirtualRegister createVirtualRegister() {
-        return new VirtualRegister(virtualRegisterCounter++);
+    VirtualRegisterManager getVirtualRegisterManager() {
+        return virtualRegisterManager;
     }
 
     public void emit(IRInstruction instruction) {

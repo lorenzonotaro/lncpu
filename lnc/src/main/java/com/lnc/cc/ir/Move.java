@@ -8,6 +8,14 @@ public class Move extends IRInstruction {
         super();
         this.source = source;
         this.dest = dest;
+
+        if(source.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)source).checkReleased();
+        }
+
+        if(dest.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)dest).checkReleased();
+        }
     }
 
 

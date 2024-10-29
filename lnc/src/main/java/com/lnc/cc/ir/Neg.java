@@ -6,6 +6,11 @@ public class Neg extends IRInstruction {
     public Neg(IROperand operand) {
         super();
         this.operand = operand;
+
+        if(operand.type == IROperand.Type.VIRTUAL_REGISTER){
+            ((VirtualRegister)operand).checkReleased();
+        }
+
     }
 
     public IROperand getOperand() {
