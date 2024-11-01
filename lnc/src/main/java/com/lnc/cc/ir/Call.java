@@ -1,5 +1,7 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.codegen.RegisterClass;
+
 public class Call extends IRInstruction {
     private final IROperand returnTarget;
 
@@ -13,16 +15,19 @@ public class Call extends IRInstruction {
         this.arguments = arguments;
 
         if(returnTarget != null && returnTarget.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)returnTarget).checkReleased();
+            VirtualRegister target = (VirtualRegister) returnTarget;
+            target.checkReleased();
+
+            target.setRegisterClass(RegisterClass.RETURN);
         }
 
         if(callee.type == IROperand.Type.VIRTUAL_REGISTER){
             ((VirtualRegister)callee).checkReleased();
         }
 
-        for (int i = 0; i < arguments.length; i++) {
-            if(arguments[i].type == IROperand.Type.VIRTUAL_REGISTER){
-                ((VirtualRegister)arguments[i]).checkReleased();
+        for (IROperand irOperand : arguments) {
+            if (irOperand.type == IROperand.Type.VIRTUAL_REGISTER) {
+                ((VirtualRegister) irOperand).checkReleased();
             }
         }
 

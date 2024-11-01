@@ -400,7 +400,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         currentUnit.emit(instruction);
     }
 
-    public List<IRUnit> getUnits() {
-        return blocks;
+    public IR getResult() {
+        return new IR(blocks, globalSymbolTable);
     }
 }

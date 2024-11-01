@@ -1,8 +1,12 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.codegen.RegisterClass;
+
 public class VirtualRegister extends ReferencableIROperand {
 
     private static long virtualRegisterCounter = 0;
+
+    private RegisterClass registerClass;
 
     private final int registerNumber;
 
@@ -15,6 +19,7 @@ public class VirtualRegister extends ReferencableIROperand {
         this.instanceId = virtualRegisterCounter++;
         this.registerNumber = registerNumber;
         this.released = false;
+        registerClass = RegisterClass.ANY;
     }
 
     public int getRegisterNumber() {
@@ -52,5 +57,13 @@ public class VirtualRegister extends ReferencableIROperand {
 
         VirtualRegister that = (VirtualRegister) o;
         return registerNumber == that.registerNumber && instanceId == that.instanceId;
+    }
+
+    public void setRegisterClass(RegisterClass registerClass) {
+        this.registerClass = registerClass;
+    }
+
+    public RegisterClass getRegisterClass() {
+        return registerClass;
     }
 }

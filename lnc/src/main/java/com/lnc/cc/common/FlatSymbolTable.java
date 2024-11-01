@@ -73,4 +73,14 @@ public class FlatSymbolTable {
 
         return null;
     }
+
+    public void join(FlatSymbolTable symbolTable) {
+        for (Map.Entry<String, Symbol> entry : symbolTable.symbols.entrySet()) {
+            var prev = symbols.put(entry.getKey(), entry.getValue());
+            if(prev != null){
+                throw new IllegalStateException("unequivocal symbol name '%s', from scopes '%s' and '%s'"
+                        .formatted(entry.getValue().getName(), prev.getScope().getId(), entry.getValue().getScope().getId()));
+            }
+        }
+    }
 }

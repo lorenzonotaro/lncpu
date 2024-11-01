@@ -1,19 +1,18 @@
 package com.lnc.cc.optimization;
 
+import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRUnit;
-
-import java.util.List;
 
 public class Optimizer {
 
-    private final List<IRUnit> units;
+    private final IR ir;
 
-    public Optimizer(List<IRUnit> units) {
-        this.units = units;
+    public Optimizer(IR ir) {
+        this.ir = ir;
     }
 
     public void optimize() {
-        for (IRUnit unit : units) {
+        for (IRUnit unit : ir.units()) {
             LinearIRUnit linearIRUnit = new LinearIRUnit(unit);
             linearIRUnit.linearize();
 

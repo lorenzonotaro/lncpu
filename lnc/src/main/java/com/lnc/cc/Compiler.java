@@ -3,7 +3,6 @@ package com.lnc.cc;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
 import com.lnc.cc.ir.IRGenerator;
-import com.lnc.cc.ir.IRPrinter;
 import com.lnc.cc.optimization.Optimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.common.Logger;
@@ -68,7 +67,7 @@ public class Compiler {
 
         Logger.setProgramState("opt");
 
-        Optimizer optimizer = new Optimizer(irGenerator.getUnits());
+        Optimizer optimizer = new Optimizer(irGenerator.getResult());
 
         optimizer.optimize();
 
