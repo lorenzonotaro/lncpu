@@ -8,6 +8,7 @@ public class Symbol {
     private final TypeSpecifier type;
     private boolean isForward;
     private Scope scope;
+    private String flatSymbolName;
 
     public Symbol(Token token, TypeSpecifier type, boolean isForward) {
         this.token = token;
@@ -16,7 +17,7 @@ public class Symbol {
     }
 
     public String getName() {
-        return token.lexeme;
+        return flatSymbolName == null ? token.lexeme : flatSymbolName;
     }
 
     public TypeSpecifier getType() {
@@ -63,7 +64,14 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return String.format("%s [%s]", token.lexeme, type);
+        return String.format("%s %s [%s]", token.lexeme, flatSymbolName == null ? "" : "( " + flatSymbolName + ")", type);
     }
 
+    public void setFlatSymbolName(String name) {
+        this.flatSymbolName = name;
+    }
+
+    public String getFlatSymbolName() {
+        return flatSymbolName;
+    }
 }
