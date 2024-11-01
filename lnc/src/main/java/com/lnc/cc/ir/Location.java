@@ -2,7 +2,7 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.common.Symbol;
 
-public class Location extends IROperand {
+public class Location extends ReferencableIROperand {
     private Symbol symbol;
 
     public Location(Symbol symbol) {

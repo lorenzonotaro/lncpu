@@ -10,6 +10,10 @@ public class Ret extends IRInstruction {
             ((VirtualRegister)value).checkReleased();
         }
 
+        if(value instanceof ReferencableIROperand rop){
+            rop.addRead(this);
+        }
+
     }
 
     public IROperand getValue() {

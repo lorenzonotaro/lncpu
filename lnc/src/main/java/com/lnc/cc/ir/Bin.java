@@ -21,6 +21,14 @@ public class Bin extends IRInstruction {
             ((VirtualRegister)right).checkReleased();
         }
 
+        if(left instanceof ReferencableIROperand rop){
+            rop.addRead(this);
+        }
+
+        if(right instanceof ReferencableIROperand rop) {
+            rop.addRead(this);
+        }
+
     }
 
     @Override

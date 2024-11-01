@@ -16,6 +16,8 @@ public class IRUnit {
 
     private int blockCounter = 0;
 
+    private int currentLoopLevel = 0;
+
     private final VirtualRegisterManager virtualRegisterManager;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
@@ -42,6 +44,8 @@ public class IRUnit {
             currentBlock = startBlock;
         }
 
+        instruction.setLoopNestedLevel(currentLoopLevel);
+
         currentBlock.emit(instruction);
     }
 
@@ -53,6 +57,15 @@ public class IRUnit {
     public void setCurrentBlock(IRBlock block){
         currentBlock = block;
     }
+
+    public void enterLoop(){
+        currentLoopLevel++;
+    }
+
+    public void exitLoop(){
+        currentLoopLevel--;
+    }
+
 
     public IRBlock getCurrentBlock() {
         return currentBlock;

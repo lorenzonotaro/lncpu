@@ -25,6 +25,20 @@ public class Call extends IRInstruction {
                 ((VirtualRegister)arguments[i]).checkReleased();
             }
         }
+
+        if(callee instanceof ReferencableIROperand rop){
+            rop.addRead(this);
+        }
+
+        for (IROperand argument : arguments) {
+            if (argument instanceof ReferencableIROperand rop) {
+                rop.addRead(this);
+            }
+        }
+
+        if(returnTarget instanceof ReferencableIROperand rop){
+            rop.addWrite(this);
+        }
     }
 
     public IROperand getReturnTarget() {

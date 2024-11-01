@@ -44,8 +44,8 @@ public class FlatSymbolTable {
 
         System.out.printf("Symbol table '%s'%n", name);
 
-        for (Map.Entry<String, Symbol> entry : symbols.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        for (Symbol entry : symbols.values()) {
+            System.out.println(entry);
         }
     }
 

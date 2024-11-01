@@ -1,6 +1,6 @@
 package com.lnc.cc.ir;
 
-public class VirtualRegister extends IROperand {
+public class VirtualRegister extends ReferencableIROperand {
 
     private static long virtualRegisterCounter = 0;
 

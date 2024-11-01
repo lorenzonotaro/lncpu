@@ -34,4 +34,8 @@ public interface IIRVisitor<E> {
     E accept(Bin bin);
 
     E accept(Call call);
+
+    default E accept(Label label) {
+        return null;
+    }
 }

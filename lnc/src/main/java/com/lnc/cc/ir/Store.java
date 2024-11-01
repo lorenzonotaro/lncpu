@@ -12,6 +12,12 @@ public class Store extends IRInstruction {
         if(value.type == IROperand.Type.VIRTUAL_REGISTER){
             ((VirtualRegister)value).checkReleased();
         }
+
+        dest.addWrite(this);
+
+        if(value instanceof ReferencableIROperand rop){
+            rop.addRead(this);
+        }
     }
 
     public Location getDest() {

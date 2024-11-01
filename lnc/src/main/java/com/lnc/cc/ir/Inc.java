@@ -11,6 +11,10 @@ public class Inc extends IRInstruction {
             ((VirtualRegister)operand).checkReleased();
         }
 
+        if(operand instanceof ReferencableIROperand rop){
+            rop.addWrite(this);
+        }
+
     }
 
     public IROperand getOperand() {

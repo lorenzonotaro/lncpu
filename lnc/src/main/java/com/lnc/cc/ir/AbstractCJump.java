@@ -22,6 +22,14 @@ public abstract class AbstractCJump extends AbstractBranchInstr {
             ((VirtualRegister)right).checkReleased();
         }
 
+        if(left instanceof ReferencableIROperand rop){
+            rop.addRead(this);
+        }
+
+        if(right instanceof ReferencableIROperand rop) {
+            rop.addRead(this);
+        }
+
     }
 
     public IRBlock getFallThrough() {

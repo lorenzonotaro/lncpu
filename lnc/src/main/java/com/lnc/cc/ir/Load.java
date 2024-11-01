@@ -11,6 +11,9 @@ public class Load extends IRInstruction {
 
         vr.checkReleased();
 
+        this.operand.addRead(this);
+        this.vr.addWrite(this);
+
     }
 
     public VirtualRegister getVR() {

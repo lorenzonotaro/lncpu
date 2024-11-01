@@ -16,6 +16,14 @@ public class Move extends IRInstruction {
         if(dest.type == IROperand.Type.VIRTUAL_REGISTER){
             ((VirtualRegister)dest).checkReleased();
         }
+
+        if(source instanceof ReferencableIROperand rop){
+            rop.addRead(this);
+        }
+
+        if(dest instanceof ReferencableIROperand rop) {
+            rop.addWrite(this);
+        }
     }
 
 

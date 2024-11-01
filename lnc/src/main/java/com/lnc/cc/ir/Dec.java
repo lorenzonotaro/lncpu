@@ -10,6 +10,10 @@ public class Dec extends IRInstruction {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER){
             ((VirtualRegister)operand).checkReleased();
         }
+
+        if(operand instanceof ReferencableIROperand rop){
+            rop.addWrite(this);
+        }
     }
 
     @Override

@@ -11,6 +11,9 @@ public class Neg extends IRInstruction {
             ((VirtualRegister)operand).checkReleased();
         }
 
+        if(operand instanceof ReferencableIROperand rop){
+            rop.addWrite(this);
+        }
     }
 
     public IROperand getOperand() {

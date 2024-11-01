@@ -10,6 +10,10 @@ public class Not extends IRInstruction {
             ((VirtualRegister)operand).checkReleased();
         }
 
+        if(operand instanceof ReferencableIROperand rop){
+            rop.addWrite(this);
+        }
+
     }
     public IROperand getOperand() {
         return operand;
