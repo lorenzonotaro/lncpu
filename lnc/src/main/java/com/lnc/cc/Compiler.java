@@ -97,7 +97,8 @@ public class Compiler {
             var funDecl = unit.getFunctionDeclaration();
             return funDecl.name.lexeme.equals("main") && funDecl.declarator.typeSpecifier().type == TypeSpecifier.Type.VOID && funDecl.parameters.length == 0;
         })){
-            this.output.add(new CompilerOutput(getStartCode(), START_SECTIONINFO));
+            this.output.add(0, new CompilerOutput(getStartCode(), START_SECTIONINFO));
+            return true;
         }
 
         Logger.error("standalone mode requires a void main() function with no parameters.");

@@ -13,6 +13,6 @@ public class CharType extends TypeSpecifier {
 
     @Override
     public int size() {
-        return 8;
+        return 1;
     }
 }

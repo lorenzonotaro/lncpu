@@ -68,6 +68,7 @@ public abstract class TypeSpecifier {
         };
     }
 
+    /** Size of this type (in bytes). */
     public abstract int size();
 
     public boolean compatible(TypeSpecifier other) {

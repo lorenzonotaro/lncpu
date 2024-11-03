@@ -220,7 +220,7 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
             }
 
-            instructionf("call %s", loc.asm());
+            instructionf("lcall %s", loc.asm());
 
         }
 
@@ -250,9 +250,9 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     }
 
     public List<CompilerOutput> getOutput() {
-        return List.of(
-                new CompilerOutput(lnccode.toString(), new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false)),
-                new CompilerOutput(lndataSection.toString(), new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false))
-        );
+        List<CompilerOutput> compilerOutputs = new java.util.ArrayList<>();
+        compilerOutputs.add(new CompilerOutput(lnccode.toString(), new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false)));
+        compilerOutputs.add(new CompilerOutput(lndataSection.toString(), new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false)));
+        return compilerOutputs;
     }
 }

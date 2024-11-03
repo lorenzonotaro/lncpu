@@ -159,6 +159,6 @@ public class Scope {
     }
 
     public String getScopePrefix() {
-        return id.isEmpty() ? "" : "__" + id + "__";
+        return id.isEmpty() ? "" : id + "__";
     }
 }

@@ -1,6 +1,18 @@
 // test program to test a simple c compiler: test if-else statement, for loops, while loops, function calls
 
-int main(){
-    int b = 1;
-    return 1 - b;
+int test(int value);
+
+extern int printi(int i);
+
+void main(){
+
+    if(test(5)){
+        printi(1);
+    }else{
+        printi(0);
+    }
+}
+
+int test(int value){
+    return value == 5;
 }

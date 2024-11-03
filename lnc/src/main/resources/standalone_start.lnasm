@@ -8,5 +8,6 @@
     mov     (LNCDATA >> 8)::byte,       DS
 
     ; call main
-    call main
+    lcall main
     hlt
+
