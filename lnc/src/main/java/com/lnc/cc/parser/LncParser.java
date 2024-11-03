@@ -49,7 +49,7 @@ public class LncParser extends FullSourceParser<AST> {
     }
 
     private Declaration externalDeclaration() {
-        var statement = variableDeclaration(true, false);
+        var statement = variableDeclaration(true, false, false);
 
         if(statement == null){
             return null;
@@ -65,7 +65,7 @@ public class LncParser extends FullSourceParser<AST> {
             var parameters = new ArrayList<VariableDeclaration>();
 
             while(!check(TokenType.R_PAREN)){
-                var decl = variableDeclaration(false, false);
+                var decl = variableDeclaration(false, false, true);
                 if(decl == null || decl.type != Statement.Type.DECLARATION || ((Declaration) decl).declarationType != Declaration.Type.VARIABLE){
                     throw new CompileException("expected parameter declaration", peek());
                 }
@@ -93,7 +93,7 @@ public class LncParser extends FullSourceParser<AST> {
         throw new CompileException("expected ';'", peek());
     }
 
-    private Statement variableDeclaration(boolean allowInitializer, boolean expectSemicolon) {
+    private Statement variableDeclaration(boolean allowInitializer, boolean expectSemicolon, boolean isParameter) {
         Declarator declarator = declarator();
 
         if(declarator == null){
@@ -115,9 +115,9 @@ public class LncParser extends FullSourceParser<AST> {
 
             var initializer = expression();
 
-            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer));
+            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer), isParameter);
         }else{
-            decl = new VariableDeclaration(declarator, ident, null);
+            decl = new VariableDeclaration(declarator, ident, null, isParameter);
         }
 
         if(expectSemicolon){
@@ -160,7 +160,7 @@ public class LncParser extends FullSourceParser<AST> {
     }
 
     private Statement declaration() {
-        return variableDeclaration(true, true);
+        return variableDeclaration(true, true, false);
     }
 
     private Statement statement() {
@@ -195,7 +195,7 @@ public class LncParser extends FullSourceParser<AST> {
             consume("expected '('", TokenType.L_PAREN);
             Statement initializer = null;
             if (!match(TokenType.SEMICOLON)) {
-                initializer = variableDeclaration(true, true);
+                initializer = variableDeclaration(true, true, false);
             }
             Expression condition = null;
             if (!match(TokenType.SEMICOLON)) {

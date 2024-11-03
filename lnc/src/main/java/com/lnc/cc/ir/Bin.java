@@ -3,8 +3,8 @@ package com.lnc.cc.ir;
 import com.lnc.cc.ast.BinaryExpression;
 
 public class Bin extends IRInstruction {
-    private final IROperand left;
-    private final IROperand right;
+    public final IROperand left;
+    public final IROperand right;
     private final BinaryExpression.Operator operator;
 
     public Bin(IROperand left, IROperand right, BinaryExpression.Operator operator) {
@@ -39,5 +39,9 @@ public class Bin extends IRInstruction {
     @Override
     public <E> E accept(IIRVisitor<E> visitor) {
         return visitor.accept(this);
+    }
+
+    public BinaryExpression.Operator getOperator() {
+        return operator;
     }
 }

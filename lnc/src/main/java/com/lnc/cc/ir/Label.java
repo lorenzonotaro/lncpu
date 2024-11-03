@@ -1,7 +1,7 @@
 package com.lnc.cc.ir;
 
 public class Label extends IRInstruction {
-    private final IRBlock block;
+    public final IRBlock block;
 
     public Label(IRBlock block) {
         super();

@@ -8,10 +8,12 @@ import com.lnc.common.frontend.Token;
 public class VariableDeclaration extends Declaration {
 
     public final AssignmentExpression initializer;
+    public boolean isParameter;
 
-    public VariableDeclaration(Declarator declarator, Token name, AssignmentExpression initializer) {
+    public VariableDeclaration(Declarator declarator, Token name, AssignmentExpression initializer, boolean isParameter) {
         super(Declaration.Type.VARIABLE, declarator, name);
         this.initializer = initializer;
+        this.isParameter = isParameter;
     }
 
     @Override

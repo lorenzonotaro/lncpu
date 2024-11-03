@@ -4,10 +4,10 @@ import com.lnc.cc.ir.*;
 
 public class LinearIRUnit extends BranchingIRVisitor {
 
-    private final IRUnit nonLinearUnit;
+    public final IRUnit nonLinearUnit;
 
     private int nextIndex = 0;
-    private IRInstruction head;
+    public IRInstruction head;
     private IRInstruction current;
 
 
@@ -17,21 +17,9 @@ public class LinearIRUnit extends BranchingIRVisitor {
     }
 
     @Override
-    public Void accept(Jge jge) {
-        append(jge);
-        return super.accept(jge);
-    }
-
-    @Override
     public Void accept(Jle jle) {
         append(jle);
         return super.accept(jle);
-    }
-
-    @Override
-    public Void accept(Jne jne) {
-        append(jne);
-        return super.accept(jne);
     }
 
     @Override
@@ -44,12 +32,6 @@ public class LinearIRUnit extends BranchingIRVisitor {
     public Void accept(Jlt jle) {
         append(jle);
         return super.accept(jle);
-    }
-
-    @Override
-    public Void accept(Jgt jgt) {
-        append(jgt);
-        return super.accept(jgt);
     }
 
     @Override
@@ -129,7 +111,8 @@ public class LinearIRUnit extends BranchingIRVisitor {
         return null;
     }
 
-    private void append(IRInstruction instruction) {
+    @Override
+    protected void append(IRInstruction instruction) {
         if (head == null) {
             head = instruction;
             current = instruction;
@@ -151,13 +134,16 @@ public class LinearIRUnit extends BranchingIRVisitor {
         var instr = head;
 
         while (instr != null) {
-            System.out.println((instr instanceof Label ? "" : "    ") + instr + "{" + instr.getLoopNestedLevel() + "}" +
-                    "");
+            System.out.println((instr instanceof Label ? "" : "    ") + instr + "{" + instr.getLoopNestedLevel() + "}");
             instr = instr.getNext();
         }
     }
 
     public void linearize() {
         visit(nonLinearUnit.getStartBlock());
+    }
+
+    public int size() {
+        return nextIndex;
     }
 }

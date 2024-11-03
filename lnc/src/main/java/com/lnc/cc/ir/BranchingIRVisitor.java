@@ -3,32 +3,18 @@ package com.lnc.cc.ir;
 public abstract class BranchingIRVisitor implements IIRVisitor<Void> {
 
     @Override
-    public Void accept(Jge jge) {
-
-        visit(jge.getFallThrough());
-        visit(jge.getTarget());
-        visit(jge.getContinueTo());
-
-        return null;
-    }
-
-    @Override
     public Void accept(Jle jle) {
 
-        visit(jle.getFallThrough());
+        visit(jle.getNonTakenBranch());
+
+        if(jle.getContinueTo() != null)
+            append(new Goto(jle.getContinueTo()));
+
         visit(jle.getTarget());
-        visit(jle.getContinueTo());
 
+        if(jle.getContinueTo() != null)
+            visit(jle.getContinueTo());
 
-        return null;
-    }
-
-    @Override
-    public Void accept(Jne jne) {
-
-        visit(jne.getFallThrough());
-        visit(jne.getTarget());
-        visit(jne.getContinueTo());
 
         return null;
     }
@@ -36,9 +22,15 @@ public abstract class BranchingIRVisitor implements IIRVisitor<Void> {
     @Override
     public Void accept(Jeq je) {
 
-        visit(je.getFallThrough());
+        visit(je.getNonTakenBranch());
+
+        if(je.getContinueTo() != null)
+            append(new Goto(je.getContinueTo()));
+
         visit(je.getTarget());
-        visit(je.getContinueTo());
+
+        if(je.getContinueTo() != null)
+            visit(je.getContinueTo());
 
         return null;
     }
@@ -46,19 +38,15 @@ public abstract class BranchingIRVisitor implements IIRVisitor<Void> {
     @Override
     public Void accept(Jlt jle) {
 
-        visit(jle.getFallThrough());
+        visit(jle.getNonTakenBranch());
+
+        if(jle.getContinueTo() != null)
+            append(new Goto(jle.getContinueTo()));
+
         visit(jle.getTarget());
-        visit(jle.getContinueTo());
 
-        return null;
-    }
-
-    @Override
-    public Void accept(Jgt jgt) {
-
-        visit(jgt.getFallThrough());
-        visit(jgt.getTarget());
-        visit(jgt.getContinueTo());
+        if(jle.getContinueTo() != null)
+            visit(jle.getContinueTo());
 
         return null;
     }
@@ -77,4 +65,6 @@ public abstract class BranchingIRVisitor implements IIRVisitor<Void> {
             visit(block.getNext());
         }
     }
+
+    protected abstract void append(IRInstruction aGoto);
 }

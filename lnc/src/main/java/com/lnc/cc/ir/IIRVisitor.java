@@ -7,17 +7,11 @@ public interface IIRVisitor<E> {
 
     E accept(Inc inc);
 
-    E accept(Jge jge);
-
     E accept(Jle jle);
-
-    E accept(Jne jne);
 
     E accept(Jeq je);
 
     E accept(Jlt jle);
-
-    E accept(Jgt jgt);
 
     E accept(Load load);
 

@@ -1,5 +1,5 @@
 package com.lnc.cc.codegen;
 
 public enum Register {
-    RA, RB, RC, RD
+    RA, RB, RC, RD, RX
 }

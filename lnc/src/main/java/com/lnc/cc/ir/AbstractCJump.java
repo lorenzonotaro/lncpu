@@ -4,15 +4,15 @@ public abstract class AbstractCJump extends AbstractBranchInstr {
     public final IROperand left;
     public final IROperand right;
 
-    public final IRBlock fallThrough;
+    public final IRBlock nonTakenBranch;
     public final IRBlock continueTo;
 
-    public AbstractCJump(IROperand left, IROperand right, IRBlock target, IRBlock fallThrough, IRBlock continueTo) {
-        super(target);
+    public AbstractCJump(IROperand left, IROperand right, IRBlock takenBranch, IRBlock nonTakenBranch, IRBlock continueToBranch) {
+        super(takenBranch);
         this.left = left;
         this.right = right;
-        this.fallThrough = fallThrough;
-        this.continueTo = continueTo;
+        this.nonTakenBranch = nonTakenBranch;
+        this.continueTo = continueToBranch;
 
         if(left.type == IROperand.Type.VIRTUAL_REGISTER){
             ((VirtualRegister)left).checkReleased();
@@ -32,8 +32,8 @@ public abstract class AbstractCJump extends AbstractBranchInstr {
 
     }
 
-    public IRBlock getFallThrough() {
-        return fallThrough;
+    public IRBlock getNonTakenBranch() {
+        return nonTakenBranch;
     }
 
     public IRBlock getContinueTo() {

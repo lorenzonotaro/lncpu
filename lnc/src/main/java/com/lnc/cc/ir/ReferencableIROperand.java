@@ -1,9 +1,14 @@
 package com.lnc.cc.ir;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.lnc.cc.codegen.LiveRange;
 
-public class ReferencableIROperand extends IROperand {
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public abstract class ReferencableIROperand extends IROperand {
 
     private final Set<IRInstruction> reads;
     private final Set<IRInstruction> writes;
@@ -48,5 +53,10 @@ public class ReferencableIROperand extends IROperand {
 
     public int promotionBenefit(){
         return spillCost();
+    }
+
+    public LiveRange getLiveRange() {
+        List<IRInstruction> list = allUses.stream().sorted(Comparator.comparingInt(IRInstruction::getIndex)).toList();
+        return new LiveRange(list.get(0).getIndex(), list.get(list.size() - 1).getIndex());
     }
 }

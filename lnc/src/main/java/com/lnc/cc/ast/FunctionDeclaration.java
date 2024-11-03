@@ -1,12 +1,14 @@
 package com.lnc.cc.ast;
 
 import com.lnc.cc.common.Scope;
+import com.lnc.cc.ir.IRUnit;
 import com.lnc.cc.types.Declarator;
 import com.lnc.common.frontend.Token;
 
 
 public class FunctionDeclaration extends Declaration implements IScopedStatement {
 
+    public IRUnit unit;
     private Scope scope;
 
     public final VariableDeclaration[] parameters;

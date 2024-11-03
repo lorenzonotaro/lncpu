@@ -130,8 +130,6 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             currentUnit.setCurrentBlock(thenBlock);
             visitStatement(ifStatement.thenStatement);
 
-            emit(new Goto(continueBlock));
-
             currentUnit.setCurrentBlock(elseBlock);
             visitStatement(ifStatement.elseStatement);
         }
@@ -141,21 +139,21 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         return null;
     }
 
-    private void branchIfFalse(Expression cond, IRBlock target, IRBlock fallThrough, IRBlock continueBlock) {
+    private void branchIfFalse(Expression cond, IRBlock takenBranch, IRBlock nonTakenBranch, IRBlock continueBlock) {
         if (Objects.requireNonNull(cond.type) == Expression.Type.BINARY) {
             BinaryExpression binaryExpression = (BinaryExpression) cond;
             IROperand left = binaryExpression.left.accept(this);
             IROperand right = binaryExpression.right.accept(this);
 
             switch (binaryExpression.operator) {
-                case EQ -> emit(new Jne(left, right, target, fallThrough, continueBlock));
-                case NE -> emit(new Jeq(left, right, target, fallThrough, continueBlock));
-                case GT -> emit(new Jle(left, right, target, fallThrough, continueBlock));
-                case GE -> emit(new Jlt(left, right, target, fallThrough, continueBlock));
-                case LT -> emit(new Jge(left, right, target, fallThrough, continueBlock));
-                case LE -> emit(new Jgt(left, right, target, fallThrough, continueBlock));
+                case EQ -> emit(new Jeq(left, right, nonTakenBranch, takenBranch, continueBlock));
+                case NE -> emit(new Jeq(left, right, takenBranch, nonTakenBranch, continueBlock));
+                case GT -> emit(new Jle(left, right, takenBranch, nonTakenBranch, continueBlock));
+                case GE -> emit(new Jlt(left, right, takenBranch, nonTakenBranch, continueBlock));
+                case LT -> emit(new Jlt(left, right, nonTakenBranch, takenBranch, continueBlock));
+                case LE -> emit(new Jle(left, right, nonTakenBranch, takenBranch, continueBlock));
                 default -> {
-                    emit(new Jne(left, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
+                    emit(new Jeq(left, new ImmediateOperand((byte) 0), takenBranch, nonTakenBranch, continueBlock));
                 }
             }
 
@@ -169,7 +167,43 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         } else {
             IROperand condition = cond.accept(this);
-            emit(new Jeq(condition, new ImmediateOperand((byte) 0), target, fallThrough, continueBlock));
+            emit(new Jeq(condition, new ImmediateOperand((byte) 0), nonTakenBranch, takenBranch, continueBlock));
+
+            if(condition.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) condition);
+            }
+        }
+    }
+
+    private void branchIfTrue(Expression cond, IRBlock takenBranch, IRBlock nonTakenBranch, IRBlock continueBlock) {
+        if (Objects.requireNonNull(cond.type) == Expression.Type.BINARY) {
+            BinaryExpression binaryExpression = (BinaryExpression) cond;
+            IROperand left = binaryExpression.left.accept(this);
+            IROperand right = binaryExpression.right.accept(this);
+
+            switch (binaryExpression.operator) {
+                case EQ -> emit(new Jeq(left, right, takenBranch, nonTakenBranch, continueBlock));
+                case NE -> emit(new Jeq(left, right, nonTakenBranch, takenBranch, continueBlock));
+                case GT -> emit(new Jle(left, right, nonTakenBranch, takenBranch, continueBlock));
+                case GE -> emit(new Jlt(left, right, nonTakenBranch, takenBranch, continueBlock));
+                case LT -> emit(new Jlt(left, right, takenBranch, nonTakenBranch, continueBlock));
+                case LE -> emit(new Jle(left, right, takenBranch, nonTakenBranch, continueBlock));
+                default -> {
+                    emit(new Jeq(left, new ImmediateOperand((byte) 0), nonTakenBranch, takenBranch, continueBlock));
+                }
+            }
+
+            if(left.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) left);
+            }
+
+            if(right.type == IROperand.Type.VIRTUAL_REGISTER){
+                releaseVR((VirtualRegister) right);
+            }
+
+        } else {
+            IROperand condition = cond.accept(this);
+            emit(new Jeq(condition, new ImmediateOperand((byte) 0), takenBranch, nonTakenBranch, continueBlock));
 
             if(condition.type == IROperand.Type.VIRTUAL_REGISTER){
                 releaseVR((VirtualRegister) condition);
@@ -389,11 +423,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     private VirtualRegister allocVR() {
-        return currentUnit.getVirtualRegisterManager().getRegister();
+        return currentUnit.getVrManager().getRegister();
     }
 
     private void releaseVR(VirtualRegister vr) {
-        currentUnit.getVirtualRegisterManager().releaseRegister(vr);
+        currentUnit.getVrManager().releaseRegister(vr);
     }
 
     private void emit(IRInstruction instruction){

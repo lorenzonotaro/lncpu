@@ -1,11 +1,13 @@
 package com.lnc.cc.common;
 
+import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
 
 import java.util.Map;
 
 public class FlatSymbolTable {
     private final Map<String, Symbol> symbols;
+    public Symbol[] parameters = new Symbol[0];
     private final String name;
 
     private FlatSymbolTable(String name) {
@@ -20,6 +22,8 @@ public class FlatSymbolTable {
 
         FlatSymbolTable table = new FlatSymbolTable(scope.getRootName());
 
+        table.parameters = scope.getParameters().toArray(table.parameters);
+
         flattenRecursively(scope, table);
 
         return table;
@@ -27,12 +31,12 @@ public class FlatSymbolTable {
 
     private static void flattenRecursively(Scope scope, FlatSymbolTable table) {
         for (Symbol symbol : scope.getSymbols().values()) {
-            var prev = table.symbols.put("__" + scope.getId() + "__" + symbol.getName(), symbol);
+            var prev = table.symbols.put(scope.getScopePrefix() + symbol.getName(), symbol);
             if(prev != null){
                 throw new IllegalStateException("unequivocal symbol name '%s', from scopes '%s' and '%s'"
                         .formatted(symbol.getName(), prev.getScope().getId(), symbol.getScope().getId()));
             }
-            symbol.setFlatSymbolName("__" + scope.getId() + "__" + symbol.getName());
+            symbol.setFlatSymbolName(scope.getScopePrefix() + symbol.getName());
         }
 
         for (Scope child : scope.getChildren()) {
@@ -64,7 +68,7 @@ public class FlatSymbolTable {
         Scope sc = scope;
 
         while(sc != null){
-            Symbol symbol = symbols.get("__" + sc.getId() + "__" + symbolName);
+            Symbol symbol = symbols.get(sc.getScopePrefix() + symbolName);
             if(symbol != null){
                 return symbol;
             }

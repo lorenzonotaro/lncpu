@@ -4,17 +4,18 @@ import java.util.*;
 
 public class VirtualRegisterManager {
 
-    private final Node head;
     private Node last;
 
     private final Map<Integer, Node> registerMap;
+
+    private final Set<VirtualRegister> allVirtualRegisters;
 
     private final PriorityQueue<Node> nextAvailable;
 
     VirtualRegisterManager(){
         this.registerMap = new HashMap<>();
         this.nextAvailable = new PriorityQueue<>(Comparator.comparingInt(o -> o.id));
-        this.head = this.last = createNode();
+        allVirtualRegisters = new HashSet<>();
     }
 
     private Node createNode() {
@@ -35,15 +36,22 @@ public class VirtualRegisterManager {
     }
 
     VirtualRegister getRegister(){
+
+        VirtualRegister register = null;
+
         if(!nextAvailable.isEmpty()){
             Node node = nextAvailable.poll();
-            return node.reInstance();
+            register = node.reInstance();
         }else{
             Node node = createNode();
             last.next = node;
             last = node;
-            return node.register;
+            register = node.register;
         }
+
+        allVirtualRegisters.add(register);
+
+        return register;
     }
 
 
@@ -66,6 +74,9 @@ public class VirtualRegisterManager {
         nextAvailable.add(node);
     }
 
+    public Set<VirtualRegister> getAllRegisters() {
+        return allVirtualRegisters;
+    }
 
 
     private static class Node{

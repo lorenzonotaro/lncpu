@@ -1,10 +1,7 @@
 package com.lnc.cc.common;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Scope {
     private final Scope parent;
@@ -14,6 +11,8 @@ public class Scope {
     private final List<Scope> children = new ArrayList<>();
 
     private final Map<String, Symbol> symbols = new HashMap<>();
+
+    private final List<Symbol> parameters = new ArrayList<>();
 
     private final Map<Integer, Integer> childrenAtDepth = new HashMap<>();
 
@@ -49,7 +48,7 @@ public class Scope {
         return parent;
     }
 
-    public void define(Symbol symbol){
+    public void define(Symbol symbol, boolean isParameter){
         Symbol existing = symbols.get(symbol.getName());
 
         symbol.setScope(this);
@@ -57,8 +56,14 @@ public class Scope {
         if(existing != null && !existing.isForward() && !symbol.isForward()){
             throw new RuntimeException("symbol '%s' already defined here: '%s'".formatted(existing.getName(), existing.getToken().formatLocation()));
         }
+
+        if (isParameter) {
+            parameters.add(symbol);
+        }
+
         symbols.put(symbol.getName(), symbol);
     }
+
 
     public Symbol resolve(String name){
         Symbol symbol = symbols.get(name);
@@ -147,5 +152,13 @@ public class Scope {
 
     public String getRootName() {
         return rootName;
+    }
+
+    public List<Symbol> getParameters() {
+        return parameters;
+    }
+
+    public String getScopePrefix() {
+        return id.isEmpty() ? "" : "__" + id + "__";
     }
 }

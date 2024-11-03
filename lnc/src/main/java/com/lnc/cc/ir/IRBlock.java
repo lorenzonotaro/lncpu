@@ -48,6 +48,6 @@ public class IRBlock {
 
     @Override
     public String toString() {
-        return "S" + id;
+        return "_l" + id;
     }
 }

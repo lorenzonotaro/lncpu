@@ -18,4 +18,9 @@ public class Location extends ReferencableIROperand {
     public String toString() {
         return symbol.getName();
     }
+
+    @Override
+    public String asm() {
+        return symbol.getFlatSymbolName();
+    }
 }

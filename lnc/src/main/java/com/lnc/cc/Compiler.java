@@ -2,6 +2,7 @@ package com.lnc.cc;
 
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
+import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.ir.IRGenerator;
 import com.lnc.cc.optimization.Optimizer;
 import com.lnc.cc.parser.LncParser;
@@ -65,11 +66,18 @@ public class Compiler {
             return false;
         }
 
-        Logger.setProgramState("opt");
+        Logger.setProgramState("codegen");
 
-        Optimizer optimizer = new Optimizer(irGenerator.getResult());
+        CodeGenerator codeGenerator = new CodeGenerator(irGenerator.getResult());
 
-        optimizer.optimize();
+        codeGenerator.generate();
+
+        try {
+            Files.writeString(Path.of("out.lnasm"), codeGenerator.getCode());
+        } catch (IOException e) {
+            Logger.error("unable to write output file");
+            return false;
+        }
 
         return true;
 

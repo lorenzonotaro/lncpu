@@ -214,9 +214,10 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    protected void define(Symbol symbol) {
-        currentScope.define(symbol);
+    protected void define(Symbol symbol, boolean isParameter){
+        currentScope.define(symbol, isParameter);
     }
+
 
     public Scope pushLocalScope() {
         return currentScope = currentScope.createChild();

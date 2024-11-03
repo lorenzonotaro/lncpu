@@ -6,17 +6,19 @@ import java.util.Arrays;
 
 public class FunctionType extends TypeSpecifier {
 
+    public final FunctionDeclaration functionDeclaration;
     public final TypeSpecifier returnType;
     public final TypeSpecifier[] parameterTypes;
 
-    private FunctionType(TypeSpecifier returnType, TypeSpecifier[] parameterTypes) {
+    private FunctionType(FunctionDeclaration functionDeclaration, TypeSpecifier returnType, TypeSpecifier[] parameterTypes) {
         super(Type.FUNCTION);
+        this.functionDeclaration = functionDeclaration;
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;
     }
 
     public static FunctionType of(FunctionDeclaration functionDeclaration) {
-        return new FunctionType(functionDeclaration.declarator.typeSpecifier(), Arrays.stream(functionDeclaration.parameters).map(p -> p.declarator.typeSpecifier()).toArray(TypeSpecifier[]::new));
+        return new FunctionType(functionDeclaration, functionDeclaration.declarator.typeSpecifier(), Arrays.stream(functionDeclaration.parameters).map(p -> p.declarator.typeSpecifier()).toArray(TypeSpecifier[]::new));
     }
 
     public String toString() {

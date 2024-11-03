@@ -37,29 +37,10 @@ public class IRPrinter extends BranchingIRVisitor{
     }
 
     @Override
-    public Void accept(Jge jge) {
-        System.out.println("    " + jge);
-
-        super.accept(jge);
-
-        return null;
-    }
-
-    @Override
     public Void accept(Jle jle) {
         System.out.println("    " + jle);
 
         super.accept(jle);
-
-        return null;
-    }
-
-    @Override
-    public Void accept(Jne jne) {
-
-        System.out.println("    " + jne);
-
-        super.accept(jne);
 
         return null;
     }
@@ -80,16 +61,6 @@ public class IRPrinter extends BranchingIRVisitor{
         System.out.println("    " + jle);
 
         super.accept(jle);
-
-        return null;
-    }
-
-    @Override
-    public Void accept(Jgt jgt) {
-
-        System.out.println("    " + jgt);
-
-        super.accept(jgt);
 
         return null;
     }
@@ -163,5 +134,10 @@ public class IRPrinter extends BranchingIRVisitor{
             System.out.println(target + ": ");
 
         super.visit(target);
+    }
+
+    @Override
+    protected void append(IRInstruction instruction) {
+        instruction.accept(this);
     }
 }

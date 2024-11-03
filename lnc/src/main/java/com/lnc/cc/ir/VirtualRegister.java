@@ -1,5 +1,6 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.codegen.Register;
 import com.lnc.cc.codegen.RegisterClass;
 
 public class VirtualRegister extends ReferencableIROperand {
@@ -13,6 +14,8 @@ public class VirtualRegister extends ReferencableIROperand {
     private final long instanceId;
 
     private boolean released;
+
+    private Register assignedPhysicalRegister;
 
     public VirtualRegister(int registerNumber) {
         super(Type.VIRTUAL_REGISTER);
@@ -65,5 +68,18 @@ public class VirtualRegister extends ReferencableIROperand {
 
     public RegisterClass getRegisterClass() {
         return registerClass;
+    }
+
+    public Register getAssignedPhysicalRegister() {
+        return assignedPhysicalRegister;
+    }
+
+    public void setAssignedPhysicalRegister(Register assignedPhysicalRegister) {
+        this.assignedPhysicalRegister = assignedPhysicalRegister;
+    }
+
+    @Override
+    public String asm() {
+        return assignedPhysicalRegister == null ? "UNASSIGNED" : assignedPhysicalRegister.toString();
     }
 }

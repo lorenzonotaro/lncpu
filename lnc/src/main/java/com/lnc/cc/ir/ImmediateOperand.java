@@ -16,4 +16,9 @@ public class ImmediateOperand extends IROperand {
     public String toString() {
         return Integer.toString(value);
     }
+
+    @Override
+    public String asm() {
+        return String.format("0x%02X", value & 0xFF);
+    }
 }

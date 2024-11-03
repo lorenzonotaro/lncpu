@@ -25,4 +25,8 @@ public class Dec extends IRInstruction {
     public String toString() {
         return "dec " + operand;
     }
+
+    public IROperand getOperand() {
+        return operand;
+    }
 }

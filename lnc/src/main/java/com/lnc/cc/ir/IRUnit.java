@@ -18,13 +18,14 @@ public class IRUnit {
 
     private int currentLoopLevel = 0;
 
-    private final VirtualRegisterManager virtualRegisterManager;
+    private final VirtualRegisterManager vrManager;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
         this.functionDeclaration = functionDeclaration;
         this.symbolTable = FlatSymbolTable.flatten(functionDeclaration.getScope());
-        virtualRegisterManager = new VirtualRegisterManager();
+        this.functionDeclaration.unit = this;
+        vrManager = new VirtualRegisterManager();
     }
 
     public FlatSymbolTable getSymbolTable() {
@@ -35,8 +36,8 @@ public class IRUnit {
         return symbolTable.resolveSymbol(scope, symbolName);
     }
 
-    VirtualRegisterManager getVirtualRegisterManager() {
-        return virtualRegisterManager;
+    VirtualRegisterManager getVrManager() {
+        return vrManager;
     }
 
     public void emit(IRInstruction instruction) {
@@ -77,5 +78,9 @@ public class IRUnit {
 
     public FunctionDeclaration getFunctionDeclaration() {
         return functionDeclaration;
+    }
+
+    public VirtualRegisterManager getVRManager() {
+        return vrManager;
     }
 }
