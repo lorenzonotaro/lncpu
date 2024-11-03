@@ -16,7 +16,6 @@ public class LineByLineLexer extends AbstractLexer<List<List<Token>>> {
     }
 
     public boolean parse(Line[] sourceLines){
-        lines.clear();
         boolean success = true;
         for (Line line : sourceLines) {
             try {
