@@ -51,7 +51,7 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
         if(requiresRegisterStacking(currentUnit)) {
             for (var reg : registerAllocator.usedRegisters.stream().sorted(Comparator.comparingInt(Register::ordinal)).toArray()) {
-                if (reg != RegisterClass.RETURN.getRegisters()[0])
+                if (reg != RegisterClass.RETURN.getRegisters()[0] || currentUnit.nonLinearUnit.getFunctionDeclaration().declarator.typeSpecifier().type == TypeSpecifier.Type.VOID)
                     instructionf(prologue, "push %s", reg);
             }
         }
@@ -66,7 +66,7 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
         if(requiresRegisterStacking(currentUnit)) {
             label(epilogue, "_ret");
             for (var reg : registerAllocator.usedRegisters.stream().sorted(Comparator.comparingInt(Register::ordinal).reversed()).toArray()) {
-                if (reg != RegisterClass.RETURN.getRegisters()[0])
+                if (reg != RegisterClass.RETURN.getRegisters()[0] || currentUnit.nonLinearUnit.getFunctionDeclaration().declarator.typeSpecifier().type == TypeSpecifier.Type.VOID)
                     instructionf(epilogue, "pop %s", reg);
             }
             instructionf(epilogue, "ret");
