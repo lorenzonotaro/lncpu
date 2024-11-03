@@ -2,8 +2,8 @@ package com.lnc.cc.ir;
 
 public class Jlt extends AbstractCJump {
 
-    public Jlt(IROperand left, IROperand right, IRBlock target, IRBlock fallThrough, IRBlock continueTo) {
-        super(left, right, target, fallThrough, continueTo);
+    public Jlt(IROperand left, IROperand right, IRBlock target, IRBlock nonTakenBranch) {
+        super(left, right, target, nonTakenBranch);
     }
 
     @Override

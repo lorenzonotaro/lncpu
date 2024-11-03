@@ -2,8 +2,8 @@ package com.lnc.cc.ir;
 
 public class Jeq extends AbstractCJump {
 
-    public Jeq(IROperand left, IROperand right, IRBlock target, IRBlock fallThrough, IRBlock continueTo) {
-        super(left, right, target, fallThrough, continueTo);
+    public Jeq(IROperand left, IROperand right, IRBlock target, IRBlock nonTakenBranch) {
+        super(left, right, target, nonTakenBranch);
     }
 
     @Override

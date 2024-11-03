@@ -1,86 +1,47 @@
 package com.lnc.cc.ir;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public abstract class BranchingIRVisitor implements IIRVisitor<Void> {
 
     private final Set<IRBlock> visitedBlocks;
 
+    private IRBlock currentBlock;
+
+
     protected BranchingIRVisitor() {
         visitedBlocks = new HashSet<>();
     }
 
-    @Override
-    public Void accept(Jle jle) {
+    protected boolean visit(IRBlock block) {
 
-        visit(jle.getNonTakenBranch());
-
-        if(jle.getContinueTo() != null)
-            append(new Goto(jle.getContinueTo()));
-
-        visit(jle.getTarget());
-
-        if(jle.getContinueTo() != null)
-            visit(jle.getContinueTo());
-
-
-        return null;
-    }
-
-    @Override
-    public Void accept(Jeq je) {
-
-        visit(je.getNonTakenBranch());
-
-        if(je.getContinueTo() != null)
-            append(new Goto(je.getContinueTo()));
-
-        visit(je.getTarget());
-
-        if(je.getContinueTo() != null)
-            visit(je.getContinueTo());
-
-        return null;
-    }
-
-    @Override
-    public Void accept(Jlt jle) {
-
-        visit(jle.getNonTakenBranch());
-
-        if(jle.getContinueTo() != null)
-            append(new Goto(jle.getContinueTo()));
-
-        visit(jle.getTarget());
-
-        if(jle.getContinueTo() != null)
-            visit(jle.getContinueTo());
-
-        return null;
-    }
-
-    protected void visit(IRBlock block) {
-
-        if(block == null) {
-            return;
-        }
-        
-        if(visitedBlocks.contains(block)) {
-            return;
+        if(block == null || isVisited(block)) {
+            return false;
         }
 
         visitedBlocks.add(block);
 
+        currentBlock = block;
+
         for (IRInstruction instruction : block.getInstructions()) {
             instruction.accept(this);
         }
-        
 
         if(block.hasNext()) {
             visit(block.getNext());
         }
+
+        return true;
     }
 
-    protected abstract void append(IRInstruction aGoto);
+    protected boolean isVisited(IRBlock block) {
+        return visitedBlocks.contains(block);
+    }
+
+
+    protected abstract void append(IRInstruction instruction);
+
+    protected IRBlock getCurrentBlock() {
+        return currentBlock;
+    }
 }

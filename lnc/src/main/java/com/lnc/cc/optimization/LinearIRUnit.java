@@ -19,27 +19,47 @@ public class LinearIRUnit extends BranchingIRVisitor {
     @Override
     public Void accept(Jle jle) {
         append(jle);
-        return super.accept(jle);
+
+        visit(jle.getNonTakenBranch());
+
+        visit(jle.getTarget());
+
+        return null;
     }
 
     @Override
     public Void accept(Jeq je) {
         append(je);
-        return super.accept(je);
+
+        visit(je.getNonTakenBranch());
+
+        visit(je.getTarget());
+
+        return null;
     }
 
     @Override
-    public Void accept(Jlt jle) {
-        append(jle);
-        return super.accept(jle);
+    public Void accept(Jlt jlt) {
+
+        append(jlt);
+
+        visit(jlt.getNonTakenBranch());
+
+        visit(jlt.getTarget());
+
+        return null;
     }
 
     @Override
-    protected void visit(IRBlock block) {
+    protected boolean visit(IRBlock block) {
+
+        if(block == null || isVisited(block)){
+            return false;
+        }
 
         append(new Label(block));
 
-        super.visit(block);
+        return super.visit(block);
     }
 
     @Override

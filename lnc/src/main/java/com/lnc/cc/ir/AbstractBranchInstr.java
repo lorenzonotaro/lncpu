@@ -5,6 +5,7 @@ public abstract class AbstractBranchInstr extends IRInstruction {
 
     protected AbstractBranchInstr(IRBlock target) {
         this.target = target;
+        target.addReference(this);
     }
 
     public IRBlock getTarget() {

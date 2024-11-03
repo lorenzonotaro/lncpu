@@ -1,5 +1,6 @@
 package com.lnc.cc.ir;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class IRInstruction {

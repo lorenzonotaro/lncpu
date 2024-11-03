@@ -1,19 +1,11 @@
 
-int printc(int i){
-    return 1;
-}
-
-int test(int value){
-    do{
-        printc(value);
-    }while(--value);
-    return value;
-}
-
 void main(){
-    int a = 1;
+    int k;
+    int i;
 
-    test(a);
+    if(i != 42){
+        k = 10;
+    }
 
-    return;
+    k = 42;
 }
