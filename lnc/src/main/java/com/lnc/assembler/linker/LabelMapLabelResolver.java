@@ -42,8 +42,13 @@ public class LabelMapLabelResolver implements ILabelResolver {
 
     private LabelMapEntry computeLabel(String lexeme) {
         if(currentParentLabel != null && lexeme.startsWith(LnasmParser.SUBLABEL_INITIATOR)){
-            lexeme = currentParentLabel + LnasmParser.SUBLABEL_SEPARATOR + lexeme;
+
+            var entry = globalLabelMap.get(currentParentLabel + LnasmParser.SUBLABEL_SEPARATOR + lexeme);
+            if(entry != null){
+                return entry;
+            }
         }
+
         return globalLabelMap.get(lexeme);
     }
 
