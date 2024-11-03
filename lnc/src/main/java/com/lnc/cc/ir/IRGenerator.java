@@ -1,5 +1,6 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.types.FunctionType;
@@ -7,6 +8,7 @@ import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,10 +101,23 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public Void accept(ReturnStatement returnStatement) {
         IROperand value = null;
+
         if(returnStatement.value != null){
             value = returnStatement.value.accept(this);
         }
-        emit(new Ret(value));
+
+        if(value == null) {
+            emit(new Ret(null));
+        }else{
+            if (value.type != IROperand.Type.VIRTUAL_REGISTER || ((VirtualRegister) value).getRegisterClass() != RegisterClass.ANY) {
+                var vr = allocVR();
+                emit(new Move(value, vr));
+                value = vr;
+            }
+
+            emit(new Ret(value));
+        }
+
 
         if(value != null && value.type == IROperand.Type.VIRTUAL_REGISTER){
             releaseVR((VirtualRegister) value);
@@ -282,8 +297,20 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand accept(BinaryExpression binaryExpression) {
 
+        if(binaryExpression.left.type == Expression.Type.NUMERICAL && binaryExpression.right.type == Expression.Type.NUMERICAL){
+            return coalesce((NumericalExpression) binaryExpression.left,
+                    (NumericalExpression) binaryExpression.right,
+                    binaryExpression.operator)
+                    .accept(this);
+        }
+
         IROperand left = binaryExpression.left.accept(this);
         IROperand right = binaryExpression.right.accept(this);
+
+        if(left.type == IROperand.Type.IMMEDIATE && right.type == IROperand.Type.IMMEDIATE){
+            return coalesce(((ImmediateOperand) left).getValue(), ((ImmediateOperand) right).getValue(), binaryExpression.operator)
+                    .accept(this);
+        }
 
         if(left.type == IROperand.Type.LOCATION) {
             var vr = allocVR();
@@ -297,6 +324,25 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             right = vr;
         }
 
+        if(left.type == IROperand.Type.IMMEDIATE && right.type != IROperand.Type.IMMEDIATE){
+            if(binaryExpression.operator.isCommutative()){
+                IROperand temp = left;
+                left = right;
+                right = temp;
+            }else if(binaryExpression.operator == BinaryExpression.Operator.SUB) {
+                IROperand temp = left;
+                left = right;
+                right = temp;
+                binaryExpression.operator = BinaryExpression.Operator.ADD;
+                emit(new Not(left));
+                emit(new Inc(left));
+            }else{
+                IROperand vr = allocVR();
+                emit(new Move(vr, left));
+                left = vr;
+            }
+        }
+
         emit(new Bin(left, right, binaryExpression.operator));
 
         if(right.type == IROperand.Type.VIRTUAL_REGISTER){
@@ -304,6 +350,56 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
 
         return left;
+    }
+
+    private NumericalExpression coalesce(int a, int b, BinaryExpression.Operator operator) {
+        switch (operator) {
+            case ADD -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a + b));
+            }
+            case SUB -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a - b));
+            }
+            case MUL -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a * b));
+            }
+            case DIV -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a / b));
+            }
+            case AND -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a & b));
+            }
+            case OR -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a | b));
+            }
+            case XOR -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a ^ b));
+            }
+            case EQ -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a == b ? 1 : 0));
+            }
+            case NE -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a != b ? 1 : 0));
+            }
+            case LT -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a < b ? 1 : 0));
+            }
+            case GT -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a > b ? 1 : 0));
+            }
+            case LE -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a <= b ? 1 : 0));
+            }
+            case GE -> {
+                return new NumericalExpression(Token.__internal(TokenType.INTEGER, a >= b ? 1 : 0));
+            }
+            default -> throw new CompileException("invalid operator for coalesce: " + operator, Token.__internal(TokenType.INTEGER, 0));
+        }
+
+    }
+
+    private NumericalExpression coalesce(NumericalExpression left, NumericalExpression right, BinaryExpression.Operator operator) {
+        return coalesce(left.value, right.value, operator);
     }
 
     @Override
@@ -437,4 +533,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public IR getResult() {
         return new IR(blocks, globalSymbolTable);
     }
+
+
+
 }

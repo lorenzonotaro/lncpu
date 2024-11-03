@@ -29,6 +29,10 @@ public class Bin extends IRInstruction {
             rop.addRead(this);
         }
 
+        if(operator != BinaryExpression.Operator.ADD && operator != BinaryExpression.Operator.SUB){
+            throw new RuntimeException("invalid operator for Bin: %s".formatted(operator));
+        }
+
     }
 
     @Override

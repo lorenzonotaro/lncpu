@@ -1,6 +1,7 @@
 package com.lnc.cc.common;
 
 import com.lnc.cc.ast.*;
+import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
@@ -234,21 +235,29 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
     @Override
     public void visitStatement(Statement statement) {
 
-        if(statement instanceof IScopedStatement ss){
-            if(ss.getScope() != null){
-                setCurrentScope(ss.getScope());
-            } else if (ss instanceof FunctionDeclaration fd) {
-                ss.setScope(currentScope = Scope.createRoot(fd.name.lexeme));
-            }else{
-                ss.setScope(pushLocalScope());
+
+        try{
+            if(statement instanceof IScopedStatement ss){
+                if(ss.getScope() != null){
+                    setCurrentScope(ss.getScope());
+                } else if (ss instanceof FunctionDeclaration fd) {
+                    ss.setScope(currentScope = Scope.createRoot(fd.name.lexeme));
+                }else{
+                    ss.setScope(pushLocalScope());
+                }
             }
+
+            super.visitStatement(statement);
+
+            if(statement instanceof IScopedStatement ss){
+                popLocalScope();
+            }
+        }catch (Exception e){
+            Logger.error("error visiting statement: %s".formatted(e.getMessage()));
+            fail();
         }
 
-        super.visitStatement(statement);
 
-        if(statement instanceof IScopedStatement ss){
-            popLocalScope();
-        }
     }
 
     public FunctionDeclaration getCurrentFunction() {

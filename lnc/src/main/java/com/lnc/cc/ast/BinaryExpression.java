@@ -7,7 +7,7 @@ public class BinaryExpression extends Expression {
     public final Expression left;
     public final Expression right;
 
-    public final Operator operator;
+    public Operator operator;
 
     public BinaryExpression(Expression left, Expression right, Token opToken) {
         super(Expression.Type.BINARY, opToken);
@@ -22,19 +22,29 @@ public class BinaryExpression extends Expression {
     }
 
     public enum Operator {
-        ADD,
+        ADD(true),
         SUB,
-        MUL,
+        MUL(true),
         DIV,
         AND,
         OR,
         XOR,
-        EQ,
+        EQ(true),
         NE,
         LT,
         GT,
         LE,
         GE;
+
+        private final boolean commutative;
+
+        Operator(){
+            this(false);
+        }
+
+        Operator(boolean commutative) {
+            this.commutative = commutative;
+        }
 
         public static Operator fromTokenType(Token token) {
             return switch (token.type) {
@@ -53,6 +63,10 @@ public class BinaryExpression extends Expression {
                 case GREATER_THAN_OR_EQUAL -> GE;
                 default -> throw new CompileException("invalid binary operator: " + token, token);
             };
+        }
+
+        public boolean isCommutative() {
+            return commutative;
         }
     }
 }
