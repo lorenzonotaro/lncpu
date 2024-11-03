@@ -32,9 +32,15 @@
     "help": "Set the linker config file.",
     "value": ""
   },
+
   "-lc": {
     "help": "Provide a linker configuration script as a command line parameter.",
     "value": ""
+  },
+
+  "--standalone": {
+    "help": "(lnc) - Standalone mode. Generates assembly code from the input lnasm that can be ran as is (adds a setup section, requires main() function).",
+    "value": false
   },
 
   "-Wdata-page-access-before-setup": {

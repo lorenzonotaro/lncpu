@@ -1,7 +1,9 @@
 package com.lnc;
 
 import com.lnc.assembler.Assembler;
+import com.lnc.assembler.common.SectionInfo;
 import com.lnc.cc.Compiler;
+import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.common.frontend.Line;
 import com.lnc.common.Logger;
 import com.lnc.common.ProgramSettings;
@@ -48,23 +50,37 @@ public class LNC {
         try {
             includeDirs = settings.get("-I", String.class).split(";");
 
-            if(settings.getSourceFiles().isEmpty()){
+            boolean noLncFiles = settings.getLncFiles().isEmpty();
+            if(settings.getLnasmFiles().isEmpty() && noLncFiles){
                 Logger.error("no source files.");
                 return 1;
             }
-            /*Assembler assembler = new Assembler(settings.getSourceFiles().stream().map(Path::of).toList(), getLinkerConfig());
+
+            List<CompilerOutput> output = new ArrayList<>();
+
+            if(!noLncFiles){
+                Compiler compiler = new Compiler(settings.getLncFiles().stream().map(Path::of).toList());
+                if(!compiler.compile())
+                    return 1;
+
+                output = compiler.getOutput();
+
+                Files.writeString(Path.of("__lncout.lnasm"), String.join("\n", output.stream().map(CompilerOutput::code).toList()));
+
+                settings.addSourceFile("__lncout.lnasm");
+            }
+
+            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new));
+
             if(!assembler.compile())
                 System.exit(1);
             else if(!settings.get("-s", Boolean.class)){
                 assembler.writeOutputFiles();
-            }*/
+            }
 
-            Compiler compiler = new Compiler(settings.getSourceFiles().stream().map(Path::of).toList());
 
-            if(!compiler.compile())
-                return 1;
 
-        } catch (IllegalStateException/* | IOException*/ e) {
+        } catch (IllegalStateException | IOException e) {
             Logger.error(e.getMessage());
             return 1;
         }
@@ -73,20 +89,22 @@ public class LNC {
 
     private static List<Line> getLinesFromSourceFiles() throws FileNotFoundException {
         List<Line> lines = new ArrayList<>();
-        for (String file : settings.getSourceFiles()) {
+        for (String file : settings.getLnasmFiles()) {
             lines.addAll(getLinesFromFile(file));
         }
         return lines;
     }
 
-    private static String getLinkerConfig() throws IOException {
+    private static String getLinkerConfig(boolean required) throws IOException {
         var configFile = settings.get("-lf", String.class);
         var configScript = settings.get("-lc", String.class);
 
         if("".equals(configScript) && "".equals(configFile)) {
-            if(!Files.exists(Path.of(DEFAULT_LINKER_CFG_FILENAME)))
+            if (Files.exists(Path.of(DEFAULT_LINKER_CFG_FILENAME))) {
+                configFile = DEFAULT_LINKER_CFG_FILENAME;
+            } else if(required){
                 throw new IllegalStateException("no linker config provided and no '%s' could be found".formatted(DEFAULT_LINKER_CFG_FILENAME));
-            else configFile = DEFAULT_LINKER_CFG_FILENAME;
+            }
         }
         if(!"".equals(configScript) && !"".equals(configFile)){
             throw new IllegalStateException("cannot specify both linker config file and script");

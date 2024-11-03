@@ -12,11 +12,12 @@ public class ProgramSettings {
     private static final GsonBuilder gsonBuilder = new GsonBuilder();
 
     private final Map<String, Entry> entries;
-    private final List<String> sourceFiles;
+    private final List<String> lnasmFiles, lncFiles;
 
     public ProgramSettings(InputStream jsonFile){
         Type emptyMapType = new TypeToken<Map<String, Entry>>(){}.getType();
-        this.sourceFiles = new ArrayList<>();
+        this.lnasmFiles = new ArrayList<>();
+        this.lncFiles = new ArrayList<>();
         this.entries = gsonBuilder.create().fromJson(new InputStreamReader(jsonFile), emptyMapType);
     }
 
@@ -83,11 +84,21 @@ public class ProgramSettings {
     }
 
     public void addSourceFile(String filename){
-        sourceFiles.add(filename);
+        if(filename.endsWith(".lnasm")){
+            lnasmFiles.add(filename);
+        }else if(filename.endsWith(".lnc")){
+            lncFiles.add(filename);
+        }else{
+            throw new IllegalArgumentException("invalid source file type: " + filename);
+        }
     }
 
-    public List<String> getSourceFiles() {
-        return sourceFiles;
+    public List<String> getLnasmFiles() {
+        return lnasmFiles;
+    }
+
+    public List<String> getLncFiles(){
+        return lncFiles;
     }
 
     public void help() {

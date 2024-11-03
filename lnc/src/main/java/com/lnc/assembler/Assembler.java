@@ -1,6 +1,7 @@
 package com.lnc.assembler;
 
 import com.lnc.LNC;
+import com.lnc.assembler.common.SectionInfo;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
 import com.lnc.assembler.linker.*;
@@ -16,11 +17,17 @@ import java.util.*;
 public class Assembler {
     private final List<Path> sourceFiles;
     private final String linkerConfig;
+    private final SectionInfo[] additionalSections;
     private final Map<String, byte[]> outputs;
 
     public Assembler(List<Path> sourceFiles, String linkerConfig) {
+        this(sourceFiles, linkerConfig, null);
+    }
+
+    public Assembler(List<Path> sourceFiles, String linkerConfig, SectionInfo[] additionalSections) {
         this.sourceFiles = sourceFiles;
         this.linkerConfig = linkerConfig;
+        this.additionalSections = additionalSections;
         this.outputs = new HashMap<>();
     }
 
@@ -71,7 +78,12 @@ public class Assembler {
         LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getResult().toArray(new Token[0]));
         if(!linkerconfigParser.parse())
             return false;
+
         LinkerConfig linkerConfig = linkerconfigParser.getResult();
+
+        if(this.additionalSections != null){
+            linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(this.additionalSections));
+        }
 
         Logger.setProgramState("linker");
 

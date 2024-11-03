@@ -41,4 +41,13 @@ public class LinkerConfig{
     public SectionInfo[] getSectionInfos() {
         return sections;
     }
+
+    public static LinkerConfig join(LinkerConfig... configs) {
+        SectionInfo[] sections = Arrays.stream(configs)
+                .map(LinkerConfig::getSectionInfos)
+                .flatMap(Arrays::stream)
+                .toArray(SectionInfo[]::new);
+
+        return new LinkerConfig(sections);
+    }
 }

@@ -1,5 +1,7 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.codegen.RegisterClass;
+
 public class Ret extends IRInstruction {
     private final IROperand value;
 
@@ -8,6 +10,7 @@ public class Ret extends IRInstruction {
 
         if(value != null && value.type == IROperand.Type.VIRTUAL_REGISTER){
             ((VirtualRegister)value).checkReleased();
+            ((VirtualRegister)value).setRegisterClass(RegisterClass.RETURN);
         }
 
         if(value instanceof ReferencableIROperand rop){

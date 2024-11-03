@@ -21,6 +21,10 @@ public class LinkerConfigParser extends FullSourceParser<LinkerConfig> {
     @Override
     public boolean parse() {
 
+        if(isAtEnd()) {
+            this.linkerConfig = new LinkerConfig(new SectionInfo[0]);
+            return true;
+        }
         try{
             consume("expected 'SECTIONS'", TokenType.SECTIONS);
             var sections = sections();

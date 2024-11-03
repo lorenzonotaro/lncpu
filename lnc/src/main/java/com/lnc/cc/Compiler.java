@@ -1,20 +1,28 @@
 package com.lnc.cc;
 
+import com.lnc.LNC;
+import com.lnc.assembler.common.LinkMode;
+import com.lnc.assembler.common.SectionInfo;
+import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
 import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
+import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
 import com.lnc.cc.parser.LncParser;
+import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 public class Compiler {
+    private static final SectionInfo START_SECTIONINFO = new SectionInfo("_START", 0, LinkTarget.ROM, LinkMode.FIXED, false, false, false);
     private final List<Path> sourceFiles;
     private List<CompilerOutput> output;
 
@@ -69,14 +77,46 @@ public class Compiler {
 
         Logger.setProgramState("codegen");
 
-        CodeGenerator codeGenerator = new CodeGenerator(irGenerator.getResult());
+        IR ir = irGenerator.getResult();
+        CodeGenerator codeGenerator = new CodeGenerator(ir);
 
         codeGenerator.generate();
 
         this.output = codeGenerator.getOutput();
 
+        if(LNC.settings.get("--standalone", Boolean.class)){
+            return standalone(ir);
+        }
+
         return true;
 
+    }
+
+    private boolean standalone(IR ir) {
+        if(ir.units().stream().anyMatch(unit -> {
+            var funDecl = unit.getFunctionDeclaration();
+            return funDecl.name.lexeme.equals("main") && funDecl.declarator.typeSpecifier().type == TypeSpecifier.Type.VOID && funDecl.parameters.length == 0;
+        })){
+            this.output.add(new CompilerOutput(getStartCode(), START_SECTIONINFO));
+        }
+
+        Logger.error("standalone mode requires a void main() function with no parameters.");
+        return false;
+    }
+
+    private String getStartCode() {
+        try(var stream = LNC.class.getClassLoader().getResourceAsStream("standalone_start.lnasm")){
+            if(stream == null){
+                Logger.error("unable to load standalone start code.");
+                return null;
+            }
+
+            return new String(stream.readAllBytes());
+
+        } catch (IOException e) {
+            Logger.error("unable to load standalone start code.");
+            return null;
+        }
     }
 
     private List<Token> parseSourceFiles(FullSourceLexer lexer, List<Path> sourceFiles) {
