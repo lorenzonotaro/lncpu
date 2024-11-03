@@ -3,8 +3,8 @@ package com.lnc.cc;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
 import com.lnc.cc.codegen.CodeGenerator;
+import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IRGenerator;
-import com.lnc.cc.optimization.Optimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
@@ -16,6 +16,7 @@ import java.util.List;
 
 public class Compiler {
     private final List<Path> sourceFiles;
+    private List<CompilerOutput> output;
 
     public Compiler(List<Path> sourceFiles) {
         this.sourceFiles = sourceFiles;
@@ -72,12 +73,7 @@ public class Compiler {
 
         codeGenerator.generate();
 
-        try {
-            Files.writeString(Path.of("out.lnasm"), codeGenerator.getCode());
-        } catch (IOException e) {
-            Logger.error("unable to write output file");
-            return false;
-        }
+        this.output = codeGenerator.getOutput();
 
         return true;
 
@@ -96,5 +92,9 @@ public class Compiler {
             }
         }
         return success ? lexer.getResult() : null;
+    }
+
+    public List<CompilerOutput> getOutput() {
+        return output;
     }
 }

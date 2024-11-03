@@ -1,19 +1,20 @@
 package com.lnc.cc.codegen;
 
+import com.lnc.assembler.common.LinkMode;
+import com.lnc.assembler.common.SectionInfo;
+import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.optimization.LinearIRUnit;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeSpecifier;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public class CodeGenerator implements ILinearIRVisitor<Void> {
 
     private final IR ir;
-    private final StringBuilder code = new StringBuilder();
-    private final StringBuilder epilogue = new StringBuilder(), prologue = new StringBuilder();
+    private final StringBuilder lnccode = new StringBuilder(), lndataSection = new StringBuilder();
     private GraphColoringRegisterAllocator registerAllocator;
     private LinearIRUnit currentUnit;
 
@@ -22,6 +23,19 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     }
 
     public void generate() {
+
+
+        lndataSection.append(".section LNCDATA\n\n");
+
+        for (var entry : ir.symbolTable().getSymbols().values()) {
+            var type = entry.getType();
+            if(type.type != TypeSpecifier.Type.FUNCTION)
+                dataPageVariable(entry.getFlatSymbolName(), type.size());
+        }
+
+
+        lnccode.append(".section LNCCODE\n\n");
+
         for (IRUnit unit : ir.units()) {
 
             if(unit.getFunctionDeclaration().isForwardDeclaration())
@@ -46,13 +60,12 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
     private void generate(LinearIRUnit linearIRUnit) {
 
-
-        label(prologue, linearIRUnit.nonLinearUnit.getFunctionDeclaration().name.lexeme);
+        label(linearIRUnit.nonLinearUnit.getFunctionDeclaration().name.lexeme);
 
         if(requiresRegisterStacking(currentUnit)) {
             for (var reg : registerAllocator.usedRegisters.stream().sorted(Comparator.comparingInt(Register::ordinal)).toArray()) {
                 if (reg != RegisterClass.RETURN.getRegisters()[0] || currentUnit.nonLinearUnit.getFunctionDeclaration().declarator.typeSpecifier().type == TypeSpecifier.Type.VOID)
-                    instructionf(prologue, "push %s", reg);
+                    instructionf("push %s", reg);
             }
         }
 
@@ -64,12 +77,12 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
         }
 
         if(requiresRegisterStacking(currentUnit)) {
-            label(epilogue, "_ret");
+            label("_ret");
             for (var reg : registerAllocator.usedRegisters.stream().sorted(Comparator.comparingInt(Register::ordinal).reversed()).toArray()) {
                 if (reg != RegisterClass.RETURN.getRegisters()[0] || currentUnit.nonLinearUnit.getFunctionDeclaration().declarator.typeSpecifier().type == TypeSpecifier.Type.VOID)
-                    instructionf(epilogue, "pop %s", reg);
+                    instructionf("pop %s", reg);
             }
-            instructionf(epilogue, "ret");
+            instructionf("ret");
         }
     }
 
@@ -223,23 +236,23 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     }
 
     private void instructionf(String format, Object... args) {
-        instructionf(code, format, args);
+        lnccode.append("    ").append(String.format(format, args)).append("\n");
     }
 
-    private void instructionf(StringBuilder sb, String format, Object... args) {
-        sb.append("    ").append(String.format(format, args)).append("\n");
-
-    }
 
     private void label(String label) {
-        label(code, label);
+        lnccode.append(label).append(":\n");
     }
 
-    private void label(StringBuilder sb, String label) {
-        sb.append(label).append(":\n");
+    private void dataPageVariable(String name, int size) {
+        lndataSection.append(name).append(":\n");
+        lndataSection.append("    .res ").append(size).append("\n");
     }
 
-    public String getCode() {
-        return prologue + code.toString() + epilogue;
+    public List<CompilerOutput> getOutput() {
+        return List.of(
+                new CompilerOutput(lnccode.toString(), new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false)),
+                new CompilerOutput(lndataSection.toString(), new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false))
+        );
     }
 }

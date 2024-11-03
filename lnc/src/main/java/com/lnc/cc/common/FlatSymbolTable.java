@@ -3,7 +3,10 @@ package com.lnc.cc.common;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 public class FlatSymbolTable {
     private final Map<String, Symbol> symbols;
@@ -86,5 +89,9 @@ public class FlatSymbolTable {
                         .formatted(entry.getValue().getName(), prev.getScope().getId(), entry.getValue().getScope().getId()));
             }
         }
+    }
+
+    public Map<String, Symbol> getSymbols() {
+        return symbols;
     }
 }
