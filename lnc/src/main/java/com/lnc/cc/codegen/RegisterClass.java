@@ -8,7 +8,7 @@ public enum RegisterClass {
 
     ANY(new Register[]{Register.RD, Register.RC, Register.RB, Register.RA}),
     SHIFT(new Register[]{Register.RA}),
-    RETURN(new Register[]{Register.RD});
+    RETURN(new Register[]{Register.RB});
 
     private final Register[] registers;
 
