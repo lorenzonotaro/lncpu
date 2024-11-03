@@ -37,9 +37,6 @@ public class LinearIRUnit extends BranchingIRVisitor {
     @Override
     protected void visit(IRBlock block) {
 
-        if(block == null || block.getInstructions().isEmpty())
-            return;
-
         append(new Label(block));
 
         super.visit(block);

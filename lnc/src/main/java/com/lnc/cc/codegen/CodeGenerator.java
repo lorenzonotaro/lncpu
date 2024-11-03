@@ -55,6 +55,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
             if (linearIRUnit.size() == 0) {
                 instructionf("ret");
             }
+
+            lnccode.append("\n\n");
         }
     }
 

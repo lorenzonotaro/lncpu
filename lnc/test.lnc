@@ -1,4 +1,3 @@
-// test program to test a simple c compiler: test if-else statement, for loops, while loops, function calls
 
 int test(int value);
 
@@ -14,5 +13,5 @@ void main(){
 }
 
 int test(int value){
-    return value == 5;
+    return value ^ 5;
 }
