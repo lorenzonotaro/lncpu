@@ -218,11 +218,11 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
             for (int i = 0; i < arguments.length; i++) {
                 var arg = arguments[i];
 
-                instructionf("mov %s, %s", arg.asm(), fun.unit.getSymbolTable().parameters[i].getFlatSymbolName());
+                instructionf("mov %s, %s", arg.asm(), "[" + fun.unit.getSymbolTable().parameters[i].getFlatSymbolName() + "]");
 
             }
 
-            instructionf("lcall %s", loc.asm());
+            instructionf("lcall %s", loc.getSymbol().getFlatSymbolName());
 
         }
 
