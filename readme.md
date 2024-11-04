@@ -9,7 +9,7 @@ LNCPU is a design for a hobby 8-bit processor.
 Overview of the repository:
 * [`v1`](v1) is the first implementation of the lncpu. Here you will find the Logisim simulation and the KiCad project (currently under construction), as well as the Python script for generating the control unit EEPROMS.
 
-* [`lnasm`](lnasm) is an assembler written in Java for the lncpu. It is kept up to date with the current implementation.
+* [`lnc`](lnc) is an assembler and C compiler written in Java for the lncpu. It is kept up to date with the current implementation.
 
 * [`eeprom-serial-loader`](eeprom-serial-loader) is a utility program for editing binary data and loading it to/from EEPROMS.
 
@@ -17,15 +17,15 @@ Overview of the repository:
 
 ## Prequisites
 
-- [Maven](https://maven.apache.org/) is required for building both `lnasm` and `eeprom-serial-loader`.
+- [Maven](https://maven.apache.org/) is required for building both `lnc` and `eeprom-serial-loader`.
 - [Python 3.x](https://www.python.org/downloads/) is required to generate the EEPROMs for the control unit.
 - [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) and [Digital](https://github.com/hneemann/Digital) are used to simulate the design.
 
 ## Building
 
-If you're on Linux, `make.sh` will build everything for you, including lnasm, eeprom-serial-loader and the control unit EEPROMs. Usage
+If you're on Linux, `make.sh` will build everything for you, including lnc, eeprom-serial-loader and the control unit EEPROMs. Usage
 
-    ./make.sh [--no-eeproms] [-no-eeprom-serial-loader] [--no-lnasm]
+    ./make.sh [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
 
 
 

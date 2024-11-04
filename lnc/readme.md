@@ -1,6 +1,6 @@
-# lnasm
+# lnc
 
-LNASM is an assembler for the `lncpu`.
+LNC is a pseudo-C (see below) compiler and assembler for the `lncpu`.
 
 
 ## Building
@@ -9,13 +9,15 @@ Use [`maven`](https://maven.apache.org/) to assemble a runnable JAR with depende
 
     mvn package
 
+As an alternative, use `make.sh` in the repository root folder to make and install everything in an `/output` folder, which you may then add to your `PATH`.
+
 # Usage
 
 ## Command line syntax
 
-To run `lnasm`, use:
+To run `lnc`, use:
 
-    java -jar lnasm.jar <source file(s)> [options...]
+    java -jar lnc.jar <source file(s)> [options...]
 
 Run with `--help` to show a list of available options.
 
@@ -161,7 +163,7 @@ Comments can be initiated with `;`: the remainder of the line after the semicolo
 
 Consult the [instruction set reference](instructionset.md) for the available instructions.
 
-## Linker configuration
+### Linker configuration
 In order to successfully assemble a program, you must provide a **linker configuration script**.
 A linker configuration script tells the linker information about each code section,
 such as what device it belongs to, how to place it in the address space (see below), etc...
@@ -205,3 +207,78 @@ Example:
       PROGRAM: mode = page_fit, target = ROM;
       DATA_PAGE: mode = page_align, target = RAM, datapage;
     ]
+
+## The lnc language
+
+The lnc is a C-like language that compiles to lnasm.
+The compiler is still very rudimental and produces *very* unoptimal code.
+
+lnc is (and probably will never be) neither C-standard compliant nor a simple subset of C: some features of the lnc architecture (such as the existence of different memory addressing modes, data page and absolute) require some extra features that C doesn't provide on its own.
+
+(This is the main reason why I didn't simply build a backend for an existing compiler such as `clang/llvm`; it would have been very challenging if not outright impossible.)
+
+### Features
+
+ - [x] Basic arithmetic expressions (currently add/sub)
+ - [x] Basic flow control (for, while, if/else)
+ - [ ] Other forms of flow control (do-while, switch)
+ - [ ] Continue and break statements 
+ - [x] Data page variables and pointers
+ - [ ] Absolute variables and pointers
+ - [ ] Data page arrays
+ - [ ] Absolute arrays
+ - [ ] Structs (and unions)
+ - [ ] Reentrant functions (see below)
+
+ ### Interfacing lnc and lnasm
+
+ lnc handles functions in the following ways:
+ 
+ * Parameters and local variables are all **implicitly static**. This means that **all lnc functions are NOT reentrant** and may exist only once in the call stack. This is a deliberate design choice for simplicity and may be changed in the future (e.g. with a parameter stack).
+
+ * If the function returns a value, it does so through the `RB` register.
+
+ * Register preservation is handled by the callee.
+
+To inform the C compiler of the existence of an `lnasm` function that will be linked with the compiler output, you may declare it as `extern`.
+
+    extern int doublei(int i);
+
+In the lnasm code, the function must follow lnc's "calling convention" and get its parameters from memory. Parameters are store in the data page (lnc defaults to page 20xx, first page of RAM) and their name will be determined as follows:
+
+    functionname__parametername
+
+    Example:
+
+    extern in doublei(int i);
+
+    will reserve 1 byte for its parameter in the data page as follows:
+
+    ...
+    doublei__i:
+        .res 1
+    ...
+
+The function code in lnasm could then be:
+
+    doublei:
+        mov [doublei__i],   RB
+        add RB,             RB
+        ret
+
+The same goes the other way around:
+
+    /* lnc code */
+    int doublei(int i){
+        return i + i;
+    }
+
+    ...
+
+    ; lnasm code
+
+    ...
+    mov     15,             [doublei__i]
+    lcall   doublei
+    ; at this point RB will contain 30
+    ...
