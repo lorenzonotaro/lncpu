@@ -18,7 +18,7 @@ import java.util.List;
 public class LNC {
 
     public static final String PROGRAM_NAME = "lnc";
-    public static final String PROGRAM_VERSION = "1.4.1";
+    public static final String PROGRAM_VERSION = "2.0.0a";
     private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNC.class.getClassLoader().getResourceAsStream("default-settings.json"));

@@ -1,17 +1,12 @@
 
 int test(int value);
 
-extern int printi(int i);
+extern void printc(int i);
 
 void main(){
-
-    if(test(5)){
-        printi(1);
-    }else{
-        printi(0);
+    for(int i = 0; i < 20; ++i){
+        printc(i);
+        printc('\n')
     }
-}
-
-int test(int value){
-    return value ^ 5;
+    return;
 }

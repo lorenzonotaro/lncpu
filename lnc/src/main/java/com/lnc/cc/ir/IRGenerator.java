@@ -160,6 +160,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             IROperand left = binaryExpression.left.accept(this);
             IROperand right = binaryExpression.right.accept(this);
 
+            if(left.type == IROperand.Type.LOCATION) {
+                var vr = allocVR();
+                emit(new Load(vr, (Location) left));
+                left = vr;
+            }
+
             switch (binaryExpression.operator) {
                 case EQ -> emit(new Jeq(left, right, nonTakenBranch, takenBranch, continueBlock));
                 case NE -> emit(new Jeq(left, right, takenBranch, nonTakenBranch, continueBlock));
@@ -195,6 +201,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             BinaryExpression binaryExpression = (BinaryExpression) cond;
             IROperand left = binaryExpression.left.accept(this);
             IROperand right = binaryExpression.right.accept(this);
+
+            if(left.type == IROperand.Type.LOCATION) {
+                var vr = allocVR();
+                emit(new Load(vr, (Location) left));
+                left = vr;
+            }
 
             switch (binaryExpression.operator) {
                 case EQ -> emit(new Jeq(left, right, takenBranch, nonTakenBranch, continueBlock));
