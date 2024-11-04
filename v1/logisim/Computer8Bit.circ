@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.9.13devlncpu" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.9.13devlncpu(https://github.com/logisim-evolution/).
+<project source="3.9.10devlncpu" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.9.10devlncpu(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#C8BComponents.circ" name="12"/>
-  <lib desc="file#Devices.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="file#C8BComponents.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1561,8 +1561,8 @@ end TCL_Generic;
     <comp lib="10" loc="(730,210)" name="Switch">
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="13" loc="(1080,1790)" name="KeyboardAdapter"/>
-    <comp lib="13" loc="(1630,1810)" name="TTYAdapter"/>
+    <comp lib="12" loc="(1080,1790)" name="KeyboardAdapter"/>
+    <comp lib="12" loc="(1630,1810)" name="TTYAdapter"/>
     <comp lib="4" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
@@ -2517,8 +2517,8 @@ end TCL_Generic;
     <comp lib="1" loc="(310,370)" name="NOR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -3697,65 +3697,28 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-0 0 fd 9 21 8 0 f8
-0 3b fc a 20 f6 1 0
-39 3b 3c 2a a8 f1 22 2f
-60 0 e0 ef 1f f2 13 df
-f2 13 44 43 41 fa 39 39
-4*e8 f8 0 83 2f 60 0 41
-f8 0 83 2f 60 0 41 fa
-25 1 0 25 2 0 fa 3a
-21 1 22 2 79 f1 58 3b
-3c 6 3f 13 2a e0 20 2
-44 43 fe f2 59 ff 42 fa
-2f 60 0 fa 70 30 f0 7d
-88 9 f0 82 f1 82 70 11
-f0 7d 88 5 f0 80 f1 80
-70 20 f0 7d 88 5 f0 80
-f1 80 4 ff fa 58 a fa
-b8 f 88 a f0 8e 70 a
-58 41 fa 58 30 fa 2a f8
-0 5f 88 ff f1 c6 4*e7 e
-e0 2a f8 0 5f 88 ff f1
-c6 4c 3a e0 2a f8 0 5f
-88 ff f1 c5 4*e7 e e0 2a
-f8 0 5f 88 ff f1 c5 4c
-e0 fe 41 fa 41 ff fa 56*0
-c5 6 3e cf 37 60 0 3e
-37 60 0 20 f8 0 42 ef
-c 26 88 a f1 24 88 8
-f1 1d e0 f2 c 8b 0 f1
-c e5 f2 c ed 89 1 f1
-47 89 4 ef f4 3a f8 0
-91 ef f3 1d 3 1e 4 42
-85 f1 ab 2a e0 88 2e f1
-57 88 3a f1 6a f2 f4 2a
-88 72 f1 52 88 52 f1 52
-f2 f4 23 3 24 4 f7 89
-9 f1 5d f2 f4 3a f8 0
-91 ef f3 1d 5 1e 6 42
-f2 b1 7f f1 f8 ef f4 2a
-88 20 f1 76 f2 f4 e0 2a
-3a 67 89 2 ef f3 f8 0
-5f 88 ff f1 f3 4*e7 e e0
-2a e0 f8 0 5f 88 ff f1
-f3 49 3b 3c 23 3 24 4
-26 e0 20 4 ef a6 44 43
-42 f2 6a df 1f 3 f2 a1
-38 3 5 38 4 6 21 5
-22 6 23 3 24 4 39 f2
-c4 39 17 b8 7 f1 c4 f2
-d8 37 60 0 a 14 f8 0
-26 17 f8 0 26 37 60 0
-3a 37 60 0 20 2a f8 0
-26 37 60 0 20 41 80 f1
-e6 f2 eb 85 f1 f8 f2 eb
-e0 ef f0 f2 bc df f2 bc
-42 37 60 0 3f 37 60 0
-a f2 7427*0 39 33 40 0 88
-0 f1 1a 33 40 1 2f 60
-0 3b 3c 6 3f 24 1 26
-e0 20 1 44 43 41 fb
+39 3b 3c 2a a8 f1 12 2f
+60 0 e0 ef f f2 3 df
+f2 3 44 43 41 fa 39 39
+4*e8 f8 0 5a 2f 60 0 41
+f8 0 5a 2f 60 0 41 fa
+39 4 2 f8 0 5a f8 0
+16 41 fa 70 30 f0 54 88
+9 f0 59 f1 59 70 11 f0
+54 88 5 f0 57 f1 57 70
+20 f0 54 88 5 f0 57 f1
+57 4 ff fa 58 a fa b8
+f 88 a f0 65 70 a 58
+41 fa 58 30 fa 2a f8 0
+36 88 ff f1 9d 4*e7 e e0
+2a f8 0 36 88 ff f1 9d
+4c 3a e0 2a f8 0 36 88
+ff f1 9c 4*e7 e e0 2a f8
+0 36 88 ff f1 9c 4c e0
+fe 41 fa 41 ff fa 3c 25
+1 0 24 1 8b 14 f0 ab
+f2 b5 38 1 2 f8 0 2b
+e1 1 f2 a3 44 fa
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
