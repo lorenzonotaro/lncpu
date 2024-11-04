@@ -1,0 +1,13 @@
+.section    _START
+
+    ; setup stack
+    mov     0x21,       SS
+    mov     0x0,        SP
+
+    ; setup data page
+    mov     (LNCDATA >> 8)::byte,       DS
+
+    ; call main
+    lcall main
+    hlt
+

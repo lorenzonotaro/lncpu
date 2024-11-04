@@ -1,0 +1,164 @@
+package com.lnc;
+
+import com.lnc.assembler.Assembler;
+import com.lnc.assembler.common.SectionInfo;
+import com.lnc.cc.Compiler;
+import com.lnc.cc.codegen.CompilerOutput;
+import com.lnc.common.frontend.Line;
+import com.lnc.common.Logger;
+import com.lnc.common.ProgramSettings;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+public class LNC {
+
+    public static final String PROGRAM_NAME = "lnc";
+    public static final String PROGRAM_VERSION = "2.0.0a";
+    private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
+
+    public static ProgramSettings settings = new ProgramSettings(LNC.class.getClassLoader().getResourceAsStream("default-settings.json"));
+    public static String[] includeDirs;
+
+    public static void main(String[] args){
+        Logger.setProgramState("init");
+        init();
+        if(!parseArgs(args)){
+            System.exit(1);
+        }
+        System.exit(run());
+    }
+
+    private static int run() {
+        if(settings.get("--version", Boolean.class)){
+            System.out.printf("%s v%s\n", PROGRAM_NAME, PROGRAM_VERSION);
+            return 0;
+        }else if(settings.get("--help", Boolean.class)){
+            settings.help();
+            return 0;
+        } else{
+            return runFromSourceFiles();
+        }
+    }
+
+    private static int runFromSourceFiles() {
+
+        try {
+            includeDirs = settings.get("-I", String.class).split(";");
+
+            boolean noLncFiles = settings.getLncFiles().isEmpty();
+            if(settings.getLnasmFiles().isEmpty() && noLncFiles){
+                Logger.error("no source files.");
+                return 1;
+            }
+
+            List<CompilerOutput> output = new ArrayList<>();
+
+            if(!noLncFiles){
+                Compiler compiler = new Compiler(settings.getLncFiles().stream().map(Path::of).toList());
+                if(!compiler.compile())
+                    return 1;
+
+                output = compiler.getOutput();
+
+                Files.writeString(Path.of("__lncout.lnasm"), String.join("\n", output.stream().map(CompilerOutput::code).toList()));
+
+                settings.addSourceFile("__lncout.lnasm");
+            }
+
+            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new));
+
+            if(!assembler.compile())
+                System.exit(1);
+            else if(!settings.get("-s", Boolean.class)){
+                assembler.writeOutputFiles();
+            }
+
+
+
+        } catch (IllegalStateException | IOException e) {
+            Logger.error(e.getMessage());
+            return 1;
+        }
+        return 0;
+    }
+
+    private static List<Line> getLinesFromSourceFiles() throws FileNotFoundException {
+        List<Line> lines = new ArrayList<>();
+        for (String file : settings.getLnasmFiles()) {
+            lines.addAll(getLinesFromFile(file));
+        }
+        return lines;
+    }
+
+    private static String getLinkerConfig(boolean required) throws IOException {
+        var configFile = settings.get("-lf", String.class);
+        var configScript = settings.get("-lc", String.class);
+
+        if("".equals(configScript) && "".equals(configFile)) {
+            if (Files.exists(Path.of(DEFAULT_LINKER_CFG_FILENAME))) {
+                configFile = DEFAULT_LINKER_CFG_FILENAME;
+            } else if(required){
+                throw new IllegalStateException("no linker config provided and no '%s' could be found".formatted(DEFAULT_LINKER_CFG_FILENAME));
+            }
+        }
+        if(!"".equals(configScript) && !"".equals(configFile)){
+            throw new IllegalStateException("cannot specify both linker config file and script");
+        }else if(!"".equals(configFile)){
+            return Files.readString(Path.of(configFile));
+        }else{
+            return configScript;
+        }
+    }
+
+    public static List<Line> getLinesFromFile(String file) throws FileNotFoundException{
+        List<String> strLines;
+        List<Line> lines = new ArrayList<>();
+        Path path = Path.of(file);
+        try {
+            strLines = Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new FileNotFoundException("unable to open file '" + file + "'");
+        }
+        for (int i = 0; i < strLines.size(); i++) {
+            String code = strLines.get(i);
+            lines.add(new Line(path.toAbsolutePath(), code, i + 1));
+        }
+        return lines;
+    }
+
+    private static void init() {
+
+    }
+
+    private static boolean parseArgs(String[] args) {
+        try {
+            for (int i = 0; i < args.length; i++) {
+                String arg = args[i];
+                if (arg.startsWith("-")) {
+                    if (arg.contains("=")) {
+                        int index = arg.indexOf('=');
+                        settings.parseAndSet(arg.substring(0, index), arg.substring(index + 1));
+                    } else if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
+                        settings.parseAndSet(arg, args[++i]);
+                    } else settings.set(arg, true);
+                } else {
+                    settings.addSourceFile(arg);
+                }
+            }
+
+            if(settings.get("-oI", String.class).isEmpty() && settings.get("-oB", String.class).isEmpty()){
+                settings.set("-oB", "a.out");
+            }
+
+        }catch(IllegalArgumentException e){
+            Logger.error(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+}

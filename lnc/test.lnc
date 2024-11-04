@@ -1,0 +1,12 @@
+
+int test(int value);
+
+extern void printc(int i);
+
+void main(){
+    for(int i = 0; i < 20; ++i){
+        printc(i);
+        printc('\n')
+    }
+    return;
+}
