@@ -71,6 +71,13 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
         return null;
     }
 
+    @Override
+    public Void accept(DoWhileStatement doWhileStatement){
+        doWhileStatement.condition.accept(this);
+        visitStatement(doWhileStatement.body);
+        return null;
+    }
+
     public void visitStatement(Statement statement){
         statement.accept(this);
     }

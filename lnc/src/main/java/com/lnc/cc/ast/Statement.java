@@ -17,7 +17,7 @@ public abstract class Statement {
         EXPRESSION_STMT,
         BLOCK,
         BREAK,
-        CONTINUE
+        DO_WHILE, CONTINUE
     }
 
     public abstract <S> S accept(IStatementVisitor<S> visitor);

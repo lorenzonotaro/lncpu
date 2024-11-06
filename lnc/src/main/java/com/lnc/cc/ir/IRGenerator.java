@@ -60,6 +60,29 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
+    public Void accept(DoWhileStatement doWhileStatement) {
+
+        IRBlock bodyBlock = currentUnit.newBlock();
+        IRBlock continueBlock = currentUnit.newBlock();
+
+        currentUnit.getCurrentBlock().setNext(bodyBlock);
+
+        currentUnit.setCurrentBlock(bodyBlock);
+
+        currentUnit.enterLoop();
+
+        visitStatement(doWhileStatement.body);
+
+        branchIfFalse(doWhileStatement.condition, continueBlock, bodyBlock, null);
+
+        currentUnit.exitLoop();
+
+        currentUnit.setCurrentBlock(continueBlock);
+
+        return null;
+    }
+
+    @Override
     public Void accept(ForStatement forStatement) {
 
         if (forStatement.initializer != null)
@@ -196,6 +219,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
     }
 
+/*
     private void branchIfTrue(Expression cond, IRBlock takenBranch, IRBlock nonTakenBranch, IRBlock continueBlock) {
         if (Objects.requireNonNull(cond.type) == Expression.Type.BINARY) {
             BinaryExpression binaryExpression = (BinaryExpression) cond;
@@ -237,6 +261,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             }
         }
     }
+*/
 
 
     @Override

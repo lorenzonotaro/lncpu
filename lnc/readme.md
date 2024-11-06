@@ -221,7 +221,7 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
 
  - [x] Basic arithmetic expressions (currently add/sub)
  - [x] Basic flow control (for, while, if/else)
- - [ ] Other forms of flow control (do-while, switch)
+ - [ ] Other forms of flow control (switch)
  - [ ] Continue and break statements 
  - [x] Data page variables and pointers
  - [ ] Absolute variables and pointers

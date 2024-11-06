@@ -1,12 +1,19 @@
 
-int test(int value);
+int printc(int i){
+    return 1;
+}
 
-extern void printc(int i);
+int test(int value){
+    do{
+        printc(value);
+    }while(--value);
+    return value;
+}
 
 void main(){
-    for(int i = 0; i < 20; ++i){
-        printc(i);
-        printc('\n')
-    }
+    int a = 1;
+
+    test(a);
+
     return;
 }

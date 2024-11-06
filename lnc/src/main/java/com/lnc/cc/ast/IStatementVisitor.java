@@ -18,4 +18,6 @@ public interface IStatementVisitor<S> {
     S accept(VariableDeclaration variableDeclaration);
 
     S accept(WhileStatement whileStatement);
+
+    S accept(DoWhileStatement doWhileStatement);
 }

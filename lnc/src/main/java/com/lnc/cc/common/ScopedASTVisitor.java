@@ -215,6 +215,25 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
+    public Void accept(DoWhileStatement doWhileStatement) {
+
+        try{
+            doWhileStatement.condition.accept(this);
+        }catch (CompileException e){
+            e.log();
+            fail();
+        }
+
+        try{
+            visitStatement(doWhileStatement.body);
+        }catch (CompileException e){
+            e.log();
+            fail();
+        }
+
+        return null;
+    }
+
     protected void define(Symbol symbol, boolean isParameter){
         currentScope.define(symbol, isParameter);
     }

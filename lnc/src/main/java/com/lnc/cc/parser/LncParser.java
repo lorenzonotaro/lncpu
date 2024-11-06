@@ -209,6 +209,14 @@ public class LncParser extends FullSourceParser<AST> {
             }
             var body = statement();
             return new ForStatement(initializer, condition, increment, body);
+        }else if(match(TokenType.DO)){
+            var body = statement();
+            consume("expected 'while'", TokenType.WHILE);
+            consume("expected '('", TokenType.L_PAREN);
+            var condition = expression();
+            consume("expected ')'", TokenType.R_PAREN);
+            consume("expected ';'", TokenType.SEMICOLON);
+            return new DoWhileStatement(condition, body);
         }else{
 
             if(match(TokenType.SEMICOLON)){
