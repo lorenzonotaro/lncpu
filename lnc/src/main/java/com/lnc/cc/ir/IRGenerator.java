@@ -211,6 +211,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         } else {
             IROperand condition = cond.accept(this);
+
+            if(condition.type == IROperand.Type.LOCATION) {
+                var vr = allocVR();
+                emit(new Load(vr, (Location) condition));
+                condition = vr;
+            }
+
             emit(new Jeq(condition, new ImmediateOperand((byte) 0), nonTakenBranch, takenBranch, continueBlock));
 
             if(condition.type == IROperand.Type.VIRTUAL_REGISTER){
