@@ -16,8 +16,9 @@ public abstract class Statement {
         RETURN,
         EXPRESSION_STMT,
         BLOCK,
-        BREAK,
-        DO_WHILE, CONTINUE
+        DO_WHILE,
+        CONTINUE,
+        BREAK
     }
 
     public abstract <S> S accept(IStatementVisitor<S> visitor);

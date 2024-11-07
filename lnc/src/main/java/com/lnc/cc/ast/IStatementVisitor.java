@@ -20,4 +20,8 @@ public interface IStatementVisitor<S> {
     S accept(WhileStatement whileStatement);
 
     S accept(DoWhileStatement doWhileStatement);
+
+    S accept(ContinueStatement continueStatement);
+
+    S accept(BreakStatement breakStatement);
 }

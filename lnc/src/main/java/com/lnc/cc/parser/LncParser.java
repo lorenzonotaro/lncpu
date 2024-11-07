@@ -170,11 +170,14 @@ public class LncParser extends FullSourceParser<AST> {
         }else if(match(TokenType.RETURN)){
             Token token = previous();
             if(check(TokenType.SEMICOLON)){
-                return new ReturnStatement(token,null);
-            }else{
-                var expr = expression();
-                return new ReturnStatement(token, expr);
+                advance();
+                return new ReturnStatement(token, null);
             }
+            var expr = expression();
+
+            consume("expected ';'", TokenType.SEMICOLON);
+
+            return new ReturnStatement(token, expr);
         }else if(match(TokenType.IF)){
             consume("expected '('", TokenType.L_PAREN);
             var condition = expression();
@@ -217,6 +220,14 @@ public class LncParser extends FullSourceParser<AST> {
             consume("expected ')'", TokenType.R_PAREN);
             consume("expected ';'", TokenType.SEMICOLON);
             return new DoWhileStatement(condition, body);
+        }else if(match(TokenType.CONTINUE)){
+            Token tkn = previous();
+            consume("expected ';'", TokenType.SEMICOLON);
+            return new ContinueStatement(tkn);
+        }else if(match(TokenType.BREAK)){
+            Token tkn = previous();
+            consume("expected ';'", TokenType.SEMICOLON);
+            return new BreakStatement(tkn);
         }else{
 
             if(match(TokenType.SEMICOLON)){

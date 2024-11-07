@@ -105,4 +105,14 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
         return null;
     }
+
+    @Override
+    public Void accept(ContinueStatement continueStatement) {
+        return null;
+    }
+
+    @Override
+    public Void accept(BreakStatement breakStatement) {
+        return null;
+    }
 }

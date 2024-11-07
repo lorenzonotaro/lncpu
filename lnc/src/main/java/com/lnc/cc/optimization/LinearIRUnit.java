@@ -137,7 +137,7 @@ public class LinearIRUnit extends BranchingIRVisitor {
     }
 
     public void linearize() {
-        visit(nonLinearUnit.getStartBlock());
+        visit(nonLinearUnit.getEntryBlock());
     }
 
     public int size() {

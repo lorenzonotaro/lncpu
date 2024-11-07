@@ -12,7 +12,7 @@ public class IRPrinter extends BranchingIRVisitor{
 
         System.out.println("IR:\n");
 
-        visit(unit.getStartBlock());
+        visit(unit.getEntryBlock());
     }
 
     @Override
