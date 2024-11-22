@@ -43,6 +43,11 @@
     "value": false
   },
 
+  "--no-optimization": {
+    "help": "Disables optimization.",
+    "value": false
+  },
+
   "-Wdata-page-access-before-setup": {
     "help": "Disables data page access before setup compile warning.",
     "value": true

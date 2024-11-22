@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public final class IR {
+public class IR {
     private final List<IRUnit> units;
     private final FlatSymbolTable symbolTable;
 
@@ -17,6 +17,11 @@ public final class IR {
         for (var unit : units) {
             symbolTable.join(unit.getSymbolTable());
         }
+    }
+
+    protected IR(IR ir){
+        this.units = ir.units;
+        this.symbolTable = ir.symbolTable;
     }
 
     public List<IRUnit> units() {

@@ -5,6 +5,7 @@ import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.optimization.LinearIRUnit;
+import com.lnc.cc.optimization.OptimizationResult;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeSpecifier;
 
@@ -13,13 +14,13 @@ import java.util.List;
 
 public class CodeGenerator implements ILinearIRVisitor<Void> {
 
-    private final IR ir;
+    private final OptimizationResult linearIRs;
     private final StringBuilder lnccode = new StringBuilder(), lndataSection = new StringBuilder();
     private GraphColoringRegisterAllocator registerAllocator;
     private LinearIRUnit currentUnit;
 
-    public CodeGenerator(IR ir) {
-        this.ir = ir;
+    public CodeGenerator(OptimizationResult optimizationResult) {
+        this.linearIRs = optimizationResult;
     }
 
     public void generate() {
@@ -27,7 +28,7 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
         lndataSection.append(".section LNCDATA\n\n");
 
-        for (var entry : ir.symbolTable().getSymbols().values()) {
+        for (var entry : linearIRs.symbolTable().getSymbols().values()) {
             var type = entry.getType();
             if(type.type != TypeSpecifier.Type.FUNCTION)
                 dataPageVariable(entry.getFlatSymbolName(), type.size());
@@ -36,13 +37,10 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
         lnccode.append(".section LNCCODE\n\n");
 
-        for (IRUnit unit : ir.units()) {
+        for (LinearIRUnit linearIRUnit : linearIRs.getLinearizedIRUnits()) {
 
-            if(unit.getFunctionDeclaration().isForwardDeclaration())
+            if(linearIRUnit.nonLinearUnit.getFunctionDeclaration().isForwardDeclaration())
                 continue;
-
-            LinearIRUnit linearIRUnit = new LinearIRUnit(unit);
-            linearIRUnit.linearize();
 
             currentUnit = linearIRUnit;
 

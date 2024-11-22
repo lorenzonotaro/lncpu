@@ -7,7 +7,7 @@ public class IRBlock {
 
     private final IRUnit unit;
 
-    private List<AbstractBranchInstr> references = new ArrayList<>();
+    private Set<ILabelReferenceHolder> references = new HashSet<>();
 
     private final int id;
 
@@ -43,10 +43,6 @@ public class IRBlock {
         return "_l" + id;
     }
 
-    public void addReference(AbstractBranchInstr instr) {
-        references.add(instr);
-    }
-
     public IRBlock getNext() {
         return next;
     }
@@ -78,5 +74,17 @@ public class IRBlock {
 
     public boolean hasNext() {
         return next != null;
+    }
+
+    public void addReference(ILabelReferenceHolder instr) {
+        references.add(instr);
+    }
+
+    public void removeReference(ILabelReferenceHolder instr) {
+        references.remove(instr);
+    }
+
+    public Collection<ILabelReferenceHolder> getReferences() {
+        return references;
     }
 }

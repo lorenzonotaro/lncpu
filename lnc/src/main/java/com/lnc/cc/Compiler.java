@@ -10,6 +10,7 @@ import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
+import com.lnc.cc.optimization.Optimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
@@ -75,17 +76,19 @@ public class Compiler {
             return false;
         }
 
-        Logger.setProgramState("codegen");
+        Logger.setProgramState("optimization");
+        Optimizer opt = new Optimizer(irGenerator.getResult());
+        var optimizationResult = opt.optimize();
 
-        IR ir = irGenerator.getResult();
-        CodeGenerator codeGenerator = new CodeGenerator(ir);
+        Logger.setProgramState("codegen");
+        CodeGenerator codeGenerator = new CodeGenerator(optimizationResult);
 
         codeGenerator.generate();
 
         this.output = codeGenerator.getOutput();
 
         if(LNC.settings.get("--standalone", Boolean.class)){
-            return standalone(ir);
+            return standalone(optimizationResult);
         }
 
         return true;

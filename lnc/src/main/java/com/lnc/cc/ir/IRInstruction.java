@@ -49,10 +49,7 @@ public abstract class IRInstruction {
 
     @Override
     public int hashCode() {
-        int result = index;
-        result = 31 * result + Objects.hashCode(prev);
-        result = 31 * result + Objects.hashCode(next);
-        return result;
+        return index;
     }
 
     public int getLoopNestedLevel() {
@@ -61,5 +58,16 @@ public abstract class IRInstruction {
 
     public void setLoopNestedLevel(int loopNestedLevel) {
         this.loopNestedLevel = loopNestedLevel;
+    }
+
+    public void onRemove(){
+    }
+
+    public boolean hasNext() {
+        return next != null;
+    }
+
+    public boolean hasPrev() {
+        return prev != null;
     }
 }
