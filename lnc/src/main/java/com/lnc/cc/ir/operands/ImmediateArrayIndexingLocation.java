@@ -1,12 +1,12 @@
-package com.lnc.cc.ir;
+package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.types.AbstractSubscriptableType;
 
-public class ArrayElementLocation extends Location {
+public class ImmediateArrayIndexingLocation extends Location {
     private final int index;
     private final AbstractSubscriptableType arrayTypeDecl;
 
-    public ArrayElementLocation(Location base, int index) {
+    public ImmediateArrayIndexingLocation(Location base, int index) {
         super(base.getSymbol());
 
         if(!(base.getSymbol().getType() instanceof AbstractSubscriptableType)) {

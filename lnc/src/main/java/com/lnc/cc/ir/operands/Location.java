@@ -1,6 +1,7 @@
-package com.lnc.cc.ir;
+package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.common.Symbol;
+import com.lnc.cc.ir.ReferencableIROperand;
 
 public class Location extends ReferencableIROperand {
     private Symbol symbol;

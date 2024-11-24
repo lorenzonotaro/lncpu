@@ -1,4 +1,4 @@
-package com.lnc.cc.ir;
+package com.lnc.cc.ir.operands;
 
 public abstract class IROperand {
     public Type type;
@@ -10,6 +10,9 @@ public abstract class IROperand {
     public abstract String asm();
 
     public enum Type{
-        IMMEDIATE, VIRTUAL_REGISTER, DERIVED_LOCATION, LOCATION
+        IMMEDIATE,
+        VIRTUAL_REGISTER,
+        DERIVED_LOCATION,
+        LOCATION
     }
 }

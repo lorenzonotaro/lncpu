@@ -1,6 +1,8 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.BinaryExpression;
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Bin extends IRInstruction {
     public final IROperand left;

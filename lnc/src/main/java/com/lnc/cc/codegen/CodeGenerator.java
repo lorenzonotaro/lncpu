@@ -4,6 +4,8 @@ import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.ir.*;
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.Location;
 import com.lnc.cc.optimization.LinearIRUnit;
 import com.lnc.cc.optimization.OptimizationResult;
 import com.lnc.cc.types.FunctionType;

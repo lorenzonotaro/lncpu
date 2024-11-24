@@ -1,10 +1,8 @@
 
-int i[20];
+int data[20];
 
 void main(){
-    i[0] = 25 + 2 * 4;
-
-    i[1] = 5;
-
-    i[2] = 6;
+    for(int i = 0; i < 20; ++i){
+        data[i] = 5;
+    }
 }

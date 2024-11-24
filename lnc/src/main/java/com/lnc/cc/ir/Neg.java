@@ -1,5 +1,8 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
+
 public class Neg extends IRInstruction {
     private final IROperand operand;
 

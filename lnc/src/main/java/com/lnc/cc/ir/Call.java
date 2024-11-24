@@ -1,6 +1,8 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.codegen.RegisterClass;
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Call extends IRInstruction {
     private final IROperand returnTarget;

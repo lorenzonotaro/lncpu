@@ -1,12 +1,12 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.codegen.LiveRange;
+import com.lnc.cc.ir.operands.IROperand;
 
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class ReferencableIROperand extends IROperand {
 

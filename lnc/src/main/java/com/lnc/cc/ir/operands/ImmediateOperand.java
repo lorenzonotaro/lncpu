@@ -1,4 +1,4 @@
-package com.lnc.cc.ir;
+package com.lnc.cc.ir.operands;
 
 public class ImmediateOperand extends IROperand {
     private final byte value;

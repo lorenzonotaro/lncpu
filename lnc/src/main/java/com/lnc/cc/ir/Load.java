@@ -1,5 +1,8 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.Location;
+import com.lnc.cc.ir.operands.VirtualRegister;
+
 public class Load extends IRInstruction {
     private final VirtualRegister vr;
     private final Location operand;

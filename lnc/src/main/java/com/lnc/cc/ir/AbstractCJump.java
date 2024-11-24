@@ -1,5 +1,8 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
+
 public abstract class AbstractCJump extends AbstractBranchInstr {
     public final IROperand left;
     public final IROperand right;

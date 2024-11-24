@@ -3,6 +3,7 @@ package com.lnc.cc.ir;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
+import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
@@ -578,9 +579,37 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         IROperand index = subscriptExpression.index.accept(this);
 
-        if(index.type != IROperand.Type.IMMEDIATE){
-            throw new CompileException("subscript index must be immediate (dynamic array access not implemented)", subscriptExpression.token);
+        if(index.type == IROperand.Type.IMMEDIATE){
+            IROperand array = subscriptExpression.left.accept(this);
+
+            if(array.type != IROperand.Type.LOCATION){
+                throw new CompileException("invalid type for array subscript", subscriptExpression.token);
+            }
+
+            return new ImmediateArrayIndexingLocation((Location) array, ((ImmediateOperand) index).getValue());
         }
+
+        VirtualRegister vr;
+
+        if(index.type == IROperand.Type.VIRTUAL_REGISTER) {
+            vr = (VirtualRegister) index;
+            if(vr.getRegisterClass() == RegisterClass.ANY) {
+                ((VirtualRegister) index).setRegisterClass(RegisterClass.INDEX);
+            }else{
+                VirtualRegister newVr = allocVR();
+                newVr.setRegisterClass(RegisterClass.INDEX);
+                emit(new Move(newVr, index));
+                releaseVR(vr);
+                vr = newVr;
+            }
+        }else if(index.type == IROperand.Type.LOCATION){
+            vr = allocVR();
+            vr.setRegisterClass(RegisterClass.INDEX);
+            emit(new Load(vr, (Location) index));
+        }else{
+            throw new CompileException("invalid type for array subscript", subscriptExpression.token);
+        }
+
 
         IROperand array = subscriptExpression.left.accept(this);
 
@@ -588,8 +617,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("invalid type for array subscript", subscriptExpression.token);
         }
 
-        return new ArrayElementLocation((Location) array, ((ImmediateOperand) index).getValue());
+        var loc =  new DynamicArrayIndexingLocation((Location) array, vr);
 
+        releaseVR(vr);
+
+        return loc;
     }
 
     @Override

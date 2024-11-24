@@ -1,5 +1,9 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.Location;
+import com.lnc.cc.ir.operands.VirtualRegister;
+
 public class Store extends IRInstruction {
     private final Location dest;
     private final IROperand value;

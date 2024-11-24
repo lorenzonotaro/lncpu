@@ -1,5 +1,7 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.IROperand;
+
 public class Jle extends AbstractCJump {
 
     public Jle(IROperand left, IROperand right, IRBlock target, IRBlock nonTakenBranch) {

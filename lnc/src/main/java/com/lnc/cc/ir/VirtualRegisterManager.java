@@ -1,5 +1,7 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.VirtualRegister;
+
 import java.util.*;
 
 public class VirtualRegisterManager {

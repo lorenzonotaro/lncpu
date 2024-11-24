@@ -1,6 +1,6 @@
 package com.lnc.cc.codegen;
 
-import com.lnc.cc.ir.VirtualRegister;
+import com.lnc.cc.ir.operands.VirtualRegister;
 import com.lnc.cc.optimization.LinearIRUnit;
 
 import java.util.*;

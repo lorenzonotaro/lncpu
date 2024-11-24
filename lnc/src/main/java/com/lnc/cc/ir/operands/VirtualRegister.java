@@ -1,7 +1,8 @@
-package com.lnc.cc.ir;
+package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.codegen.Register;
 import com.lnc.cc.codegen.RegisterClass;
+import com.lnc.cc.ir.ReferencableIROperand;
 
 public class VirtualRegister extends ReferencableIROperand {
 
