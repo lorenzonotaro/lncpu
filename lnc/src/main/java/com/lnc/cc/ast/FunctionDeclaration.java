@@ -8,6 +8,7 @@ import com.lnc.common.frontend.Token;
 
 public class FunctionDeclaration extends Declaration implements IScopedStatement {
 
+    public final Declarator declarator;
     public IRUnit unit;
     private Scope scope;
 
@@ -15,7 +16,8 @@ public class FunctionDeclaration extends Declaration implements IScopedStatement
     public final BlockStatement body;
 
     public FunctionDeclaration(Declarator declarator, Token name, VariableDeclaration[] parameters, BlockStatement body) {
-        super(Declaration.Type.FUNCTION, declarator, name);
+        super(Declaration.Type.FUNCTION, name);
+        this.declarator = declarator;
         this.parameters = parameters;
         this.body = body;
     }

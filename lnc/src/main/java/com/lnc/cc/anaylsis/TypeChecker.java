@@ -8,11 +8,46 @@ import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     public TypeChecker(AST ast) {
         super(ast);
     }
+
+    @Override
+    public Void accept(VariableDeclaration variableDeclaration) {
+
+        if (variableDeclaration.declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT) {
+            StructType structType = (StructType) variableDeclaration.declarator.typeSpecifier();
+            if (structType.hasDefinition()) {
+                if(structType.providesDefinition()){
+                    defineStruct(structType.getName(), structType.getDefinition());
+                }
+            } else {
+                StructDefinitionType type = resolveStruct(structType.getName());
+                structType.bindDefinition(type);
+            }
+        }
+
+        return super.accept(variableDeclaration);
+    }
+
+
+    @Override
+    public Void visit(StructDeclaration structDeclaration) {
+        StructDefinitionType structDefinition = structDeclaration.getStructDefinition();
+
+        if(structDefinition == null){
+            return null;
+        }
+
+        defineStruct(structDeclaration.name, structDefinition);
+        return null;
+    }
+
 
     @Override
     public TypeSpecifier accept(AssignmentExpression assignmentExpression) {
@@ -158,6 +193,54 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         return null;
     }
 
+    private void checkStructCompleteness(StructDefinitionType definition, Token name) {
+        if(definition.isComplete())
+            return;
+
+        Map<String, StructFieldEntry> fieldMap = new HashMap<>();
+
+        int offset = 0;
+        for(VariableDeclaration field : definition.getFields()){
+            if(field.declarator.typeSpecifier().isPrimitive()){
+                fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
+                offset += field.declarator.typeSpecifier().typeSize();
+            }else if(field.declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT){
+                StructType structType = (StructType) field.declarator.typeSpecifier();
+
+                if (structType.hasDefinition()) {
+                    if(structType.providesDefinition()){
+                        defineStruct(structType.getName(), structType.getDefinition());
+                    }
+                } else {
+                    StructDefinitionType type = resolveStruct(structType.getName());
+                    structType.bindDefinition(type);
+                }
+
+                fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
+                offset += field.declarator.typeSpecifier().typeSize();
+
+            }else{
+                throw new CompileException("unexpected struct field type (should not happen)", field.name);
+            }
+            offset += field.declarator.typeSpecifier().typeSize();
+        }
+
+        definition.setFieldMap(fieldMap);
+    }
+
+    @Override
+    public void defineStruct(Token name, StructDefinitionType definition) {
+        checkStructCompleteness(definition, name);
+        super.defineStruct(name, definition);
+    }
+
+    @Override
+    public StructDefinitionType resolveStruct(Token token) {
+        StructDefinitionType struct = super.resolveStruct(token);
+        checkStructCompleteness(struct, token);
+        return struct;
+    }
+
     @Override
     public Void accept(ContinueStatement continueStatement) {
         return null;
@@ -167,5 +250,6 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     public Void accept(BreakStatement breakStatement) {
         return null;
     }
+
 }
 

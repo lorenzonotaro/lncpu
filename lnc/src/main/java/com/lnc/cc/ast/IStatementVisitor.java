@@ -24,4 +24,6 @@ public interface IStatementVisitor<S> {
     S accept(ContinueStatement continueStatement);
 
     S accept(BreakStatement breakStatement);
+
+    S visit(StructDeclaration structDeclaration);
 }

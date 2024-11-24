@@ -9,17 +9,23 @@ public abstract class TypeSpecifier {
 
     public final Type type;
 
+    private final boolean primitive;
+
     public static final TokenType[] VALID_TOKENS = new TokenType[]{
         TokenType.VOID,
         TokenType.CHAR,
         TokenType.T_INT,
         TokenType.UNSIGNED,
         TokenType.SIGNED,
-        TokenType.STRUCT,
     };
 
     public TypeSpecifier(Type type){
+        this(type, true);
+    }
+
+    public TypeSpecifier(Type type, boolean primitive) {
         this.type = type;
+        this.primitive = primitive;
     }
 
     public static TypeSpecifier parsePrimaryType(LncParser parser) {
@@ -80,6 +86,10 @@ public abstract class TypeSpecifier {
         return other != null && other.getClass().equals(this.getClass());
     }
 
+    public boolean isPrimitive() {
+        return primitive;
+    }
+
     public enum Type{
         VOID,
         CHAR,
@@ -87,7 +97,7 @@ public abstract class TypeSpecifier {
         UI8,
         POINTER,
         FUNCTION,
-        ARRAY
+        STRUCT, ARRAY
     }
 
 }

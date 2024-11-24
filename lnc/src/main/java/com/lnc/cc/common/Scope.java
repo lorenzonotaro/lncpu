@@ -1,6 +1,10 @@
 package com.lnc.cc.common;
 
 
+import com.lnc.cc.types.StructDefinitionType;
+import com.lnc.common.frontend.CompileException;
+import com.lnc.common.frontend.Token;
+
 import java.util.*;
 
 public class Scope {
@@ -11,6 +15,8 @@ public class Scope {
     private final List<Scope> children = new ArrayList<>();
 
     private final Map<String, Symbol> symbols = new HashMap<>();
+
+    private final Map<String, StructDefinitionType> structs = new HashMap<>();
 
     private final List<Symbol> parameters = new ArrayList<>();
 
@@ -65,6 +71,17 @@ public class Scope {
     }
 
 
+    public void defineStruct(Token name, StructDefinitionType definition) {
+        StructDefinitionType existing = structs.get(name.lexeme);
+
+        if(existing != null){
+            throw new CompileException("struct '%s' already defined here: '%s'".formatted(existing.getDefinitionToken().lexeme, existing.getDefinitionToken().formatLocation()), name);
+        }
+
+        structs.put(name.lexeme, definition);
+    }
+
+
     public Symbol resolve(String name){
         Symbol symbol = symbols.get(name);
         if(symbol != null){
@@ -72,6 +89,18 @@ public class Scope {
         }
         if(parent != null){
             return parent.resolve(name);
+        }
+        return null;
+    }
+
+
+    public StructDefinitionType resolveStruct(String lexeme) {
+        StructDefinitionType struct = structs.get(lexeme);
+        if(struct != null){
+            return struct;
+        }
+        if(parent != null){
+            return parent.resolveStruct(lexeme);
         }
         return null;
     }
@@ -161,4 +190,5 @@ public class Scope {
     public String getScopePrefix() {
         return id.isEmpty() ? "" : id + "__";
     }
+
 }

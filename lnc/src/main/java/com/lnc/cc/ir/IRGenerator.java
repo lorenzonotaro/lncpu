@@ -116,6 +116,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
+    public Void visit(StructDeclaration structDeclaration) {
+        return null;
+    }
+
+    @Override
     public Void accept(ForStatement forStatement) {
 
         if (forStatement.initializer != null)

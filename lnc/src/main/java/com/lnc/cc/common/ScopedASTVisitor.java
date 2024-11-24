@@ -1,6 +1,7 @@
 package com.lnc.cc.common;
 
 import com.lnc.cc.ast.*;
+import com.lnc.cc.types.StructDefinitionType;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
@@ -34,6 +35,31 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         }
 
         return symbol;
+    }
+
+    public StructDefinitionType resolveStruct(Token token){
+        if(currentScope == null){
+            throw new CompileException("current scope is null", token);
+        }
+
+        StructDefinitionType struct = currentScope.resolveStruct(token.lexeme);
+
+        if (struct == null) {
+
+            StructDefinitionType globalSymbol = getAST().getGlobalScope().resolveStruct(token.lexeme);
+
+            if(globalSymbol != null){
+                return globalSymbol;
+            }
+
+            throw new CompileException("use of incomplete struct type '" + token.lexeme + "'", token);
+        }
+
+        return struct;
+    }
+
+    public void defineStruct(Token name, StructDefinitionType definition) {
+        currentScope.defineStruct(name, definition);
     }
 
     public void setCurrentScope(Scope scope){
@@ -271,7 +297,11 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
             if(statement instanceof IScopedStatement ss){
                 popLocalScope();
             }
-        }catch (Exception e){
+        }catch(CompileException e){
+            e.log();
+            fail();
+        }
+        catch (Exception e){
             Logger.error("error visiting statement: %s".formatted(e.getMessage()));
             fail();
         }

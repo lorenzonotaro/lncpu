@@ -116,4 +116,9 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     public Void accept(BreakStatement breakStatement) {
         return null;
     }
+
+    @Override
+    public Void visit(StructDeclaration structDeclaration) {
+        return null;
+    }
 }

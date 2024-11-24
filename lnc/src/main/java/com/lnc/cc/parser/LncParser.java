@@ -1,9 +1,7 @@
 package com.lnc.cc.parser;
 
 import com.lnc.cc.ast.*;
-import com.lnc.cc.types.Declarator;
-import com.lnc.cc.types.TypeQualifier;
-import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.cc.types.*;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.FullSourceParser;
 import com.lnc.common.frontend.Token;
@@ -105,6 +103,11 @@ public class LncParser extends FullSourceParser<AST> {
             declarator = Declarator.wrapPointer(declarator);
         }
 
+        if(declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT && match(TokenType.SEMICOLON)){
+            var structDecl = (StructType) declarator.typeSpecifier();
+            return new StructDeclaration(structDecl.getName(), structDecl.getDefinition());
+        }
+
         Token ident = consume("expected identifier", TokenType.IDENTIFIER);
 
         while(match(TokenType.L_SQUARE_BRACKET)){
@@ -149,8 +152,31 @@ public class LncParser extends FullSourceParser<AST> {
     private TypeSpecifier typeSpecifier() {
         if(check(TypeSpecifier.VALID_TOKENS)){
             return TypeSpecifier.parsePrimaryType(this);
+        }else if(check(TokenType.STRUCT)){
+            return structSpecifier();
         }
         return null;
+    }
+
+    private TypeSpecifier structSpecifier() {
+        consume("expected 'struct'", TokenType.STRUCT);
+        Token name = consume("expected struct name", TokenType.IDENTIFIER);
+
+        if(match(TokenType.L_CURLY_BRACE)){
+            var members = new ArrayList<VariableDeclaration>();
+            while(!check(TokenType.R_CURLY_BRACE)){
+                var member = variableDeclaration(true, true, false);
+                if(member == null || member.type != Statement.Type.DECLARATION || ((Declaration) member).declarationType != Declaration.Type.VARIABLE){
+                    throw new CompileException("expected struct member declaration", peek());
+                }
+                members.add((VariableDeclaration) member);
+            }
+            consume("expected '}'", TokenType.R_CURLY_BRACE);
+
+            return new StructType(name, new StructDefinitionType(name, members));
+        }else{
+            return new StructType(name);
+        }
     }
 
 
