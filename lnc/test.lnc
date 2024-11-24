@@ -1,18 +1,7 @@
 
 void main(){
-    struct data{
+    extern struct data{
         int a;
-        int b;
-        struct other_data{
-            int c;
-            int d;
-            int k;
-            struct data test;
-        } data;
-    };
-
-    struct data d;
-    struct other_data od;
-
+    } data;
     return;
 }

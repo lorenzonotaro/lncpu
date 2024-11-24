@@ -103,8 +103,11 @@ public class LncParser extends FullSourceParser<AST> {
             declarator = Declarator.wrapPointer(declarator);
         }
 
-        if(declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT && match(TokenType.SEMICOLON)){
+        if(!isParameter && declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT && match(TokenType.SEMICOLON)){
             var structDecl = (StructType) declarator.typeSpecifier();
+            if(!declarator.typeQualifier().isNone()){
+                throw new CompileException("struct declaration cannot have type qualifiers", structDecl.getName());
+            }
             return new StructDeclaration(structDecl.getName(), structDecl.getDefinition());
         }
 

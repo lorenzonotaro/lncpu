@@ -42,4 +42,7 @@ public record TypeQualifier(boolean isExtern, boolean isStatic, boolean isDpage)
         return new TypeQualifier(isExtern, isStatic, isDpage);
     }
 
+    public boolean isNone() {
+        return !isExtern && !isStatic && !isDpage;
+    }
 }
