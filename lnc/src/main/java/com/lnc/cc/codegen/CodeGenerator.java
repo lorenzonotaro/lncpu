@@ -31,7 +31,7 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
         for (var entry : linearIRs.symbolTable().getSymbols().values()) {
             var type = entry.getType();
             if(type.type != TypeSpecifier.Type.FUNCTION)
-                dataPageVariable(entry.getFlatSymbolName(), type.size());
+                dataPageVariable(entry.getFlatSymbolName(), type.allocSize());
         }
 
 

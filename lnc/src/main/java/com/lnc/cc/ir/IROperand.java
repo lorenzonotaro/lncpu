@@ -10,6 +10,6 @@ public abstract class IROperand {
     public abstract String asm();
 
     public enum Type{
-        IMMEDIATE, VIRTUAL_REGISTER, LOCATION
+        IMMEDIATE, VIRTUAL_REGISTER, DERIVED_LOCATION, LOCATION
     }
 }

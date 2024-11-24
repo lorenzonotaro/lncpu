@@ -107,6 +107,13 @@ public class LncParser extends FullSourceParser<AST> {
 
         Token ident = consume("expected identifier", TokenType.IDENTIFIER);
 
+        while(match(TokenType.L_SQUARE_BRACKET)){
+
+            Token size = consume("expected array size", TokenType.INTEGER);
+            consume("expected ']'", TokenType.R_SQUARE_BRACKET);
+            declarator = Declarator.wrapArray(declarator, (Integer) size.literal);
+        }
+
         VariableDeclaration decl;
 
         if(allowInitializer && match(TokenType.EQUALS)){

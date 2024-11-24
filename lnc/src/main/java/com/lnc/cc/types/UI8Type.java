@@ -12,7 +12,17 @@ public class UI8Type extends TypeSpecifier {
     }
 
     @Override
-    public int size() {
+    public int typeSize() {
         return 1;
+    }
+
+    @Override
+    public boolean compatible(TypeSpecifier other) {
+        if (other instanceof UI8Type) {
+            return true;
+        }
+
+
+        return false;
     }
 }

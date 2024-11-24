@@ -12,7 +12,7 @@ public class CharType extends TypeSpecifier {
     }
 
     @Override
-    public int size() {
+    public int typeSize() {
         return 1;
     }
 }

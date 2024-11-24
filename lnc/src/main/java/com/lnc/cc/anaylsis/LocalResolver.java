@@ -43,6 +43,8 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
         return null;
     }
 
+
+
     @Override
     public Void accept(IdentifierExpression identifierExpression) {
 
@@ -71,7 +73,6 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
         subscriptExpression.left.accept(this);
         subscriptExpression.index.accept(this);
-
 
         return null;
     }

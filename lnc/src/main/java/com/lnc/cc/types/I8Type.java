@@ -12,7 +12,7 @@ public class I8Type extends TypeSpecifier {
     }
 
     @Override
-    public int size() {
+    public int typeSize() {
         return 1;
     }
 }

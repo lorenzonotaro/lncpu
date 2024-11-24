@@ -575,7 +575,21 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand accept(SubscriptExpression subscriptExpression) {
-        throw new CompileException("subscript expressions not supported", subscriptExpression.token);
+
+        IROperand index = subscriptExpression.index.accept(this);
+
+        if(index.type != IROperand.Type.IMMEDIATE){
+            throw new CompileException("subscript index must be immediate (dynamic array access not implemented)", subscriptExpression.token);
+        }
+
+        IROperand array = subscriptExpression.left.accept(this);
+
+        if(array.type != IROperand.Type.LOCATION){
+            throw new CompileException("invalid type for array subscript", subscriptExpression.token);
+        }
+
+        return new ArrayElementLocation((Location) array, ((ImmediateOperand) index).getValue());
+
     }
 
     @Override

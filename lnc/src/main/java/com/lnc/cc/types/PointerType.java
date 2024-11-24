@@ -1,16 +1,9 @@
 package com.lnc.cc.types;
 
-public class PointerType extends TypeSpecifier {
-
-    private final TypeSpecifier baseType;
+public class PointerType extends AbstractSubscriptableType {
 
     public PointerType(TypeSpecifier baseType){
-        super(Type.POINTER);
-        this.baseType = baseType;
-    }
-
-    public TypeSpecifier getBaseType(){
-        return baseType;
+        super(Type.POINTER, baseType);
     }
 
     @Override
@@ -20,7 +13,7 @@ public class PointerType extends TypeSpecifier {
     }
 
     @Override
-    public int size() {
+    public int typeSize() {
         return 1;
     }
 

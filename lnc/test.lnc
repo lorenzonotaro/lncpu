@@ -1,15 +1,10 @@
 
+int i[20];
+
 void main(){
-    int k;
-    int i;
+    i[0] = 25 + 2 * 4;
 
-    do{
-        if(i == 1){
-            k = 5;
-        }else{
-            k = 10;
-        }
-    }while(i >= 5);
+    i[1] = 5;
 
-    k = 42;
+    i[2] = 6;
 }

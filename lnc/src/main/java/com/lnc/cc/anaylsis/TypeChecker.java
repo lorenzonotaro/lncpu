@@ -2,10 +2,8 @@ package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.*;
 import com.lnc.cc.common.ScopedASTVisitor;
-import com.lnc.cc.types.FunctionType;
-import com.lnc.cc.types.I8Type;
-import com.lnc.cc.types.PointerType;
-import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.cc.types.*;
+import com.lnc.common.IntUtils;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
@@ -84,7 +82,20 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier accept(SubscriptExpression subscriptExpression) {
-        throw new Error("Subscript expression not implemented");
+        TypeSpecifier arrayType = subscriptExpression.left.accept(this);
+
+        if (!(arrayType instanceof AbstractSubscriptableType pointer)) {
+            throw new CompileException("subscripted value is not an array or pointer", subscriptExpression.token);
+        }
+
+        TypeSpecifier indexType = subscriptExpression.index.accept(this);
+
+
+        if(indexType.type != TypeSpecifier.Type.UI8 && indexType.type != TypeSpecifier.Type.I8){
+            throw new CompileException("array subscript is not an integer", subscriptExpression.token);
+        }
+
+        return pointer.getBaseType();
     }
 
     @Override
@@ -114,7 +125,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             return;
         }
 
-        if(type.size() == expectedType.size()) {
+        if(type.typeSize() == expectedType.typeSize()) {
             Logger.compileWarning("implicit conversion from '" + type + "' to '" + expectedType + "'.", location);
             return;
         }

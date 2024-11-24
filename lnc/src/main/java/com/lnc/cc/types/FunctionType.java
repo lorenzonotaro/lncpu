@@ -51,7 +51,7 @@ public class FunctionType extends TypeSpecifier {
     }
 
     @Override
-    public int size() {
+    public int typeSize() {
         return 2;
     }
 }

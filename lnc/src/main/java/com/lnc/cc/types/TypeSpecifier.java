@@ -68,8 +68,13 @@ public abstract class TypeSpecifier {
         };
     }
 
-    /** Size of this type (in bytes). */
-    public abstract int size();
+    /** Size of this type (in bytes), for type checking. */
+    public abstract int typeSize();
+
+    /** Size of this type (in bytes) when reserving memory space. */
+    public int allocSize(){
+        return typeSize();
+    }
 
     public boolean compatible(TypeSpecifier other) {
         return other != null && other.getClass().equals(this.getClass());
@@ -81,7 +86,8 @@ public abstract class TypeSpecifier {
         I8,
         UI8,
         POINTER,
-        FUNCTION
+        FUNCTION,
+        ARRAY
     }
 
 }
