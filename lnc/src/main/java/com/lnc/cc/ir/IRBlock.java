@@ -1,6 +1,8 @@
 package com.lnc.cc.ir;
 
 
+import com.lnc.common.Logger;
+
 import java.util.*;
 
 public class IRBlock {
@@ -69,6 +71,8 @@ public class IRBlock {
     }
 
     public void setNext(IRBlock next) {
+        if(this.next != null)
+            Logger.warning("overwriting next block %s with %s".formatted(this.next, next));
         this.next = next;
     }
 

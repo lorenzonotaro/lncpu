@@ -3,9 +3,13 @@ void main(){
     int k;
     int i;
 
-    if(i != 42){
-        k = 10;
-    }
+    do{
+        if(i == 1){
+            k = 5;
+        }else{
+            k = 10;
+        }
+    }while(i >= 5);
 
     k = 42;
 }

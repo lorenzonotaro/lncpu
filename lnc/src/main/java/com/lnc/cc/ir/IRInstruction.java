@@ -5,6 +5,10 @@ import java.util.Objects;
 
 public abstract class IRInstruction {
 
+    private static int UNIQUE_ID_COUNTER = 0;
+
+    private int uniqueId;
+
     private int index;
 
     private int loopNestedLevel = 0;
@@ -38,18 +42,22 @@ public abstract class IRInstruction {
         this.next = next;
     }
 
+    public IRInstruction() {
+        this.uniqueId = UNIQUE_ID_COUNTER++;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         IRInstruction that = (IRInstruction) o;
-        return index == that.index && Objects.equals(prev, that.prev) && Objects.equals(next, that.next);
+        return uniqueId == that.uniqueId;
     }
 
     @Override
     public int hashCode() {
-        return index;
+        return uniqueId;
     }
 
     public int getLoopNestedLevel() {

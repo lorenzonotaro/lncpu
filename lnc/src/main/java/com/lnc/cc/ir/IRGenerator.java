@@ -47,15 +47,16 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         branchIfFalse(whileStatement.condition, forwardTo(continueBlock), forwardTo(bodyBlock));
 
-        currentUnit.setCurrentBlock(bodyBlock);
+        startBlock.setNext(bodyBlock);
 
+        currentUnit.setCurrentBlock(bodyBlock);
         visitStatement(whileStatement.body);
 
         emit(new Goto(startBlock));
 
         currentUnit.exitLoop();
 
-        startBlock.setNext(continueBlock);
+        currentUnit.getCurrentBlock().setNext(continueBlock);
 
         currentUnit.setCurrentBlock(continueBlock);
 
@@ -76,11 +77,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         visitStatement(doWhileStatement.body);
 
-        branchIfFalse(doWhileStatement.condition, forwardTo(continueBlock), forwardTo(bodyBlock));
+        branchIfTrue(doWhileStatement.condition, forwardTo(bodyBlock), forwardTo(continueBlock));
 
         currentUnit.exitLoop();
 
-        bodyBlock.setNext(continueBlock);
+        currentUnit.getCurrentBlock().setNext(continueBlock);
+
         currentUnit.setCurrentBlock(continueBlock);
 
         return null;
@@ -130,6 +132,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         branchIfFalse(forStatement.condition, forwardTo(continueBlock), forwardTo(bodyBlock));
 
+        startBlock.setNext(bodyBlock);
+
         currentUnit.setCurrentBlock(bodyBlock);
         visitStatement(forStatement.body);
 
@@ -146,7 +150,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         currentUnit.exitLoop();
 
-        startBlock.setNext(continueBlock);
+        currentUnit.getCurrentBlock().setNext(continueBlock);
 
         currentUnit.setCurrentBlock(continueBlock);
 
@@ -197,6 +201,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IRBlock thenBlock = currentUnit.newBlock();
         IRBlock continueBlock = currentUnit.newBlock();
 
+        currentBlock.setNext(continueBlock);
+
         if(ifStatement.elseStatement != null) {
 
             IRBlock elseBlock = currentUnit.newBlock();
@@ -219,7 +225,6 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             emit(new Goto(continueBlock));
         }
 
-        currentBlock.setNext(continueBlock);
         currentUnit.setCurrentBlock(continueBlock);
 
         return null;
@@ -266,7 +271,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 condition = vr;
             }
 
-            emit(new Jeq(condition, new ImmediateOperand((byte) 0), nonTakenBranch, takenBranch));
+            emit(new Jeq(condition, new ImmediateOperand((byte) 0), takenBranch, nonTakenBranch));
 
             if(condition.type == IROperand.Type.VIRTUAL_REGISTER){
                 releaseVR((VirtualRegister) condition);
