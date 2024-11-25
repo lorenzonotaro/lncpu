@@ -7,9 +7,10 @@ struct data{
     int values[10];
 };
 
-struct data array[10];
+struct data *my_struct;
 
 void main(){
-    int c = array[4].values[5];
+    my_struct = 15;
+    my_struct->values[5] = 10;
     return;
 }

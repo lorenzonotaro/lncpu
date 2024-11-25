@@ -31,6 +31,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             checkStructCompleteness((StructType) type);
         }else if(type.type == TypeSpecifier.Type.ARRAY){
             checkTypeCompleteness(((ArrayType)type).getBaseType());
+        }else if(type.type == TypeSpecifier.Type.POINTER){
+            checkTypeCompleteness(((PointerType)type).getBaseType());
         }
     }
 

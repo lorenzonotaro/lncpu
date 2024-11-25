@@ -562,7 +562,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public IROperand accept(MemberAccessExpression memberAccessExpression) {
         IROperand left = memberAccessExpression.left.accept(this);
 
-        StructDefinitionType definition = getStructDefinitionType(memberAccessExpression, left);
+        StructDefinitionType definition = getStructDefinitionType(left, memberAccessExpression.token);
 
         if(definition == null){
             throw new CompileException("struct type not defined", memberAccessExpression.token);
@@ -571,20 +571,25 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         return new Location(new StructAccessSymbol(((Location)left).getSymbol(), memberAccessExpression.right.lexeme));
     }
 
-    private static StructDefinitionType getStructDefinitionType(MemberAccessExpression memberAccessExpression, IROperand left) {
+    private static StructDefinitionType getStructDefinitionType(IROperand left, Token operatorToken) {
         if(left.type != IROperand.Type.LOCATION){
-            throw new CompileException("invalid type for member access", memberAccessExpression.token);
+            throw new CompileException("invalid type for member access", operatorToken);
         }
 
         AbstractSymbol symbol = ((Location) left).getSymbol();
 
-        if(symbol.getType().type != TypeSpecifier.Type.STRUCT){
-            throw new CompileException("member access on non-struct type", memberAccessExpression.token);
+        if(symbol.getType().type == TypeSpecifier.Type.STRUCT){
+            StructType structType = (StructType) symbol.getType();
+            return structType.getDefinition();
+        }else if (symbol.getType().type == TypeSpecifier.Type.POINTER){
+            PointerType pointerType = (PointerType) symbol.getType();
+            if(pointerType.getBaseType().type == TypeSpecifier.Type.STRUCT){
+                StructType structType = (StructType) pointerType.getBaseType();
+                return structType.getDefinition();
+            }
         }
 
-        StructType structType = (StructType) symbol.getType();
-
-        return structType.getDefinition();
+        throw new CompileException("member access on non-struct type", operatorToken);
     }
 
     @Override
@@ -651,11 +656,19 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("invalid type for array subscript", subscriptExpression.token);
         }
 
-        var loc =  new DynamicArrayIndexingLocation((Location) array, vr);
+        var symbol = ((Location) array).getSymbol().getType();
+
+        if(symbol.type != TypeSpecifier.Type.ARRAY){
+            throw new CompileException("subscript on non-array type", subscriptExpression.token);
+        }
+
+        var arrayType = (ArrayType) symbol;
+
+        var indirectSymbol =  new IndirectAddressingSymbol(arrayType.baseType, vr);
 
         releaseVR(vr);
 
-        return loc;
+        return new Location(indirectSymbol);
     }
 
     @Override
