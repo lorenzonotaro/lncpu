@@ -1,7 +1,15 @@
 
+struct data{
+    int a;
+    int b;
+    int c;
+    int d;
+    int values[10];
+};
+
+struct data array[10];
+
 void main(){
-    extern struct data{
-        int a;
-    } data;
+    int c = array[4].values[5];
     return;
 }

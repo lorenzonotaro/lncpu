@@ -7,6 +7,7 @@ import com.lnc.common.IntUtils;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,19 +21,28 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public Void accept(VariableDeclaration variableDeclaration) {
 
-        if (variableDeclaration.declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT) {
-            StructType structType = (StructType) variableDeclaration.declarator.typeSpecifier();
-            if (structType.hasDefinition()) {
-                if(structType.providesDefinition()){
-                    defineStruct(structType.getName(), structType.getDefinition());
-                }
-            } else {
-                StructDefinitionType type = resolveStruct(structType.getName());
-                structType.bindDefinition(type);
-            }
-        }
+        checkTypeCompleteness(variableDeclaration.declarator.typeSpecifier());
 
         return super.accept(variableDeclaration);
+    }
+
+    private void checkTypeCompleteness(TypeSpecifier type) {
+        if (type.type == TypeSpecifier.Type.STRUCT) {
+            checkStructCompleteness((StructType) type);
+        }else if(type.type == TypeSpecifier.Type.ARRAY){
+            checkTypeCompleteness(((ArrayType)type).getBaseType());
+        }
+    }
+
+    private void checkStructCompleteness(StructType structType) {
+        if (structType.hasDefinition()) {
+            if(structType.providesDefinition()){
+                defineStruct(structType.getName(), structType.getDefinition());
+            }
+        } else {
+            StructDefinitionType type = resolveStruct(structType.getName());
+            structType.bindDefinition(type);
+        }
     }
 
 
@@ -102,7 +112,45 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier accept(MemberAccessExpression memberAccessExpression) {
-        throw new Error("Member access not implemented");
+        TypeSpecifier left = memberAccessExpression.left.accept(this);
+
+        if(memberAccessExpression.accessOperator.type == TokenType.ARROW){
+            if(left.type != TypeSpecifier.Type.POINTER){
+                throw new CompileException("base operand of '->' operator has non pointer type '" + left + "'", memberAccessExpression.token);
+            }
+
+            var baseType = ((PointerType)left).getBaseType();
+
+            if(baseType.type != TypeSpecifier.Type.STRUCT){
+                throw new CompileException("base operand of '->' operator has non-struct type '" + baseType + "'", memberAccessExpression.token);
+            }
+
+            StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) baseType);
+
+            return fieldEntry.getField().declarator.typeSpecifier();
+        }else if(memberAccessExpression.accessOperator.type == TokenType.DOT){
+            if(left.type != TypeSpecifier.Type.STRUCT){
+                throw new CompileException("base operand of '.' operator has non-struct type '" + left + "'", memberAccessExpression.token);
+            }
+
+            StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) left);
+
+            return fieldEntry.getField().declarator.typeSpecifier();
+        }
+
+        throw new CompileException("unexpected access operator", memberAccessExpression.token);
+    }
+
+    private static StructFieldEntry getStructFieldEntry(MemberAccessExpression memberAccessExpression, StructType structType) {
+
+        StructDefinitionType struct = structType.getDefinition();
+
+        StructFieldEntry fieldEntry = struct.getField(memberAccessExpression.right.lexeme);
+
+        if(fieldEntry == null){
+            throw new CompileException("struct '" + struct.getDefinitionToken().lexeme + "' has no member named '" + memberAccessExpression.right.lexeme + "'", memberAccessExpression.token);
+        }
+        return fieldEntry;
     }
 
     @Override
@@ -203,22 +251,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         for(VariableDeclaration field : definition.getFields()){
             if(field.declarator.typeSpecifier().isPrimitive()){
                 fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
-                offset += field.declarator.typeSpecifier().typeSize();
             }else if(field.declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT){
-                StructType structType = (StructType) field.declarator.typeSpecifier();
-
-                if (structType.hasDefinition()) {
-                    if(structType.providesDefinition()){
-                        defineStruct(structType.getName(), structType.getDefinition());
-                    }
-                } else {
-                    StructDefinitionType type = resolveStruct(structType.getName());
-                    structType.bindDefinition(type);
-                }
-
+                checkStructCompleteness((StructType) field.declarator.typeSpecifier());
                 fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
-                offset += field.declarator.typeSpecifier().typeSize();
-
             }else{
                 throw new CompileException("unexpected struct field type (should not happen)", field.name);
             }

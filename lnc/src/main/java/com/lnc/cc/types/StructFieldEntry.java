@@ -10,4 +10,12 @@ public class StructFieldEntry {
         this.offset = offset;
         this.field = field;
     }
+
+    public VariableDeclaration getField() {
+        return field;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
 }

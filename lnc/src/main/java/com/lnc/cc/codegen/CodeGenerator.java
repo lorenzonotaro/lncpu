@@ -33,7 +33,7 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
         for (var entry : linearIRs.symbolTable().getSymbols().values()) {
             var type = entry.getType();
             if(type.type != TypeSpecifier.Type.FUNCTION)
-                dataPageVariable(entry.getFlatSymbolName(), type.allocSize());
+                dataPageVariable(entry.getAsmName(), type.allocSize());
         }
 
 
@@ -218,11 +218,11 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
             for (int i = 0; i < arguments.length; i++) {
                 var arg = arguments[i];
 
-                instructionf("mov %s, %s", arg.asm(), "[" + fun.unit.getSymbolTable().parameters[i].getFlatSymbolName() + "]");
+                instructionf("mov %s, %s", arg.asm(), "[" + fun.unit.getSymbolTable().parameters[i].getAsmName() + "]");
 
             }
 
-            instructionf("lcall %s", loc.getSymbol().getFlatSymbolName());
+            instructionf("lcall %s", loc.getSymbol().getAsmName());
 
         }
 

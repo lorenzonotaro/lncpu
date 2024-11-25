@@ -41,6 +41,6 @@ public class ArrayType extends AbstractSubscriptableType {
 
     @Override
     public int allocSize() {
-        return baseType.typeSize() * size;
+        return baseType.allocSize() * size;
     }
 }

@@ -3,7 +3,7 @@ package com.lnc.cc.ir;
 import com.lnc.cc.ast.FunctionDeclaration;
 import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
-import com.lnc.cc.common.Symbol;
+import com.lnc.cc.common.BaseSymbol;
 
 import java.util.Stack;
 
@@ -35,7 +35,7 @@ public class IRUnit {
         return symbolTable;
     }
 
-    public Symbol resolveSymbol(Scope scope, String symbolName) {
+    public BaseSymbol resolveSymbol(Scope scope, String symbolName) {
         return symbolTable.resolveSymbol(scope, symbolName);
     }
 

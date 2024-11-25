@@ -63,4 +63,8 @@ public class StructDefinitionType{
         result = 31 * result + Objects.hashCode(fieldMap);
         return result;
     }
+
+    public StructFieldEntry getField(String lexeme) {
+        return fieldMap.get(lexeme);
+    }
 }

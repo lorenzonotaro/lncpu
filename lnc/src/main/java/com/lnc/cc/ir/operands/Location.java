@@ -1,27 +1,28 @@
 package com.lnc.cc.ir.operands;
 
-import com.lnc.cc.common.Symbol;
+import com.lnc.cc.common.AbstractSymbol;
+import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.ir.ReferencableIROperand;
 
 public class Location extends ReferencableIROperand {
-    private Symbol symbol;
+    private AbstractSymbol symbol;
 
-    public Location(Symbol symbol) {
+    public Location(AbstractSymbol symbol) {
         super(Type.LOCATION);
         this.symbol = symbol;
     }
 
-    public Symbol getSymbol() {
+    public AbstractSymbol getSymbol() {
         return symbol;
     }
 
     @Override
     public String toString() {
-        return symbol.getName();
+        return symbol.getAsmName();
     }
 
     @Override
     public String asm() {
-        return "[" + symbol.getFlatSymbolName() + "]";
+        return "[" + symbol.getAsmName() + "]";
     }
 }

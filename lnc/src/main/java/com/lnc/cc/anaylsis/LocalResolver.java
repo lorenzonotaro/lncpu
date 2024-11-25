@@ -2,9 +2,8 @@ package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.*;
 import com.lnc.cc.common.ScopedASTVisitor;
-import com.lnc.cc.common.Symbol;
+import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.types.FunctionType;
-import com.lnc.common.frontend.CompileException;
 
 public class LocalResolver extends ScopedASTVisitor<Void> {
 
@@ -43,8 +42,6 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
         return null;
     }
 
-
-
     @Override
     public Void accept(IdentifierExpression identifierExpression) {
 
@@ -55,7 +52,9 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
     @Override
     public Void accept(MemberAccessExpression memberAccessExpression) {
-        throw new CompileException("member access not implemented", memberAccessExpression.right);
+        memberAccessExpression.left.accept(this);
+
+        return null;
     }
 
     @Override
@@ -89,7 +88,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){
-            define(new Symbol(functionDeclaration.name, FunctionType.of(functionDeclaration), functionDeclaration.isForwardDeclaration()), false);
+            define(new BaseSymbol(functionDeclaration.name, FunctionType.of(functionDeclaration), functionDeclaration.isForwardDeclaration()), false);
         }
 
         super.visitStatement(statement);
@@ -98,7 +97,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     @Override
     public Void accept(VariableDeclaration variableDeclaration) {
 
-        Symbol symbol = new Symbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern());
+        BaseSymbol symbol = new BaseSymbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern());
 
         define(symbol, variableDeclaration.isParameter);
 

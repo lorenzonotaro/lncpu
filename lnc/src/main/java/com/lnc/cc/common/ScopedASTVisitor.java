@@ -15,17 +15,17 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         currentScope = ast.getGlobalScope();
     }
 
-    public Symbol resolveSymbol(Token token) {
+    public BaseSymbol resolveSymbol(Token token) {
 
         if(currentScope == null){
             throw new CompileException("current scope is null", token);
         }
 
-        Symbol symbol = currentScope.resolve(token.lexeme);
+        BaseSymbol symbol = currentScope.resolve(token.lexeme);
 
         if (symbol == null) {
 
-            Symbol globalSymbol = getAST().getGlobalScope().resolve(token.lexeme);
+            BaseSymbol globalSymbol = getAST().getGlobalScope().resolve(token.lexeme);
 
             if(globalSymbol != null){
                 return globalSymbol;
@@ -260,7 +260,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    protected void define(Symbol symbol, boolean isParameter){
+    protected void define(BaseSymbol symbol, boolean isParameter){
         currentScope.define(symbol, isParameter);
     }
 

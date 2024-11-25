@@ -57,6 +57,12 @@ public class LncParser extends FullSourceParser<AST> {
             throw new CompileException("expected external declaration (variable or function)", peek());
         }
 
+        var declaration = (Declaration) statement;
+
+        if(declaration.declarationType == Declaration.Type.STRUCT){
+            return declaration;
+        }
+
         var variableDeclaration = (VariableDeclaration) statement;
 
         if(match(TokenType.L_PAREN)){
@@ -400,7 +406,7 @@ public class LncParser extends FullSourceParser<AST> {
     }
 
     private Expression rightUnary() {
-        var left = memberAccess();
+        var left = memberAccessAndSubscript();
         if(match(TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS)){
             var op = previous();
             return new UnaryExpression(left, op, UnaryExpression.Associativity.RIGHT);
@@ -408,22 +414,18 @@ public class LncParser extends FullSourceParser<AST> {
         return left;
     }
 
-    private Expression memberAccess() {
-        var left = subscript();
-        while(match(TokenType.ARROW, TokenType.DOT)){
-            var op = previous();
-            var right = consume("expected member access", TokenType.IDENTIFIER);
-            left = new MemberAccessExpression(left, right, op);
-        }
-        return left;
-    }
-
-    private Expression subscript() {
+    private Expression memberAccessAndSubscript() {
         var left = call();
-        while(match(TokenType.L_SQUARE_BRACKET)){
-            var right = expression();
-            consume("expected ']'", TokenType.R_SQUARE_BRACKET);
-            left = new SubscriptExpression(left, right);
+        while (match(TokenType.ARROW, TokenType.DOT, TokenType.L_SQUARE_BRACKET)) {
+            var op = previous();
+            if (op.type == TokenType.L_SQUARE_BRACKET) {
+                var right = expression();
+                consume("expected ']'", TokenType.R_SQUARE_BRACKET);
+                left = new SubscriptExpression(left, right);
+            } else {
+                var right = consume("expected member access", TokenType.IDENTIFIER);
+                left = new MemberAccessExpression(left, right, op);
+            }
         }
         return left;
     }

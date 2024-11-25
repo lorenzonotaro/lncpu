@@ -14,11 +14,11 @@ public class Scope {
 
     private final List<Scope> children = new ArrayList<>();
 
-    private final Map<String, Symbol> symbols = new HashMap<>();
+    private final Map<String, BaseSymbol> symbols = new HashMap<>();
 
     private final Map<String, StructDefinitionType> structs = new HashMap<>();
 
-    private final List<Symbol> parameters = new ArrayList<>();
+    private final List<BaseSymbol> parameters = new ArrayList<>();
 
     private final Map<Integer, Integer> childrenAtDepth = new HashMap<>();
 
@@ -54,8 +54,8 @@ public class Scope {
         return parent;
     }
 
-    public void define(Symbol symbol, boolean isParameter){
-        Symbol existing = symbols.get(symbol.getName());
+    public void define(BaseSymbol symbol, boolean isParameter){
+        BaseSymbol existing = symbols.get(symbol.getName());
 
         symbol.setScope(this);
 
@@ -82,8 +82,8 @@ public class Scope {
     }
 
 
-    public Symbol resolve(String name){
-        Symbol symbol = symbols.get(name);
+    public BaseSymbol resolve(String name){
+        BaseSymbol symbol = symbols.get(name);
         if(symbol != null){
             return symbol;
         }
@@ -137,7 +137,7 @@ public class Scope {
         }
         System.out.println("Scope: " + id);
 
-        for (Symbol symbol : symbols.values()) {
+        for (BaseSymbol symbol : symbols.values()) {
             for (int i = 0; i < indent; i++) {
                 System.out.print("  ");
             }
@@ -171,7 +171,7 @@ public class Scope {
         return id.hashCode();
     }
 
-    public Map<String, Symbol> getSymbols() {
+    public Map<String, BaseSymbol> getSymbols() {
         return symbols;
     }
 
@@ -183,7 +183,7 @@ public class Scope {
         return rootName;
     }
 
-    public List<Symbol> getParameters() {
+    public List<BaseSymbol> getParameters() {
         return parameters;
     }
 

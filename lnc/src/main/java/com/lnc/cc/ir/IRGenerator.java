@@ -4,8 +4,7 @@ import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.ir.operands.*;
-import com.lnc.cc.types.FunctionType;
-import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.cc.types.*;
 import com.lnc.common.IntUtils;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
@@ -341,10 +340,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Symbol resolveSymbol(Token token) {
+    public BaseSymbol resolveSymbol(Token token) {
         Scope scope = getCurrentScope();
 
-        Symbol symbol;
+        BaseSymbol symbol;
 
         if(currentUnit != null){
             symbol = currentUnit.resolveSymbol(scope, token.lexeme);
@@ -524,10 +523,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         VirtualRegister destVr = null;
 
         if(callee.type == IROperand.Type.LOCATION){
-            Symbol symbol = ((Location) callee).getSymbol();
+            AbstractSymbol symbol = ((Location) callee).getSymbol();
 
             if(symbol.getType().type != TypeSpecifier.Type.FUNCTION){
-                throw new CompileException("symbol is not a function: " + symbol.getName(), callExpression.token);
+                throw new CompileException("symbol is not a function: " + symbol.getAsmName(), callExpression.token);
             }
 
             if (((FunctionType) symbol.getType()).returnType.type != TypeSpecifier.Type.VOID) {
@@ -555,13 +554,37 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand accept(IdentifierExpression identifierExpression) {
-        Symbol symbol = resolveSymbol(identifierExpression.token);
+        BaseSymbol symbol = resolveSymbol(identifierExpression.token);
         return new Location(symbol);
     }
 
     @Override
     public IROperand accept(MemberAccessExpression memberAccessExpression) {
-        throw new CompileException("member access expressions not supported", memberAccessExpression.token);
+        IROperand left = memberAccessExpression.left.accept(this);
+
+        StructDefinitionType definition = getStructDefinitionType(memberAccessExpression, left);
+
+        if(definition == null){
+            throw new CompileException("struct type not defined", memberAccessExpression.token);
+        }
+
+        return new Location(new StructAccessSymbol(((Location)left).getSymbol(), memberAccessExpression.right.lexeme));
+    }
+
+    private static StructDefinitionType getStructDefinitionType(MemberAccessExpression memberAccessExpression, IROperand left) {
+        if(left.type != IROperand.Type.LOCATION){
+            throw new CompileException("invalid type for member access", memberAccessExpression.token);
+        }
+
+        AbstractSymbol symbol = ((Location) left).getSymbol();
+
+        if(symbol.getType().type != TypeSpecifier.Type.STRUCT){
+            throw new CompileException("member access on non-struct type", memberAccessExpression.token);
+        }
+
+        StructType structType = (StructType) symbol.getType();
+
+        return structType.getDefinition();
     }
 
     @Override
@@ -591,7 +614,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 throw new CompileException("invalid type for array subscript", subscriptExpression.token);
             }
 
-            return new ImmediateArrayIndexingLocation((Location) array, ((ImmediateOperand) index).getValue());
+            AbstractSymbol symbol = ((Location) array).getSymbol();
+
+            if(symbol.getType().type != TypeSpecifier.Type.ARRAY){
+                throw new CompileException("subscript on non-array type", subscriptExpression.token);
+            }
+
+            return new Location(new ArrayAccessSymbol(symbol, ((ImmediateOperand) index).getValue()));
         }
 
         VirtualRegister vr;

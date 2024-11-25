@@ -3,14 +3,14 @@ package com.lnc.cc.common;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
 
-public class Symbol {
+public class BaseSymbol extends AbstractSymbol {
     private final Token token;
     private final TypeSpecifier type;
     private boolean isForward;
     private Scope scope;
     private String flatSymbolName;
 
-    public Symbol(Token token, TypeSpecifier type, boolean isForward) {
+    public BaseSymbol(Token token, TypeSpecifier type, boolean isForward) {
         this.token = token;
         this.type = type;
         this.isForward = isForward;
@@ -38,7 +38,7 @@ public class Symbol {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Symbol symbol = (Symbol) o;
+        BaseSymbol symbol = (BaseSymbol) o;
         return isForward == symbol.isForward && token.equals(symbol.token) && type.equals(symbol.type);
     }
 
@@ -71,7 +71,8 @@ public class Symbol {
         this.flatSymbolName = name;
     }
 
-    public String getFlatSymbolName() {
+    @Override
+    public String getAsmName() {
         return flatSymbolName;
     }
 }

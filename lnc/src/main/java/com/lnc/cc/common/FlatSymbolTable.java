@@ -1,16 +1,10 @@
 package com.lnc.cc.common;
 
-import com.lnc.cc.types.TypeSpecifier;
-import com.lnc.common.frontend.Token;
-
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 public class FlatSymbolTable {
-    private final Map<String, Symbol> symbols;
-    public Symbol[] parameters = new Symbol[0];
+    private final Map<String, BaseSymbol> symbols;
+    public BaseSymbol[] parameters = new BaseSymbol[0];
     private final String name;
 
     private FlatSymbolTable(String name) {
@@ -33,7 +27,7 @@ public class FlatSymbolTable {
     }
 
     private static void flattenRecursively(Scope scope, FlatSymbolTable table) {
-        for (Symbol symbol : scope.getSymbols().values()) {
+        for (BaseSymbol symbol : scope.getSymbols().values()) {
             var prev = table.symbols.put(scope.getScopePrefix() + symbol.getName(), symbol);
             if(prev != null){
                 throw new IllegalStateException("unequivocal symbol name '%s', from scopes '%s' and '%s'"
@@ -51,7 +45,7 @@ public class FlatSymbolTable {
 
         System.out.printf("Symbol table '%s'%n", name);
 
-        for (Symbol entry : symbols.values()) {
+        for (BaseSymbol entry : symbols.values()) {
             System.out.println(entry);
         }
     }
@@ -60,18 +54,18 @@ public class FlatSymbolTable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, Symbol> entry : symbols.entrySet()) {
+        for (Map.Entry<String, BaseSymbol> entry : symbols.entrySet()) {
             sb.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
         }
 
         return sb.toString();
     }
 
-    public Symbol resolveSymbol(Scope scope, String symbolName) {
+    public BaseSymbol resolveSymbol(Scope scope, String symbolName) {
         Scope sc = scope;
 
         while(sc != null){
-            Symbol symbol = symbols.get(sc.getScopePrefix() + symbolName);
+            BaseSymbol symbol = symbols.get(sc.getScopePrefix() + symbolName);
             if(symbol != null){
                 return symbol;
             }
@@ -83,7 +77,7 @@ public class FlatSymbolTable {
 
     public void join(FlatSymbolTable symbolTable) {
 
-        for (Map.Entry<String, Symbol> entry : symbolTable.symbols.entrySet()) {
+        for (Map.Entry<String, BaseSymbol> entry : symbolTable.symbols.entrySet()) {
             var prev = symbols.put(entry.getKey(), entry.getValue());
             if(prev != null && !prev.getScope().equals(entry.getValue().getScope())){
                 throw new IllegalStateException("unequivocal symbol name '%s', from scopes '%s' and '%s'"
@@ -92,7 +86,7 @@ public class FlatSymbolTable {
         }
     }
 
-    public Map<String, Symbol> getSymbols() {
+    public Map<String, BaseSymbol> getSymbols() {
         return symbols;
     }
 }
