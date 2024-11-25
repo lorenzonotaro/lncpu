@@ -225,9 +225,10 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
  - [x] Continue and break statements 
  - [x] Data page variables and pointers
  - [ ] Absolute variables and pointers
- - [ ] Data page arrays
+ - [x] Data page arrays
  - [ ] Absolute arrays
- - [ ] Structs (and unions)
+ - [x] Structs (data page only)
+ - [ ] Unions
  - [ ] Reentrant functions (see below)
 
  ### Interfacing lnc and lnasm
@@ -250,10 +251,12 @@ In the lnasm code, the function must follow lnc's "calling convention" and get i
 
     Example:
 
-    extern in doublei(int i);
+    //lnc:
+    extern int doublei(int i);
 
-    will reserve 1 byte for its parameter in the data page as follows:
+    //will reserve 1 byte for its parameter in the data page as follows:
 
+    ; lnasm:
     ...
     doublei__i:
         .res 1
