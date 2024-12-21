@@ -251,14 +251,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         int offset = 0;
         for(VariableDeclaration field : definition.getFields()){
-            if(field.declarator.typeSpecifier().isPrimitive()){
-                fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
-            }else if(field.declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT){
-                checkStructCompleteness((StructType) field.declarator.typeSpecifier());
-                fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
-            }else{
-                throw new CompileException("unexpected struct field type (should not happen)", field.name);
-            }
+            checkTypeCompleteness(field.declarator.typeSpecifier());
+            fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
             offset += field.declarator.typeSpecifier().typeSize();
         }
 
