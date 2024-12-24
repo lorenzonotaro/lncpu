@@ -29,8 +29,8 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     public Void accept(ForStatement forStatement){
         visitStatement(forStatement.initializer);
         forStatement.condition.accept(this);
-        forStatement.increment.accept(this);
         forStatement.body.accept(this);
+        forStatement.increment.accept(this);
         return null;
     }
 

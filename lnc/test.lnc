@@ -1,16 +1,20 @@
 
-struct data{
-    int a;
-    int b;
-    int c;
-    int d;
-    int values[10];
-};
-
-struct data *my_struct;
+extern void print_int(int i);
 
 void main(){
-    my_struct = 15;
-    my_struct->values[5] = 10;
+    int i = 0;
+    int k = 2;
+    int j = 12;
+
+    for(i = 0; i < 15; ++i){
+        i = k + (j + 2);
+    }
+
+    i = 0;
+
+    if(i){
+        print_int(i);
+    }
+
     return;
 }
