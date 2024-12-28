@@ -645,7 +645,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             } else if(index.type == IROperand.Type.VIRTUAL_REGISTER){
                 VirtualRegister indexReg = (VirtualRegister) index;
 
-                restrictRegisterClassOrCopyTo(indexReg, RegisterClass.INDEX);
+                indexReg = restrictRegisterClassOrCopyTo(indexReg, RegisterClass.INDEX);
 
                 // for now, repeatedly add the size to the index
                 int size = baseType.allocSize();
