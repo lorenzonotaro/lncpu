@@ -14,13 +14,13 @@ public class Dec extends IRInstruction {
             ((VirtualRegister)operand).checkReleased();
         }
 
-        if(operand instanceof ReferencableIROperand rop){
+        if(operand instanceof IReferenceable rop){
             rop.addWrite(this);
         }
     }
 
     @Override
-    public <E> E accept(IIRVisitor<E> visitor) {
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.accept(this);
     }
 

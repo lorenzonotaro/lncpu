@@ -23,11 +23,11 @@ public class Bin extends IRInstruction {
             ((VirtualRegister)right).checkReleased();
         }
 
-        if(left instanceof ReferencableIROperand rop){
+        if(left instanceof IReferenceable rop){
             rop.addRead(this);
         }
 
-        if(right instanceof ReferencableIROperand rop) {
+        if(right instanceof IReferenceable rop) {
             rop.addRead(this);
         }
 
@@ -43,7 +43,7 @@ public class Bin extends IRInstruction {
     }
 
     @Override
-    public <E> E accept(IIRVisitor<E> visitor) {
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.accept(this);
     }
 

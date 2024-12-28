@@ -33,17 +33,17 @@ public class Call extends IRInstruction {
             }
         }
 
-        if(callee instanceof ReferencableIROperand rop){
+        if(callee instanceof IReferenceable rop){
             rop.addRead(this);
         }
 
         for (IROperand argument : arguments) {
-            if (argument instanceof ReferencableIROperand rop) {
+            if (argument instanceof IReferenceable rop) {
                 rop.addRead(this);
             }
         }
 
-        if(returnTarget instanceof ReferencableIROperand rop){
+        if(returnTarget instanceof IReferenceable rop){
             rop.addWrite(this);
         }
     }
@@ -78,7 +78,7 @@ public class Call extends IRInstruction {
     }
 
     @Override
-    public <E> E accept(IIRVisitor<E> visitor) {
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.accept(this);
     }
 }

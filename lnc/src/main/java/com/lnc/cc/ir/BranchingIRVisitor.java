@@ -2,7 +2,7 @@ package com.lnc.cc.ir;
 
 import java.util.*;
 
-public abstract class BranchingIRVisitor implements IIRVisitor<Void> {
+public abstract class BranchingIRVisitor implements IIRVisitor<Void, Void> {
 
     private final Set<IRBlock> visitedBlocks;
 

@@ -20,11 +20,11 @@ public class Move extends IRInstruction {
             ((VirtualRegister)dest).checkReleased();
         }
 
-        if(source instanceof ReferencableIROperand rop){
+        if(source instanceof IReferenceable rop){
             rop.addRead(this);
         }
 
-        if(dest instanceof ReferencableIROperand rop) {
+        if(dest instanceof IReferenceable rop) {
             rop.addWrite(this);
         }
     }
@@ -44,7 +44,7 @@ public class Move extends IRInstruction {
     }
 
     @Override
-    public <E> E accept(IIRVisitor<E> visitor) {
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.accept(this);
     }
 }

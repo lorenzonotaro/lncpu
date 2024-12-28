@@ -1,20 +1,10 @@
 
-extern void print_int(int i);
+
+int data[11];
 
 void main(){
-    int i = 0;
-    int k = 2;
-    int j = 12;
-
-    for(i = 0; i < 15; ++i){
-        i = k + (j + 2);
+    for(int i = 0; i < 10; ++i){
+        data[i] = 54;
     }
-
-    i = 0;
-
-    if(i){
-        print_int(i);
-    }
-
     return;
 }

@@ -15,7 +15,7 @@ public class Ret extends IRInstruction {
             ((VirtualRegister)value).setRegisterClass(RegisterClass.RETURN);
         }
 
-        if(value instanceof ReferencableIROperand rop){
+        if(value instanceof IReferenceable rop){
             rop.addRead(this);
         }
 
@@ -31,7 +31,7 @@ public class Ret extends IRInstruction {
     }
 
     @Override
-    public <E> E accept(IIRVisitor<E> visitor) {
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.accept(this);
     }
 }

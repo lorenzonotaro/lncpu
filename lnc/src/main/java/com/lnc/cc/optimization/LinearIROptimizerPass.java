@@ -1,8 +1,9 @@
 package com.lnc.cc.optimization;
 
 import com.lnc.cc.ir.*;
+import com.lnc.cc.ir.operands.*;
 
-public abstract class LinearIROptimizerPass implements ILinearIRVisitor<Boolean> {
+public abstract class LinearIROptimizerPass implements ILinearIRVisitor<Boolean, Boolean> {
 
 
     private LinearIRUnit currentUnit;
@@ -125,5 +126,30 @@ public abstract class LinearIROptimizerPass implements ILinearIRVisitor<Boolean>
     @Override
     public Boolean accept(Label label) {
         return false;
+    }
+
+    @Override
+    public Boolean accept(ImmediateOperand immediateOperand) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(VirtualRegister vr) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(RegisterDereference rd) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(Location location) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(AddressOf addressOf) {
+        return null;
     }
 }

@@ -8,41 +8,47 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class ReferencableIROperand extends IROperand {
+public abstract class ReferenceableIROperand extends IROperand implements IReferenceable {
 
     private final Set<IRInstruction> reads;
     private final Set<IRInstruction> writes;
     private final Set<IRInstruction> allUses;
 
-    public ReferencableIROperand(Type type) {
+    public ReferenceableIROperand(Type type) {
         super(type);
         reads = new HashSet<>();
         writes = new HashSet<>();
         allUses = new HashSet<>();
     }
 
+    @Override
     public Set<IRInstruction> getReads() {
         return reads;
     }
 
+    @Override
     public Set<IRInstruction> getWrites() {
         return writes;
     }
 
+    @Override
     public void addRead(IRInstruction instruction) {
         reads.add(instruction);
         allUses.add(instruction);
     }
 
+    @Override
     public void addWrite(IRInstruction instruction) {
         writes.add(instruction);
         allUses.add(instruction);
     }
 
+    @Override
     public boolean removeRead(IRInstruction instruction) {
         return allUses.remove(instruction) | reads.remove(instruction);
     }
 
+    @Override
     public boolean removeWrite(IRInstruction instruction) {
         return allUses.remove(instruction) | writes.remove(instruction);
     }

@@ -1,8 +1,5 @@
 package com.lnc.cc.ir;
 
-import java.util.List;
-import java.util.Objects;
-
 public abstract class IRInstruction {
 
     private static int UNIQUE_ID_COUNTER = 0;
@@ -16,7 +13,7 @@ public abstract class IRInstruction {
     private IRInstruction prev;
     private IRInstruction next;
 
-    public abstract <E> E accept(IIRVisitor<E> visitor);
+    public abstract <E> E accept(IIRInstructionVisitor<E> visitor);
 
     public int getIndex() {
         return index;

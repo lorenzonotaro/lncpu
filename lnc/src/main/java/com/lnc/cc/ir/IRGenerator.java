@@ -391,7 +391,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         if(dest.type == IROperand.Type.LOCATION){
             emit(new Store((Location) dest, value));
         }else{
-            emit(new Move(dest, value));
+            emit(new Move(value, dest));
         }
 
         if(value.type == IROperand.Type.VIRTUAL_REGISTER){
@@ -610,65 +610,120 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand accept(SubscriptExpression subscriptExpression) {
 
-        IROperand index = subscriptExpression.index.accept(this);
+        IROperand array = subscriptExpression.left.accept(this);
 
-        if(index.type == IROperand.Type.IMMEDIATE){
-            IROperand array = subscriptExpression.left.accept(this);
+        if(array.type == IROperand.Type.LOCATION) {
+            Location loc = (Location) array;
 
-            if(array.type != IROperand.Type.LOCATION){
-                throw new CompileException("invalid type for array subscript", subscriptExpression.token);
-            }
+            TypeSpecifier baseType;
 
-            AbstractSymbol symbol = ((Location) array).getSymbol();
-
-            if(symbol.getType().type != TypeSpecifier.Type.ARRAY){
+            if (loc.getSymbol().getType() instanceof AbstractSubscriptableType subscriptableType){
+                baseType = subscriptableType.getBaseType();
+            } else{
                 throw new CompileException("subscript on non-array type", subscriptExpression.token);
             }
 
-            return new Location(new ArrayAccessSymbol(symbol, ((ImmediateOperand) index).getValue()));
-        }
+            IROperand index = subscriptExpression.index.accept(this);
 
-        VirtualRegister vr;
+            if(index.type == IROperand.Type.IMMEDIATE){
+                return new Location(new ArrayAccessSymbol(loc.getSymbol(), ((ImmediateOperand) index).getValue()));
+            }else if (index.type == IROperand.Type.LOCATION) {
+                VirtualRegister indexReg;
+                var vr = allocVR();
+                vr.setRegisterClass(RegisterClass.INDEX);
+                emit(new Load(vr, (ReferenceableIROperand) index));
 
-        if(index.type == IROperand.Type.VIRTUAL_REGISTER) {
-            vr = (VirtualRegister) index;
-            if(vr.getRegisterClass() == RegisterClass.ANY) {
-                ((VirtualRegister) index).setRegisterClass(RegisterClass.INDEX);
-            }else{
-                VirtualRegister newVr = allocVR();
-                newVr.setRegisterClass(RegisterClass.INDEX);
-                emit(new Move(newVr, index));
-                releaseVR(vr);
-                vr = newVr;
+                // for now, repeatedly add the size to the index
+                int size = baseType.allocSize();
+                for (int i = 1; i < size; ++i) {
+                    emit(new Bin(vr, vr, BinaryExpression.Operator.ADD));
+                }
+
+                indexReg = vr;
+
+                return new RegisterDereference(indexReg, baseType, 0);
+            } else if(index.type == IROperand.Type.VIRTUAL_REGISTER){
+                VirtualRegister indexReg = (VirtualRegister) index;
+
+                restrictRegisterClassOrCopyTo(indexReg, RegisterClass.INDEX);
+
+                // for now, repeatedly add the size to the index
+                int size = baseType.allocSize();
+                for (int i = 1; i < size; ++i) {
+                    emit(new Bin(indexReg, indexReg, BinaryExpression.Operator.ADD));
+                }
+
+                emit(new Bin(indexReg, new AddressOf(loc.getSymbol()), BinaryExpression.Operator.ADD));
+
+                return new RegisterDereference(indexReg, baseType, 0);
+
+            } else {
+                throw new CompileException("invalid type for subscript index", subscriptExpression.token);
             }
-        }else if(index.type == IROperand.Type.LOCATION){
-            vr = allocVR();
-            vr.setRegisterClass(RegisterClass.INDEX);
-            emit(new Load(vr, (Location) index));
+        }else if(array.type == IROperand.Type.REGISTER_DEREFERENCE){
+            RegisterDereference dereference = (RegisterDereference) array;
+
+            TypeSpecifier baseType;
+
+            if(dereference.dereferencedType instanceof AbstractSubscriptableType subscriptableType){
+                baseType = subscriptableType.getBaseType();
+            }else{
+                throw new CompileException("subscript on non-array type", subscriptExpression.token);
+            }
+
+            IROperand index = subscriptExpression.index.accept(this);
+
+            if(index.type == IROperand.Type.IMMEDIATE){
+                dereference.addToOffset(((ImmediateOperand) index).getValue());
+                return dereference;
+            }else {
+                if (index.type == IROperand.Type.LOCATION) {
+
+
+                    Location locIndex = (Location) index;
+
+                    if(baseType.allocSize() == 1){
+                        emit(new Bin(dereference.getReg(), index, BinaryExpression.Operator.ADD));
+                    }else{
+                        VirtualRegister indexReg;
+                        var tempVr = allocVR();
+                        emit(new Load(tempVr, locIndex));
+
+                        // for now, repeatedly add the size to the index
+                        int size = baseType.allocSize();
+                        for (int i = 1; i < size; ++i) {
+                            emit(new Bin(dereference.getReg(), tempVr, BinaryExpression.Operator.ADD));
+                        }
+
+
+                        return dereference;
+                    }
+
+                } else if (index.type == IROperand.Type.VIRTUAL_REGISTER) {
+
+                    for (int i = 1; i < baseType.allocSize(); ++i) {
+                        emit(new Bin(dereference.getReg(), index, BinaryExpression.Operator.ADD));
+                    }
+                }
+
+                return dereference;
+            }
         }else{
-            throw new CompileException("invalid type for array subscript", subscriptExpression.token);
+            throw new CompileException("invalid type for subscript", subscriptExpression.token);
+        }
+    }
+
+    private VirtualRegister restrictRegisterClassOrCopyTo(VirtualRegister vr, RegisterClass registerClass) {
+        if(vr.getRegisterClass() == RegisterClass.ANY) {
+            vr.setRegisterClass(registerClass);
+            return vr;
         }
 
-
-        IROperand array = subscriptExpression.left.accept(this);
-
-        if(array.type != IROperand.Type.LOCATION){
-            throw new CompileException("invalid type for array subscript", subscriptExpression.token);
-        }
-
-        var symbol = ((Location) array).getSymbol().getType();
-
-        if(symbol.type != TypeSpecifier.Type.ARRAY){
-            throw new CompileException("subscript on non-array type", subscriptExpression.token);
-        }
-
-        var arrayType = (ArrayType) symbol;
-
-        var indirectSymbol =  new IndirectAddressingSymbol(arrayType.baseType, vr);
-
+        VirtualRegister newVr = allocVR();
+        newVr.setRegisterClass(registerClass);
+        emit(new Move(newVr, vr));
         releaseVR(vr);
-
-        return new Location(indirectSymbol);
+        return newVr;
     }
 
     @Override

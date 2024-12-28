@@ -4,7 +4,7 @@ import java.util.Set;
 
 public enum RegisterClass {
 
-    ANY(new Register[]{Register.RD, Register.RC, Register.RB, Register.RA}),
+    ANY(new Register[]{Register.RC, Register.RB, Register.RA, Register.RD}),
     SHIFT(new Register[]{Register.RA}),
     INDEX(new Register[]{Register.RD}),
     RETURN(new Register[]{Register.RB});

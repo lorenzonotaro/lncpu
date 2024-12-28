@@ -2,7 +2,6 @@ package com.lnc.cc.optimization;
 
 import com.lnc.cc.ir.Goto;
 import com.lnc.cc.ir.ILabelReferenceHolder;
-import com.lnc.cc.ir.IRInstruction;
 import com.lnc.cc.ir.Label;
 
 public class ControlFlowRedundancyOptimizerPass extends MultiIROptimizerPass {

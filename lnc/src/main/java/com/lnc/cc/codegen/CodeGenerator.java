@@ -4,8 +4,7 @@ import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.ir.*;
-import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.Location;
+import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.optimization.LinearIRUnit;
 import com.lnc.cc.optimization.OptimizationResult;
 import com.lnc.cc.types.FunctionType;
@@ -14,7 +13,7 @@ import com.lnc.cc.types.TypeSpecifier;
 import java.util.Comparator;
 import java.util.List;
 
-public class CodeGenerator implements ILinearIRVisitor<Void> {
+public class CodeGenerator implements ILinearIRVisitor<Void, Void> {
 
     private final OptimizationResult linearIRs;
     private final StringBuilder lnccode = new StringBuilder(), lndataSection = new StringBuilder();
@@ -107,6 +106,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Dec dec) {
 
+        dec.getOperand().accept(this);
+
         instructionf("dec %s", dec.getOperand().asm());
 
         return null;
@@ -115,6 +116,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Inc inc) {
 
+        inc.getOperand().accept(this);
+
         instructionf("inc %s", inc.getOperand().asm());
 
         return null;
@@ -122,6 +125,9 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
     @Override
     public Void accept(Jle jle) {
+
+        jle.left.accept(this);
+        jle.right.accept(this);
 
         instructionf("cmp %s, %s", jle.left.asm(), jle.right.asm());
         instructionf("jn %s", jle.getTarget());
@@ -133,6 +139,10 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Jeq je) {
 
+        je.left.accept(this);
+
+        je.right.accept(this);
+
         instructionf("cmp %s, %s", je.left.asm(), je.right.asm());
         instructionf("jz %s", je.getTarget());
 
@@ -141,6 +151,10 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
     @Override
     public Void accept(Jlt jle) {
+
+        jle.left.accept(this);
+
+        jle.right.accept(this);
 
         instructionf("cmp %s, %s", jle.left.asm(), jle.right.asm());
         instructionf("jn %s", jle.getTarget());
@@ -151,13 +165,21 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Load load) {
 
-        instructionf("mov %s, %s", load.getOperand().asm(), load.getVR().asm());
+        load.getSrc().accept(this);
+
+        load.getDest().accept(this);
+
+        instructionf("mov %s, %s", load.getSrc().asm(), load.getDest().asm());
 
         return null;
     }
 
     @Override
     public Void accept(Move move) {
+
+        move.getSource().accept(this);
+
+        move.getDest().accept(this);
 
         instructionf("mov %s, %s", move.getSource().asm(), move.getDest().asm());
 
@@ -167,6 +189,10 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Store store) {
 
+        store.getDest().accept(this);
+
+        store.getValue().accept(this);
+
         instructionf("mov %s, %s", store.getValue().asm(), store.getDest().asm());
 
         return null;
@@ -174,6 +200,10 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
     @Override
     public Void accept(Ret ret) {
+
+        if(ret.getValue() != null) {
+            ret.getValue().accept(this);
+        }
 
         if(requiresRegisterStacking(currentUnit)){
             instructionf("goto _ret");
@@ -187,6 +217,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Neg neg) {
 
+        neg.getOperand().accept(this);
+
         instructionf("neg %s", neg.getOperand().asm());
 
         return null;
@@ -195,6 +227,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
     @Override
     public Void accept(Not not) {
 
+        not.getOperand().accept(this);
+
         instructionf("not %s", not.getOperand().asm());
 
         return null;
@@ -202,6 +236,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
     @Override
     public Void accept(Bin bin) {
+
+        bin.left.accept(this);
 
         instructionf("%s %s, %s", bin.getOperator().toString().toLowerCase(), bin.left.asm(), bin.right.asm());
 
@@ -218,6 +254,8 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
             for (int i = 0; i < arguments.length; i++) {
                 var arg = arguments[i];
 
+                arg.accept(this);
+
                 instructionf("mov %s, %s", arg.asm(), "[" + fun.unit.getSymbolTable().parameters[i].getAsmName() + "]");
 
             }
@@ -226,6 +264,34 @@ public class CodeGenerator implements ILinearIRVisitor<Void> {
 
         }
 
+        return null;
+    }
+
+    @Override
+    public Void accept(ImmediateOperand immediateOperand) {
+        return null;
+    }
+
+    @Override
+    public Void accept(VirtualRegister vr) {
+        return null;
+    }
+
+    @Override
+    public Void accept(RegisterDereference rd) {
+        if(rd.getStaticOffset() != 0){
+            lnccode.append("    ").append("add ").append(rd.getReg().asm()).append(", ").append(rd.getStaticOffset() * rd.dereferencedType.allocSize()).append("\n");
+        }
+        return null;
+    }
+
+    @Override
+    public Void accept(Location location) {
+        return null;
+    }
+
+    @Override
+    public Void accept(AddressOf addressOf) {
         return null;
     }
 

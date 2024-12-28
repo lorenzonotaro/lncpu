@@ -1,6 +1,7 @@
 package com.lnc.cc.optimization;
 
 import com.lnc.cc.ir.*;
+import com.lnc.cc.ir.operands.*;
 
 public class IRLinearizer extends BranchingIRVisitor {
 
@@ -134,4 +135,28 @@ public class IRLinearizer extends BranchingIRVisitor {
         return currentUnit;
     }
 
+    @Override
+    public Void accept(ImmediateOperand immediateOperand) {
+        return null;
+    }
+
+    @Override
+    public Void accept(VirtualRegister vr) {
+        return null;
+    }
+
+    @Override
+    public Void accept(RegisterDereference rd) {
+        return null;
+    }
+
+    @Override
+    public Void accept(Location location) {
+        return null;
+    }
+
+    @Override
+    public Void accept(AddressOf addressOf) {
+        return null;
+    }
 }

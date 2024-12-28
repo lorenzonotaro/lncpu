@@ -1,5 +1,7 @@
 package com.lnc.cc.ir.operands;
 
+import com.lnc.cc.ir.IIROperandVisitor;
+
 public abstract class IROperand {
     public Type type;
 
@@ -9,10 +11,12 @@ public abstract class IROperand {
 
     public abstract String asm();
 
+    public abstract <T> T accept(IIROperandVisitor<T> visitor);
+
     public enum Type{
         IMMEDIATE,
         VIRTUAL_REGISTER,
         DERIVED_LOCATION,
-        LOCATION
+        REGISTER_DEREFERENCE, LOCATION
     }
 }

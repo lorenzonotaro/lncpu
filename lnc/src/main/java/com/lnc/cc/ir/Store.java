@@ -19,7 +19,7 @@ public class Store extends IRInstruction {
 
         dest.addWrite(this);
 
-        if(value instanceof ReferencableIROperand rop){
+        if(value instanceof IReferenceable rop){
             rop.addRead(this);
         }
     }
@@ -38,7 +38,7 @@ public class Store extends IRInstruction {
     }
 
     @Override
-    public <E> E accept(IIRVisitor<E> visitor) {
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.accept(this);
     }
 }

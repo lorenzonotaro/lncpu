@@ -23,11 +23,11 @@ public abstract class AbstractCJump extends AbstractBranchInstr {
             ((VirtualRegister)right).checkReleased();
         }
 
-        if(left instanceof ReferencableIROperand rop){
+        if(left instanceof IReferenceable rop){
             rop.addRead(this);
         }
 
-        if(right instanceof ReferencableIROperand rop) {
+        if(right instanceof IReferenceable rop) {
             rop.addRead(this);
         }
 
@@ -38,5 +38,5 @@ public abstract class AbstractCJump extends AbstractBranchInstr {
     }
 
     @Override
-    public abstract <E> E accept(IIRVisitor<E> visitor);
+    public abstract <E> E accept(IIRInstructionVisitor<E> visitor);
 }

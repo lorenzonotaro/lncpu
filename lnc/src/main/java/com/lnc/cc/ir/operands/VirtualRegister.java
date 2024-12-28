@@ -2,9 +2,10 @@ package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.codegen.Register;
 import com.lnc.cc.codegen.RegisterClass;
-import com.lnc.cc.ir.ReferencableIROperand;
+import com.lnc.cc.ir.IIROperandVisitor;
+import com.lnc.cc.ir.ReferenceableIROperand;
 
-public class VirtualRegister extends ReferencableIROperand {
+public class VirtualRegister extends ReferenceableIROperand {
 
     private static long virtualRegisterCounter = 0;
 
@@ -82,5 +83,10 @@ public class VirtualRegister extends ReferencableIROperand {
     @Override
     public String asm() {
         return assignedPhysicalRegister == null ? "UNASSIGNED" : assignedPhysicalRegister.toString();
+    }
+
+    @Override
+    public <T> T accept(IIROperandVisitor<T> visitor) {
+        return visitor.accept(this);
     }
 }

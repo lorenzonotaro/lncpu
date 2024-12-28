@@ -1,6 +1,7 @@
 package com.lnc.cc.optimization;
 
 import com.lnc.cc.ir.*;
+import com.lnc.cc.ir.operands.AddressOf;
 
 public class MultiIROptimizerPass extends LinearIROptimizerPass {
 
@@ -31,5 +32,10 @@ public class MultiIROptimizerPass extends LinearIROptimizerPass {
         for (LinearIROptimizerPass pass : passes) {
             pass.setCurrentUnit(unit);
         }
+    }
+
+    @Override
+    public Boolean accept(AddressOf addressOf) {
+        return null;
     }
 }
