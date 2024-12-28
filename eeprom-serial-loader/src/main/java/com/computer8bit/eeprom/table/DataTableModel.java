@@ -114,6 +114,8 @@ public class DataTableModel extends AbstractTableModel {
     }
 
     public boolean isZero(String value) {
+        if(value.isBlank())
+            return true;
         switch(viewMode){
             case DECIMAL:
                 return Integer.parseInt(value, 10) == 0;
