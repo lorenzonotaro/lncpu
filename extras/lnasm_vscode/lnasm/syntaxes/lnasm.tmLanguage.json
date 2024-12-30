@@ -50,7 +50,7 @@
 		"preprocessor": {
 			"patterns": [
 				{
-					"match": "^\\s*(%include)\\s*(\"[^\"]+\")",
+					"match": "^\\s*(%include)\\s*((\"[^\"]+\")|(<[A-Za-z_]+[A-Za-z_0-9]*>))",
 					"captures": {
 						"1": {
 							"name": "keyword.other.preprocessor.lnasm"
@@ -130,7 +130,7 @@
 		"section_code": {
 			"patterns": [
 				{
-					"match": "^\\s*(\\.res)\\s+(\\d+|0x[0-9a-fA-F]+|0b[01]+)",
+					"match": "^\\s*(\\.res)\\s+\\b(d+|0x[0-9a-fA-F]+|0b[01]+)\\b",
 					"captures": {
 						"1": {
 							"name": "keyword.other.lnasm"
