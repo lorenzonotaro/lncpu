@@ -1,0 +1,25 @@
+{
+  "name": "lnasm",
+  "displayName": "lnasm",
+  "description": "LNASM assembly",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "lnasm",
+      "aliases": ["LNASM", "lnasm"],
+      "extensions": [".lnasm"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "lnasm",
+      "scopeName": "source.lnasm",
+      "path": "./syntaxes/lnasm.tmLanguage.json"
+    }]
+  }
+}

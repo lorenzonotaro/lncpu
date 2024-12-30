@@ -1,0 +1,304 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "LNASM",
+	"patterns": [
+		{
+			"include": "#section"
+		},
+		{
+			"include": "#comment"
+		},
+		{
+			"include": "#preprocessor"
+		}
+	],
+	"repository": {
+		"section": {
+			"begin": "(\\.section)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.lnasm"
+				},
+				"2": {
+					"name": "entity.name.section.lnasm"
+				}
+			},
+			"end": "(?=\\.section|%endif)",
+			"patterns": [
+				{
+					"include": "#section_code"
+				},
+				{
+					"include": "#comment"
+				},
+				{
+					"include": "#preprocessor"
+				}
+			]
+		},
+		"comment": {
+			"begin": ";",
+			"end": "$",
+			"name": "comment.line.lnasm",
+			"patterns": [
+				{
+					"match": "\\b(?:TODO|FIXME|XXX|HACK)\\b",
+					"name": "keyword.other.comment.lnasm"
+				}
+			]
+		},
+		"preprocessor": {
+			"patterns": [
+				{
+					"match": "^\\s*(%include)\\s*(\"[^\"]+\")",
+					"captures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"2": {
+							"name": "string.quoted.double.include.lnasm"
+						}
+					}
+				},
+				{
+					"begin": "^\\s*(%define)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"2": {
+							"name": "entity.name.variable.preprocessor.lnasm"
+						}
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"begin": "^\\s*(%ifdef)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"2": {
+							"name": "entity.name.preprocessor.lnasm"
+						}
+					},
+					"end": "(%endif)",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						}
+					},
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"begin": "(%if[n]?def)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"2": {
+							"name": "entity.name.variable.preprocessor.lnasm"
+						}
+					},
+					"end": "(%endif)",
+					"endCaptures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						}
+					},
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"match": "%endif",
+					"name": "invalid.illegal.unpaired-endif.lnasm"
+				}
+			]
+		},	
+		"section_code": {
+			"patterns": [
+				{
+					"match": "^\\s*(\\.res)\\s+(\\d+|0x[0-9a-fA-F]+|0b[01]+)",
+					"captures": {
+						"1": {
+							"name": "keyword.other.lnasm"
+						},
+						"2": {
+							"name": "constant.numeric.lnasm"
+						}
+					}
+				},
+				{
+					"begin": "^\\s*(\\.data)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.other.lnasm"
+						}
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"include": "#instruction"
+						},
+						{
+							"include": "#identifier"
+						},
+						{
+							"include": "#double_quoted_string"
+						},
+						{
+							"include": "#single_quoted_char"
+						},
+						{
+							"include": "#comment"
+						}
+					]
+				},
+				{
+					"match": "([A-Za-z_]+[A-Za-z_0-9]*):",
+					"captures": {
+						"1": {
+							"name": "entity.name.function.lnasm"
+						}
+					}
+
+				},
+				{
+					"include": "#instruction"
+				},
+				{
+					"include": "#comment"
+				}
+			]
+		},	
+		"instruction":{
+			"begin": "^\\s*\\b(nop|hlt|int|mov|push|pop|add|sub|cmp|and|or|xor|swap|not|inc|dec|shl|shr|l?jc|l?jz|l?jn|l?goto|lcall|ret|iret|sid|cid|clc|sec)\\b",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.control.lnasm"
+				}
+			},
+			"end": "$",
+			"patterns": [
+				{
+					"include": "#operand"
+				},
+				{
+					"include": "#comment"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.lnasm"
+				}
+			]
+		},
+		"operand":{
+			"patterns": [
+				
+			{
+					"match": "\\bRA|RB|RC|RD|SS|SP|DS|(RC:RD)\\b",
+					"name": "constant.language.lnasm"
+				},
+				{
+					"include": "#number"
+				},
+				{
+					"include": "#identifier"
+				},
+				{
+					"include": "#double_quoted_string"
+				},
+				{
+					"include": "#single_quoted_char"
+				},
+				{
+					"match": "::byte|::8|::word|::16",
+					"name": "constant.other.lnasm"
+				},
+				{
+					"begin": "\\(",
+					"end": "\\)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.lnasm"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.lnasm"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#operand"
+						}
+					]
+				}
+			]
+		},
+		"double_quoted_string": {
+			"begin": "\"",
+			"end": "\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.lnasm"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.lnasm"
+				}
+			},
+			"patterns": [
+				{
+					"match": "\\\\[\"\\\\]",
+					"name": "constant.character.escape.lnasm"
+				}
+			],
+			"name": "string.quoted.double.lnasm"
+		},
+		"single_quoted_char": {
+			"begin": "'",
+			"end": "'",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.lnasm"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.lnasm"
+				}
+			},
+			"patterns": [
+				{
+					"match": "\\\\[\"\\\\]",
+					"name": "constant.character.escape.lnasm"
+				}
+			],
+			"name": "string.quoted.single.lnasm"
+		},
+		"number": {
+			"match": "\\b(\\d+|0x[0-9a-fA-F]+|0b[01]+)\\b",
+			"name": "constant.numeric.lnasm"
+		},
+		"identifier": {
+			"match": "\\b[A-Za-z_]+[A-Za-z_0-9]*\\b",
+			"name": "variable.other.lnasm"
+
+		}
+	},
+	"scopeName": "source.lnasm"
+}
