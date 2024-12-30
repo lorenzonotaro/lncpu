@@ -5,12 +5,18 @@
 %ifndef F_NOTMON
 %define F_NOTMON
 
-%define NBUFPG                              0x3e    ; notmon input buffer page (second to last page of memory)
+%ifndef SECTION NOTMON_INBUF
+    %error "notmon requires a RAM section named NOTMON_INBUF."
+%endif
+
+%ifndef SECTION NOTMON
+    %error "notmon requires a section in ROM named NOTMON."
+%endif
 
 .section    NOTMON
 notmon:
     xor             RB,             RB              ; set RB to 0
-    mov             NBUFPG,         RC              ; load NBUFPG:0 into RC:RD (as the write buffer)
+    mov             (NOTMON_INBUF >> 8)::byte,  RC  ; load the start of INPUT_BUFFER into RC:RD (as the write buffer)
     xor             RD,             RD
     mov             '>',            [TTYOUT]
     mov             ' ',            [TTYOUT]
@@ -198,6 +204,9 @@ _end:
     mov             '\n',           [TTYOUT]
     goto            notmon
 
+%ifndef SECTION DPAGE
+    %error "notmon requires a data page section named DPAGE (multi)."
+%endif
 
 .section DPAGE
 ADDR1H:

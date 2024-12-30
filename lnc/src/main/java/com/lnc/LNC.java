@@ -20,7 +20,7 @@ import com.lnc.common.frontend.Line;
 public class LNC {
 
     public static final String PROGRAM_NAME = "lnc";
-    public static final String PROGRAM_VERSION = "2.1.0";
+    public static final String PROGRAM_VERSION = "2.1.2";
     private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNC.class.getClassLoader().getResourceAsStream("default-settings.json"));

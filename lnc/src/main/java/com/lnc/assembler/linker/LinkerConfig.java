@@ -1,10 +1,10 @@
 package com.lnc.assembler.linker;
 
-import com.lnc.assembler.common.SectionInfo;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.lnc.assembler.common.SectionInfo;
 
 public class LinkerConfig{
 
@@ -49,5 +49,9 @@ public class LinkerConfig{
                 .toArray(SectionInfo[]::new);
 
         return new LinkerConfig(sections);
+    }
+
+    public boolean hasSection(String sectionName) {
+        return sectionMap.containsKey(sectionName);
     }
 }

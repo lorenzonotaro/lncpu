@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.lnc.LNC;
+import com.lnc.assembler.linker.LinkerConfig;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.LexerConfig;
 import com.lnc.common.frontend.LineByLineLexer;
@@ -27,10 +28,12 @@ public class Preprocessor {
     private final List<List<Token>> lines;
     private final LexerConfig macroIncludeConfig;
     Map<String, List<Token>> defines = new HashMap<>();
-
-    public Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig){
+    private final LinkerConfig linkerConfig;
+    
+    public Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig) {
         this.lines = lines;
         this.macroIncludeConfig = macroIncludeConfig;
+        this.linkerConfig = linkerConfig;
 
         defines.put("__VERSION__", List.of(Token.__internal(TokenType.STRING, LNC.PROGRAM_VERSION)));
     }
@@ -110,16 +113,28 @@ public class Preprocessor {
 
                 }else {throw new CompileException("invalid macro syntax", macroToken); }
             } else if(macroToken.type.equals(TokenType.MACRO_IFDEF)){
+                Token secondToken;
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = defines.containsKey(macroName);
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
+                }else if(line.size() == 3 && (secondToken = line.get(1)).type == TokenType.IDENTIFIER && secondToken.lexeme.equals("SECTION")){
+                    String sectionName = line.get(2).lexeme;
+                    boolean keep = linkerConfig.hasSection(sectionName);
+                    iterator.remove();
+                    consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(TokenType.MACRO_IFNDEF)){
+                Token secondToken;
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
                     boolean keep = !defines.containsKey(macroName);
+                    iterator.remove();
+                    consumeUntilEndif(line, iterator, keep);
+                }else if(line.size() == 3 && (secondToken = line.get(1)).type == TokenType.IDENTIFIER && secondToken.lexeme.equals("SECTION")){
+                    String sectionName = line.get(2).lexeme;
+                    boolean keep = !linkerConfig.hasSection(sectionName);
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);

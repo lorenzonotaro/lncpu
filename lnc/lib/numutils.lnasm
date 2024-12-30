@@ -1,6 +1,11 @@
 %ifndef F_NUMUTILS
 %define F_NUMUTILS
 
+
+%ifndef SECTION NUMUTILS
+    %error "NUMUTILS requires a section in ROM named NUMUTILS."
+%endif
+
 .section    NUMUTILS
 
  ; Parses the ASCII value in RA as a hex digit and stores it in RA, 0xFF if invalid.

@@ -1,5 +1,9 @@
-%ifndef F_DEVICES
-%define F_DEVICES
+%ifndef F_KBTTY
+%define F_KBTTY
+
+%ifndef SECTION DEV_KEYBOARD
+    %error "kbtty requires the keyboard and TTY terminal devices to be mapped to sections named DEV_KEYBOARD and DEV_TTY, respectively."
+%endif
 
 .section DEV_KEYBOARD
 KBAVAIL:

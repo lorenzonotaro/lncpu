@@ -1,18 +1,28 @@
 package com.lnc.assembler;
 
-import com.lnc.LNC;
-import com.lnc.assembler.common.SectionInfo;
-import com.lnc.common.Logger;
-import com.lnc.common.frontend.*;
-import com.lnc.assembler.linker.*;
-import com.lnc.assembler.parser.LnasmParser;
-import com.lnc.assembler.parser.LnasmParseResult;
-import com.lnc.common.Preprocessor;
-import com.lnc.common.io.ByteArrayChannel;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.lnc.LNC;
+import com.lnc.assembler.common.SectionInfo;
+import com.lnc.assembler.linker.BinaryLinker;
+import com.lnc.assembler.linker.Disassembler;
+import com.lnc.assembler.linker.LinkTarget;
+import com.lnc.assembler.linker.LinkerConfig;
+import com.lnc.assembler.linker.LinkerConfigParser;
+import com.lnc.assembler.parser.LnasmParseResult;
+import com.lnc.assembler.parser.LnasmParser;
+import com.lnc.common.Logger;
+import com.lnc.common.Preprocessor;
+import com.lnc.common.frontend.FullSourceLexer;
+import com.lnc.common.frontend.LexerConfig;
+import com.lnc.common.frontend.LineByLineLexer;
+import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
+import com.lnc.common.io.ByteArrayChannel;
 
 public class Assembler {
     private final List<Path> sourceFiles;
@@ -49,19 +59,6 @@ public class Assembler {
         if (lines == null)
             return false;
 
-        Logger.setProgramState("preprocessor");
-        Preprocessor preprocessor = new Preprocessor(lines, asmLexerConfig);
-        if(!preprocessor.preprocess())
-            return false;
-        List<Token[]> preprocessedLines = preprocessor.getLines();
-
-        Logger.setProgramState("parser");
-        LnasmParser parser = new LnasmParser(preprocessedLines);
-        if(!parser.parse())
-            return false;
-
-        LnasmParseResult parseResult = parser.getResult();
-
         Logger.setProgramState("linker-config");
         FullSourceLexer linkerConfigLexer = new FullSourceLexer(null, new LexerConfig(
                 TokenType.LINKER_CONFIG_KEYWORDSET,
@@ -75,7 +72,7 @@ public class Assembler {
         if(!linkerConfigLexer.parse(linkerConfig, null))
             return false;
 
-        LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getResult().toArray(new Token[0]));
+        LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getResult().toArray(Token[]::new));
         if(!linkerconfigParser.parse())
             return false;
 
@@ -84,6 +81,19 @@ public class Assembler {
         if(this.additionalSections != null){
             linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(this.additionalSections));
         }
+
+        Logger.setProgramState("preprocessor");
+        Preprocessor preprocessor = new Preprocessor(lines, asmLexerConfig, linkerConfig);
+        if(!preprocessor.preprocess())
+            return false;
+        List<Token[]> preprocessedLines = preprocessor.getLines();
+
+        Logger.setProgramState("parser");
+        LnasmParser parser = new LnasmParser(preprocessedLines);
+        if(!parser.parse())
+            return false;
+
+        LnasmParseResult parseResult = parser.getResult();
 
         Logger.setProgramState("linker");
 

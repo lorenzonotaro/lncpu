@@ -4,6 +4,10 @@
 %ifndef F_IOUTILS
 %define F_IOUTILS
 
+%ifndef SECTION IOUTILS
+    %error "ioutils requires a section in ROM named IOUTILS."
+%endif
+
 .section    IOUTILS
 
 ; Outputs a sequence of characters, starting at [RC:RD], until it encounters a 0

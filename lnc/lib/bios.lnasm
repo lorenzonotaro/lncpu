@@ -3,6 +3,10 @@
 
 %include        <kbtty>
 
+%ifndef SECTION BIOS
+    %error "BIOS requires a section in ROM named BIOS."
+%endif
+
 .section BIOS
 ;   Resets the buffer write and read pointers.
 ;   Modifies registers: none.

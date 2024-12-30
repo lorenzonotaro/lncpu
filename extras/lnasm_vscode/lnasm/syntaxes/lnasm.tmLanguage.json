@@ -78,16 +78,19 @@
 					]
 				},
 				{
-					"begin": "^\\s*(%ifdef)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"begin": "^\\s*(%ifdef)\\s*(SECTION)?\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.other.preprocessor.lnasm"
 						},
 						"2": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"3": {
 							"name": "entity.name.preprocessor.lnasm"
 						}
 					},
-					"end": "(%endif)",
+					"end": "^\\s*(%endif)",
 					"endCaptures": {
 						"1": {
 							"name": "keyword.other.preprocessor.lnasm"
@@ -100,16 +103,19 @@
 					]
 				},
 				{
-					"begin": "(%if[n]?def)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"begin": "^\\s*(%if[n]?def)\\s*(SECTION)?\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.other.preprocessor.lnasm"
 						},
 						"2": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"3": {
 							"name": "entity.name.variable.preprocessor.lnasm"
 						}
 					},
-					"end": "(%endif)",
+					"end": "^\\s*(%endif)",
 					"endCaptures": {
 						"1": {
 							"name": "keyword.other.preprocessor.lnasm"
@@ -124,6 +130,17 @@
 				{
 					"match": "%endif",
 					"name": "invalid.illegal.unpaired-endif.lnasm"
+				},
+				{
+					"match": "^\\s*(%error)\\s*(\"[^\"]+\")",
+					"captures": {
+						"1": {
+							"name": "keyword.other.preprocessor.lnasm"
+						},
+						"2": {
+							"name": "string.quoted.double.error.lnasm"
+						}
+					}
 				}
 			]
 		},	
