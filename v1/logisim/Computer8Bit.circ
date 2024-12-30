@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.9.10devlncpu" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.9.10devlncpu(https://github.com/logisim-evolution/).
+<project source="3.9.13devlncpu" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.9.13devlncpu(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -638,7 +638,7 @@ end TCL_Generic;
     </comp>
     <comp lib="0" loc="(1960,1930)" name="Tunnel">
       <a name="facing" val="east"/>
-      <a name="label" val="NOT_DEVICE_SEL_0"/>
+      <a name="label" val="NOT_DEVICE_SEL_2"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(2000,1950)" name="Tunnel">
@@ -1563,6 +1563,7 @@ end TCL_Generic;
     </comp>
     <comp lib="12" loc="(1080,1790)" name="KeyboardAdapter"/>
     <comp lib="12" loc="(1630,1810)" name="TTYAdapter"/>
+    <comp lib="12" loc="(2220,1850)" name="RGBScreenAdapter"/>
     <comp lib="4" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
@@ -1584,6 +1585,13 @@ end TCL_Generic;
       <a name="bg" val="#000000"/>
       <a name="color" val="#ffffff"/>
       <a name="cols" val="56"/>
+    </comp>
+    <comp lib="5" loc="(2040,2260)" name="RGB Video">
+      <a name="color" val="XTerm256 (8 bit)"/>
+      <a name="cursor" val="No Cursor"/>
+      <a name="height" val="32"/>
+      <a name="reset" val="Synchronous"/>
+      <a name="scale" val="8"/>
     </comp>
     <comp lib="5" loc="(2380,500)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
@@ -2137,9 +2145,21 @@ end TCL_Generic;
     <wire from="(2020,950)" to="(2070,950)"/>
     <wire from="(2020,970)" to="(2030,970)"/>
     <wire from="(2040,1780)" to="(2260,1780)"/>
+    <wire from="(2040,2260)" to="(2040,2320)"/>
+    <wire from="(2040,2320)" to="(2240,2320)"/>
     <wire from="(2040,990)" to="(2040,1500)"/>
     <wire from="(2040,990)" to="(2070,990)"/>
+    <wire from="(2050,2260)" to="(2050,2310)"/>
+    <wire from="(2050,2310)" to="(2250,2310)"/>
+    <wire from="(2060,2260)" to="(2060,2300)"/>
+    <wire from="(2060,2300)" to="(2260,2300)"/>
     <wire from="(2070,950)" to="(2070,990)"/>
+    <wire from="(2080,2260)" to="(2080,2290)"/>
+    <wire from="(2080,2290)" to="(2270,2290)"/>
+    <wire from="(2090,2260)" to="(2090,2280)"/>
+    <wire from="(2090,2280)" to="(2280,2280)"/>
+    <wire from="(2100,2260)" to="(2100,2270)"/>
+    <wire from="(2100,2270)" to="(2290,2270)"/>
     <wire from="(2100,580)" to="(2100,650)"/>
     <wire from="(2100,580)" to="(2550,580)"/>
     <wire from="(2100,650)" to="(2150,650)"/>
@@ -2180,9 +2200,21 @@ end TCL_Generic;
     <wire from="(2220,1690)" to="(2220,1810)"/>
     <wire from="(2220,1690)" to="(2350,1690)"/>
     <wire from="(2220,1830)" to="(2250,1830)"/>
+    <wire from="(2220,1850)" to="(2240,1850)"/>
+    <wire from="(2220,1870)" to="(2250,1870)"/>
+    <wire from="(2220,1890)" to="(2260,1890)"/>
+    <wire from="(2220,1910)" to="(2270,1910)"/>
+    <wire from="(2220,1930)" to="(2280,1930)"/>
+    <wire from="(2220,1950)" to="(2290,1950)"/>
     <wire from="(2240,1220)" to="(2250,1220)"/>
+    <wire from="(2240,1850)" to="(2240,2320)"/>
+    <wire from="(2250,1870)" to="(2250,2310)"/>
     <wire from="(2260,1780)" to="(2260,1820)"/>
+    <wire from="(2260,1890)" to="(2260,2300)"/>
     <wire from="(2270,1830)" to="(2290,1830)"/>
+    <wire from="(2270,1910)" to="(2270,2290)"/>
+    <wire from="(2280,1930)" to="(2280,2280)"/>
+    <wire from="(2290,1950)" to="(2290,2270)"/>
     <wire from="(2370,400)" to="(2380,400)"/>
     <wire from="(2370,420)" to="(2390,420)"/>
     <wire from="(2370,610)" to="(2380,610)"/>
@@ -3697,28 +3729,15 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-39 3b 3c 2a a8 f1 12 2f
-60 0 e0 ef f f2 3 df
-f2 3 44 43 41 fa 39 39
-4*e8 f8 0 5a 2f 60 0 41
-f8 0 5a 2f 60 0 41 fa
-39 4 2 f8 0 5a f8 0
-16 41 fa 70 30 f0 54 88
-9 f0 59 f1 59 70 11 f0
-54 88 5 f0 57 f1 57 70
-20 f0 54 88 5 f0 57 f1
-57 4 ff fa 58 a fa b8
-f 88 a f0 65 70 a 58
-41 fa 58 30 fa 2a f8 0
-36 88 ff f1 9d 4*e7 e e0
-2a f8 0 36 88 ff f1 9d
-4c 3a e0 2a f8 0 36 88
-ff f1 9c 4*e7 e e0 2a f8
-0 36 88 ff f1 9c 4c e0
-fe 41 fa 41 ff fa 3c 25
-1 0 24 1 8b 14 f0 ab
-f2 b5 38 1 2 f8 0 2b
-e1 1 f2 a3 44 fa
+9 21 8 0 a 20 6 80
+7 0 4 15 5 15 6 80
+7 20 f8 0 16 1 f8 0
+27 f8 0 34 50 f8 0 27
+68 55 f8 0 34 6d fa 39
+3c 2e 0 e0 e2 ef 31 f2
+29 44 41 fa 3a 3b 2e 0
+df e3 ef 3e f2 36 43 42
+fa
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>

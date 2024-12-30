@@ -95,6 +95,9 @@ if [ $build_lnc = true ] ; then
 
     cp target/lnc.jar ../output/
 
+    # copy lnc/lib to output, overriding if necessary
+    cp -r lib/ ../output/
+
     # generate run cmd/bash for lnc
     echo "java -jar %~dp0\lnc.jar %*" > "../output/lnc.bat"
     cp ../output/lnc.bat ../output/lnasm.bat
