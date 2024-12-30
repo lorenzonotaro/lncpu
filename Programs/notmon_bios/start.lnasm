@@ -1,6 +1,5 @@
-%include        "bios.lnasm"
-%include        "interrupt.lnasm"
-%include        "notmon.lnasm"
+%include        <bios>
+%include        <notmon>
 
 
 ; start of ROM.
@@ -17,6 +16,6 @@ _start:
         cid                                                     ; allow interrupts
 
         ; setup data page
-        mov             (PAGE0 >> 8)::byte,     DS
+        mov             (DPAGE >> 8)::byte,     DS
 
         lgoto           notmon                                  ; transfer control to notmon

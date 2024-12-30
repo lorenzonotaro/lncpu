@@ -46,7 +46,7 @@ NUMUTILS_FORMATHEX:
     add     RA,             'A'
     ret
 _digit:
-    add     RA,             '0'         ; add the ASCII value for '0' to get the cright digit
+    add     RA,             '0'         ; add the ASCII value for '0' to get the right digit
     ret
 
 

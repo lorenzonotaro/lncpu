@@ -1,6 +1,6 @@
-%include "devices.lnasm"
-%include "numutils.lnasm"
-%include "ioutils.lnasm"
+%include <kbtty>
+%include <numutils>
+%include <ioutils>
 
 %ifndef F_NOTMON
 %define F_NOTMON
@@ -199,7 +199,7 @@ _end:
     goto            notmon
 
 
-.section PAGE0
+.section DPAGE
 ADDR1H:
     .res 1
 ADDR1L:

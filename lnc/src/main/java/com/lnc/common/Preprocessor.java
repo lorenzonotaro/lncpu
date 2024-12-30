@@ -1,14 +1,25 @@
 package com.lnc.common;
 
-import com.lnc.LNC;
-import com.lnc.common.frontend.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.lnc.LNC;
+import com.lnc.common.frontend.CompileException;
+import com.lnc.common.frontend.LexerConfig;
+import com.lnc.common.frontend.LineByLineLexer;
+import com.lnc.common.frontend.Location;
+import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
 public class Preprocessor {
 
@@ -64,8 +75,13 @@ public class Preprocessor {
             } else if (macroToken.type.equals(TokenType.MACRO_INCLUDE)){
                 if(line.size() == 2){
                     String fileName = (String) line.get(1).literal;
+
+                    if(!fileName.endsWith(".lnasm")){
+                        fileName += ".lnasm";
+                    }
+
                     try {
-                        var path = resolvePath(fileName, line.get(1).location);
+                        var path = resolvePath(fileName, line.get(1).location, false);
                         LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig); //TODO: file locations aren't accurate? see immediate mode compilation
                         if(lexer.parse(Files.readString(path), path)){
                             iterator.remove();
@@ -74,7 +90,25 @@ public class Preprocessor {
                     } catch (IOException e) {
                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
                     }
-                }else throw new CompileException("invalid macro syntax", macroToken);
+                }else if(line.size() == 4 && line.get(1).type == TokenType.LESS_THAN && line.get(2).type == TokenType.IDENTIFIER && line.get(3).type == TokenType.GREATER_THAN){
+                    String fileName = line.get(2).lexeme;
+
+                    if(!fileName.endsWith(".lnasm")){
+                        fileName += ".lnasm";
+                    }
+
+                    try {
+                        var path = resolvePath(fileName, line.get(2).location, true);
+                        LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig);
+                        if(lexer.parse(Files.readString(path), path)){
+                            iterator.remove();
+                            addLines(new LinkedList<>(lexer.getResult()), iterator);
+                        } else throw new CompileException("%include failed for file '" + fileName + "'", macroToken);
+                    } catch (IOException e) {
+                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
+                    }
+
+                }else {throw new CompileException("invalid macro syntax", macroToken); }
             } else if(macroToken.type.equals(TokenType.MACRO_IFDEF)){
                 if(line.size() == 2){
                     String macroName = line.get(1).lexeme;
@@ -108,18 +142,21 @@ public class Preprocessor {
         }
     }
 
-    private Path resolvePath(String fileName, Location includerLocation) throws IOException {
+    private Path resolvePath(String fileName, Location includerLocation, boolean includeDirsOnly) throws IOException {
         // 1. Check if we can resolve the path starting from the current file's path
-        Path resolvedPath = Path.of(includerLocation.filepath).toAbsolutePath().getParent().resolve(fileName);
+        Path resolvedPath;
+        if(!includeDirsOnly){
+            resolvedPath = Path.of(includerLocation.filepath).toAbsolutePath().getParent().resolve(fileName);
 
-        if(resolvedPath.toFile().exists()){
-            return resolvedPath;
-        }
+            if(resolvedPath.toFile().exists()){
+                return resolvedPath;
+            }
 
-        // 2. Check if we can resolve the path starting from the current working directory
-        resolvedPath = Path.of(fileName);
-        if(resolvedPath.toFile().exists()){
-            return resolvedPath;
+            // 2. Check if we can resolve the path starting from the current working directory
+            resolvedPath = Path.of(fileName);
+            if(resolvedPath.toFile().exists()){
+                return resolvedPath;
+            }
         }
 
         // 3. Check if we can resolve the path starting from the include directories

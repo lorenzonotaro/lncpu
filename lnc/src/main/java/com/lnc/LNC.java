@@ -1,24 +1,26 @@
 package com.lnc;
 
-import com.lnc.assembler.Assembler;
-import com.lnc.assembler.common.SectionInfo;
-import com.lnc.cc.Compiler;
-import com.lnc.cc.codegen.CompilerOutput;
-import com.lnc.common.frontend.Line;
-import com.lnc.common.Logger;
-import com.lnc.common.ProgramSettings;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lnc.assembler.Assembler;
+import com.lnc.assembler.common.SectionInfo;
+import com.lnc.cc.Compiler;
+import com.lnc.cc.codegen.CompilerOutput;
+import com.lnc.common.Logger;
+import com.lnc.common.ProgramSettings;
+import com.lnc.common.frontend.Line;
+
 public class LNC {
 
     public static final String PROGRAM_NAME = "lnc";
-    public static final String PROGRAM_VERSION = "2.0.0a";
+    public static final String PROGRAM_VERSION = "2.1.0";
     private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNC.class.getClassLoader().getResourceAsStream("default-settings.json"));
@@ -48,7 +50,29 @@ public class LNC {
     private static int runFromSourceFiles() {
 
         try {
-            includeDirs = settings.get("-I", String.class).split(";");
+
+            List<String> includeDirsList = new ArrayList<>();
+
+            String[] fromCmdLine = settings.get("-I", String.class).split(";");
+
+            for (String dir : fromCmdLine) {
+                if (!dir.isEmpty()) {
+                    includeDirsList.add(dir);
+                }
+            }
+
+
+            // current jar directory
+            var codeSource = LNC.class.getProtectionDomain().getCodeSource();
+            URL url;
+            if (codeSource != null && (url = codeSource.getLocation()) != null) {
+                try {
+                    String path = Path.of(url.toURI()).getParent().resolve("lib").toString();
+                    includeDirsList.add(path);
+                } catch (URISyntaxException ex) {}
+            }
+
+            LNC.includeDirs = includeDirsList.toArray(new String[0]);
 
             boolean noLncFiles = settings.getLncFiles().isEmpty();
             if(settings.getLnasmFiles().isEmpty() && noLncFiles){

@@ -1,7 +1,7 @@
 %ifndef     F_BIOS
 %define     F_BIOS
 
-%include        "devices.lnasm"
+%include        <kbtty>
 
 .section BIOS
 ;   Resets the buffer write and read pointers.
@@ -45,13 +45,40 @@ IO_PUTC:
     ret
 
 
-.section    PAGE0                           ; reserve BIOS page 0 variables
-
-    .res 1
+.section    DPAGE                           ; reserve BIOS page 0 variables
 BUFWPT:
     .res 1
 
 BUFRPT:
     .res 1
+
+.section    INPUT_BUFFER
+    .res 256
+
+.section    INTVEC
+IRQ_HANDLER:
+    push            RA                          ; preserve RA
+    mov             [KBAVAIL],      RA          ; check if IRQ comes from the keyboard (this also resets the IRQ from the device)
+    cmp             RA,             0
+    jz              _notkb                      ; if it doesn't return from interrupt
+    mov             [KBNEXT],       RA          ; if it does, retrieve the character
+    
+    mov             RA,             [TTYOUT]    ; echo.
+
+    push            RC                          ; preserve RC, and RD
+    push            RD
+
+    mov             (INPUT_BUFFER >> 8)::byte,  RC ; load the buffer page and write pointer into RC:RD
+    mov             [BUFWPT],       RD
+    mov             RA,             [RC:RD]     ; read the character from the buffer
+    inc             RD                          ; advance the write pointer and store it back
+    mov             RD,             [BUFWPT]
+
+    pop             RD                          ; restore RC, RD
+    pop             RC
+_notkb:
+    pop             RA                          ; restore RA
+    iret
+
 
 %endif
