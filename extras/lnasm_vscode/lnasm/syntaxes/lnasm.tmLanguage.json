@@ -147,7 +147,7 @@
 		"section_code": {
 			"patterns": [
 				{
-					"match": "^\\s*(\\.res)\\s+\\b(d+|0x[0-9a-fA-F]+|0b[01]+)\\b",
+					"match": "^\\s*(\\.res)\\s+\\b(\\d+|0x[0-9a-fA-F]+|0b[01]+)\\b",
 					"captures": {
 						"1": {
 							"name": "keyword.other.lnasm"
