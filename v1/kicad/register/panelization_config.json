@@ -1,0 +1,16 @@
+{
+    "layout": {
+        "type": "grid",
+        "rows": 2,
+        "cols": 2,
+        "hspace": "2mm",
+        "vspace": "2mm"
+    },
+    "tabs": {
+        "type": "fixed",
+        "vwidth": "5mm",
+        "vspace": "10mm",
+        "hwidth": "5mm",
+        "hspace": "10mm"
+    }
+}
