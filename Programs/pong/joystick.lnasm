@@ -1,0 +1,25 @@
+%ifndef F_JOYSTICK
+%define F_JOYSTICK
+
+%ifndef SECTION LIB_JOYSTICK
+    %error "JOYSTICK requires a section in ROM named LIB_JOYSTICK"
+%endif
+
+
+.section LIB_JOYSTICK
+
+; returns the current joystick position in RA
+JOYSTICK_READ:
+    mov [JS_INPUT],     RA
+    ret
+
+
+%ifndef SECTION DEV_JOYSTICK
+    %error "JOYSTICK requires the JOYSTICK device to be mapped to a section named DEV_JOYSTICK"
+%endif
+
+.section DEV_JOYSTICK
+JS_INPUT:
+    .res 1
+
+%endif

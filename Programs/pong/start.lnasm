@@ -1,0 +1,194 @@
+%include "rgb.lnasm"
+%include "joystick.lnasm"
+
+%define SCR_Y0  ((DEV_RGB >> 8)::byte)
+%define SCR_X0  ((DEV_RGB)::byte)
+%define SCR_W   64
+%define SCR_H   32
+
+%define PADDLE_DIST 5       ; Distance from the edge of the screen to the paddle
+%define PADDLE_SIZE 5       ; Size of the paddle
+
+.section START
+    ; Set up the stack and data segment
+    mov     (STACK >> 8)::byte,         SS
+    mov     0x0,                        SP
+    mov     (DPAGE >> 8)::byte,         DS
+    lcall   PSTACK_INIT ; Initialize the parameter stack
+
+INIT:
+    ; Set up the video display
+    mov     (DEV_RGB >> 8)::byte,    RC
+    mov     (DEV_RGB)::byte,         RD
+    lcall   RGB_CLEAR
+
+    ; Initialize variables
+    mov     SCR_Y0 + SCR_H / 2 - PADDLE_SIZE / 2,      [LPAD_Y]
+    mov     SCR_Y0 + SCR_H / 2 - PADDLE_SIZE / 2,      [RPAD_Y]
+
+    mov     SCR_X0 + SCR_W / 2,      [BALL_X]
+    mov     SCR_Y0 + SCR_H / 2,      [BALL_Y]
+    mov     0xFF,                    [BALL_DX]
+    mov     0xFF,                    [BALL_DY]
+
+    ; Draw rectangle in gray color
+    mov     0x66,               RA
+    lcall   PSTACK_PUSHRA
+    mov     SCR_Y0,             RC
+    mov     SCR_X0,             RD
+    mov     SCR_Y0 + SCR_H - 1, RA
+    mov     SCR_X0 + SCR_W - 1, RB
+    lcall   RGB_DRAW_RECT
+
+    ; Draw paddles in their starting position
+    ; Load paddle color (white)
+    mov 0xFF,   RA
+
+    ; Left paddle
+    mov     SCR_Y0 + SCR_H / 2 - PADDLE_SIZE / 2,  RC
+    mov     SCR_X0 + PADDLE_DIST,    RD
+    mov     SCR_Y0 + SCR_H / 2 + PADDLE_SIZE / 2,  RB
+    lcall   RGB_DRAW_VLINE
+
+    ; Right paddle
+    mov     SCR_X0 + SCR_W - PADDLE_DIST,    RD
+    lcall   RGB_DRAW_VLINE
+
+    ; Draw ball in the center of the screen
+
+    mov     SCR_Y0 + SCR_H / 2,    RC
+    mov     SCR_X0 + SCR_W / 2,    RD
+    mov     0xFF,                  [RC:RD]
+
+GAME_LOOP:
+
+    lcall   handle_lpaddle
+
+_update_ball:
+    
+    ; Load the ball position
+    mov     [BALL_X],   RD
+    mov     [BALL_Y],   RC
+
+    ; Load the ball direction
+    mov     [BALL_DY],  RA
+    mov     [BALL_DX],  RB
+
+    ; TODO: Check for collision with paddles
+
+    ; Update the ball position
+    add     RC,         RA
+    add     RD,         RB   
+
+    mov     0xFF,       [RC:RD]
+
+    ; Save the new ball position
+
+    mov     RC,         [BALL_Y]
+    mov     RD,         [BALL_X]
+
+_check_bounce_down:
+    cmp     RC,         SCR_Y0 + 1
+    jz      _bounce_down
+    goto    _check_bounce_up
+
+_bounce_down:
+    mov     0x01,       [BALL_DY]
+
+_check_bounce_up:
+    cmp     RC,         SCR_Y0 + SCR_H - 2
+    jz      _bounce_up
+    goto    _check_bounce_left
+
+_bounce_up:
+    mov     0xFF,       [BALL_DY]
+
+_check_bounce_left:
+    cmp     RD,         SCR_X0 + 1
+    jz      _bounce_left
+    goto    _check_bounce_right
+
+_bounce_left:
+    mov     0x01,       [BALL_DX]
+
+_check_bounce_right:
+    cmp     RD,         SCR_X0 + SCR_W - 2
+    jz      _bounce_right
+    goto    _clear_old_ball
+
+_bounce_right:
+    mov     0xFF,       [BALL_DX]
+
+_clear_old_ball:
+    ; Get the old ball position
+    sub     RC,         RA
+    sub     RD,         RB
+
+    ; Clear the old ball position
+    mov     0x00,       [RC:RD]
+
+    goto    GAME_LOOP
+    hlt
+
+handle_lpaddle:
+    ; Preserve registers
+    push    RA
+    push    RB
+    push    RC
+
+    mov     [LPAD_Y],   RB ; load the current paddle y into RB; we'll update it based on the joystick input
+    mov     RB,         RC ; copy it to RC, we'll keep this copy intact to track the paddle's previous position
+
+    
+    lcall   JOYSTICK_READ  ; load the current paddle direction into RA
+
+    and     RA,         0b11110000  ; isolate the y direction
+    sub     RA,         8 << 4  ; subtract 8 << 4 (the neutral position)
+    jz      _ret        ; if zero, paddle is not moving
+    jn      _l_up       ; if negative, paddle is moving up
+_l_down:
+    inc     RB
+    ; set the top most pixel to black
+    mov     SCR_X0 + PADDLE_DIST,    RD
+    mov     0x00,                    [RC:RD]
+    ; set the bottom most pixel to white
+    add     RC,     PADDLE_SIZE
+    mov     0xFF,                   [RC:RD]
+    goto     _ret
+_l_up:
+    dec     RB
+    ; paddle is moving up. Set the top most pixel to white
+    mov     RB,                      RC
+    mov     SCR_X0 + PADDLE_DIST,    RD
+    mov     0xFF,                    [RC:RD]
+    ; paddle is moving up. Set the bottom most pixel to black
+    mov     SCR_X0 + PADDLE_DIST,    RD
+    add     RC,     PADDLE_SIZE
+    mov     0x00,                    [RC:RD]
+_ret:
+    mov     RB,                     [LPAD_Y] ; save the new paddle position
+    ; Restore registers
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
+
+.section DPAGE
+
+; PADDLE COORDINATES
+LPAD_Y:
+    .res 1
+RPAD_Y:
+    .res 1
+
+; BALL COORDINATES
+BALL_X:
+    .res 1
+BALL_Y:
+    .res 1
+
+; BALL DIRECTION
+BALL_DX:
+    .res 1
+BALL_DY:
+    .res 1
