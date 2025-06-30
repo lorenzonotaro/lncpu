@@ -44,6 +44,50 @@
                 "dbus_write": false
             }
         },
+        "REG_IN": {
+            "00": {
+                "name": "none",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "01": {
+                "name": "rb",
+                "dbus_read": true,
+                "dbus_write": false
+            },
+            "10": {
+                "name": "rc",
+                "dbus_read": true,
+                "dbus_write": false
+            },
+            "11": {
+                "name": "rd",
+                "dbus_read": true,
+                "dbus_write": false
+            }
+        },
+        "REG_OUT": {
+            "00": {
+                "name": "none",
+                "dbus_read": false,
+                "dbus_write": false
+            },
+            "01": {
+                "name": "rb",
+                "dbus_read": false,
+                "dbus_write": true
+            },
+            "10": {
+                "name": "rc",
+                "dbus_read": false,
+                "dbus_write": true
+            },
+            "11": {
+                "name": "rd",
+                "dbus_read": false,
+                "dbus_write": true
+            }
+        },
         "X_SEL": {
             "000": {
                 "name": "ra",
@@ -257,54 +301,6 @@
             }
         },
         {
-            "name": "NOT_RB_IN",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": true,
-                "dbus_write": false
-            }
-        },
-        {
-            "name": "NOT_RB_OUT",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": true
-            }
-        },
-        {
-            "name": "NOT_RC_IN",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": true,
-                "dbus_write": false
-            }
-        },
-        {
-            "name": "NOT_RC_OUT",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": true
-            }
-        },
-        {
-            "name": "NOT_RD_IN",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": true,
-                "dbus_write": false
-            }
-        },
-        {
-            "name": "NOT_RD_OUT",
-            "default_value": 1,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": true
-            }
-        },
-        {
             "name": "NOT_DEVICE_IN",
             "default_value": 1,
             "behavior": {
@@ -371,6 +367,30 @@
                 "dbus_read": true,
                 "dbus_write": false
             }
+        },
+        {
+            "name": "REG_IN0",
+            "default_value": 0,
+            "behavior": "combinatorial",
+            "behavior_group": "REG_IN"
+        },
+        {
+            "name": "REG_IN1",
+            "default_value": 0,
+            "behavior": "combinatorial",
+            "behavior_group": "REG_IN"
+        },
+        {
+            "name": "REG_OUT0",
+            "default_value": 0,
+            "behavior": "combinatorial",
+            "behavior_group": "REG_OUT"
+        },
+        {
+            "name": "REG_OUT1",
+            "default_value": 0,
+            "behavior": "combinatorial",
+            "behavior_group": "REG_OUT"
         },
         {
             "name": "NOT_RT_IN",
@@ -483,6 +503,30 @@
             }
         },
         {
+            "name": "NOT_FP_IN",
+            "default_value": 1,
+            "behavior": {
+                "dbus_read": true,
+                "dbus_write": false
+            }
+        },
+        {
+            "name": "NOT_FP_OUT",
+            "default_value": 1,
+            "behavior": {
+                "dbus_read": false,
+                "dbus_write": true
+            }
+        },
+        {
+            "name": "NOT_SP_FP_SEL",
+            "default_value": 0,
+            "behavior": {
+                "dbus_read": false,
+                "dbus_write": false
+            }
+        },
+        {
             "name": "J",
             "default_value": 0,
             "behavior": {
@@ -508,14 +552,6 @@
         },
         {
             "name": "JN",
-            "default_value": 0,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": false
-            }
-        },
-        {
-            "name": "JA",
             "default_value": 0,
             "behavior": {
                 "dbus_read": false,

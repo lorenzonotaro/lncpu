@@ -116,6 +116,10 @@ with open('instructions.json') as file, open(OPCODES_TSV, mode='w') as opcodes_t
                     # signal
                     if signal not in SIGNALS:
                         raise NameError(f"Invalid signal '{signal}' in instruction '{name}'")
+                    # Check if the signal is combinatorial
+                    signal_meta = next((s for s in SIGNALS_META['signals'] if s['name'] == signal), None)
+                    if signal_meta and signal_meta.get('behavior') == 'combinatorial':
+                        raise NameError(f"Use of isolated value for combinatorial signal '{signal}' in instruction '{name}'")
                 elif type(value) == str:
                     # behavior group
                     # check if it is among the keys behavior group

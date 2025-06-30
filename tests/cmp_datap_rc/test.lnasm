@@ -1,8 +1,0 @@
-.section CODE
-	mov 0x20, DS
-	mov 0x02, RC
-	mov 0x01, [0x20]
-	cmp [0x20], RC
-	hlt
-; [0x2020] = 0x01
-; FLAGS = 0b0101 

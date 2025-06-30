@@ -117,7 +117,7 @@
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
@@ -130,7 +130,7 @@
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
@@ -143,7 +143,7 @@
         "microcode": [
             {
                 "NOT_DATA_LATCH_OUT": 0,
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
             }
@@ -195,7 +195,7 @@
         "microcode": [
             {
                 "NOT_SS_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -206,7 +206,7 @@
         "microcode": [
             {
                 "NOT_SP_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -217,7 +217,7 @@
         "microcode": [
             {
                 "NOT_DS_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -228,7 +228,7 @@
         "microcode": [
             {
                 "NOT_RA_OUT": 0,
-                "NOT_RB_IN": 0
+                "REG_IN": "rb"
             }
         ],
         "flags_modified": "-"
@@ -239,7 +239,7 @@
         "microcode": [
             {
                 "NOT_RA_OUT": 0,
-                "NOT_RC_IN": 0
+                "REG_IN": "rc"
             }
         ],
         "flags_modified": "-"
@@ -250,7 +250,7 @@
         "microcode": [
             {
                 "NOT_RA_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -260,7 +260,7 @@
         "description": "Moves RB to RA",
         "microcode": [
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "RA_S": "input"
             }
         ],
@@ -271,8 +271,8 @@
         "description": "Moves RB to RC",
         "microcode": [
             {
-                "NOT_RB_OUT": 0,
-                "NOT_RC_IN": 0
+                "REG_OUT": "rb",
+                "REG_IN": "rc"
             }
         ],
         "flags_modified": "-"
@@ -282,8 +282,8 @@
         "description": "Moves RB to RD",
         "microcode": [
             {
-                "NOT_RB_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_OUT": "rb",
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -293,7 +293,7 @@
         "description": "Moves RC to RA",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "RA_S": "input"
             }
         ],
@@ -304,8 +304,8 @@
         "description": "Moves RC to RB",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
-                "NOT_RB_IN": 0
+                "REG_OUT": "rc",
+                "REG_IN": "rb"
             }
         ],
         "flags_modified": "-"
@@ -315,8 +315,8 @@
         "description": "Moves RC to RD",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_OUT": "rc",
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -326,7 +326,7 @@
         "description": "Moves RD to RA",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "RA_S": "input"
             }
         ],
@@ -337,8 +337,8 @@
         "description": "Moves RD to RB",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
-                "NOT_RB_IN": 0
+                "REG_OUT": "rd",
+                "REG_IN": "rb"
             }
         ],
         "flags_modified": "-"
@@ -348,8 +348,8 @@
         "description": "Moves RD to RC",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
-                "NOT_RC_IN": 0
+                "REG_OUT": "rd",
+                "REG_IN": "rc"
             }
         ],
         "flags_modified": "-"
@@ -359,7 +359,7 @@
         "description": "Moves RD to SS",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_SS_IN": 0
             }
         ],
@@ -370,7 +370,7 @@
         "description": "Moves RD to SP",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "SP_MODE_SEL": "bus_in"
             }
         ],
@@ -381,7 +381,7 @@
         "description": "Moves RD to DS",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_DS_IN": 0
             }
         ],
@@ -416,7 +416,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
@@ -434,7 +434,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
@@ -452,7 +452,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
@@ -488,7 +488,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
@@ -506,7 +506,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
@@ -524,7 +524,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
@@ -556,11 +556,11 @@
         "description": "Copies RA to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
@@ -576,15 +576,15 @@
         "description": "Copies RB to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl"
             }
@@ -596,15 +596,15 @@
         "description": "Copies RC to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl"
             }
@@ -616,15 +616,15 @@
         "description": "Copies RD to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl"
             }
@@ -636,11 +636,11 @@
         "description": "Copies from location in the address space (full indirect addressing mode) to RA",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
@@ -656,15 +656,15 @@
         "description": "Copies from location in the address space (full indirect addressing mode) to RB",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl"
             }
@@ -676,15 +676,15 @@
         "description": "Copies from location in the address space (full indirect addressing mode) to RC",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl"
             }
@@ -696,15 +696,15 @@
         "description": "Copies from location in the address space (full indirect addressing mode) to RD",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl"
             }
@@ -716,11 +716,11 @@
         "description": "Copies a constant to a location in the address space (full indirect addressing mode)",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
@@ -776,7 +776,7 @@
             {
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl",
-                "NOT_RB_OUT": 0
+                "REG_OUT": "rb"
             }
         ],
         "flags_modified": "-"
@@ -800,7 +800,7 @@
             {
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl",
-                "NOT_RC_OUT": 0
+                "REG_OUT": "rc"
             }
         ],
         "flags_modified": "-"
@@ -824,7 +824,7 @@
             {
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "abh:abl",
-                "NOT_RD_OUT": 0
+                "REG_OUT": "rd"
             }
         ],
         "flags_modified": "-"
@@ -872,7 +872,7 @@
             {
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl",
-                "NOT_RB_IN": 0
+                "REG_IN": "rb"
             }
         ],
         "flags_modified": "-"
@@ -896,7 +896,7 @@
             {
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl",
-                "NOT_RC_IN": 0
+                "REG_IN": "rc"
             }
         ],
         "flags_modified": "-"
@@ -920,7 +920,7 @@
             {
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "abh:abl",
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -1000,7 +1000,7 @@
         "description": "Pushes RB onto the stack",
         "microcode": [
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
             },
@@ -1015,7 +1015,7 @@
         "description": "Pushes RC onto the stack",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
             },
@@ -1030,7 +1030,7 @@
         "description": "Pushes RD onto the stack",
         "microcode": [
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ss:sp"
             },
@@ -1072,11 +1072,11 @@
         "microcode": [
             {
                 "NOT_ABH_IN": 0,
-                "NOT_RC_OUT": 0
+                "REG_OUT": "rc"
             },
             {
                 "NOT_ABL_IN": 0,
-                "NOT_RD_OUT": 0
+                "REG_OUT": "rd"
             },
             {
                 "NOT_DEVICE_OUT": 0,
@@ -1162,7 +1162,7 @@
         "microcode": [
             {
                 "SP_MODE_SEL": "dec",
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             }
@@ -1175,7 +1175,7 @@
         "microcode": [
             {
                 "SP_MODE_SEL": "dec",
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             }
@@ -1188,7 +1188,7 @@
         "microcode": [
             {
                 "SP_MODE_SEL": "dec",
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp"
             }
@@ -1230,11 +1230,11 @@
                 "ADDR_SEL": "ss:sp"
             },
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
@@ -1336,7 +1336,7 @@
         "description": "Adds RA to RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
@@ -1350,7 +1350,7 @@
         "description": "Adds RB to RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
@@ -1364,7 +1364,7 @@
         "description": "Adds RC to RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
@@ -1378,7 +1378,7 @@
         "description": "Adds RD to RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
@@ -1392,7 +1392,7 @@
         "description": "Adds RA to RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
@@ -1406,7 +1406,7 @@
         "description": "Adds RB to RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
@@ -1420,7 +1420,7 @@
         "description": "Adds RC to RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
@@ -1434,7 +1434,7 @@
         "description": "Adds RD to RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
@@ -1448,7 +1448,7 @@
         "description": "Adds RA to RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "add",
@@ -1462,7 +1462,7 @@
         "description": "Adds RB to RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "add",
@@ -1476,7 +1476,7 @@
         "description": "Adds RC to RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "add",
@@ -1490,7 +1490,7 @@
         "description": "Adds RD to RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "add",
@@ -1530,7 +1530,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
@@ -1550,7 +1550,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
@@ -1570,115 +1570,11 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "add_datap_ra",
-        "description": "Adds RA to a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "ra",
-                "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "add_datap_rb",
-        "description": "Adds RB to a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rb",
-                "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "add_datap_rc",
-        "description": "Adds RC to a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rc",
-                "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "add_datap_rd",
-        "description": "Adds RD to a location in the address space (data page addressing mode), stores the result back in the address space (data page addressing mode), then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rd",
-                "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -1744,7 +1640,7 @@
         "description": "Subtracts RA from RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
@@ -1758,7 +1654,7 @@
         "description": "Subtracts RB from RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
@@ -1772,7 +1668,7 @@
         "description": "Subtracts RC from RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
@@ -1786,7 +1682,7 @@
         "description": "Subtracts RD from RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
@@ -1800,7 +1696,7 @@
         "description": "Subtracts RA from RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
@@ -1814,7 +1710,7 @@
         "description": "Subtracts RB from RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
@@ -1828,7 +1724,7 @@
         "description": "Subtracts RC from RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
@@ -1842,7 +1738,7 @@
         "description": "Subtracts RD from RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
@@ -1856,7 +1752,7 @@
         "description": "Subtracts RA from RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "sub",
@@ -1870,7 +1766,7 @@
         "description": "Subtracts RB from RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "sub",
@@ -1884,7 +1780,7 @@
         "description": "Subtracts RC from RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "sub",
@@ -1898,7 +1794,7 @@
         "description": "Subtracts RD from RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "sub",
@@ -1938,7 +1834,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
@@ -1958,7 +1854,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
@@ -1978,115 +1874,11 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "sub_datap_ra",
-        "description": "Subtracts RA from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "ra",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "sub_datap_rb",
-        "description": "Subtracts RD from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rb",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "sub_datap_rc",
-        "description": "Subtracts RC from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rc",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "sub_datap_rd",
-        "description": "Subtracts RD from a location in the address space (data page addressing mode), stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rd",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -2376,102 +2168,6 @@
         "flags_modified": "NZC"
     },
     {
-        "name": "cmp_datap_ra",
-        "description": "Compares the given location in the address space (data page addressing mode) to RA, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "ra",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "cmp_datap_rb",
-        "description": "Compares the given location in the address space (data page addressing mode) to RB, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rb",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "cmp_datap_rc",
-        "description": "Compares the given location in the address space (data page addressing mode) to RC, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rc",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "cmp_datap_rd",
-        "description": "Compares the given location in the address space (data page addressing mode) to RD, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rd",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
         "name": "or_ra_ra",
         "description": "Performs a bitwise OR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly",
         "microcode": [
@@ -2532,7 +2228,7 @@
         "description": "Performs a bitwise OR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
@@ -2546,7 +2242,7 @@
         "description": "Performs a bitwise OR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
@@ -2560,7 +2256,7 @@
         "description": "Performs a bitwise OR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
@@ -2574,7 +2270,7 @@
         "description": "Performs a bitwise OR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
@@ -2588,7 +2284,7 @@
         "description": "Performs a bitwise OR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
@@ -2602,7 +2298,7 @@
         "description": "Performs a bitwise OR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
@@ -2616,7 +2312,7 @@
         "description": "Performs a bitwise OR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
@@ -2630,7 +2326,7 @@
         "description": "Performs a bitwise OR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
@@ -2644,7 +2340,7 @@
         "description": "Performs a bitwise OR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "or",
@@ -2658,7 +2354,7 @@
         "description": "Performs a bitwise OR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "or",
@@ -2672,7 +2368,7 @@
         "description": "Performs a bitwise OR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "or",
@@ -2686,7 +2382,7 @@
         "description": "Performs a bitwise OR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "or",
@@ -2726,7 +2422,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
@@ -2746,7 +2442,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
@@ -2766,7 +2462,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "or",
@@ -2774,110 +2470,6 @@
             }
         ],
         "flags_modified": "-"
-    },
-    {
-        "name": "or_datap_ra",
-        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "ra",
-                "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "or_datap_rb",
-        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rb",
-                "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "or_datap_rc",
-        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rc",
-                "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "or_datap_rd",
-        "description": "Performs a bitwise OR of a location in the address space (data page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rd",
-                "OP_SEL": "or",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
     },
     {
         "name": "and_ra_ra",
@@ -2940,7 +2532,7 @@
         "description": "Performs a bitwise AND of RB and RA, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
@@ -2954,7 +2546,7 @@
         "description": "Performs a bitwise AND of RB and RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
@@ -2968,7 +2560,7 @@
         "description": "Performs a bitwise AND of RB and RC, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
@@ -2982,7 +2574,7 @@
         "description": "Performs a bitwise AND of RB and RD, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
@@ -2996,7 +2588,7 @@
         "description": "Performs a bitwise AND of RC and RA, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
@@ -3010,7 +2602,7 @@
         "description": "Performs a bitwise AND of RC and RB, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
@@ -3024,7 +2616,7 @@
         "description": "Performs a bitwise AND of RC and RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
@@ -3038,7 +2630,7 @@
         "description": "Performs a bitwise AND of RC and RD, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
@@ -3052,7 +2644,7 @@
         "description": "Performs a bitwise AND of RD and RA, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "and",
@@ -3066,7 +2658,7 @@
         "description": "Performs a bitwise AND of RD and RB, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "and",
@@ -3080,7 +2672,7 @@
         "description": "Performs a bitwise AND of RD and RC, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "and",
@@ -3094,7 +2686,7 @@
         "description": "Performs a bitwise AND of RD and RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "and",
@@ -3134,7 +2726,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
@@ -3154,7 +2746,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
@@ -3174,115 +2766,11 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "and",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "and_datap_ra",
-        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "ra",
-                "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "and_datap_rb",
-        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rb",
-                "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "and_datap_rc",
-        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rc",
-                "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "and_datap_rd",
-        "description": "Performs a bitwise AND of a location in the address space (data page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rd",
-                "OP_SEL": "and",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3348,7 +2836,7 @@
         "description": "Performs a bitwise XOR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
@@ -3362,7 +2850,7 @@
         "description": "Performs a bitwise XOR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
@@ -3376,7 +2864,7 @@
         "description": "Performs a bitwise XOR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
@@ -3390,7 +2878,7 @@
         "description": "Performs a bitwise XOR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
@@ -3404,7 +2892,7 @@
         "description": "Performs a bitwise XOR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
@@ -3418,7 +2906,7 @@
         "description": "Performs a bitwise XOR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
@@ -3432,7 +2920,7 @@
         "description": "Performs a bitwise XOR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
@@ -3446,7 +2934,7 @@
         "description": "Performs a bitwise XOR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
@@ -3460,7 +2948,7 @@
         "description": "Performs a bitwise XOR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "xor",
@@ -3474,7 +2962,7 @@
         "description": "Performs a bitwise XOR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rb",
                 "OP_SEL": "xor",
@@ -3488,7 +2976,7 @@
         "description": "Performs a bitwise XOR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rc",
                 "OP_SEL": "xor",
@@ -3502,7 +2990,7 @@
         "description": "Performs a bitwise XOR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rd",
                 "OP_SEL": "xor",
@@ -3542,7 +3030,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
@@ -3562,7 +3050,7 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
@@ -3582,115 +3070,11 @@
                 "NOT_FETCH": 0
             },
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "rt",
                 "OP_SEL": "xor",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "xor_datap_ra",
-        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RA, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "ra",
-                "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "xor_datap_rb",
-        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RB, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rb",
-                "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "xor_datap_rc",
-        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RC, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rc",
-                "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "xor_datap_rd",
-        "description": "Performs a bitwise XOR of a location in the address space (data page addressing mode) and RD, stores the result back in the given location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "rd",
-                "OP_SEL": "xor",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3714,7 +3098,7 @@
         "description": "Performs a bitwise NOT of RB, stores the result back in RB, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
@@ -3728,7 +3112,7 @@
         "description": "Performs a bitwise NOT of RC, stores the result back in RC, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
@@ -3742,36 +3126,11 @@
         "description": "Performs a bitwise NOT of RD, stores the result back in RD, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "ra",
                 "OP_SEL": "not",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "not_datap",
-        "description": "Performs a bitwise NOT of a location in the address space (page 0 addressing mode), stores the result back in the location, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "OP_SEL": "not",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3795,7 +3154,7 @@
         "description": "Increments RB by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
@@ -3809,7 +3168,7 @@
         "description": "Increments RC by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
@@ -3823,37 +3182,11 @@
         "description": "Increments RD by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "1",
                 "OP_SEL": "add",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "inc_datap",
-        "description": "Increments a location in the address space (data page addressing mode) by 1, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "1",
-                "OP_SEL": "add",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3877,7 +3210,7 @@
         "description": "Decrements RB by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RB_IN": 0,
+                "REG_IN": "rb",
                 "X_SEL": "rb",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
@@ -3891,7 +3224,7 @@
         "description": "Decrements RC by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RC_IN": 0,
+                "REG_IN": "rc",
                 "X_SEL": "rc",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
@@ -3905,37 +3238,11 @@
         "description": "Decrements RD by 1, then updates the FLAGS accordingly",
         "microcode": [
             {
-                "NOT_RD_IN": 0,
+                "REG_IN": "rd",
                 "X_SEL": "rd",
                 "Y_SEL": "1",
                 "OP_SEL": "sub",
                 "FLAGS_MODE_SEL": "alu_in"
-            }
-        ],
-        "flags_modified": "NZC"
-    },
-    {
-        "name": "dec_datap",
-        "description": "Decrements a location in the address space (data page addressing mode) by 1, then updates the FLAGS accordingly",
-        "microcode": [
-            {
-                "NOT_ABL_IN": 0,
-                "NOT_DATA_LATCH_OUT": 0,
-                "NOT_PC_INC": 0,
-                "NOT_FETCH": 0
-            },
-            {
-                "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "ds:abl",
-                "NOT_RT_IN": 0
-            },
-            {
-                "X_SEL": "rt",
-                "Y_SEL": "1",
-                "OP_SEL": "sub",
-                "FLAGS_MODE_SEL": "alu_in",
-                "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "ds:abl"
             }
         ],
         "flags_modified": "NZC"
@@ -3969,12 +3276,12 @@
                 "NOT_RT_IN": 0
             },
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "RA_S": "input"
             },
             {
                 "NOT_RT_OUT": 0,
-                "NOT_RB_IN": 0
+                "REG_IN": "rb"
             }
         ],
         "flags_modified": "-"
@@ -3988,12 +3295,12 @@
                 "NOT_RT_IN": 0
             },
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "RA_S": "input"
             },
             {
                 "NOT_RT_OUT": 0,
-                "NOT_RC_IN": 0
+                "REG_IN": "rc"
             }
         ],
         "flags_modified": "-"
@@ -4007,12 +3314,12 @@
                 "NOT_RT_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "RA_S": "input"
             },
             {
                 "NOT_RT_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -4022,16 +3329,16 @@
         "description": "Swaps the values of RB and RC",
         "microcode": [
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "NOT_RT_IN": 0
             },
             {
-                "NOT_RC_OUT": 0,
-                "NOT_RB_IN": 0
+                "REG_OUT": "rc",
+                "REG_IN": "rb"
             },
             {
                 "NOT_RT_OUT": 0,
-                "NOT_RC_IN": 0
+                "REG_IN": "rc"
             }
         ],
         "flags_modified": "-"
@@ -4041,16 +3348,16 @@
         "description": "Swaps the values of RB and RD",
         "microcode": [
             {
-                "NOT_RB_OUT": 0,
+                "REG_OUT": "rb",
                 "NOT_RT_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
-                "NOT_RB_IN": 0
+                "REG_OUT": "rd",
+                "REG_IN": "rb"
             },
             {
                 "NOT_RT_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -4060,16 +3367,16 @@
         "description": "Swaps the values of RC and RD",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_RT_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
-                "NOT_RC_IN": 0
+                "REG_OUT": "rd",
+                "REG_IN": "rc"
             },
             {
                 "NOT_RT_OUT": 0,
-                "NOT_RD_IN": 0
+                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"
@@ -4243,11 +3550,11 @@
         "description": "Jumps to the long address specified by RC:RD",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
@@ -4299,11 +3606,11 @@
         "description": "Calls the long address specified by RC:RD",
         "microcode": [
             {
-                "NOT_RC_OUT": 0,
+                "REG_OUT": "rc",
                 "NOT_ABH_IN": 0
             },
             {
-                "NOT_RD_OUT": 0,
+                "REG_OUT": "rd",
                 "NOT_ABL_IN": 0
             },
             {
