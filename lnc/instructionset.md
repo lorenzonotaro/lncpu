@@ -36,14 +36,14 @@
 | 1c | `mov RD,	SS` | Moves RD to SS | 1 | - |
 | 1d | `mov RD,	SP` | Moves RD to SP | 1 | - |
 | 1e | `mov RD,	DS` | Moves RD to DS | 1 | - |
-| 1f | `mov IBPOFFSET,	RA` | Copies a from a location in the address space (stack frame offset addressing mode) to RA | 4 | - |
-| 20 | `mov IBPOFFSET,	RB` | Copies a from a location in the address space (stack frame offset addressing mode) to RB | 4 | - |
-| 21 | `mov IBPOFFSET,	RC` | Copies a from a location in the address space (stack frame offset addressing mode) to RC | 4 | - |
-| 22 | `mov IBPOFFSET,	RD` | Copies a from a location in the address space (stack frame offset addressing mode) to RD | 4 | - |
-| 23 | `mov RA,	IBPOFFSET` | Copies RA to a location in the address space (stack frame offset addressing mode) | 4 | - |
-| 24 | `mov RB,	IBPOFFSET` | Copies RB to a location in the address space (stack frame offset addressing mode) | 4 | - |
-| 25 | `mov RC,	IBPOFFSET` | Copies RC to a location in the address space (stack frame offset addressing mode) | 4 | - |
-| 26 | `mov RD,	IBPOFFSET` | Copies RD to a location in the address space (stack frame offset addressing mode) | 4 | - |
+| 1f | `mov [BP + <offset>],	RA` | Copies a from a location in the address space (stack frame offset addressing mode) to RA | 4 | - |
+| 20 | `mov [BP + <offset>],	RB` | Copies a from a location in the address space (stack frame offset addressing mode) to RB | 4 | - |
+| 21 | `mov [BP + <offset>],	RC` | Copies a from a location in the address space (stack frame offset addressing mode) to RC | 4 | - |
+| 22 | `mov [BP + <offset>],	RD` | Copies a from a location in the address space (stack frame offset addressing mode) to RD | 4 | - |
+| 23 | `mov RA,	[BP + <offset>]` | Copies RA to a location in the address space (stack frame offset addressing mode) | 4 | - |
+| 24 | `mov RB,	[BP + <offset>]` | Copies RB to a location in the address space (stack frame offset addressing mode) | 4 | - |
+| 25 | `mov RC,	[BP + <offset>]` | Copies RC to a location in the address space (stack frame offset addressing mode) | 4 | - |
+| 26 | `mov RD,	[BP + <offset>]` | Copies RD to a location in the address space (stack frame offset addressing mode) | 4 | - |
 | 27 | `mov RA,	[<data page address>]` | Copies RA to a location in the address space (data page addressing mode) | 2 | - |
 | 28 | `mov RB,	[<data page address>]` | Copies RB to a location in the address space (data page addressing mode) | 2 | - |
 | 29 | `mov RC,	[<data page address>]` | Copies RC to a location in the address space (data page addressing mode) | 2 | - |

@@ -72,6 +72,8 @@ public class OpcodeMap {
             case "abs" -> "[<full address>]";
             case "ircrd" -> "[RC:RD]";
             case "rcrd" -> "RC:RD";
+            case "bpoffset" -> "BP + <offset>";
+            case "ibpoffset" -> "[BP + <offset>]";
             default -> immediateParam.toUpperCase();
         };
     }

@@ -33,6 +33,10 @@ def convert_immediate_param(param: str):
         return "[RC:RD]"
     elif param == "rcrd":
         return "RC:RD"
+    elif param == "bpoffset":
+        return "BP + <offset>"
+    elif param == "ibpoffset":
+        return "[BP + <offset>]"
     else: 
         return param.upper()
 
