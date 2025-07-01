@@ -12,7 +12,7 @@ public class Dereference extends Argument {
     public final Argument inner;
 
     public Dereference(Argument inner) {
-        super(inner.token, Type.DEREFERENCE, false);
+        super(inner.token, Type.DEREFERENCE);
         this.inner = inner;
     }
 
@@ -22,7 +22,7 @@ public class Dereference extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         return inner.encode(labelResolver, linkInfo, instructionAddress);
     }
 
@@ -36,6 +36,8 @@ public class Dereference extends Argument {
                 return "abs";
             case "rcrd":
                 return "ircrd";
+            case "bpoffset":
+                return "ibpoffset";
             default:
                 throw new CompileException("invalid dereference argument: " + inner.type, inner.token);
         }

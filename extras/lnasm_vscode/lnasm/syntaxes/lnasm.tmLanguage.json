@@ -225,7 +225,7 @@
 			"patterns": [
 				
 			{
-					"match": "\\bRA|RB|RC|RD|SS|SP|DS|(RC:RD)\\b",
+					"match": "\\bRA|RB|RC|RD|SS|SP|DS|BP|(RC:RD)\\b",
 					"name": "constant.language.lnasm"
 				},
 				{

@@ -7,12 +7,10 @@ import com.lnc.common.frontend.Token;
 public abstract class Argument implements IEncodeable {
     public final Token token;
     public final Type type;
-    public final boolean numerical;
 
-    public Argument(Token token, Type type, boolean numerical) {
+    public Argument(Token token, Type type) {
         this.token = token;
         this.type = type;
-        this.numerical = numerical;
     }
 
     public abstract String getImmediateEncoding(ILabelSectionLocator sectionLocator);
@@ -25,7 +23,10 @@ public abstract class Argument implements IEncodeable {
         BYTE("byte"),
         LABEL("label"),
         BINARY_OP("binary"),
-        CAST("cast");
+        CAST("cast"),
+
+        REGISTER_OFFSET("register offset"),
+        ;
 
 
         public final String name;

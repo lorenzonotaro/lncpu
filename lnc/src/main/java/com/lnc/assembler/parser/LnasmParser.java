@@ -159,7 +159,18 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
         while(match(TokenType.PLUS, TokenType.MINUS)){
             Token operator = previous();
-            left = new BinaryOp(left, multiplication(), operator);
+
+            if (left.type == Argument.Type.REGISTER){
+                var right = multiplication();
+
+                if (right instanceof NumericalArgument){
+                    left = new RegisterOffset(left, operator, (NumericalArgument) right);
+                }else{
+                    left = new BinaryOp(left, right, operator);
+                }
+            }else {
+                left = new BinaryOp(left, multiplication(), operator);
+            }
         }
 
         return left;
@@ -207,7 +218,7 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
     private Argument primary() {
         if(check(TokenType.IDENTIFIER)){
             return new LabelRef(advance());
-        }else if(check(TokenType.RA, TokenType.RB, TokenType.RC, TokenType.RD, TokenType.SS, TokenType.SP, TokenType.DS)) {
+        }else if(check(TokenType.RA, TokenType.RB, TokenType.RC, TokenType.RD, TokenType.SS, TokenType.SP, TokenType.BP, TokenType.DS)) {
             return new Register(advance());
         }else if(check(TokenType.INTEGER)){
             Token t = advance();

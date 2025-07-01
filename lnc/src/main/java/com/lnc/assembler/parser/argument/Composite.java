@@ -12,7 +12,7 @@ public class Composite extends Argument {
     public final Argument high, low;
 
     public Composite(Argument high, Argument low) {
-        super(high.token, Type.COMPOSITE, (high.type == Type.BYTE && low.type == Type.BYTE));
+        super(high.token, Type.COMPOSITE);
         this.high = high;
         this.low = low;
 
@@ -27,7 +27,7 @@ public class Composite extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         byte[] highBytes = high.encode(labelResolver, linkInfo, instructionAddress);
         byte[] lowBytes = low.encode(labelResolver, linkInfo, instructionAddress);
 

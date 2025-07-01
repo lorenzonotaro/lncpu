@@ -8,11 +8,11 @@ import com.lnc.common.frontend.Token;
 
 import java.io.IOException;
 
-public class LabelRef extends Argument {
+public class LabelRef extends NumericalArgument {
     public final Token labelToken;
 
     public LabelRef(Token token) {
-        super(token, Type.LABEL, true);
+        super(token, Type.LABEL);
         this.labelToken = token;
     }
 
@@ -23,7 +23,7 @@ public class LabelRef extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         LabelResolution resolution = labelResolver.resolve(labelToken);
 
         var targetLabel = resolution.address();
@@ -39,5 +39,11 @@ public class LabelRef extends Argument {
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         var resolution = sectionLocator.getSectionInfo(labelToken);
         return resolution.sectionInfo().isDataPage() && !resolution.isSectionName() ? "cst" : "dcst";
+    }
+
+    @Override
+    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+        LabelResolution resolution = labelResolver.resolve(labelToken);
+        return resolution.address();
     }
 }

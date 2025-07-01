@@ -1,0 +1,4 @@
+.section CODE
+    mov 0x1, SP
+    add SP, 0x10
+    hlt

@@ -8,18 +8,18 @@ import com.lnc.assembler.linker.LinkInfo;
 
 import java.io.IOException;
 
-public class BinaryOp extends Argument{
+public class BinaryOp extends NumericalArgument{
 
     public final Argument left, right;
 
     public final Operator operator;
 
     public BinaryOp(Argument left, Argument right, Token token){
-        super(token, Type.BINARY_OP, true);
+        super(token, Type.BINARY_OP);
         this.left = left;
         this.right = right;
 
-        if(!(left.numerical && right.numerical)){
+        if(!(left instanceof NumericalArgument && right instanceof NumericalArgument)){
             throw new CompileException("invalid operands for binary operator: %s %s %s".formatted(left.type, token.lexeme, right.type), token);
         }
 
@@ -47,15 +47,23 @@ public class BinaryOp extends Argument{
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
 
         byte[] leftBytes = left.encode(labelResolver, linkInfo, instructionAddress);
         byte[] rightBytes = right.encode(labelResolver, linkInfo, instructionAddress);
 
+        long result = getResult(leftBytes, rightBytes);
+
+        encode(leftBytes, (int) result);
+
+        return leftBytes;
+    }
+
+    private long getResult(byte[] leftBytes, byte[] rightBytes) {
         long leftVal = decode(leftBytes);
         long rightVal = decode(rightBytes);
 
-        long result = switch (operator) {
+        return switch (operator) {
             case ADD -> leftVal + rightVal;
             case SUB -> leftVal - rightVal;
             case MUL -> leftVal * rightVal;
@@ -66,10 +74,6 @@ public class BinaryOp extends Argument{
             case OR -> leftVal | rightVal;
             case XOR -> leftVal ^ rightVal;
         };
-
-        encode(leftBytes, (int) result);
-
-        return leftBytes;
     }
 
 
@@ -93,6 +97,14 @@ public class BinaryOp extends Argument{
     @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return left.getImmediateEncoding(sectionLocator);
+    }
+
+    @Override
+    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+        byte[] leftBytes = left.encode(labelResolver, linkInfo, instructionAddress);
+        byte[] rightBytes = right.encode(labelResolver, linkInfo, instructionAddress);
+
+        return (int) getResult(leftBytes, rightBytes);
     }
 
     public enum Operator {

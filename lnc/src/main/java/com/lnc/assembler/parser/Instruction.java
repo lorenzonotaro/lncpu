@@ -63,7 +63,7 @@ public class Instruction extends CodeElement {
                     Logger.compileWarning("referenced label in short jump is outside of code segment. Use 'l" + opcode.lexeme.toLowerCase() + "' instead (-Wshort-jump-out-of-range)", arguments[0].token);                }
 
                 result[1] = targetBuffer[1];
-            } catch (IOException | IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 throw new CompileException("failed to encode instruction", opcode);
             }
         }else{
@@ -80,7 +80,7 @@ public class Instruction extends CodeElement {
                             result[offset++] = b;
                         }
                     }
-                } catch (IOException | IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     throw new CompileException("failed to encode instruction", opcode);
                 }
             }

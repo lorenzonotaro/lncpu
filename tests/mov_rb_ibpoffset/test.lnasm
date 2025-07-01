@@ -1,0 +1,6 @@
+.section CODE
+    mov 0x22, SS
+    mov 0x0, BP
+    mov 0x32, RB
+    mov RB, [BP + 0x12]
+    hlt

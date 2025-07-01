@@ -9,16 +9,16 @@ import com.lnc.common.frontend.Token;
 
 import java.io.IOException;
 
-public class Word extends Argument {
+public class Word extends NumericalArgument {
     public final short value;
 
     public Word(Token token) {
-        super(token, Type.WORD, true);
+        super(token, Type.WORD);
         this.value = token.ensureShort();
     }
 
     public Word(Token token, int value) {
-        super(token, Type.WORD, true);
+        super(token, Type.WORD);
         if (IntUtils.inShortRange(value)) {
             this.value = (short) (value & 0xFFFF);
         } else {
@@ -32,7 +32,7 @@ public class Word extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         return new byte[]{
                 (byte) ((value >> 8) & 0xFF),
                 (byte) (value & 0xFF)
@@ -44,4 +44,8 @@ public class Word extends Argument {
         return "dcst";
     }
 
+    @Override
+    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+        return value;
+    }
 }

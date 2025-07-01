@@ -1,0 +1,4 @@
+.section CODE
+    mov 0x42, SP
+    sub SP, 0x12
+    hlt

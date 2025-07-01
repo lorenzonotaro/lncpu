@@ -30,7 +30,7 @@
             },
             "01": {
                 "name": "inc",
-                "dbus_read": true,
+                "dbus_read": false,
                 "dbus_write": false
             },
             "10": {
@@ -110,22 +110,22 @@
                 "dbus_write": false
             },
             "100": {
-                "name": "rt",
+                "name": "abl",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "101": {
-                "name": "1",
+                "name": "sp",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "110": {
-                "name": null,
+                "name": "bp",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "111": {
-                "name": null,
+                "name": "1",
                 "dbus_read": false,
                 "dbus_write": false
             }
@@ -157,17 +157,17 @@
                 "dbus_write": false
             },
             "101": {
-                "name": "1",
+                "name": "sp",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "110": {
-                "name": null,
+                "name": "bp",
                 "dbus_read": false,
                 "dbus_write": false
             },
             "111": {
-                "name": null,
+                "name": "1",
                 "dbus_read": false,
                 "dbus_write": false
             }
@@ -503,7 +503,7 @@
             }
         },
         {
-            "name": "NOT_FP_IN",
+            "name": "NOT_BP_IN",
             "default_value": 1,
             "behavior": {
                 "dbus_read": true,
@@ -511,19 +511,11 @@
             }
         },
         {
-            "name": "NOT_FP_OUT",
+            "name": "NOT_BP_OUT",
             "default_value": 1,
             "behavior": {
                 "dbus_read": false,
                 "dbus_write": true
-            }
-        },
-        {
-            "name": "NOT_SP_FP_SEL",
-            "default_value": 0,
-            "behavior": {
-                "dbus_read": false,
-                "dbus_write": false
             }
         },
         {

@@ -127,6 +127,7 @@ public enum TokenType {
     RD,
     SS,
     SP,
+    BP,
     DS,
 
     // Linker config keywords
@@ -199,6 +200,7 @@ public enum TokenType {
             TokenType.RD,
             TokenType.SS,
             TokenType.SP,
+            TokenType.BP,
             TokenType.DS
     };
 

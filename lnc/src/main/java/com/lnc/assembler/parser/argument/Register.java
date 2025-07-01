@@ -12,7 +12,7 @@ public class Register extends Argument {
     public final RegisterId reg;
 
     public Register(Token token) {
-        super(token, Type.REGISTER, false);
+        super(token, Type.REGISTER);
         this.reg = RegisterId.fromString(token.lexeme);
     }
 
@@ -22,7 +22,7 @@ public class Register extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         return new byte[0];
     }
 

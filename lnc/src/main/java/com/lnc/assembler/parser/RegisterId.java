@@ -1,7 +1,14 @@
 package com.lnc.assembler.parser;
 
 public enum RegisterId {
-    RA(true), RB(true), RC(true), RD(true), SS(false), SP(false), DS(false);
+    RA(true),
+    RB(true),
+    RC(true),
+    RD(true),
+    SS(false),
+    SP(false),
+    BP(false),
+    DS(false);
 
     public final boolean generalPurpose;
 

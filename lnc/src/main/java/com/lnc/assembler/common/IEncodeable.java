@@ -9,5 +9,5 @@ import java.io.IOException;
 public interface IEncodeable {
     int size(ILabelSectionLocator sectionLocator);
 
-    byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException;
+    byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress);
 }

@@ -17,7 +17,7 @@ From Φ and the base clock, 4 rising edges are derived:
 * **C1** (Φ1), _control_: the next instruction or microinstruction is loaded and the control signals are stabilized.
 * **C2** (Φ1), _fetch_: if required by the current microinstruction, data is moved from `[CS:PC]` to the data latch register via the data bus.
 * **C3** (Φ2), _data_: data is transferred between the activated components via the data bus.
-* **C4** (Φ3), _increment_: counters such as `CS:PC`, `SP` are incremented/decremented as specified by the current microinstruction.
+* **C4** (Φ2), _increment_: counters such as `CS:PC`, `SP` are incremented/decremented as specified by the current microinstruction.
 
 
 # Pipeline

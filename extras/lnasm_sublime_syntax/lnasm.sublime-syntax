@@ -27,7 +27,7 @@ contexts:
       scope: keyword.control.lnasm
 
     # Reserved words
-    - match: '\b(RA|RB|RC|RD|MDS|SS|SP)\b'
+    - match: '\b(RA|RB|RC|RD|MDS|SS|SP|BP)\b'
       scope: constant.language.lnasm
 
     # Labels

@@ -7,11 +7,11 @@ import com.lnc.assembler.linker.LinkInfo;
 
 import java.io.IOException;
 
-public class Byte extends Argument {
+public class Byte extends NumericalArgument {
     public final byte value;
 
     public Byte(Token token) {
-        super(token, Type.BYTE, true);
+        super(token, Type.BYTE);
         this.value = token.ensureByte();
     }
 
@@ -21,12 +21,17 @@ public class Byte extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) throws IOException {
+    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         return new byte[] { value };
     }
 
     @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return "cst";
+    }
+
+    @Override
+    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+        return value & 0xFF;
     }
 }
