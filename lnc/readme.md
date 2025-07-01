@@ -22,13 +22,13 @@ To run `lnc`, use:
 Run with `--help` to show a list of available options.
 
 
-## The lnasm language
+## The `lnasm` language
 
-Lnasm code is a simple assembly language for the `lncpu`. It is a line-based language, with each line representing a single instruction or directive.
+`lnasm` is a simple assembly language for the `lncpu`. It is a line-based language, with each line representing a single instruction or directive.
 
 Leading and trailing whitespace in each line is ignored, but each line may contain only one instruction or directive. Instructions and directives are case-insensitive.
 
-Lnasm code is organized in sections. Each section is a block of code that can be placed in a specific region in the address space. The rules for section placement are defined in a linker configuration script (see [below](#linker-configuration)).
+`lnasm` code is organized in sections. Each section is a block of code that can be placed in a specific region in the address space. The rules for section placement are defined in a linker configuration script (see [below](#linker-configuration)).
 
 ### Directives
 
@@ -54,7 +54,7 @@ Lnasm code is organized in sections. Each section is a block of code that can be
 
 ### Preprocessor directives
 
-Lnasm supports a very basic preprocessor, with the following directives:
+`lnasm` provides a very basic preprocessor, with the following directives:
 
 - `%define <identifier> [<value>]`
 
@@ -67,9 +67,18 @@ Lnasm supports a very basic preprocessor, with the following directives:
 - `%ifdef <identifier> ... %endif`
 
     If the given identifier is defined, the code following this directive will be included in the output. Otherwise, it will be ignored.
+
 - `%ifndef <identifier> ... %endif`
 
     If the given identifier is not defined, the code following this directive will be included in the output. Otherwise, it will be ignored.
+
+- `%ifdef SECTION <section> ... %endif`
+
+    If a section with the given name exists, the code following this directive will be included in the output. Otherwise, it will be ignored.
+
+- `%ifndef SECTION <section> ... %endif`
+
+    If a section with the given name does not exist, the code following this directive will be included in the output. Otherwise, it will be ignored.
 
 - `%include "<filename>"`
 
@@ -199,7 +208,7 @@ Use the following properties to define a section:
 * `datapage`: if present, indicates that the section represents a data page. All labels in this section will evaluate to a `cst` (byte) value.
 * `virtual`: only applicable to a `datapage`. If present, the section will not be placed in the address space. It may be used as a dynamic data page, whose address is determined at runtime via the `DS` register.
 * `multi`: if present, the section can be referenced multiple times. Each 'block' will be appended to the final binary. This is useful for data pages, as each module can reserve its own space in the data page.
-* 
+
 Example:
 
     SECTIONS[
