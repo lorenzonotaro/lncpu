@@ -10,14 +10,13 @@ import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
-import com.lnc.cc.optimization.Optimizer;
+import com.lnc.cc.optimization.LinearOptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.*;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -77,8 +76,8 @@ public class Compiler {
         }
 
         Logger.setProgramState("optimization");
-        Optimizer opt = new Optimizer(irGenerator.getResult());
-        var optimizationResult = opt.optimize();
+        LinearOptimizer opt = new LinearOptimizer(irGenerator.getResult());
+        var optimizationResult = opt.linearizeAndOptimize();
 
         Logger.setProgramState("codegen");
         CodeGenerator codeGenerator = new CodeGenerator(optimizationResult);
