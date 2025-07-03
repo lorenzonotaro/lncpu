@@ -102,7 +102,18 @@ public class ProgramSettings {
     }
 
     public void help() {
-        //TODO
+        System.out.println("Usage: lnc [options] <source files>\n" +
+                "Options:");
+
+        for (Map.Entry<String, Entry> entry : entries.entrySet()) {
+            String name = entry.getKey();
+            Entry value = entry.getValue();
+            System.out.printf("  %s: %s", name, value.help);
+            if (value.value != null && !value.value.toString().isEmpty()) {
+                System.out.printf(" (default: %s)", value.value);
+            }
+            System.out.println();
+        }
     }
 
     private static class Entry{
