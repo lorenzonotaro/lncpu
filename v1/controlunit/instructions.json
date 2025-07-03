@@ -4025,6 +4025,42 @@
         "flags_modified": "-"
     },
     {
+        "name": "ret_cst",
+        "description": "Returns from a call and decrements the stack pointer by a constant",
+        "microcode": [
+            {
+                "SP_MODE_SEL": "dec",
+                "NOT_ABL_IN": 0,
+                "NOT_DEVICE_OUT": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {                
+                "SP_MODE_SEL": "dec",
+                "NOT_ABH_IN": 0,
+                "NOT_DEVICE_OUT": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0,
+                "NOT_RT_IN": 0
+            },
+            {
+                "X_SEL": "sp",
+                "Y_SEL": "rt",
+                "OP_SEL": "sub",
+                "SP_MODE_SEL": "bus_in"
+            },
+            {
+                "J": 1,
+                "NOT_PC_IN": 0,
+                "NOT_CS_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
         "name": "iret",
         "description": "Returns from an interrupt",
         "microcode": [

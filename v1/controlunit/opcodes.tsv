@@ -240,8 +240,9 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0xee	lcall_dcst	3	6	Calls the given long address	-
 0xef	lcall_rcrd	1	6	Calls the long address specified by RC:RD	-
 0xf0	ret	1	4	Returns from a call	-
-0xf1	iret	1	5	Returns from an interrupt	-
-0xf2	cid	1	1	Clears the interrupt disable flag	I
-0xf3	sid	1	1	Sets the interrupt disable flag	I
-0xf4	clc	1	1	Clears the carry flag	C
-0xf5	sec	1	1	Sets the carry flag	C
+0xf1	ret_cst	2	6	Returns from a call and decrements the stack pointer by a constant	-
+0xf2	iret	1	5	Returns from an interrupt	-
+0xf3	cid	1	1	Clears the interrupt disable flag	I
+0xf4	sid	1	1	Sets the interrupt disable flag	I
+0xf5	clc	1	1	Clears the carry flag	C
+0xf6	sec	1	1	Sets the carry flag	C

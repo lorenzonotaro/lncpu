@@ -30,11 +30,16 @@ Leading and trailing whitespace in each line is ignored, but each line may conta
 
 `lnasm` code is organized in sections. Each section is a block of code that can be placed in a specific region in the address space. The rules for section placement are defined in a linker configuration script (see [below](#linker-configuration)).
 
-`lnasm` follows the AT&T syntax paradigm, meaning that source operand comes before the destination operand. Immediate values require no prefix.
+### Order of operands
+In `lnasm`, the order of operands is important.
 
-    mov 0x42, RA   ; move the immediate value 0x42 into the RA register
-    inc RA         ; increment the value in the RA register
-    mov RA, RB      ; move the value in RA into RB
+For instructions that copy data, the source operand comes before the destination operand, as in:
+
+    mov 0x42, RA ; move the value 0x42 into the RA register
+
+For instructions that perform arithmetic or logical operations, the operand in which to store the result comes first, followed by the operands to operate on, as in:
+
+    add RA, RB ; add the value in RB to RA and store the result in RA
 
 
 ### Directives

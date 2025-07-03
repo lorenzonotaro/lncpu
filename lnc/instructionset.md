@@ -246,8 +246,9 @@
 | ee | `lcall <dcst>` | Calls the given long address | 6 | - |
 | ef | `lcall RC:RD` | Calls the long address specified by RC:RD | 6 | - |
 | f0 | `ret ` | Returns from a call | 4 | - |
-| f1 | `iret ` | Returns from an interrupt | 5 | - |
-| f2 | `cid ` | Clears the interrupt disable flag | 1 | `I` |
-| f3 | `sid ` | Sets the interrupt disable flag | 1 | `I` |
-| f4 | `clc ` | Clears the carry flag | 1 | `C` |
-| f5 | `sec ` | Sets the carry flag | 1 | `C` |
+| f1 | `ret <byte>` | Returns from a call and decrements the stack pointer by a constant | 6 | - |
+| f2 | `iret ` | Returns from an interrupt | 5 | - |
+| f3 | `cid ` | Clears the interrupt disable flag | 1 | `I` |
+| f4 | `sid ` | Sets the interrupt disable flag | 1 | `I` |
+| f5 | `clc ` | Clears the carry flag | 1 | `C` |
+| f6 | `sec ` | Sets the carry flag | 1 | `C` |
