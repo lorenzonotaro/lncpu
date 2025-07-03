@@ -2,7 +2,7 @@ package com.lnc.cc.ir;
 
 import java.util.*;
 
-public abstract class BranchingIRVisitor implements IIRVisitor<Void, Void> {
+public abstract class BranchingIRVisitor implements IIRInstructionVisitor<Void> {
 
     private final Set<IRBlock> visitedBlocks;
 
@@ -38,8 +38,6 @@ public abstract class BranchingIRVisitor implements IIRVisitor<Void, Void> {
         return visitedBlocks.contains(block);
     }
 
-
-    protected abstract void append(IRInstruction instruction);
 
     protected IRBlock getCurrentBlock() {
         return currentBlock;

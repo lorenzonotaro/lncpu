@@ -9,6 +9,11 @@
     "value": ""
   },
 
+  "-oM": {
+    "help": "Output intermediate representation code. This parameter must be followed by the output filename. ",
+    "value": ""
+  },
+
   "--version": {
     "help": "Prints the program version and quits.",
     "value": false

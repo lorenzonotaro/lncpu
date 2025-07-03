@@ -10,6 +10,7 @@ import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
+import com.lnc.cc.ir.IRPrinter;
 import com.lnc.cc.optimization.LinearOptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
@@ -73,6 +74,19 @@ public class Compiler {
 
         if(!irGenerator.visit()){
             return false;
+        }
+
+        if(!LNC.settings.get("-oM", String.class).isBlank()){
+            var irPrinter = new IRPrinter();
+
+            var str = irPrinter.print(irGenerator.getResult().units());
+
+            try{
+                Files.writeString(Path.of(LNC.settings.get("-oM", String.class)), str);
+            } catch (IOException e) {
+                Logger.error("unable to write IR to file %s: %s".formatted(LNC.settings.get("-oM", String.class), e.getMessage()));
+                return false;
+            }
         }
 
         Logger.setProgramState("optimization");

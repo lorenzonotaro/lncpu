@@ -75,4 +75,6 @@ public abstract class IRInstruction {
     public boolean hasPrev() {
         return prev != null;
     }
+
+    public abstract String toString();
 }
