@@ -1,0 +1,20 @@
+.section CODE
+	mov 0x20, SS
+	mov 0x0, SP
+	mov 0x5, BP
+
+    push 10         ; param a = 10                   
+    push 20         ; param b = 20                   
+    lcall add_two   ; call, pushes CS:PC           
+    hlt             ; result (30) in RB, stack clean
+
+add_two:
+    push BP         ; save old BP                   
+    mov  SP, BP     ; establish new frame base      
+
+    mov  [BP-4], RA ; RA ← first argument (a)        
+    mov  [BP-5], RB ; RB ← second argument (b)       
+    add  RB, RA     ; RB ← a + b                     
+
+    pop  BP         ; restore caller’s BP            
+    ret  2          ; return and drop 2 params       
