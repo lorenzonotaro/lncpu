@@ -236,6 +236,17 @@
         "flags_modified": "-"
     },
     {
+        "name": "mov_bp_sp",
+        "description": "Moves BP to SP",
+        "microcode": [
+            {
+                "NOT_BP_OUT": 0,
+                "SP_MODE_SEL": "bus_in"
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
         "name": "mov_ds_rd",
         "description": "Moves DS to RD",
         "microcode": [

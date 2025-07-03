@@ -118,7 +118,7 @@ Calls and interrupts will push the current `CS:PC` onto the stack, so that it ca
 To function properly, the stack obviously needs to be located in a location in the address space that is writable and readable by the CPU (usually in memory, but it can also be in any device that supports reading and writing). See the [Address space](#address-space) section for more information.
 
 The `BP` register points to the base of the current stack frame. It is not updated along with SP, so it can be used to access local variables in the current stack frame. It is the programmer's responsibility to ensure that `BP` is set correctly before using it.
-It is used by some instructions to access local variables in the current stack frame, with an addressing mode known as `ibpoffset` (base pointer offset, e.g. `[BP+1]` to access the first local variable in the current stack frame).
+It is used by some instructions to access local variables in the current stack frame, with an addressing mode known as `ibpoffset` (base pointer offset, e.g. `[BP+1]` or `[BP-1]` to access the first local variable in the current stack frame).
 
 # Data segment
 The data segment is a 256-byte segment that is used to store frequently used data by some instructions that use `dpage` addressing mode and that require one less clock cycle. 

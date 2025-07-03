@@ -15,6 +15,7 @@ public class RegisterOffset extends Argument{
     public final Register register;
 
     public final NumericalArgument offset;
+    private final Token operator;
 
     public RegisterOffset(Argument register, Token operator, NumericalArgument offset) {
         super(register.token, Type.REGISTER_OFFSET);
@@ -30,9 +31,11 @@ public class RegisterOffset extends Argument{
             throw new IllegalArgumentException("Register offset can only be applied to FP register, not: " + this.register.reg);
         }
 
-        if(!(operator.type == TokenType.PLUS)) {
+        if(!(operator.type == TokenType.PLUS || operator.type == TokenType.MINUS)) {
             throw new IllegalArgumentException("Invalid operator for register offset: " + operator.type);
         }
+
+        this.operator = operator;
 
     }
 
@@ -50,6 +53,10 @@ public class RegisterOffset extends Argument{
     public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
 
         var val = offset.value(labelResolver, linkInfo, instructionAddress);
+
+        if(operator.type == TokenType.MINUS) {
+            val = -val;
+        }
 
         if (!IntUtils.inByteRange(val)) {
             throw new IllegalArgumentException("Offset must be in byte range: " + val);
