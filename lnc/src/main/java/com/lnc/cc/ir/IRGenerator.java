@@ -35,15 +35,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IRBlock body = currentUnit.newBlock();
         IRBlock next = currentUnit.newBlock();
 
-        currentUnit.getCurrentBlock().addSuccessor(header);
-        currentUnit.setCurrentBlock(header);
+        currentUnit.continueTo(header);
 
         currentUnit.enterLoop(new LoopInfo(header, next));
 
         branch(whileStatement.condition, body, next);
-
-        header.addSuccessor(body);
-        header.addSuccessor(next);
 
         currentUnit.setCurrentBlock(body);
         whileStatement.body.accept(this);
@@ -64,21 +60,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IRBlock exit   = currentUnit.newBlock();
 
         // 1) fall-through into body
-        currentUnit.getCurrentBlock().addSuccessor(body);
-        currentUnit.setCurrentBlock(body);
+        currentUnit.continueTo(body);
         currentUnit.enterLoop(new LoopInfo(header, exit));
 
-        // 2) after body, jump to header to test
-        emit(new Goto(header));
-        body.addSuccessor(header);
+        doStmt.body.accept(this);
 
-        // 3) test block
-        currentUnit.setCurrentBlock(header);
-        // branch *if false* to exit  (i.e. if !cond, drop out)
-        header.addSuccessor(exit);
-        header.addSuccessor(body);
+        currentUnit.continueTo(header);
         branch(doStmt.condition, body, exit);
-
         currentUnit.exitLoop();
 
         // 4) continue in exit
@@ -135,8 +123,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IRBlock exit   = currentUnit.newBlock();
 
         // 3) Link pre-header → header, then switch into header
-        currentUnit.getCurrentBlock().addSuccessor(header);
-        currentUnit.setCurrentBlock(header);
+        currentUnit.continueTo(header);
 
         // 4) Emit the test (fall into body if true, else to exit)
         if (forStmt.condition != null) {
@@ -146,25 +133,19 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             // no condition means “always true”
             emit(new Goto(body));
         }
-        header.addSuccessor(body);
-        header.addSuccessor(exit);
 
         // 5) Enter the loop and emit the body
         currentUnit.enterLoop(new LoopInfo(header, exit));
         currentUnit.setCurrentBlock(body);
         forStmt.body.accept(this);
-        // after the body, unconditionally go to the incr block
-        emit(new Goto(incr));
-        body.addSuccessor(incr);
 
-        // 6) Emit the increment step
-        currentUnit.setCurrentBlock(incr);
+        // after the body, unconditionally go to the incr block
+        currentUnit.continueTo(incr);
         if (forStmt.increment != null) {
             forStmt.increment.accept(this);
         }
         // then loop back to the header for the next test
         emit(new Goto(header));
-        incr.addSuccessor(header);
 
         // 7) Finish up
         currentUnit.exitLoop();
@@ -201,8 +182,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IRBlock exitBlk  = currentUnit.newBlock();                     // join/continuation
 
         // 2) Link fall-through into header, then switch into it
-        currentUnit.getCurrentBlock().addSuccessor(header);
-        currentUnit.setCurrentBlock(header);
+        currentUnit.continueTo(header);
 
         // 3) Emit the abstract conditional branch
         //    branchIfFalse(cond, falseTarget, trueTarget)
@@ -213,22 +193,18 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             // “if (true)” → always go to thenBlk
             emit(new Goto(thenBlk));
         }
-        header.addSuccessor(thenBlk);
-        header.addSuccessor(elseBlk != null ? elseBlk : exitBlk);
 
         // 4) Build the “then” block
         currentUnit.setCurrentBlock(thenBlk);
         visitStatement(ifStmt.thenStatement);
         // after then, unconditionally jump to exit
         emit(new Goto(exitBlk));
-        thenBlk.addSuccessor(exitBlk);
 
         // 5) Optionally build the “else” block
         if (elseBlk != null) {
             currentUnit.setCurrentBlock(elseBlk);
             visitStatement(ifStmt.elseStatement);
             emit(new Goto(exitBlk));
-            elseBlk.addSuccessor(exitBlk);
         }
 
         // 6) Continue in the exit block

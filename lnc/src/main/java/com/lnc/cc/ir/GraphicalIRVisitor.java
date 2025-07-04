@@ -2,14 +2,16 @@ package com.lnc.cc.ir;
 
 import java.util.*;
 
-public abstract class BranchingIRVisitor implements IIRInstructionVisitor<Void> {
+public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> {
 
     private final Set<IRBlock> visitedBlocks;
 
     private IRBlock currentBlock;
 
+    private ListIterator<IRInstruction> instructionIterator;
 
-    protected BranchingIRVisitor() {
+
+    protected GraphicalIRVisitor() {
         visitedBlocks = new HashSet<>();
     }
 
@@ -23,7 +25,8 @@ public abstract class BranchingIRVisitor implements IIRInstructionVisitor<Void> 
 
         currentBlock = block;
 
-        for (IRInstruction instruction : block.getInstructions()) {
+        for (ListIterator<IRInstruction> it = block.listIterator(); it.hasNext(); ) {
+            IRInstruction instruction = it.next();
             instruction.accept(this);
         }
 
@@ -34,10 +37,21 @@ public abstract class BranchingIRVisitor implements IIRInstructionVisitor<Void> 
         return true;
     }
 
+    public void visit(IRUnit unit){
+        reset();
+        for (IRBlock block : unit) {
+            visit(block);
+        }
+    }
+
+    protected void reset() {
+        visitedBlocks.clear();
+        currentBlock = null;
+    }
+
     protected boolean isVisited(IRBlock block) {
         return visitedBlocks.contains(block);
     }
-
 
     protected IRBlock getCurrentBlock() {
         return currentBlock;

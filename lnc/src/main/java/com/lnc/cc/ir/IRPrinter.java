@@ -2,7 +2,7 @@ package com.lnc.cc.ir;
 
 import java.util.List;
 
-public class IRPrinter extends BranchingIRVisitor{
+public class IRPrinter extends GraphicalIRVisitor {
     
     private final StringBuilder sb = new StringBuilder();
     
@@ -77,14 +77,11 @@ public class IRPrinter extends BranchingIRVisitor{
         super.visit(block);
         return true;
     }
-    
-    public String print(List<IRUnit> units) {
-        for (IRUnit unit : units) {
-            sb.append("==== Function: ").append(unit.getFunctionDeclaration().name.lexeme).append(" ====");
-            visit(unit.getEntryBlock());
-            sb.append("\n");
-        }
-        
-        return sb.toString();
+
+    @Override
+    public void visit(IRUnit unit) {
+        sb.append("==== Function: ").append(unit.getFunctionDeclaration().name.lexeme).append(" ====");
+        super.visit(unit);
+        sb.append("\n");
     }
 }

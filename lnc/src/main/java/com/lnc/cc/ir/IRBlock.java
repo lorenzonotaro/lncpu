@@ -1,11 +1,9 @@
 package com.lnc.cc.ir;
 
 
-import com.lnc.common.Logger;
-
 import java.util.*;
 
-public class IRBlock {
+public class IRBlock{
 
     private final IRUnit unit;
 
@@ -15,8 +13,8 @@ public class IRBlock {
 
     private final LinkedList<IRInstruction> instructions = new LinkedList<>();
 
-    private final Set<IRBlock> predecessors = new HashSet<>();
-    private final Set<IRBlock> successors = new HashSet<>();
+    private final List<IRBlock> predecessors = new ArrayList<>();
+    private final List<IRBlock> successors = new ArrayList<>();
 
     public IRBlock(IRUnit unit, int id) {
         this.unit = unit;
@@ -58,11 +56,11 @@ public class IRBlock {
         return references;
     }
 
-    public void addSuccessor(IRBlock block) {
-        this.successors.add(block);
+    public List<IRBlock> getSuccessors() {
+        return successors;
     }
 
-    public Set<IRBlock> getSuccessors() {
-        return successors;
+    public ListIterator<IRInstruction> listIterator() {
+        return instructions.listIterator();
     }
 }

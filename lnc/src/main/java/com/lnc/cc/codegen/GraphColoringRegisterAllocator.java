@@ -1,13 +1,12 @@
 package com.lnc.cc.codegen;
 
 import com.lnc.cc.ir.operands.VirtualRegister;
-import com.lnc.cc.optimization.linear.LinearIRUnit;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GraphColoringRegisterAllocator {
-    private final LinearIRUnit linearIRUnit;
+ /*   private final LinearIRUnit linearIRUnit;
 
     private final List<InterferenceGraphNode> interferenceGraphNodes;
 
@@ -119,6 +118,6 @@ public class GraphColoringRegisterAllocator {
             result = 31 * result + neighbors.hashCode();
             return result;
         }
-    }
+    }*/
 
 }
