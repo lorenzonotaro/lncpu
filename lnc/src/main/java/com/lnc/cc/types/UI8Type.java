@@ -18,11 +18,6 @@ public class UI8Type extends TypeSpecifier {
 
     @Override
     public boolean compatible(TypeSpecifier other) {
-        if (other instanceof UI8Type) {
-            return true;
-        }
-
-
-        return false;
+        return other instanceof UI8Type;
     }
 }

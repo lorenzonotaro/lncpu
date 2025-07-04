@@ -7,9 +7,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GraphColoringRegisterAllocator {
-    private LinearIRUnit linearIRUnit;
+    private final LinearIRUnit linearIRUnit;
 
-    private List<InterferenceGraphNode> interferenceGraphNodes;
+    private final List<InterferenceGraphNode> interferenceGraphNodes;
 
     public Set<Register> usedRegisters = new HashSet<>();
 

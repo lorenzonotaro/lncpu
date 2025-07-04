@@ -7,7 +7,7 @@ public class MemoryLayoutManager {
 
     private final LinkTarget device;
 
-    private Segment head;
+    private final Segment head;
 
     public MemoryLayoutManager(LinkTarget device) {
         this.device = device;
@@ -162,7 +162,7 @@ public class MemoryLayoutManager {
 
     private static class Segment{
         //start address, inclusive
-        private int start;
+        private final int start;
 
         //end address, inclusive
         private int end;

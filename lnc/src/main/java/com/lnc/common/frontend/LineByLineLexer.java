@@ -7,7 +7,7 @@ import java.util.List;
 public class LineByLineLexer extends AbstractLexer<List<List<Token>>> {
 
 
-    private List<List<Token>> lines;
+    private final List<List<Token>> lines;
     private Line currentLine;
 
     public LineByLineLexer(Token macroSubToken, LexerConfig config) {

@@ -9,14 +9,14 @@ public class IRBlock {
 
     private final IRUnit unit;
 
-    private Set<ILabelReferenceHolder> references = new HashSet<>();
+    private final Set<ILabelReferenceHolder> references = new HashSet<>();
 
     private final int id;
 
     private final LinkedList<IRInstruction> instructions = new LinkedList<>();
 
-    private Set<IRBlock> predecessors = new HashSet<>();
-    private Set<IRBlock> successors = new HashSet<>();
+    private final Set<IRBlock> predecessors = new HashSet<>();
+    private final Set<IRBlock> successors = new HashSet<>();
 
     public IRBlock(IRUnit unit, int id) {
         this.unit = unit;

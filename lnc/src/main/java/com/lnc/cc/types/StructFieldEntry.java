@@ -3,8 +3,8 @@ package com.lnc.cc.types;
 import com.lnc.cc.ast.VariableDeclaration;
 
 public class StructFieldEntry {
-    private int offset;
-    private VariableDeclaration field;
+    private final int offset;
+    private final VariableDeclaration field;
 
     public StructFieldEntry(int offset, VariableDeclaration field) {
         this.offset = offset;

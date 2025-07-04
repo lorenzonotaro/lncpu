@@ -17,7 +17,7 @@ public class VirtualRegister extends IROperand {
 
     private final long instanceId;
 
-    private boolean released;
+    private final boolean released;
 
     private Register assignedPhysicalRegister;
 

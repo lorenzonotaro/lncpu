@@ -274,11 +274,11 @@ public enum TokenType {
 
     private final String strValue;
 
-    private TokenType(String strValue) {
+    TokenType(String strValue) {
         this.strValue = strValue;
     }
 
-    private TokenType(){
+    TokenType(){
         this.strValue = name();
     }
 

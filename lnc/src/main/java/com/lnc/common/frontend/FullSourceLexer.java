@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FullSourceLexer extends AbstractLexer<List<Token>>{
-    private List<Token> tokens;
+    private final List<Token> tokens;
     private Line currentLine;
     private Path file;
     private int lastLf;

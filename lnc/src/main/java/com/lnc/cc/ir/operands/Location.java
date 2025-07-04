@@ -5,7 +5,7 @@ import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
 
 public class Location extends IROperand {
-    private AbstractSymbol symbol;
+    private final AbstractSymbol symbol;
 
     public Location(AbstractSymbol symbol) {
         super(Type.LOCATION);

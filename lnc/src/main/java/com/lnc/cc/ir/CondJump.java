@@ -5,9 +5,10 @@ import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class CondJump extends AbstractBranchInstr {
     enum Cond { EQ, NE, LT, LE, GT, GE }
-    private Cond         cond;           // the high-level relation
-    private IROperand    left, right;    // what to compare
-    private IRBlock      falseTarget;    // else
+    private final Cond         cond;           // the high-level relation
+    private final IROperand    left;
+    private final IROperand right;    // what to compare
+    private final IRBlock      falseTarget;    // else
 
     public CondJump(Cond cond, IROperand left, IROperand right, IRBlock target, IRBlock falseTarget) {
         super(target);

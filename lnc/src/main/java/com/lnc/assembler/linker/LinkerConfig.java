@@ -9,7 +9,7 @@ import com.lnc.assembler.common.SectionInfo;
 public class LinkerConfig{
 
     private final SectionInfo[] sections;
-    private Map<String, SectionInfo> sectionMap;
+    private final Map<String, SectionInfo> sectionMap;
 
     public LinkerConfig(SectionInfo[] sections) {
         this.sections = sections;

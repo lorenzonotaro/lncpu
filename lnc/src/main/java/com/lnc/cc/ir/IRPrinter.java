@@ -4,7 +4,7 @@ import java.util.List;
 
 public class IRPrinter extends BranchingIRVisitor{
     
-    private StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder();
     
     @Override
     public Void accept(Goto aGoto) {

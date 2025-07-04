@@ -12,7 +12,7 @@ public enum RegisterId {
 
     public final boolean generalPurpose;
 
-    private RegisterId(boolean generalPurpose) {
+    RegisterId(boolean generalPurpose) {
         this.generalPurpose = generalPurpose;
     }
 

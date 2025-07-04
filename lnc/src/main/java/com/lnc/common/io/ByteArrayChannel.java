@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class ByteArrayChannel implements SeekableByteChannel {
 
     private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
-    private byte buf[];
+    private byte[] buf;
 
     /*
      * The current position of this channel.
@@ -50,7 +50,7 @@ public class ByteArrayChannel implements SeekableByteChannel {
     private int last;
 
     private boolean closed;
-    private boolean readonly;
+    private final boolean readonly;
 
     /*
      * Creates a {@code ByteArrayChannel} with size {@code sz}.

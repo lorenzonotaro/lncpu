@@ -4,7 +4,7 @@ public abstract class IRInstruction {
 
     private static int UNIQUE_ID_COUNTER = 0;
 
-    private int uniqueId;
+    private final int uniqueId;
 
     private int index;
 
