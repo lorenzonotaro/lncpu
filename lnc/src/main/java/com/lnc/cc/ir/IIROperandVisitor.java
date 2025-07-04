@@ -4,15 +4,15 @@ import com.lnc.cc.common.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
 
 public interface IIROperandVisitor<T> {
-    T accept(ImmediateOperand immediateOperand);
+    T visit(ImmediateOperand immediateOperand);
 
-    T accept(VirtualRegister vr);
+    T visit(VirtualRegister vr);
 
-    T accept(Location location);
+    T visit(Location location);
 
-    T accept(AddressOf addressOf);
+    T visit(AddressOf addressOf);
 
-    T accept(StructMemberAccess structMemberAccess);
+    T visit(StructMemberAccess structMemberAccess);
 
-    T accept(ArrayElementAccess arrayElementAccess);
+    T visit(ArrayElementAccess arrayElementAccess);
 }

@@ -1,7 +1,7 @@
 package com.lnc.cc.codegen;
 
 import com.lnc.cc.ir.operands.VirtualRegister;
-import com.lnc.cc.optimization.LinearIRUnit;
+import com.lnc.cc.optimization.linear.LinearIRUnit;
 
 import java.util.*;
 import java.util.stream.Collectors;

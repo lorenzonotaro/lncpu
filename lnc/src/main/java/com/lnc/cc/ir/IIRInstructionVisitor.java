@@ -1,25 +1,25 @@
 package com.lnc.cc.ir;
 
 public interface IIRInstructionVisitor<E> {
-    E accept(Goto aGoto);
+    E visit(Goto aGoto);
 
-    E accept(CondJump jle);
+    E visit(CondJump jle);
 
-    E accept(Load load);
+    E visit(Load load);
 
-    E accept(Move move);
+    E visit(Move move);
 
-    E accept(Store store);
+    E visit(Store store);
 
-    E accept(Ret sub);
+    E visit(Ret sub);
 
-    E accept(Bin bin);
+    E visit(Bin bin);
 
-    E accept(Call call);
+    E visit(Call call);
 
-    E accept(Unary unary);
+    E visit(Unary unary);
 
-    default E accept(Label label) {
+    default E visit(Label label) {
         return null;
     }
 

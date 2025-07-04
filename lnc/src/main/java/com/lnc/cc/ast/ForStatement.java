@@ -16,6 +16,6 @@ public class ForStatement extends ScopedStatement {
 
     @Override
     public <S> S accept(IStatementVisitor<S> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 }

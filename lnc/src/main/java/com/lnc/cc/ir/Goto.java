@@ -13,6 +13,6 @@ public class Goto extends AbstractBranchInstr {
 
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 }

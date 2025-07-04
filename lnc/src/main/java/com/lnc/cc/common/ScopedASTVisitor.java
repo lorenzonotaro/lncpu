@@ -71,7 +71,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return currentScope;
     }
 
-    public Void accept(BlockStatement blockStatement) {
+    public Void visit(BlockStatement blockStatement) {
 
         for(Statement statement : blockStatement.statements){
             try{
@@ -85,7 +85,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    public Void accept(ExpressionStatement expressionStatement) {
+    public Void visit(ExpressionStatement expressionStatement) {
 
         try{
             expressionStatement.expression.accept(this);
@@ -96,7 +96,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    public Void accept(FunctionDeclaration functionDeclaration) {
+    public Void visit(FunctionDeclaration functionDeclaration) {
 
         if(functionDeclaration.parameters != null){
             for(VariableDeclaration parameter : functionDeclaration.parameters){
@@ -125,7 +125,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    public Void accept(IfStatement ifStatement) {
+    public Void visit(IfStatement ifStatement) {
 
         try{
             ifStatement.condition.accept(this);
@@ -153,7 +153,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    public Void accept(ReturnStatement returnStatement) {
+    public Void visit(ReturnStatement returnStatement) {
 
         try{
             if(returnStatement.value != null){
@@ -168,7 +168,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
     }
 
     @Override
-    public Void accept(ForStatement forStatement) {
+    public Void visit(ForStatement forStatement) {
 
         try{
             if(forStatement.initializer != null){
@@ -209,7 +209,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    public Void accept(VariableDeclaration variableDeclaration) {
+    public Void visit(VariableDeclaration variableDeclaration) {
         try{
             if (variableDeclaration.initializer != null) {
                 variableDeclaration.initializer.accept(this);
@@ -222,7 +222,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
 
     }
 
-    public Void accept(WhileStatement whileStatement) {
+    public Void visit(WhileStatement whileStatement) {
 
         try{
             whileStatement.condition.accept(this);
@@ -241,7 +241,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    public Void accept(DoWhileStatement doWhileStatement) {
+    public Void visit(DoWhileStatement doWhileStatement) {
 
         try{
             doWhileStatement.condition.accept(this);

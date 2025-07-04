@@ -2,7 +2,6 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.Location;
-import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Load extends IRInstruction {
     private final IROperand dest;
@@ -29,6 +28,6 @@ public class Load extends IRInstruction {
 
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 }

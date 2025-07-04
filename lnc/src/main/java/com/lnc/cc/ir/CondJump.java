@@ -1,7 +1,6 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class CondJump extends AbstractBranchInstr {
     enum Cond { EQ, NE, LT, LE, GT, GE }
@@ -21,7 +20,7 @@ public class CondJump extends AbstractBranchInstr {
 
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 
     @Override

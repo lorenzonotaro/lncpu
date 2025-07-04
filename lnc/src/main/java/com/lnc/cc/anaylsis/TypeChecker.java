@@ -3,7 +3,6 @@ package com.lnc.cc.anaylsis;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.common.ScopedASTVisitor;
 import com.lnc.cc.types.*;
-import com.lnc.common.IntUtils;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
@@ -19,11 +18,11 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public Void accept(VariableDeclaration variableDeclaration) {
+    public Void visit(VariableDeclaration variableDeclaration) {
 
         checkTypeCompleteness(variableDeclaration.declarator.typeSpecifier());
 
-        return super.accept(variableDeclaration);
+        return super.visit(variableDeclaration);
     }
 
     private void checkTypeCompleteness(TypeSpecifier type) {
@@ -62,7 +61,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
 
     @Override
-    public TypeSpecifier accept(AssignmentExpression assignmentExpression) {
+    public TypeSpecifier visit(AssignmentExpression assignmentExpression) {
 
         TypeSpecifier leftType = assignmentExpression.left.accept(this);
 
@@ -76,7 +75,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public TypeSpecifier accept(BinaryExpression binaryExpression) {
+    public TypeSpecifier visit(BinaryExpression binaryExpression) {
 
         TypeSpecifier leftType = binaryExpression.left.accept(this);
 
@@ -90,7 +89,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public TypeSpecifier accept(CallExpression callExpression) {
+    public TypeSpecifier visit(CallExpression callExpression) {
 
         TypeSpecifier functionType = callExpression.callee.accept(this);
 
@@ -114,7 +113,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public TypeSpecifier accept(IdentifierExpression identifierExpression) {
+    public TypeSpecifier visit(IdentifierExpression identifierExpression) {
         var type = resolveSymbol(identifierExpression.token).getType();
 
         identifierExpression.setTypeSpecifier(type);
@@ -123,7 +122,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public TypeSpecifier accept(MemberAccessExpression memberAccessExpression) {
+    public TypeSpecifier visit(MemberAccessExpression memberAccessExpression) {
         TypeSpecifier left = memberAccessExpression.left.accept(this);
 
         if(memberAccessExpression.accessOperator.type == TokenType.ARROW){
@@ -171,19 +170,19 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public TypeSpecifier accept(NumericalExpression numericalExpression) {
+    public TypeSpecifier visit(NumericalExpression numericalExpression) {
         I8Type i8Type = new I8Type();
         numericalExpression.setTypeSpecifier(i8Type);
         return i8Type;
     }
 
     @Override
-    public TypeSpecifier accept(StringExpression stringExpression) {
+    public TypeSpecifier visit(StringExpression stringExpression) {
         throw new Error("String expression not implemented");
     }
 
     @Override
-    public TypeSpecifier accept(SubscriptExpression subscriptExpression) {
+    public TypeSpecifier visit(SubscriptExpression subscriptExpression) {
         TypeSpecifier arrayType = subscriptExpression.left.accept(this);
 
         if (!(arrayType instanceof AbstractSubscriptableType pointer)) {
@@ -203,7 +202,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public TypeSpecifier accept(UnaryExpression unaryExpression) {
+    public TypeSpecifier visit(UnaryExpression unaryExpression) {
         if(unaryExpression.operator == UnaryExpression.Operator.DEREFERENCE){
 
             TypeSpecifier operandType = unaryExpression.operand.accept(this);
@@ -247,7 +246,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public Void accept(ReturnStatement returnStatement) {
+    public Void visit(ReturnStatement returnStatement) {
         TypeSpecifier returnType = returnStatement.value == null ? null : returnStatement.value.accept(this);
 
         var currentFunction = getCurrentFunction();
@@ -301,12 +300,12 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
     @Override
-    public Void accept(ContinueStatement continueStatement) {
+    public Void visit(ContinueStatement continueStatement) {
         return null;
     }
 
     @Override
-    public Void accept(BreakStatement breakStatement) {
+    public Void visit(BreakStatement breakStatement) {
         return null;
     }
 

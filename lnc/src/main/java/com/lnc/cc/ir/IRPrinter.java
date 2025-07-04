@@ -7,63 +7,63 @@ public class IRPrinter extends BranchingIRVisitor{
     private final StringBuilder sb = new StringBuilder();
     
     @Override
-    public Void accept(Goto aGoto) {
+    public Void visit(Goto aGoto) {
         sb.append("    ").append(aGoto.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(CondJump condJump) {
+    public Void visit(CondJump condJump) {
         sb.append("    ").append(condJump.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Load load) {
+    public Void visit(Load load) {
         sb.append("    ").append(load.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Move move) {
+    public Void visit(Move move) {
         sb.append("    ").append(move.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Store store) {
+    public Void visit(Store store) {
         sb.append("    ").append(store.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Ret sub) {
+    public Void visit(Ret sub) {
         sb.append("    ").append(sub.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Bin bin) {
+    public Void visit(Bin bin) {
         sb.append("    ").append(bin.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Call call) {
+    public Void visit(Call call) {
         sb.append("    ").append(call.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Unary unary) {
+    public Void visit(Unary unary) {
         sb.append("    ").append(unary.toString()).append("\n");
         return null;
     }
 
     @Override
-    public Void accept(Label label) {
+    public Void visit(Label label) {
         sb.append("\n").append(label.toString()).append(":\n");
-        return super.accept(label);
+        return super.visit(label);
     }
 
     @Override

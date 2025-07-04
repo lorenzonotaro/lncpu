@@ -2,7 +2,6 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Bin extends IRInstruction {
     private final IROperand target;
@@ -29,7 +28,7 @@ public class Bin extends IRInstruction {
 
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 
     public BinaryExpression.Operator getOperator() {

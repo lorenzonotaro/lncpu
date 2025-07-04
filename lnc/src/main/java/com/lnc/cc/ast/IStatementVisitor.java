@@ -3,27 +3,27 @@ package com.lnc.cc.ast;
 public interface IStatementVisitor<S> {
 
 
-    S accept(BlockStatement blockStatement);
+    S visit(BlockStatement blockStatement);
 
-    S accept(ExpressionStatement expressionStatement);
+    S visit(ExpressionStatement expressionStatement);
 
-    S accept(ForStatement forStatement);
+    S visit(ForStatement forStatement);
 
-    S accept(FunctionDeclaration functionDeclaration);
+    S visit(FunctionDeclaration functionDeclaration);
 
-    S accept(IfStatement ifStatement);
+    S visit(IfStatement ifStatement);
 
-    S accept(ReturnStatement returnStatement);
+    S visit(ReturnStatement returnStatement);
 
-    S accept(VariableDeclaration variableDeclaration);
+    S visit(VariableDeclaration variableDeclaration);
 
-    S accept(WhileStatement whileStatement);
+    S visit(WhileStatement whileStatement);
 
-    S accept(DoWhileStatement doWhileStatement);
+    S visit(DoWhileStatement doWhileStatement);
 
-    S accept(ContinueStatement continueStatement);
+    S visit(ContinueStatement continueStatement);
 
-    S accept(BreakStatement breakStatement);
+    S visit(BreakStatement breakStatement);
 
     S visit(StructDeclaration structDeclaration);
 }

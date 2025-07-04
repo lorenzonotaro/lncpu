@@ -1,8 +1,6 @@
 package com.lnc.cc.ir;
 
-import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Ret extends IRInstruction {
     private final IROperand value;
@@ -22,6 +20,6 @@ public class Ret extends IRInstruction {
 
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 }

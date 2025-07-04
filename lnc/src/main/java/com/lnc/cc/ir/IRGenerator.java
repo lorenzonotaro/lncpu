@@ -29,7 +29,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(WhileStatement whileStatement) {
+    public Void visit(WhileStatement whileStatement) {
 
         IRBlock header = currentUnit.newBlock();
         IRBlock body = currentUnit.newBlock();
@@ -57,7 +57,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(DoWhileStatement doStmt) {
+    public Void visit(DoWhileStatement doStmt) {
 
         IRBlock body   = currentUnit.newBlock();
         IRBlock header = currentUnit.newBlock();  // test
@@ -87,7 +87,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(ContinueStatement continueStatement) {
+    public Void visit(ContinueStatement continueStatement) {
         LoopInfo loopInfo = currentUnit.getCurrentLoopInfo();
 
         if(loopInfo == null){
@@ -100,7 +100,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(BreakStatement breakStatement) {
+    public Void visit(BreakStatement breakStatement) {
         LoopInfo loopInfo = currentUnit.getCurrentLoopInfo();
 
         if(loopInfo == null){
@@ -118,7 +118,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(ForStatement forStmt) {
+    public Void visit(ForStatement forStmt) {
         // 1) Emit the initializer in the *current* (pre-header) block
         if (forStmt.initializer != null) {
             forStmt.initializer.accept(this);
@@ -174,7 +174,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(ReturnStatement returnStatement) {
+    public Void visit(ReturnStatement returnStatement) {
         IROperand value = null;
 
         if(returnStatement.value != null){
@@ -191,7 +191,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(IfStatement ifStmt) {
+    public Void visit(IfStatement ifStmt) {
         // 1) Create the four conceptual blocks:
         IRBlock header   = currentUnit.newBlock();                     // test
         IRBlock thenBlk  = currentUnit.newBlock();                     // “then” branch
@@ -271,8 +271,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public Void accept(FunctionDeclaration functionDeclaration) {
-        return super.accept(functionDeclaration);
+    public Void visit(FunctionDeclaration functionDeclaration) {
+        return super.visit(functionDeclaration);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(AssignmentExpression assignmentExpression) {
+    public IROperand visit(AssignmentExpression assignmentExpression) {
 
         var value = assignmentExpression.right.accept(this);
 
@@ -334,7 +334,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(BinaryExpression binaryExpression) {
+    public IROperand visit(BinaryExpression binaryExpression) {
 
         IROperand left = binaryExpression.left.accept(this);
         IROperand right = binaryExpression.right.accept(this);
@@ -347,7 +347,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(CallExpression callExpression) {
+    public IROperand visit(CallExpression callExpression) {
 
         List<IROperand> args = Arrays.stream(callExpression.arguments)
                 .map(a -> a.accept(this))
@@ -376,13 +376,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(IdentifierExpression identifierExpression) {
+    public IROperand visit(IdentifierExpression identifierExpression) {
         BaseSymbol symbol = resolveSymbol(identifierExpression.token);
         return new Location(symbol);
     }
 
     @Override
-    public IROperand accept(MemberAccessExpression memberAccessExpression) {
+    public IROperand visit(MemberAccessExpression memberAccessExpression) {
         IROperand left = memberAccessExpression.left.accept(this);
 
         StructDefinitionType definition = getStructDefinitionType(left, memberAccessExpression.token);
@@ -420,7 +420,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(NumericalExpression numericalExpression) {
+    public IROperand visit(NumericalExpression numericalExpression) {
 
         if(IntUtils.inByteRange(numericalExpression.value)){
             return new ImmediateOperand((byte) (numericalExpression.value & 0xFF));
@@ -430,12 +430,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(StringExpression stringExpression) {
+    public IROperand visit(StringExpression stringExpression) {
         throw new CompileException("string expressions not supported", stringExpression.token);
     }
 
     @Override
-    public IROperand accept(SubscriptExpression expr) {
+    public IROperand visit(SubscriptExpression expr) {
         // 1) lower the “array” and “index” sub-expressions
         IROperand baseOp  = expr.left.accept(this);
         IROperand idxOp   = expr.index.accept(this);
@@ -455,7 +455,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(UnaryExpression unaryExpression) {
+    public IROperand visit(UnaryExpression unaryExpression) {
         IROperand operand = unaryExpression.operand.accept(this);
         IROperand target = allocVR(operand.getTypeSpecifier());
 

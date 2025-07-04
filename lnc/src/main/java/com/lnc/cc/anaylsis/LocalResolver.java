@@ -13,7 +13,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
 
     @Override
-    public Void accept(AssignmentExpression assignmentExpression) {
+    public Void visit(AssignmentExpression assignmentExpression) {
 
         assignmentExpression.left.accept(this);
         assignmentExpression.right.accept(this);
@@ -22,7 +22,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
-    public Void accept(BinaryExpression binaryExpression) {
+    public Void visit(BinaryExpression binaryExpression) {
 
         binaryExpression.left.accept(this);
         binaryExpression.right.accept(this);
@@ -31,7 +31,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
-    public Void accept(CallExpression callExpression) {
+    public Void visit(CallExpression callExpression) {
 
         callExpression.callee.accept(this);
 
@@ -43,7 +43,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
-    public Void accept(IdentifierExpression identifierExpression) {
+    public Void visit(IdentifierExpression identifierExpression) {
 
         resolveSymbol(identifierExpression.token);
 
@@ -51,24 +51,24 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
-    public Void accept(MemberAccessExpression memberAccessExpression) {
+    public Void visit(MemberAccessExpression memberAccessExpression) {
         memberAccessExpression.left.accept(this);
 
         return null;
     }
 
     @Override
-    public Void accept(NumericalExpression numericalExpression) {
+    public Void visit(NumericalExpression numericalExpression) {
         return null;
     }
 
     @Override
-    public Void accept(StringExpression stringExpression) {
+    public Void visit(StringExpression stringExpression) {
         return null;
     }
 
     @Override
-    public Void accept(SubscriptExpression subscriptExpression) {
+    public Void visit(SubscriptExpression subscriptExpression) {
 
         subscriptExpression.left.accept(this);
         subscriptExpression.index.accept(this);
@@ -77,7 +77,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
-    public Void accept(UnaryExpression unaryExpression) {
+    public Void visit(UnaryExpression unaryExpression) {
 
         unaryExpression.operand.accept(this);
 
@@ -95,24 +95,24 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
-    public Void accept(VariableDeclaration variableDeclaration) {
+    public Void visit(VariableDeclaration variableDeclaration) {
 
         BaseSymbol symbol = new BaseSymbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern());
 
         define(symbol, variableDeclaration.isParameter);
 
-        super.accept(variableDeclaration);
+        super.visit(variableDeclaration);
 
         return null;
     }
 
     @Override
-    public Void accept(ContinueStatement continueStatement) {
+    public Void visit(ContinueStatement continueStatement) {
         return null;
     }
 
     @Override
-    public Void accept(BreakStatement breakStatement) {
+    public Void visit(BreakStatement breakStatement) {
         return null;
     }
 

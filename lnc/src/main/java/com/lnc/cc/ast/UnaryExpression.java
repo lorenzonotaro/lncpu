@@ -16,7 +16,7 @@ public class    UnaryExpression extends Expression {
 
     @Override
     public <E> E accept(IExpressionVisitor<E> visitor) {
-        return visitor.accept(this);
+        return visitor.visit(this);
     }
 
     public enum Operator {

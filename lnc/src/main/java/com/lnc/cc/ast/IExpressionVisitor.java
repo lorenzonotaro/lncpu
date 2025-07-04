@@ -1,21 +1,21 @@
 package com.lnc.cc.ast;
 
 public interface IExpressionVisitor<E> {
-    E accept(AssignmentExpression assignmentExpression);
+    E visit(AssignmentExpression assignmentExpression);
 
-    E accept(BinaryExpression binaryExpression);
+    E visit(BinaryExpression binaryExpression);
 
-    E accept(CallExpression callExpression);
+    E visit(CallExpression callExpression);
 
-    E accept(IdentifierExpression identifierExpression);
+    E visit(IdentifierExpression identifierExpression);
 
-    E accept(MemberAccessExpression memberAccessExpression);
+    E visit(MemberAccessExpression memberAccessExpression);
 
-    E accept(NumericalExpression numericalExpression);
+    E visit(NumericalExpression numericalExpression);
 
-    E accept(StringExpression stringExpression);
+    E visit(StringExpression stringExpression);
 
-    E accept(SubscriptExpression subscriptExpression);
+    E visit(SubscriptExpression subscriptExpression);
 
-    E accept(UnaryExpression unaryExpression);
+    E visit(UnaryExpression unaryExpression);
 }

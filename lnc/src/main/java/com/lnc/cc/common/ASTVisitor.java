@@ -12,7 +12,7 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     }
 
     @Override
-    public Void accept(BlockStatement blockStatement){
+    public Void visit(BlockStatement blockStatement){
         for (Statement statement : blockStatement.statements) {
             visitStatement(statement);
         }
@@ -20,13 +20,13 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     }
 
     @Override
-    public Void accept(ExpressionStatement expressionStatement){
+    public Void visit(ExpressionStatement expressionStatement){
         expressionStatement.expression.accept(this);
         return null;
     }
 
     @Override
-    public Void accept(ForStatement forStatement){
+    public Void visit(ForStatement forStatement){
         visitStatement(forStatement.initializer);
         forStatement.condition.accept(this);
         forStatement.body.accept(this);
@@ -35,13 +35,13 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     }
 
     @Override
-    public Void accept(FunctionDeclaration functionDeclaration){
+    public Void visit(FunctionDeclaration functionDeclaration){
         visitStatement(functionDeclaration.body);
         return null;
     }
 
     @Override
-    public Void accept(IfStatement ifStatement){
+    public Void visit(IfStatement ifStatement){
         ifStatement.condition.accept(this);
         visitStatement(ifStatement.thenStatement);
         if (ifStatement.elseStatement != null) {
@@ -51,13 +51,13 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     }
 
     @Override
-    public Void accept(ReturnStatement returnStatement){
+    public Void visit(ReturnStatement returnStatement){
         returnStatement.value.accept(this);
         return null;
     }
 
     @Override
-    public Void accept(VariableDeclaration variableDeclaration){
+    public Void visit(VariableDeclaration variableDeclaration){
         if (variableDeclaration.initializer != null) {
             variableDeclaration.initializer.accept(this);
         }
@@ -65,14 +65,14 @@ public abstract class ASTVisitor<E> implements IASTVisitor<Void, E> {
     }
 
     @Override
-    public Void accept(WhileStatement whileStatement){
+    public Void visit(WhileStatement whileStatement){
         whileStatement.condition.accept(this);
         visitStatement(whileStatement.body);
         return null;
     }
 
     @Override
-    public Void accept(DoWhileStatement doWhileStatement){
+    public Void visit(DoWhileStatement doWhileStatement){
         doWhileStatement.condition.accept(this);
         visitStatement(doWhileStatement.body);
         return null;

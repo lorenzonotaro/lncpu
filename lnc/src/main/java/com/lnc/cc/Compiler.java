@@ -10,7 +10,7 @@ import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
 import com.lnc.cc.ir.IRPrinter;
-import com.lnc.cc.optimization.LinearOptimizer;
+import com.lnc.cc.optimization.linear.LinearOptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
