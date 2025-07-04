@@ -15,37 +15,6 @@ public class Call extends IRInstruction {
         this.returnTarget = returnTarget;
         this.callee = callee;
         this.arguments = arguments;
-
-        if(returnTarget != null && returnTarget.type == IROperand.Type.VIRTUAL_REGISTER){
-            VirtualRegister target = (VirtualRegister) returnTarget;
-            target.checkReleased();
-
-            target.setRegisterClass(RegisterClass.RETURN);
-        }
-
-        if(callee.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)callee).checkReleased();
-        }
-
-        for (IROperand irOperand : arguments) {
-            if (irOperand.type == IROperand.Type.VIRTUAL_REGISTER) {
-                ((VirtualRegister) irOperand).checkReleased();
-            }
-        }
-
-        if(callee instanceof IReferenceable rop){
-            rop.addRead(this);
-        }
-
-        for (IROperand argument : arguments) {
-            if (argument instanceof IReferenceable rop) {
-                rop.addRead(this);
-            }
-        }
-
-        if(returnTarget instanceof IReferenceable rop){
-            rop.addWrite(this);
-        }
     }
 
     public IROperand getReturnTarget() {
@@ -62,17 +31,23 @@ public class Call extends IRInstruction {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("call ");
 
-        if(returnTarget != null)
+        if (returnTarget != null && returnTarget instanceof VirtualRegister) {
             sb.append(returnTarget).append(" <- ");
+        }
+
+        sb.append("call ");
 
         sb.append(callee);
 
-        for (int i = 0; i < arguments.length; i++) {
-            sb.append(", ");
-            sb.append(arguments[i]);
+        if( arguments != null && arguments.length > 0) {
+            sb.append("(");
+            for (int i = 0; i < arguments.length; i++) {
+                sb.append(", ");
+                sb.append(arguments[i]);
 
+            }
+            sb.append(")");
         }
         return sb.toString();
     }

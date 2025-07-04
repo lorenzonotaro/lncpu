@@ -1,6 +1,8 @@
 package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.ir.IIROperandVisitor;
+import com.lnc.cc.types.I8Type;
+import com.lnc.cc.types.TypeSpecifier;
 
 public class ImmediateOperand extends IROperand {
     private final byte value;
@@ -20,12 +22,12 @@ public class ImmediateOperand extends IROperand {
     }
 
     @Override
-    public String asm() {
-        return String.format("0x%02X", value & 0xFF);
+    public <T> T accept(IIROperandVisitor<T> visitor) {
+        return visitor.accept(this);
     }
 
     @Override
-    public <T> T accept(IIROperandVisitor<T> visitor) {
-        return visitor.accept(this);
+    public TypeSpecifier getTypeSpecifier() {
+        return new I8Type();
     }
 }

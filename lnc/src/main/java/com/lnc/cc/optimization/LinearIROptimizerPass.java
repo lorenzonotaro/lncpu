@@ -1,5 +1,6 @@
 package com.lnc.cc.optimization;
 
+import com.lnc.cc.common.StructMemberAccess;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
 
@@ -64,16 +65,6 @@ public abstract class LinearIROptimizerPass implements ILinearIRVisitor<Boolean,
     }
 
     @Override
-    public Boolean accept(Not not) {
-        return false;
-    }
-
-    @Override
-    public Boolean accept(Neg neg) {
-        return false;
-    }
-
-    @Override
     public Boolean accept(Ret sub) {
         return false;
     }
@@ -90,31 +81,6 @@ public abstract class LinearIROptimizerPass implements ILinearIRVisitor<Boolean,
 
     @Override
     public Boolean accept(Load load) {
-        return false;
-    }
-
-    @Override
-    public Boolean accept(Jlt jle) {
-        return false;
-    }
-
-    @Override
-    public Boolean accept(Jeq je) {
-        return false;
-    }
-
-    @Override
-    public Boolean accept(Jle jle) {
-        return false;
-    }
-
-    @Override
-    public Boolean accept(Inc inc) {
-        return false;
-    }
-
-    @Override
-    public Boolean accept(Dec dec) {
         return false;
     }
 
@@ -139,12 +105,27 @@ public abstract class LinearIROptimizerPass implements ILinearIRVisitor<Boolean,
     }
 
     @Override
-    public Boolean accept(RegisterDereference rd) {
+    public Boolean accept(Location location) {
         return null;
     }
 
     @Override
-    public Boolean accept(Location location) {
+    public Boolean accept(CondJump jle) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(Unary unary) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(StructMemberAccess structMemberAccess) {
+        return null;
+    }
+
+    @Override
+    public Boolean accept(ArrayElementAccess arrayElementAccess) {
         return null;
     }
 

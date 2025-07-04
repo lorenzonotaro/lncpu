@@ -2,9 +2,9 @@ package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.common.AbstractSymbol;
 import com.lnc.cc.ir.IIROperandVisitor;
-import com.lnc.cc.ir.ReferenceableIROperand;
+import com.lnc.cc.types.TypeSpecifier;
 
-public class Location extends ReferenceableIROperand {
+public class Location extends IROperand {
     private AbstractSymbol symbol;
 
     public Location(AbstractSymbol symbol) {
@@ -22,12 +22,12 @@ public class Location extends ReferenceableIROperand {
     }
 
     @Override
-    public String asm() {
-        return "[" + symbol.getAsmName() + "]";
+    public <T> T accept(IIROperandVisitor<T> visitor) {
+        return visitor.accept(this);
     }
 
     @Override
-    public <T> T accept(IIROperandVisitor<T> visitor) {
-        return visitor.accept(this);
+    public TypeSpecifier getTypeSpecifier() {
+        return symbol.getType();
     }
 }

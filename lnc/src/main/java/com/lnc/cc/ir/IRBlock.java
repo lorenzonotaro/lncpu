@@ -61,4 +61,8 @@ public class IRBlock {
     public void addSuccessor(IRBlock block) {
         this.successors.add(block);
     }
+
+    public Set<IRBlock> getSuccessors() {
+        return successors;
+    }
 }

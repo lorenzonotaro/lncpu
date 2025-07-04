@@ -6,7 +6,6 @@ import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
-import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
@@ -20,6 +19,7 @@ import com.lnc.common.frontend.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Compiler {
@@ -93,12 +93,14 @@ public class Compiler {
         LinearOptimizer opt = new LinearOptimizer(irGenerator.getResult());
         var optimizationResult = opt.linearizeAndOptimize();
 
-        Logger.setProgramState("codegen");
+/*        Logger.setProgramState("codegen");
         CodeGenerator codeGenerator = new CodeGenerator(optimizationResult);
 
         codeGenerator.generate();
 
-        this.output = codeGenerator.getOutput();
+        this.output = codeGenerator.getOutput();*/
+
+        output = new ArrayList<>(); // While we don't have a code generator, we still need to return something
 
         if(LNC.settings.get("--standalone", Boolean.class)){
             return standalone(optimizationResult);

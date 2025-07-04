@@ -18,7 +18,7 @@ public class LinearOptimizer extends MultiLinearIROptimizerPass {
 
     public OptimizationResult linearizeAndOptimize() {
 
-        List<LinearIRUnit> linearIRUnits = new ArrayList<>();
+/*        List<LinearIRUnit> linearIRUnits = new ArrayList<>();
 
         IRLinearizer linearizer = new IRLinearizer();
 
@@ -37,7 +37,9 @@ public class LinearOptimizer extends MultiLinearIROptimizerPass {
             linearIRUnits.add(linearIRUnit);
         }
 
-        return new OptimizationResult(ir, linearIRUnits);
+        return new OptimizationResult(ir, linearIRUnits);*/
+
+        return null;
     }
 
 

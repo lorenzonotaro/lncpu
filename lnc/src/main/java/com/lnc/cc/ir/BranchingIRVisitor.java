@@ -27,8 +27,8 @@ public abstract class BranchingIRVisitor implements IIRInstructionVisitor<Void> 
             instruction.accept(this);
         }
 
-        if(block.hasNext()) {
-            visit(block.getNext());
+        for (IRBlock successor : block.getSuccessors()) {
+            visit(successor);
         }
 
         return true;

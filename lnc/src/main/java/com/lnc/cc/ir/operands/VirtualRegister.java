@@ -3,11 +3,13 @@ package com.lnc.cc.ir.operands;
 import com.lnc.cc.codegen.Register;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.IIROperandVisitor;
-import com.lnc.cc.ir.ReferenceableIROperand;
+import com.lnc.cc.types.TypeSpecifier;
 
-public class VirtualRegister extends ReferenceableIROperand {
+public class VirtualRegister extends IROperand {
 
     private static long virtualRegisterCounter = 0;
+
+    private final TypeSpecifier typeSpecifier;
 
     private RegisterClass registerClass;
 
@@ -19,8 +21,9 @@ public class VirtualRegister extends ReferenceableIROperand {
 
     private Register assignedPhysicalRegister;
 
-    public VirtualRegister(int registerNumber) {
+    public VirtualRegister(int registerNumber, TypeSpecifier typeSpecifier) {
         super(Type.VIRTUAL_REGISTER);
+        this.typeSpecifier = typeSpecifier;
         this.instanceId = virtualRegisterCounter++;
         this.registerNumber = registerNumber;
         this.released = false;
@@ -71,12 +74,12 @@ public class VirtualRegister extends ReferenceableIROperand {
     }
 
     @Override
-    public String asm() {
-        return assignedPhysicalRegister == null ? "UNASSIGNED" : assignedPhysicalRegister.toString();
+    public <T> T accept(IIROperandVisitor<T> visitor) {
+        return visitor.accept(this);
     }
 
     @Override
-    public <T> T accept(IIROperandVisitor<T> visitor) {
-        return visitor.accept(this);
+    public TypeSpecifier getTypeSpecifier() {
+        return typeSpecifier;
     }
 }

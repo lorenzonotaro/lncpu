@@ -11,22 +11,6 @@ public class Move extends IRInstruction {
         super();
         this.source = source;
         this.dest = dest;
-
-        if(source.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)source).checkReleased();
-        }
-
-        if(dest.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)dest).checkReleased();
-        }
-
-        if(source instanceof IReferenceable rop){
-            rop.addRead(this);
-        }
-
-        if(dest instanceof IReferenceable rop) {
-            rop.addWrite(this);
-        }
     }
 
 
@@ -40,7 +24,7 @@ public class Move extends IRInstruction {
 
     @Override
     public String toString() {
-        return String.format("mov %s, %s", source, dest);
+        return String.format("move %s <- %s", dest, source);
     }
 
     @Override

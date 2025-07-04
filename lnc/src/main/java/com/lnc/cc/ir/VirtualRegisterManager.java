@@ -1,6 +1,7 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.*;
 
@@ -14,8 +15,12 @@ public class VirtualRegisterManager {
     }
 
 
-    VirtualRegister getRegister(){
-        return new VirtualRegister(virtualRegisters.size());
+    VirtualRegister getRegister(TypeSpecifier typeSpecifier){
+        VirtualRegister vr = new VirtualRegister(virtualRegisters.size(), typeSpecifier);
+
+        virtualRegisters.add(vr);
+
+        return vr;
     }
 
     public Set<VirtualRegister> getAllRegisters() {

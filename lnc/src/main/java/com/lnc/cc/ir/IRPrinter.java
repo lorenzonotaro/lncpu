@@ -13,32 +13,8 @@ public class IRPrinter extends BranchingIRVisitor{
     }
 
     @Override
-    public Void accept(Dec dec) {
-        sb.append("    ").append(dec.toString()).append("\n");
-        return null;
-    }
-
-    @Override
-    public Void accept(Inc inc) {
-        sb.append("    ").append(inc.toString()).append("\n");
-        return null;
-    }
-
-    @Override
-    public Void accept(Jle jle) {
-        sb.append("    ").append(jle.toString()).append("\n");
-        return null;
-    }
-
-    @Override
-    public Void accept(Jeq je) {
-        sb.append("    ").append(je.toString()).append("\n");
-        return null;
-    }
-
-    @Override
-    public Void accept(Jlt jle) {
-        sb.append("    ").append(jle.toString()).append("\n");
+    public Void accept(CondJump condJump) {
+        sb.append("    ").append(condJump.toString()).append("\n");
         return null;
     }
 
@@ -67,18 +43,6 @@ public class IRPrinter extends BranchingIRVisitor{
     }
 
     @Override
-    public Void accept(Neg neg) {
-        sb.append("    ").append(neg.toString()).append("\n");
-        return null;
-    }
-
-    @Override
-    public Void accept(Not not) {
-        sb.append("    ").append(not.toString()).append("\n");
-        return null;
-    }
-
-    @Override
     public Void accept(Bin bin) {
         sb.append("    ").append(bin.toString()).append("\n");
         return null;
@@ -87,6 +51,12 @@ public class IRPrinter extends BranchingIRVisitor{
     @Override
     public Void accept(Call call) {
         sb.append("    ").append(call.toString()).append("\n");
+        return null;
+    }
+
+    @Override
+    public Void accept(Unary unary) {
+        sb.append("    ").append(unary.toString()).append("\n");
         return null;
     }
 
@@ -102,7 +72,7 @@ public class IRPrinter extends BranchingIRVisitor{
             return false;
         }
 
-        sb.append("\n_s").append(block.getId()).append(":\n");
+        sb.append("\n_l").append(block.getId()).append(":\n");
 
         super.visit(block);
         return true;

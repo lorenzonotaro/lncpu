@@ -5,31 +5,16 @@ import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Bin extends IRInstruction {
+    private final IROperand target;
     public final IROperand left;
     public final IROperand right;
     private final BinaryExpression.Operator operator;
-
-    public Bin(IROperand left, IROperand right, BinaryExpression.Operator operator) {
+    public Bin(IROperand target, IROperand left, IROperand right, BinaryExpression.Operator operator) {
         super();
+        this.target = target;
         this.left = left;
         this.right = right;
         this.operator = operator;
-
-        if(left.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)left).checkReleased();
-        }
-
-        if(right.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)right).checkReleased();
-        }
-
-        if(left instanceof IReferenceable rop){
-            rop.addRead(this);
-        }
-
-        if(right instanceof IReferenceable rop) {
-            rop.addRead(this);
-        }
 
         if(operator != BinaryExpression.Operator.ADD && operator != BinaryExpression.Operator.SUB && operator != BinaryExpression.Operator.AND && operator != BinaryExpression.Operator.OR && operator != BinaryExpression.Operator.XOR){
             throw new RuntimeException("invalid operator for Bin: %s".formatted(operator));
@@ -39,7 +24,7 @@ public class Bin extends IRInstruction {
 
     @Override
     public String toString() {
-        return String.format("%s %s, %s", this.operator.toString().toLowerCase(), this.left, this.right);
+        return String.format("%s <- %s %s, %s", this.target, this.operator.toString(), this.left, this.right);
     }
 
     @Override

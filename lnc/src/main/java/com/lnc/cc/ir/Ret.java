@@ -9,16 +9,6 @@ public class Ret extends IRInstruction {
 
     public Ret(IROperand value) {
         this.value = value;
-
-        if(value != null && value.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)value).checkReleased();
-            ((VirtualRegister)value).setRegisterClass(RegisterClass.RETURN);
-        }
-
-        if(value instanceof IReferenceable rop){
-            rop.addRead(this);
-        }
-
     }
 
     public IROperand getValue() {

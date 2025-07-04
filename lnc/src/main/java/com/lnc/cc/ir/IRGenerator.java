@@ -1,6 +1,5 @@
 package com.lnc.cc.ir;
 
-import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.ir.operands.*;
@@ -8,14 +7,10 @@ import com.lnc.cc.types.*;
 import com.lnc.common.IntUtils;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
-import com.lnc.common.frontend.TokenType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
 
 public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
@@ -45,7 +40,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         currentUnit.enterLoop(new LoopInfo(header, next));
 
-        branchIfFalse(whileStatement.condition, body, next);
+        branch(whileStatement.condition, body, next);
 
         header.addSuccessor(body);
         header.addSuccessor(next);
@@ -82,7 +77,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // branch *if false* to exit  (i.e. if !cond, drop out)
         header.addSuccessor(exit);
         header.addSuccessor(body);
-        branchIfFalse(doStmt.condition, /* false→ */ exit, /* true→ */ body);
+        branch(doStmt.condition, body, exit);
 
         currentUnit.exitLoop();
 
@@ -146,7 +141,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // 4) Emit the test (fall into body if true, else to exit)
         if (forStmt.condition != null) {
             // branchIfFalse(cond, falseTarget, trueTarget)
-            branchIfFalse(forStmt.condition, exit, body);
+            branch(forStmt.condition, body, exit);
         } else {
             // no condition means “always true”
             emit(new Goto(body));
@@ -213,7 +208,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         //    branchIfFalse(cond, falseTarget, trueTarget)
         if (ifStmt.condition != null) {
             IRBlock falseTarget = elseBlk != null ? elseBlk : exitBlk;
-            branchIfFalse(ifStmt.condition, falseTarget, thenBlk);
+            branch(ifStmt.condition, thenBlk, falseTarget);
         } else {
             // “if (true)” → always go to thenBlk
             emit(new Goto(thenBlk));
@@ -242,15 +237,15 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
 
-    private void branchIfFalse(Expression condExpr,
-                               IRBlock taken, IRBlock notTaken) {
+    private void branch(Expression condExpr,
+                               IRBlock takenIfTrue, IRBlock takenIfFalse) {
         IROperand left, right;
-        CondJump.Cond cond;
+        CondJump.Cond originalCond;
 
         if (condExpr instanceof BinaryExpression be) {
             left  = be.left .accept(this);
             right = be.right.accept(this);
-            cond   = switch (be.operator) {
+            originalCond = switch (be.operator) {
                 case EQ -> CondJump.Cond.EQ;
                 case NE -> CondJump.Cond.NE;
                 case LT -> CondJump.Cond.LT;
@@ -260,11 +255,19 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 default -> throw new CompileException("unsupported comparison", be.token);
             };
         } else {
-            left  = condExpr.accept(this);
-            right = new ImmediateOperand((byte)0);
-            cond   = CondJump.Cond.NE;
+            left         = condExpr.accept(this);
+            right        = new ImmediateOperand((byte)0);
+            originalCond = CondJump.Cond.NE;  // “cond != 0”
         }
-        emit(new CondJump(cond, left, right, /* true→ */ taken, /* false→ */ notTaken));
+
+        // Emit with the original relation, but swap targets
+        emit(new CondJump(
+                originalCond,
+                left,
+                right,
+                /* true→ */ takenIfTrue,
+                /* false→*/ takenIfFalse
+        ));
     }
 
     @Override
@@ -335,9 +338,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         IROperand left = binaryExpression.left.accept(this);
         IROperand right = binaryExpression.right.accept(this);
-        emit(new Bin(left, right, binaryExpression.operator));
 
-        return left;
+        IROperand target = allocVR(left.getTypeSpecifier());
+
+        emit(new Bin(target, left, right, binaryExpression.operator));
+
+        return target;
     }
 
     @Override
@@ -350,9 +356,17 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // 2) generate IR for the callee
         IROperand callee = callExpression.callee.accept(this);
 
+        TypeSpecifier returnType = null;
+
+        if(callee.getTypeSpecifier() instanceof FunctionType ft){
+            returnType = ft.returnType;
+        }else{
+            throw new CompileException("callee is not a function", callExpression.callee.token);
+        }
+
         // 3) allocate a destination VR *only* if returnType != VOID
         VirtualRegister dest = callExpression.getTypeSpecifier().type != TypeSpecifier.Type.VOID
-                ? allocVR()
+                ? allocVR(returnType)
                 : null;
 
         // 4) emit the abstract Call node
@@ -377,7 +391,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("struct type not defined", memberAccessExpression.token);
         }
 
-        return new Location(new StructAccessSymbol(((Location)left).getSymbol(), memberAccessExpression.right.lexeme));
+        StructFieldEntry fieldEntry = definition.getField(memberAccessExpression.right.lexeme);
+
+        if (fieldEntry == null) throw new CompileException("no such field", memberAccessExpression.right);
+
+        return new StructMemberAccess(left, fieldEntry);
     }
 
     private static StructDefinitionType getStructDefinitionType(IROperand left, Token operatorToken) {
@@ -417,153 +435,36 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     @Override
-    public IROperand accept(SubscriptExpression subscriptExpression) {
+    public IROperand accept(SubscriptExpression expr) {
+        // 1) lower the “array” and “index” sub-expressions
+        IROperand baseOp  = expr.left.accept(this);
+        IROperand idxOp   = expr.index.accept(this);
 
-        IROperand array = subscriptExpression.left.accept(this);
+        // 2) check at semantic time that left.type is array or pointer
+        TypeSpecifier leftType = expr.left.getTypeSpecifier();
+        if (leftType instanceof AbstractSubscriptableType at) {// 3) fetch element type and stride
+            TypeSpecifier elemType = at.getBaseType();
+            int stride = elemType.allocSize();
 
-        if(array.type == IROperand.Type.LOCATION) {
-            Location loc = (Location) array;
-
-            TypeSpecifier baseType;
-
-            if (loc.getSymbol().getType() instanceof AbstractSubscriptableType subscriptableType){
-                baseType = subscriptableType.getBaseType();
-            } else{
-                throw new CompileException("subscript on non-array type", subscriptExpression.token);
-            }
-
-            IROperand index = subscriptExpression.index.accept(this);
-
-            if(index.type == IROperand.Type.IMMEDIATE){
-                return new Location(new ArrayAccessSymbol(loc.getSymbol(), ((ImmediateOperand) index).getValue()));
-            }else if (index.type == IROperand.Type.LOCATION) {
-                VirtualRegister indexReg;
-                var vr = allocVR();
-                vr.setRegisterClass(RegisterClass.INDEX);
-                emit(new Load(vr, (ReferenceableIROperand) index));
-
-                // for now, repeatedly add the size to the index
-                int size = baseType.allocSize();
-                for (int i = 1; i < size; ++i) {
-                    emit(new Bin(vr, vr, BinaryExpression.Operator.ADD));
-                }
-
-                indexReg = vr;
-
-                return new RegisterDereference(indexReg, baseType, 0);
-            } else if(index.type == IROperand.Type.VIRTUAL_REGISTER){
-                VirtualRegister indexReg = (VirtualRegister) index;
-
-                // for now, repeatedly add the size to the index
-                int size = baseType.allocSize();
-                for (int i = 1; i < size; ++i) {
-                    emit(new Bin(indexReg, indexReg, BinaryExpression.Operator.ADD));
-                }
-
-                emit(new Bin(indexReg, new AddressOf(loc.getSymbol()), BinaryExpression.Operator.ADD));
-
-                return new RegisterDereference(indexReg, baseType, 0);
-
-            } else {
-                throw new CompileException("invalid type for subscript index", subscriptExpression.token);
-            }
-        }else if(array.type == IROperand.Type.REGISTER_DEREFERENCE){
-            RegisterDereference dereference = (RegisterDereference) array;
-
-            TypeSpecifier baseType;
-
-            if(dereference.dereferencedType instanceof AbstractSubscriptableType subscriptableType){
-                baseType = subscriptableType.getBaseType();
-            }else{
-                throw new CompileException("subscript on non-array type", subscriptExpression.token);
-            }
-
-            IROperand index = subscriptExpression.index.accept(this);
-
-            if(index.type == IROperand.Type.IMMEDIATE){
-                dereference.addToOffset(((ImmediateOperand) index).getValue());
-                return dereference;
-            }else {
-                if (index.type == IROperand.Type.LOCATION) {
-
-
-                    Location locIndex = (Location) index;
-
-                    if(baseType.allocSize() == 1){
-                        emit(new Bin(dereference.getReg(), index, BinaryExpression.Operator.ADD));
-                    }else{
-                        VirtualRegister indexReg;
-                        var tempVr = allocVR();
-                        emit(new Load(tempVr, locIndex));
-
-                        // for now, repeatedly add the size to the index
-                        int size = baseType.allocSize();
-                        for (int i = 1; i < size; ++i) {
-                            emit(new Bin(dereference.getReg(), tempVr, BinaryExpression.Operator.ADD));
-                        }
-
-
-                        return dereference;
-                    }
-
-                } else if (index.type == IROperand.Type.VIRTUAL_REGISTER) {
-
-                    for (int i = 1; i < baseType.allocSize(); ++i) {
-                        emit(new Bin(dereference.getReg(), index, BinaryExpression.Operator.ADD));
-                    }
-                }
-
-                return dereference;
-            }
-        }else{
-            throw new CompileException("invalid type for subscript", subscriptExpression.token);
+            // 4) emit NO loads/stores here—just make the abstract IR node
+            return new ArrayElementAccess(baseOp, idxOp, elemType, stride);
+        } else {
+            throw new CompileException(
+                    "Subscript on non-array/pointer type", expr.token);
         }
     }
 
     @Override
     public IROperand accept(UnaryExpression unaryExpression) {
         IROperand operand = unaryExpression.operand.accept(this);
+        IROperand target = allocVR(operand.getTypeSpecifier());
 
+        emit(new Unary(target, operand, unaryExpression.operator));
 
-        switch (unaryExpression.operator){
-            case NOT -> {
-                emit(new Not(operand));
-                return operand;
-            }
-            case NEGATE -> {
-                emit(new Neg(operand));
-                return operand;
-            }
-            case DEREFERENCE -> throw new Error("dereference IR not implemented");
-            case ADDRESS_OF -> throw new Error("address of IR not implemented");
-            case INCREMENT -> {
-                if(unaryExpression.associativity == UnaryExpression.Associativity.LEFT){
-                    emit(new Inc(operand));
-                    return operand;
-                }else{
-                    var vr = allocVR();
-                    emit(new Move(vr, operand));
-                    emit(new Inc(operand));
-                    return vr;
-                }
-            }
-            case DECREMENT -> {
-                if(unaryExpression.associativity == UnaryExpression.Associativity.LEFT){
-                    emit(new Dec(operand));
-                    return operand;
-                }else{
-                    var vr = allocVR();
-                    emit(new Move(operand, vr));
-                    emit(new Dec(operand));
-                    return vr;
-                }
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + unaryExpression.operator);
-        }
+        return target;
     }
-
-    private VirtualRegister allocVR() {
-        return currentUnit.getVrManager().getRegister();
+    private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
+        return currentUnit.getVrManager().getRegister(typeSpecifier);
     }
 
     private void emit(IRInstruction instruction){

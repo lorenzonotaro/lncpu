@@ -1,38 +1,30 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.Location;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Load extends IRInstruction {
-    private final ReferenceableIROperand dest;
-    private final ReferenceableIROperand src;
+    private final IROperand dest;
+    private final Location src;
 
-    public Load(ReferenceableIROperand dest, ReferenceableIROperand src) {
+    public Load(IROperand dest, Location src) {
         super();
         this.dest = dest;
         this.src = src;
-
-        if(dest instanceof VirtualRegister vr)
-            vr.checkReleased();
-
-        if(src instanceof VirtualRegister vr)
-            vr.checkReleased();
-
-        this.src.addRead(this);
-        this.dest.addWrite(this);
-
     }
 
-    public ReferenceableIROperand getDest() {
+    public IROperand getDest() {
         return dest;
     }
 
-    public ReferenceableIROperand getSrc() {
+    public Location getSrc() {
         return src;
     }
 
     @Override
     public String toString() {
-        return "load " + src + " -> " + dest;
+        return String.format("load %s <- %s", dest, src);
     }
 
     @Override

@@ -12,16 +12,6 @@ public class Store extends IRInstruction {
         super();
         this.dest = dest;
         this.value = value;
-
-        if(value.type == IROperand.Type.VIRTUAL_REGISTER){
-            ((VirtualRegister)value).checkReleased();
-        }
-
-        dest.addWrite(this);
-
-        if(value instanceof IReferenceable rop){
-            rop.addRead(this);
-        }
     }
 
     public Location getDest() {
@@ -34,7 +24,7 @@ public class Store extends IRInstruction {
 
     @Override
     public String toString() {
-        return String.format("store %s -> %s", value, dest);
+        return String.format("store %s <- %s", dest.toString(), value.toString());
     }
 
     @Override
