@@ -459,7 +459,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IROperand operand = unaryExpression.operand.accept(this);
         IROperand target = allocVR(operand.getTypeSpecifier());
 
-        emit(new Unary(target, operand, unaryExpression.operator));
+        emit(new Unary(target, operand, unaryExpression.operator, unaryExpression.unaryPosition));
 
         return target;
     }

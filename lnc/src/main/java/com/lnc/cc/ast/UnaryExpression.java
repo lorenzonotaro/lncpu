@@ -5,13 +5,13 @@ import com.lnc.common.frontend.Token;
 public class    UnaryExpression extends Expression {
     public final Expression operand;
     public final Operator operator;
-    public final Associativity associativity;
+    public final UnaryPosition unaryPosition;
 
-    public UnaryExpression(Expression operand, Token token, Associativity associativity) {
+    public UnaryExpression(Expression operand, Token token, UnaryPosition unaryPosition) {
         super(Expression.Type.UNARY, token);
         this.operand = operand;
         this.operator = Operator.fromTokenType(token);
-        this.associativity = associativity;
+        this.unaryPosition = unaryPosition;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class    UnaryExpression extends Expression {
         }
     }
 
-    public enum Associativity {
+    public enum UnaryPosition {
         LEFT,
         RIGHT
     }

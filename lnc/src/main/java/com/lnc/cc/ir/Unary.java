@@ -8,11 +8,13 @@ public class Unary extends IRInstruction {
     private final IROperand target;
     private final IROperand operand;
     private final UnaryExpression.Operator operator;
+    private final UnaryExpression.UnaryPosition unaryPosition;
 
-    public Unary(IROperand target, IROperand operand, UnaryExpression.Operator operator) {
+    public Unary(IROperand target, IROperand operand, UnaryExpression.Operator operator, UnaryExpression.UnaryPosition unaryPosition) {
         this.target = target;
         this.operand = operand;
         this.operator = operator;
+        this.unaryPosition = unaryPosition;
     }
 
     @Override
@@ -23,5 +25,9 @@ public class Unary extends IRInstruction {
     @Override
     public String toString() {
         return String.format("%s <- %s %s", target, operator, operand);
+    }
+
+    public UnaryExpression.UnaryPosition getUnaryPosition() {
+        return unaryPosition;
     }
 }
