@@ -45,16 +45,6 @@ public class VirtualRegister extends ReferenceableIROperand {
         return instanceId;
     }
 
-    public void release() {
-        released = true;
-    }
-
-    public void checkReleased() {
-        if(released) {
-            throw new IllegalStateException("Register already released");
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

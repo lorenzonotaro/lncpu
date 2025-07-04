@@ -70,6 +70,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         check(rightType, leftType, assignmentExpression.operator);
 
+        assignmentExpression.setTypeSpecifier(leftType);
+
         return leftType;
     }
 
@@ -81,6 +83,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         TypeSpecifier rightType = binaryExpression.right.accept(this);
 
         check(leftType, rightType, binaryExpression.token);
+
+        binaryExpression.setTypeSpecifier(leftType);
 
         return leftType;
     }
@@ -104,12 +108,18 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             check(argumentType, function.parameterTypes[i], callExpression.arguments[i].token);
         }
 
+        callExpression.setTypeSpecifier(function.returnType);
+
         return function.returnType;
     }
 
     @Override
     public TypeSpecifier accept(IdentifierExpression identifierExpression) {
-        return resolveSymbol(identifierExpression.token).getType();
+        var type = resolveSymbol(identifierExpression.token).getType();
+
+        identifierExpression.setTypeSpecifier(type);
+
+        return type;
     }
 
     @Override
@@ -129,7 +139,10 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) baseType);
 
-            return fieldEntry.getField().declarator.typeSpecifier();
+            TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier();
+            memberAccessExpression.setTypeSpecifier(typeSpecifier);
+
+            return typeSpecifier;
         }else if(memberAccessExpression.accessOperator.type == TokenType.DOT){
             if(left.type != TypeSpecifier.Type.STRUCT){
                 throw new CompileException("base operand of '.' operator has non-struct type '" + left + "'", memberAccessExpression.token);
@@ -137,7 +150,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) left);
 
-            return fieldEntry.getField().declarator.typeSpecifier();
+            TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier();
+            memberAccessExpression.setTypeSpecifier(typeSpecifier);
+            return typeSpecifier;
         }
 
         throw new CompileException("unexpected access operator", memberAccessExpression.token);
@@ -157,7 +172,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier accept(NumericalExpression numericalExpression) {
-        return new I8Type();
+        I8Type i8Type = new I8Type();
+        numericalExpression.setTypeSpecifier(i8Type);
+        return i8Type;
     }
 
     @Override
@@ -180,6 +197,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             throw new CompileException("array subscript is not an integer", subscriptExpression.token);
         }
 
+        subscriptExpression.setTypeSpecifier(pointer.getBaseType());
+
         return pointer.getBaseType();
     }
 
@@ -189,16 +208,25 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
             TypeSpecifier operandType = unaryExpression.operand.accept(this);
             if(operandType.type == TypeSpecifier.Type.POINTER){
-                return ((PointerType)operandType).getBaseType();
+
+                TypeSpecifier baseType = ((PointerType) operandType).getBaseType();
+                unaryExpression.setTypeSpecifier(baseType);
+
+                return baseType;
             }else{
                 throw new CompileException("dereferencing non-pointer type", unaryExpression.token);
             }
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
             TypeSpecifier operandType = unaryExpression.operand.accept(this);
-            return new PointerType(operandType);
+            PointerType pointerType = new PointerType(operandType);
+            unaryExpression.setTypeSpecifier(pointerType);
+            return pointerType;
         }
+        var type = unaryExpression.operand.accept(this);
 
-        return unaryExpression.operand.accept(this);
+        unaryExpression.setTypeSpecifier(type);
+
+        return type;
     }
 
     private void check(TypeSpecifier type, TypeSpecifier expectedType, Token location) {

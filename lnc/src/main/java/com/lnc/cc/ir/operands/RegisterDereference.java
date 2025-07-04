@@ -3,7 +3,6 @@ package com.lnc.cc.ir.operands;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.ir.IRInstruction;
-import com.lnc.cc.ir.IReferenceable;
 import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.Set;

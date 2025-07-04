@@ -7,11 +7,7 @@ public interface IIRInstructionVisitor<E> {
 
     E accept(Inc inc);
 
-    E accept(Jle jle);
-
-    E accept(Jeq je);
-
-    E accept(Jlt jle);
+    E accept(CondJump jle);
 
     E accept(Load load);
 

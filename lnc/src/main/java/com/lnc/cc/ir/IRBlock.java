@@ -15,7 +15,8 @@ public class IRBlock {
 
     private final LinkedList<IRInstruction> instructions = new LinkedList<>();
 
-    private IRBlock next;
+    private Set<IRBlock> predecessors = new HashSet<>();
+    private Set<IRBlock> successors = new HashSet<>();
 
     public IRBlock(IRUnit unit, int id) {
         this.unit = unit;
@@ -45,41 +46,6 @@ public class IRBlock {
         return "_l" + id;
     }
 
-    public IRBlock getNext() {
-        return next;
-    }
-
-    public Set<IRBlock> getSuccessors() {
-        SortedSet<IRBlock> successors = new TreeSet<>(Comparator.comparingInt(IRBlock::getId)); {
-        };
-
-        for(Iterator<IRInstruction> iterator = instructions.descendingIterator(); iterator.hasNext();){
-            IRInstruction instruction = iterator.next();
-
-            if(instruction instanceof AbstractBranchInstr){
-                successors.add(((AbstractBranchInstr) instruction).getTarget());
-            }else{
-                break;
-            }
-        }
-
-        if(next != null){
-            successors.add(next);
-        }
-
-        return successors;
-    }
-
-    public void setNext(IRBlock next) {
-        if(this.next != null)
-            Logger.warning("overwriting next block %s with %s".formatted(this.next, next));
-        this.next = next;
-    }
-
-    public boolean hasNext() {
-        return next != null;
-    }
-
     public void addReference(ILabelReferenceHolder instr) {
         references.add(instr);
     }
@@ -90,5 +56,9 @@ public class IRBlock {
 
     public Collection<ILabelReferenceHolder> getReferences() {
         return references;
+    }
+
+    public void addSuccessor(IRBlock block) {
+        this.successors.add(block);
     }
 }
