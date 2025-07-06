@@ -7,7 +7,7 @@ public class Load extends IRInstruction {
     private final IROperand dest;
     private final Location src;
 
-    public Load(IROperand dest, Location src) {
+    public Load(Location src, IROperand dest) {
         super();
         this.dest = dest;
         this.src = src;

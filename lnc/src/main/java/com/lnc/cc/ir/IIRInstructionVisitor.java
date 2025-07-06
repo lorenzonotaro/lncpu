@@ -3,7 +3,7 @@ package com.lnc.cc.ir;
 public interface IIRInstructionVisitor<E> {
     E visit(Goto aGoto);
 
-    E visit(CondJump jle);
+    E visit(CondJump condJump);
 
     E visit(Load load);
 
@@ -11,13 +11,15 @@ public interface IIRInstructionVisitor<E> {
 
     E visit(Store store);
 
-    E visit(Ret sub);
+    E visit(Ret ret);
 
     E visit(Bin bin);
 
     E visit(Call call);
 
     E visit(Unary unary);
+
+    E visit(Push push);
 
     default E visit(Label label) {
         return null;

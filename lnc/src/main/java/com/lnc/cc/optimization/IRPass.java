@@ -4,10 +4,21 @@ import com.lnc.cc.ir.*;
 
 import java.util.Iterator;
 
-public abstract class IRPass<I> extends GraphicalIRVisitor<I>{
+public abstract class IRPass extends GraphicalIRVisitor{
 
-    public boolean run(IRUnit unit){
+    private boolean changed = false;
 
+    @Override
+    public final void visit(IRUnit unit){
+        this.changed = false;
+        super.visit(unit);
     }
 
+    public final boolean isChanged() {
+        return changed;
+    }
+
+    protected final void markAsChanged() {
+        this.changed = true;
+    }
 }

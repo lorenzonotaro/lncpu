@@ -4,19 +4,19 @@ import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
 public class Call extends IRInstruction {
-    private final IROperand returnTarget;
+    private VirtualRegister returnTarget;
 
     private final IROperand callee;
-    private final IROperand[] arguments;
+    private IROperand[] arguments;
 
-    public Call(IROperand returnTarget, IROperand callee, IROperand[] arguments) {
+    public Call(VirtualRegister returnTarget, IROperand callee, IROperand[] arguments) {
         super();
         this.returnTarget = returnTarget;
         this.callee = callee;
         this.arguments = arguments;
     }
 
-    public IROperand getReturnTarget() {
+    public VirtualRegister getReturnTarget() {
         return returnTarget;
     }
 
@@ -31,7 +31,7 @@ public class Call extends IRInstruction {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        if (returnTarget != null && returnTarget instanceof VirtualRegister) {
+        if (returnTarget != null) {
             sb.append(returnTarget).append(" <- ");
         }
 
@@ -54,5 +54,19 @@ public class Call extends IRInstruction {
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.visit(this);
+    }
+
+    public void setReturnTarget(IROperand returnTarget) {
+        if (!(returnTarget instanceof VirtualRegister)) {
+            throw new IllegalArgumentException("Return target must be a VirtualRegister");
+        }
+        this.returnTarget = (VirtualRegister) returnTarget;
+    }
+
+    public void setArguments(IROperand[] array) {
+        if (array == null) {
+            throw new IllegalArgumentException("Arguments cannot be null");
+        }
+        this.arguments = array;
     }
 }

@@ -1,5 +1,7 @@
 package com.lnc.cc.ir;
 
+import java.util.List;
+
 public abstract class IRInstruction {
 
     private static int UNIQUE_ID_COUNTER = 0;
@@ -11,7 +13,8 @@ public abstract class IRInstruction {
     private int loopNestedLevel = 0;
 
     private IRInstruction prev;
-    private IRInstruction next;
+    protected IRInstruction next;
+    private IRBlock parentBlock;
 
     public abstract <E> E accept(IIRInstructionVisitor<E> visitor);
 
@@ -77,4 +80,112 @@ public abstract class IRInstruction {
     }
 
     public abstract String toString();
+
+    void replaceWith(IRInstruction other) {
+        other.prev = this.prev;
+        other.next = this.next;
+        if (this.prev != null) this.prev.next = other;
+        if (this.next != null) this.next.prev = other;
+        if (parentBlock != null) {
+            if (parentBlock.first == this) parentBlock.first = other;
+            if (parentBlock.last == this) parentBlock.last = other;
+            other.parentBlock = parentBlock;
+        }
+    }
+
+    void delete() {
+        if (prev != null) prev.next = next;
+        if (next != null) next.prev = prev;
+        if (parentBlock != null) {
+            if (parentBlock.first == this) parentBlock.first = next;
+            if (parentBlock.last == this) parentBlock.last = prev;
+        }
+        prev = next = null;
+        parentBlock = null;
+    }
+
+    public void insertBefore(IRInstruction other) {
+        other.prev = this.prev;
+        other.next = this;
+        if (this.prev != null) this.prev.next = other;
+        this.prev = other;
+        other.parentBlock = this.parentBlock;
+
+        if (this.parentBlock != null && this.parentBlock.first == this) {
+            this.parentBlock.first = other;
+        }
+    }
+
+    public void insertAfter(IRInstruction other) {
+        other.next = this.next;
+        other.prev = this;
+        if (this.next != null) this.next.prev = other;
+        this.next = other;
+        other.parentBlock = this.parentBlock;
+
+        if (this.parentBlock != null && this.parentBlock.last == this) {
+            this.parentBlock.last = other;
+        }
+    }
+
+    public void insertBefore(List<IRInstruction> sequence) {
+        if (sequence.isEmpty()) return;
+
+        // Link the sequence
+        linkSequence(sequence);
+
+        IRInstruction first = sequence.get(0);
+        IRInstruction last = sequence.get(sequence.size() - 1);
+
+        first.prev = this.prev;
+        last.next = this;
+        if (this.prev != null) this.prev.next = first;
+        this.prev = last;
+
+        for (IRInstruction instr : sequence) {
+            instr.parentBlock = this.parentBlock;
+        }
+
+        if (this.parentBlock != null && this.parentBlock.first == this) {
+            this.parentBlock.first = first;
+        }
+    }
+
+    public void insertAfter(List<IRInstruction> sequence) {
+        if (sequence.isEmpty()) return;
+
+        linkSequence(sequence);
+
+        IRInstruction first = sequence.get(0);
+        IRInstruction last = sequence.get(sequence.size() - 1);
+
+        last.next = this.next;
+        first.prev = this;
+        if (this.next != null) this.next.prev = last;
+        this.next = first;
+
+        for (IRInstruction instr : sequence) {
+            instr.parentBlock = this.parentBlock;
+        }
+
+        if (this.parentBlock != null && this.parentBlock.last == this) {
+            this.parentBlock.last = last;
+        }
+    }
+
+    private static void linkSequence(List<IRInstruction> sequence) {
+        // Link the sequence
+        for (int i = 0; i < sequence.size() - 1; i++) {
+            sequence.get(i).next = sequence.get(i + 1);
+            sequence.get(i + 1).prev = sequence.get(i);
+        }
+    }
+
+    public void setParentBlock(IRBlock block) {
+        this.parentBlock  = block;
+    }
+
+    public IRBlock getParentBlock() {
+        return parentBlock;
+    }
 }

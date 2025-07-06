@@ -10,7 +10,7 @@ import java.util.*;
 public class IRUnit implements Iterable<IRBlock>{
     private final FunctionDeclaration functionDeclaration;
 
-    private final IRBlock startBlock;
+    private IRBlock startBlock;
 
     private IRBlock currentBlock = null;
 
@@ -75,7 +75,7 @@ public class IRUnit implements Iterable<IRBlock>{
         }
 
         currentBlock.emit(new Goto(block));
-        setCurrentBlock(currentBlock);
+        setCurrentBlock(block);
     }
 
     public void enterLoop(LoopInfo info){
@@ -103,55 +103,59 @@ public class IRUnit implements Iterable<IRBlock>{
         return functionDeclaration;
     }
 
-    public VirtualRegisterManager getVRManager() {
-        return vrManager;
+    @Override
+    public Iterator<IRBlock> iterator() {
+        return computeReversePostOrderAndCFG().iterator();
     }
 
     @Override
-    public Iterator<IRBlock> iterator() {
-        return new Iterator<IRBlock>() {
-            private final Set<IRBlock> visited = new HashSet<>();
-            private final Deque<IRBlock> stack = new ArrayDeque<>();
-            private IRBlock nextBlock;
-
-            {
-                stack.push(getEntryBlock());
-                advance();
-            }
-
-            private void advance() {
-                nextBlock = null;
-                while (!stack.isEmpty()) {
-                    IRBlock b = stack.pop();
-                    if (visited.add(b)) {
-                        // push successors in *reverse* order so we visit
-                        // them in natural order when popping
-                        List<IRBlock> succs = b.getSuccessors();
-                        for (int i = succs.size() - 1; i >= 0; i--) {
-                            stack.push(succs.get(i));
-                        }
-                        nextBlock = b;
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public boolean hasNext() {
-                return nextBlock != null;
-            }
-
-            @Override
-            public IRBlock next() {
-                if (nextBlock == null) throw new NoSuchElementException();
-                IRBlock result = nextBlock;
-                advance();
-                return result;
-            }
-        };
+    public String toString(){
+        IRPrinter printer = new IRPrinter();
+        printer.visit(this);
+        return printer.getResult();
     }
 
-    public void computeSuccessorsAndPredecessors() {
+    public void setEntryBlock(IRBlock newBlock) {
+        if (newBlock == null) {
+            throw new IllegalArgumentException("New entry block cannot be null.");
+        }
+        if (startBlock == newBlock) {
+            throw new IllegalArgumentException("New entry block cannot be the same as the current entry block.");
+        }
 
+        // Update the entry block reference
+        startBlock = newBlock;
+    }
+
+    public List<IRBlock> computeReversePostOrderAndCFG() {
+        List<IRBlock> postOrder = new ArrayList<>();
+        Set<IRBlock> visited = new HashSet<>();
+        dfsCFG(startBlock, visited, postOrder);
+
+        postOrder.forEach(b -> {
+            b.getSuccessors().forEach(s -> s.getPredecessors().add(b));
+        });
+
+        Collections.reverse(postOrder); // RPO = reversed post-order
+        return postOrder;
+    }
+
+
+    private void dfsCFG(
+            IRBlock block,
+            Set<IRBlock> visited,
+            List<IRBlock> postOrder
+    ) {
+        if (!visited.add(block)) return;
+
+        block.getSuccessors().clear();
+        block.getPredecessors().clear();
+
+        for (IRBlock succ : block.getLastInstructionTargets()) {
+            block.getSuccessors().add(succ);
+            dfsCFG(succ, visited, postOrder);
+        }
+
+        postOrder.add(block);
     }
 }

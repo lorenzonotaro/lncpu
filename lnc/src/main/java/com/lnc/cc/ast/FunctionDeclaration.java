@@ -5,6 +5,9 @@ import com.lnc.cc.ir.IRUnit;
 import com.lnc.cc.types.Declarator;
 import com.lnc.common.frontend.Token;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 
 public class FunctionDeclaration extends Declaration implements IScopedStatement {
 
@@ -59,5 +62,13 @@ public class FunctionDeclaration extends Declaration implements IScopedStatement
         sb.append(")");
 
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = declarator.hashCode();
+        result = 31 * result + Arrays.hashCode(parameters);
+        result = 31 * result + body.hashCode();
+        return result;
     }
 }

@@ -9,8 +9,9 @@ import com.lnc.cc.ast.AST;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
+import com.lnc.cc.ir.IRLoweringPass;
 import com.lnc.cc.ir.IRPrinter;
-import com.lnc.cc.optimization.linear.LinearOptimizer;
+import com.lnc.cc.optimization.StageOneIROptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
@@ -76,24 +77,40 @@ public class Compiler {
             return false;
         }
 
+        Logger.setProgramState("optimization");
+        StageOneIROptimizer optimizer = new StageOneIROptimizer();
+
+        for (var unit : irGenerator.getResult().units()) {
+            optimizer.run(unit);
+        }
+
+        Logger.setProgramState("lowering");
+        IRLoweringPass loweringPass = new IRLoweringPass();
+
+        for (var unit : irGenerator.getResult().units()) {
+            loweringPass.visit(unit);
+        }
+
         if(!LNC.settings.get("-oM", String.class).isBlank()){
             var irPrinter = new IRPrinter();
 
-            var str = irPrinter.print(irGenerator.getResult().units());
+            for (var unit : irGenerator.getResult().units()) {
+                irPrinter.visit(unit);
+            }
 
             try{
-                Files.writeString(Path.of(LNC.settings.get("-oM", String.class)), str);
+                Files.writeString(Path.of(LNC.settings.get("-oM", String.class)), irPrinter.getResult());
             } catch (IOException e) {
                 Logger.error("unable to write IR to file %s: %s".formatted(LNC.settings.get("-oM", String.class), e.getMessage()));
                 return false;
             }
         }
 
-        Logger.setProgramState("optimization");
+/*        Logger.setProgramState("optimization");
         LinearOptimizer opt = new LinearOptimizer(irGenerator.getResult());
         var optimizationResult = opt.linearizeAndOptimize();
 
-/*        Logger.setProgramState("codegen");
+        Logger.setProgramState("codegen");
         CodeGenerator codeGenerator = new CodeGenerator(optimizationResult);
 
         codeGenerator.generate();
@@ -102,9 +119,9 @@ public class Compiler {
 
         output = new ArrayList<>(); // While we don't have a code generator, we still need to return something
 
-        if(LNC.settings.get("--standalone", Boolean.class)){
+/*        if(LNC.settings.get("--standalone", Boolean.class)){
             return standalone(optimizationResult);
-        }
+        }*/
 
         return true;
 

@@ -15,6 +15,10 @@ public class IRPrinter extends GraphicalIRVisitor {
     @Override
     public Void visit(CondJump condJump) {
         sb.append("    ").append(condJump.toString()).append("\n");
+
+        enqueue(condJump.getFalseTarget());
+        enqueue(condJump.getTarget());
+
         return null;
     }
 
@@ -37,8 +41,8 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
-    public Void visit(Ret sub) {
-        sb.append("    ").append(sub.toString()).append("\n");
+    public Void visit(Ret ret) {
+        sb.append("    ").append(ret.toString()).append("\n");
         return null;
     }
 
@@ -61,21 +65,22 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
+    public Void visit(Push push) {
+        sb.append("    ").append(push.toString()).append("\n");
+        return null;
+    }
+
+    @Override
     public Void visit(Label label) {
         sb.append("\n").append(label.toString()).append(":\n");
         return super.visit(label);
     }
 
     @Override
-    protected boolean visit(IRBlock block) {
-        if (block == null || isVisited(block)) {
-            return false;
-        }
-
+    protected void visit(IRBlock block) {
         sb.append("\n_l").append(block.getId()).append(":\n");
 
         super.visit(block);
-        return true;
     }
 
     @Override
@@ -83,5 +88,9 @@ public class IRPrinter extends GraphicalIRVisitor {
         sb.append("==== Function: ").append(unit.getFunctionDeclaration().name.lexeme).append(" ====");
         super.visit(unit);
         sb.append("\n");
+    }
+
+    public String getResult() {
+        return sb.toString();
     }
 }

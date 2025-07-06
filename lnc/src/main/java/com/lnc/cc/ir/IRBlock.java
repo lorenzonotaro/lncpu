@@ -3,16 +3,19 @@ package com.lnc.cc.ir;
 
 import java.util.*;
 
-public class IRBlock{
+public class IRBlock implements Iterable<IRInstruction> {
 
     private final IRUnit unit;
 
     private final int id;
 
-    private final LinkedList<IRInstruction> instructions = new LinkedList<>();
-
     private final List<IRBlock> predecessors = new ArrayList<>();
-    private final List<IRBlock> successors = new ArrayList<>();
+
+    private List<IRBlock> successors = new ArrayList<>();
+
+    protected IRInstruction first = null;
+
+    protected IRInstruction last = null;
 
     public IRBlock(IRUnit unit, int id) {
         this.unit = unit;
@@ -22,19 +25,29 @@ public class IRBlock{
 
     public void emit(IRInstruction instruction) {
 
-        if(!instructions.isEmpty() && instructions.getLast() instanceof AbstractBranchInstr && !(instruction instanceof AbstractBranchInstr)){
-            throw new IllegalStateException("IR integrity alert: branch instruction must be the last instruction in a block");
+        if (last instanceof AbstractBranchInstr abi){
+
+            if(abi instanceof Goto){
+                throw new IllegalStateException("Cannot emit instruction after a Goto instruction: " + last);
+            }
+
+            if (!(instruction instanceof AbstractBranchInstr)) {
+                throw new IllegalStateException("Cannot emit non-branch instruction after a branch instruction: " + last);
+            }
         }
 
-        instructions.add(instruction);
+        instruction.setParentBlock(this);
+
+        if (first == null) {
+            first = instruction;
+        } else {
+            last.setNext(instruction);
+        }
+        last = instruction;
     }
 
     public int getId() {
         return id;
-    }
-
-    public List<IRInstruction> getInstructions() {
-        return instructions;
     }
 
     @Override
@@ -42,45 +55,103 @@ public class IRBlock{
         return "_l" + id;
     }
 
-    public List<IRBlock> getSuccessors() {
-        return successors;
+    public List<IRBlock> getPredecessors() {
+        return predecessors;
     }
 
-    public ListIterator<IRInstruction> listIterator() {
-        return instructions.listIterator();
-    }
-
-    public void computeSuccessorsAndPredecessors() {
-        successors.clear();
-        predecessors.clear();
-
-        // Validate that the last instruction is either a return or instanceof AbstractBranchInstr
-        // and that no other instruction in the block other than the last one is a branch instruction
-
-        if (instructions.isEmpty()) {
-            return; // No instructions to process
-        }
-
-        IRInstruction lastInstruction = instructions.getLast();
-        if (lastInstruction instanceof AbstractBranchInstr branch) {
-            this.successors.addAll(branch.getSuccessors());
-        }else if(!(lastInstruction instanceof Ret)) {
-            throw new IllegalStateException("Last instruction in block must be a branch or return instruction: " + lastInstruction);
-        }
+    private boolean isEmpty() {
+        return first == null;
     }
 
     public void updateReferences(IRBlock oldBlock, IRBlock newBlock){
-        for (IRInstruction instruction : instructions) {
+        for (IRInstruction instruction : this) {
             if (instruction instanceof AbstractBranchInstr branch) {
                 branch.replaceReference(oldBlock, newBlock);
             }
         }
     }
 
-    public void replaceWith(IRBlock newBlock){
+
+    public void replaceWith(IRBlock newBlock) {
+
+        if (newBlock == null) {
+            throw new IllegalArgumentException("New block cannot be null.");
+        }
+
+        if (newBlock == this) {
+            throw new IllegalArgumentException("New block cannot be the same as the current block.");
+        }
+
         for (IRBlock successor : successors) {
-            successor.updateReferences(this, newBlock);
             successor.predecessors.remove(this);
+            if(newBlock != successor) {
+                successor.predecessors.add(newBlock);
+                newBlock.successors.add(successor);
+            }
+        }
+
+        for (IRBlock predecessor : predecessors) {
+            predecessor.updateReferences(this, newBlock);
+            predecessor.successors.remove(this);
+            if(newBlock != predecessor) {
+                predecessor.successors.add(newBlock);
+                newBlock.predecessors.add(predecessor);
+            }
+        }
+
+        // Special case for when this block is the entry block of the unit
+        if (unit.getEntryBlock() == this) {
+            unit.setEntryBlock(newBlock);
+        }
+    }
+
+    @Override
+    public Iterator<IRInstruction> iterator() {
+        return new Iterator<>() {
+            private IRInstruction current = first;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public IRInstruction next() {
+                if (current == null) {
+                    throw new NoSuchElementException("No more instructions in block " + id);
+                }
+                IRInstruction instr = current;
+                current = current.getNext();
+                return instr;
+            }
+        };
+    }
+
+    public List<IRBlock> getSuccessors() {
+        return successors;
+    }
+
+    public IRInstruction getFirst() {
+        return first;
+    }
+
+    public IRInstruction getLast() {
+        return last;
+    }
+
+    public void setLast(IRInstruction last) {
+        if (last == null) {
+            throw new IllegalArgumentException("Last instruction cannot be null.");
+        }
+        this.last = last;
+        last.setParentBlock(this);
+    }
+
+    public Collection<IRBlock> getLastInstructionTargets() {
+        if (last instanceof AbstractBranchInstr branch) {
+            return branch.getTargets();
+        } else {
+            return Collections.emptyList();
         }
     }
 }

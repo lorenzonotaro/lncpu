@@ -5,8 +5,9 @@ import com.lnc.cc.ir.operands.IROperand;
 
 public class Bin extends IRInstruction {
     private final IROperand target;
-    public final IROperand left;
-    public final IROperand right;
+
+    public IROperand left;
+    public IROperand right;
     private final BinaryExpression.Operator operator;
     public Bin(IROperand target, IROperand left, IROperand right, BinaryExpression.Operator operator) {
         super();
@@ -29,6 +30,22 @@ public class Bin extends IRInstruction {
     @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.visit(this);
+    }
+
+    public IROperand getLeft() {
+        return left;
+    }
+
+    public void setLeft(IROperand left) {
+        this.left = left;
+    }
+
+    public IROperand getRight() {
+        return right;
+    }
+
+    public void setRight(IROperand right) {
+        this.right = right;
     }
 
     public BinaryExpression.Operator getOperator() {

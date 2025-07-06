@@ -5,6 +5,21 @@ import java.util.Set;
 public enum RegisterClass {
 
     ANY(new Register[]{Register.RC, Register.RB, Register.RA, Register.RD}),
+
+    BYTEPARAM_1(new Register[]{Register.RA}),
+
+    BYTEPARAM_2(new Register[]{Register.RB}),
+
+    BYTEPARAM_3(new Register[]{Register.RC}),
+
+    BYTEPARAM_4(new Register[]{Register.RD}),
+
+    WORDPARAM_1(new Register[]{Register.RC, Register.RD}),
+
+    RET_BYTE(new Register[]{Register.RB}),
+
+    RET_WORD(new Register[]{Register.RC, Register.RD}),
+
     SHIFT(new Register[]{Register.RA}),
     INDEX(new Register[]{Register.RD}),
     RETURN(new Register[]{Register.RB});

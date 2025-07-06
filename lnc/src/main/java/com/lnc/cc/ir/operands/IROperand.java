@@ -36,6 +36,6 @@ public abstract class IROperand {
         ADDRESS_OF,
         ARRAY_ACCESS,
 
-        LOCATION
+        STACK_FRAME_OPERAND, LOCATION
     }
 }

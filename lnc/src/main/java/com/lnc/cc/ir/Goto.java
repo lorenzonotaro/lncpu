@@ -1,6 +1,5 @@
 package com.lnc.cc.ir;
 
-import java.util.Collection;
 import java.util.List;
 
 public class Goto extends AbstractBranchInstr {
@@ -10,14 +9,14 @@ public class Goto extends AbstractBranchInstr {
     }
 
     @Override
-    public void replaceReference(IRBlock block, IRBlock newBlock) {
-        if (target == block) {
+    public void replaceReference(IRBlock oldBlock, IRBlock newBlock) {
+        if (target == oldBlock) {
             target = newBlock;
         }
     }
 
     @Override
-    public Collection<? extends IRBlock> getSuccessors() {
+    public List<IRBlock> getTargets() {
         return List.of(getTarget());
     }
 

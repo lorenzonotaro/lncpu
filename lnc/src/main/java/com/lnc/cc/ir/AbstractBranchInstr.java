@@ -1,6 +1,6 @@
 package com.lnc.cc.ir;
 
-import java.util.Collection;
+import java.util.List;
 
 public abstract class AbstractBranchInstr extends IRInstruction {
     protected IRBlock target;
@@ -13,7 +13,7 @@ public abstract class AbstractBranchInstr extends IRInstruction {
         return target;
     }
 
-    public abstract void replaceReference(IRBlock block, IRBlock newBlock);
+    public abstract void replaceReference(IRBlock oldBlock, IRBlock newBlock);
 
-    public abstract Collection<? extends IRBlock> getSuccessors();
+    public abstract List<IRBlock> getTargets();
 }

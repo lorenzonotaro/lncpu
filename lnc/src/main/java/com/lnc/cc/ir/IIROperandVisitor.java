@@ -15,4 +15,6 @@ public interface IIROperandVisitor<T> {
     T visit(StructMemberAccess structMemberAccess);
 
     T visit(ArrayElementAccess arrayElementAccess);
+
+    T visit(StackFrameOperand stackFrameOperand);
 }
