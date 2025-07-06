@@ -2,7 +2,7 @@ package com.lnc.cc.ir;
 
 import java.util.*;
 
-public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> {
+public abstract class GraphicalIRVisitor<T> implements IIRInstructionVisitor<T> {
 
     private final Set<IRBlock> visitedBlocks;
 
@@ -15,32 +15,31 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
         visitedBlocks = new HashSet<>();
     }
 
-    protected boolean visit(IRBlock block) {
+    protected abstract T visit(IRBlock block);
+
+    private T checkNotVisitedAndVisit(IRBlock block) {
 
         if(block == null || isVisited(block)) {
-            return false;
+            return null;
         }
 
         visitedBlocks.add(block);
 
         currentBlock = block;
 
-        for (ListIterator<IRInstruction> it = block.listIterator(); it.hasNext(); ) {
-            IRInstruction instruction = it.next();
-            instruction.accept(this);
-        }
+        this.visit(block);
 
         for (IRBlock successor : block.getSuccessors()) {
-            visit(successor);
+            checkNotVisitedAndVisit(successor);
         }
 
-        return true;
+        return null;
     }
 
     public void visit(IRUnit unit){
         reset();
         for (IRBlock block : unit) {
-            visit(block);
+            checkNotVisitedAndVisit(block);
         }
     }
 

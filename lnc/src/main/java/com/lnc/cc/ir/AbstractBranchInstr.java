@@ -1,30 +1,19 @@
 package com.lnc.cc.ir;
 
-public abstract class AbstractBranchInstr extends IRInstruction implements ILabelReferenceHolder {
+import java.util.Collection;
+
+public abstract class AbstractBranchInstr extends IRInstruction {
     protected IRBlock target;
 
     protected AbstractBranchInstr(IRBlock target) {
         this.target = target;
-        target.addReference(this);
     }
 
     public IRBlock getTarget() {
         return target;
     }
 
-    @Override
-    public void onRemove() {
-        target.removeReference(this);
-    }
+    public abstract void replaceReference(IRBlock block, IRBlock newBlock);
 
-    @Override
-    public void replaceReference(IRBlock block, IRBlock newBlock) {
-        if(target.equals(block)){
-            target.removeReference(this);
-
-            target = newBlock;
-
-            target.addReference(this);
-        }
-    }
+    public abstract Collection<? extends IRBlock> getSuccessors();
 }

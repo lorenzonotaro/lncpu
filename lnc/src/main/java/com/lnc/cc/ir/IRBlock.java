@@ -7,8 +7,6 @@ public class IRBlock{
 
     private final IRUnit unit;
 
-    private final Set<ILabelReferenceHolder> references = new HashSet<>();
-
     private final int id;
 
     private final LinkedList<IRInstruction> instructions = new LinkedList<>();
@@ -44,23 +42,45 @@ public class IRBlock{
         return "_l" + id;
     }
 
-    public void addReference(ILabelReferenceHolder instr) {
-        references.add(instr);
-    }
-
-    public void removeReference(ILabelReferenceHolder instr) {
-        references.remove(instr);
-    }
-
-    public Collection<ILabelReferenceHolder> getReferences() {
-        return references;
-    }
-
     public List<IRBlock> getSuccessors() {
         return successors;
     }
 
     public ListIterator<IRInstruction> listIterator() {
         return instructions.listIterator();
+    }
+
+    public void computeSuccessorsAndPredecessors() {
+        successors.clear();
+        predecessors.clear();
+
+        // Validate that the last instruction is either a return or instanceof AbstractBranchInstr
+        // and that no other instruction in the block other than the last one is a branch instruction
+
+        if (instructions.isEmpty()) {
+            return; // No instructions to process
+        }
+
+        IRInstruction lastInstruction = instructions.getLast();
+        if (lastInstruction instanceof AbstractBranchInstr branch) {
+            this.successors.addAll(branch.getSuccessors());
+        }else if(!(lastInstruction instanceof Ret)) {
+            throw new IllegalStateException("Last instruction in block must be a branch or return instruction: " + lastInstruction);
+        }
+    }
+
+    public void updateReferences(IRBlock oldBlock, IRBlock newBlock){
+        for (IRInstruction instruction : instructions) {
+            if (instruction instanceof AbstractBranchInstr branch) {
+                branch.replaceReference(oldBlock, newBlock);
+            }
+        }
+    }
+
+    public void replaceWith(IRBlock newBlock){
+        for (IRBlock successor : successors) {
+            successor.updateReferences(this, newBlock);
+            successor.predecessors.remove(this);
+        }
     }
 }
