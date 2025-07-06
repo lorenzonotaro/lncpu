@@ -4,7 +4,6 @@ import java.util.Map;
 
 public class FlatSymbolTable {
     private final Map<String, BaseSymbol> symbols;
-    public BaseSymbol[] parameters = new BaseSymbol[0];
     private final String name;
 
     private FlatSymbolTable(String name) {
@@ -18,8 +17,6 @@ public class FlatSymbolTable {
         }
 
         FlatSymbolTable table = new FlatSymbolTable(scope.getRootName());
-
-        table.parameters = scope.getParameters().toArray(table.parameters);
 
         flattenRecursively(scope, table);
 

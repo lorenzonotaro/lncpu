@@ -5,7 +5,7 @@ import com.lnc.cc.ir.operands.IROperand;
 import java.util.List;
 
 public class Push extends IRInstruction {
-    private final IROperand arg;
+    private IROperand arg;
 
     public Push(IROperand arg) {
         this.arg = arg;
@@ -19,5 +19,13 @@ public class Push extends IRInstruction {
     @Override
     public String toString() {
         return "push " + arg.toString();
+    }
+
+    public IROperand getArg() {
+        return arg;
+    }
+
+    public void setArg(IROperand arg) {
+        this.arg = arg;
     }
 }

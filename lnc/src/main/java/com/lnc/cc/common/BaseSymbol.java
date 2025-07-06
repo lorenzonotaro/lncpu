@@ -10,10 +10,13 @@ public class BaseSymbol extends AbstractSymbol {
     private Scope scope;
     private String flatSymbolName;
 
-    public BaseSymbol(Token token, TypeSpecifier type, boolean isForward) {
+    private boolean isParameter;
+
+    public BaseSymbol(Token token, TypeSpecifier type, boolean isForward, boolean isParameter) {
         this.token = token;
         this.type = type;
         this.isForward = isForward;
+        this.isParameter = isParameter;
     }
 
     public String getName() {
@@ -24,9 +27,12 @@ public class BaseSymbol extends AbstractSymbol {
         return type;
     }
 
-
     public boolean isForward() {
         return isForward;
+    }
+
+    public boolean isParameter() {
+        return isParameter;
     }
 
     public Token getToken() {

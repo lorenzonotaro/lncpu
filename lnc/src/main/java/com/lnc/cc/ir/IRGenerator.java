@@ -354,6 +354,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(IdentifierExpression identifierExpression) {
         BaseSymbol symbol = resolveSymbol(identifierExpression.token);
+
         return new Location(symbol);
     }
 

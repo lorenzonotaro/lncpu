@@ -1,15 +1,15 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.codegen.RegisterClass;
-import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.Location;
-import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.common.BaseSymbol;
+import com.lnc.cc.common.StructMemberAccess;
+import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.optimization.IRPass;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class IRLoweringPass extends IRPass {
+public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperand> {
     @Override
     public Void visit(Goto aGoto) {
         return null;
@@ -18,17 +18,13 @@ public class IRLoweringPass extends IRPass {
     @Override
     public Void visit(CondJump condJump) {
 
-        IROperand lreg, rreg;
-        if(condJump.getLeft().type != IROperand.Type.VIRTUAL_REGISTER){
-            lreg = moveOrLoadIntoVR(condJump, condJump.getLeft());
-        }else{
-            lreg = condJump.getLeft();
+        IROperand lreg = condJump.getLeft().accept(this), rreg = condJump.getRight().accept(this);
+        if(lreg.type != IROperand.Type.VIRTUAL_REGISTER){
+            lreg = moveOrLoadIntoVR(condJump, lreg);
         }
 
-        if(condJump.getRight().type != IROperand.Type.VIRTUAL_REGISTER && condJump.getRight().type != IROperand.Type.IMMEDIATE){
-            rreg = moveOrLoadIntoVR(condJump, condJump.getRight());
-        }else{
-            rreg = condJump.getRight();
+        if(rreg.type != IROperand.Type.VIRTUAL_REGISTER && rreg.type != IROperand.Type.IMMEDIATE){
+            rreg = moveOrLoadIntoVR(condJump, rreg);
         }
 
         condJump.setLeft(lreg);
@@ -38,42 +34,42 @@ public class IRLoweringPass extends IRPass {
     }
 
     private IROperand moveOrLoadIntoVR(IRInstruction instr, IROperand operand) {
-        return moveOrLoadIntoVR(instr, operand, RegisterClass.ANY);
+        return moveOrLoadIntoVR(operand, RegisterClass.ANY);
     }
 
-    private IROperand moveOrLoadIntoVR(IRInstruction instr, IROperand operand, RegisterClass registerClass) {
+    private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
-            return restrictOrMoveTo((VirtualRegister) operand, registerClass, instr);
+            return restrictOrMoveTo((VirtualRegister) operand, registerClass);
         } else if(operand.type == IROperand.Type.IMMEDIATE) {
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
             vr.setRegisterClass(registerClass);
-            instr.insertBefore(new Move(operand, vr));
+            getCurrentInstruction().insertBefore(new Move(operand, vr));
             return operand;
         } else if(operand.type == IROperand.Type.LOCATION) {
             // Otherwise, we need to move or load it into a virtual register
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
             vr.setRegisterClass(registerClass);
-            instr.insertBefore(new Load((Location) operand, vr));
+            getCurrentInstruction().insertBefore(new Load((Location) operand, vr));
             return vr;
         } else {
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
             vr.setRegisterClass(registerClass);
-            instr.insertBefore(new Move(operand, vr));
+            getCurrentInstruction().insertBefore(new Move(operand, vr));
             return vr;
         }
     }
 
-    private IROperand restrictOrMoveTo(VirtualRegister register, RegisterClass registerClass, IRInstruction inst) {
+    private IROperand restrictOrMoveTo(VirtualRegister register, RegisterClass registerClass) {
         if(register.getRegisterClass() == registerClass) {
             return register;
         } else {
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister newVR = vrm.getRegister(register.getTypeSpecifier());
             newVR.setRegisterClass(registerClass);
-            inst.insertBefore(new Move(register, newVR));
+            getCurrentInstruction().insertBefore(new Move(register, newVR));
             return newVR;
         }
     }
@@ -97,7 +93,7 @@ public class IRLoweringPass extends IRPass {
     public Void visit(Ret ret) {
 
         if(ret.getValue() != null && ret.getValue().type != IROperand.Type.VIRTUAL_REGISTER) {
-            ret.setValue(moveOrLoadIntoVR(ret, ret.getValue()));
+            ret.setValue(moveOrLoadIntoVR(ret.getValue(), RegisterClass.RETURN));
         }
 
         return null;
@@ -106,8 +102,8 @@ public class IRLoweringPass extends IRPass {
     @Override
     public Void visit(Bin bin) {
 
-        IROperand left = bin.getLeft();
-        IROperand right = bin.getRight();
+        IROperand left = bin.getLeft().accept(this);
+        IROperand right = bin.getRight().accept(this);
 
         if(left.type != IROperand.Type.VIRTUAL_REGISTER) {
             left = moveOrLoadIntoVR(bin, left);
@@ -125,25 +121,22 @@ public class IRLoweringPass extends IRPass {
 
     @Override
     public Void visit(Call call) {
-        List<IROperand> originalArgs = List.of(call.getArguments());
-        List<IROperand> loweredArgs = new ArrayList<>();
-        boolean hasWordArg = originalArgs.stream().anyMatch(IRLoweringPass::isWordOperand);
+        IROperand[] originalArgs = call.getArguments();
+        boolean hasWordArg = Arrays.stream(originalArgs).anyMatch(IRLoweringPass::isWordOperand);
 
         int byteIndex = 0;
 
-        for (int i = 0; i < originalArgs.size(); i++) {
-            IROperand arg = originalArgs.get(i);
+        for (int i = 0; i < originalArgs.length; i++) {
+            IROperand arg = originalArgs[i].accept(this);
 
             if (isWordOperand(arg)) {
                 if (i == 0) {
                     // First word argument → RC:RD
-                    IROperand lowered = moveOrLoadIntoVR(call, arg, RegisterClass.WORDPARAM_1);
-                    loweredArgs.add(lowered);
+                    moveOrLoadIntoVR(arg, RegisterClass.WORDPARAM_1);
                 } else {
                     call.insertBefore(
                             new Push(arg)
                     );
-                    loweredArgs.add(arg); // record original for structure (even if not used directly)
                 }
             } else {
                 RegisterClass regClass = switch (byteIndex++) {
@@ -154,46 +147,94 @@ public class IRLoweringPass extends IRPass {
                 };
 
                 if (regClass != null) {
-                    IROperand lowered = moveOrLoadIntoVR(call, arg, regClass);
-                    loweredArgs.add(lowered);
+                    moveOrLoadIntoVR(arg, regClass);
                 } else {
                     call.insertBefore(
                             new Push(arg)
                     );
-                    loweredArgs.add(arg);
                 }
             }
         }
 
         // Handle result
-        IROperand originalResult = call.getReturnTarget();
+        VirtualRegister originalResult = call.getReturnTarget();
         if (originalResult != null) {
             RegisterClass retClass = isWordOperand(originalResult)
                     ? RegisterClass.RET_WORD
                     : RegisterClass.RET_BYTE;
 
-            IROperand loweredResult = moveOrLoadIntoVR(call, originalResult, retClass);
-            call.setReturnTarget(loweredResult);
+            originalResult.setRegisterClass(retClass);
         }
 
         // Replace arguments in-place on the original call
-        call.setArguments(loweredArgs.toArray(new IROperand[0]));
+        call.setArguments(new IROperand[0]);
 
         return null;
     }
 
     private static boolean isWordOperand(IROperand arg) {
-        return arg.getTypeSpecifier().typeSize() == 2;
+        return arg.getTypeSpecifier().allocSize() == 2;
     }
 
 
     @Override
     public Void visit(Unary unary) {
+
+        unary.setOperand(unary.getOperand().accept(this));
+
         return null;
     }
 
     @Override
     public Void visit(Push push) {
+
+        IROperand operand = push.getArg().accept(this);
+        push.setArg(operand);
+
         return null;
+    }
+
+    @Override
+    public IROperand visit(ImmediateOperand immediateOperand) {
+        return immediateOperand;
+    }
+
+    @Override
+    public IROperand visit(VirtualRegister vr) {
+        return vr;
+    }
+
+    @Override
+    public IROperand visit(Location location) {
+
+        if(location.getSymbol() instanceof BaseSymbol bs && bs.isParameter()){
+            // Replace the parameter symbol with its respective (vr or stack frame offset) location, following the calling convention
+        }
+
+        return location;
+    }
+
+    @Override
+    public IROperand visit(AddressOf addressOf) {
+        //TODO
+        return addressOf;
+    }
+
+    @Override
+    public IROperand visit(StructMemberAccess structMemberAccess) {
+        //TODO
+        return structMemberAccess;
+    }
+
+    @Override
+    public IROperand visit(ArrayElementAccess arrayElementAccess) {
+        //TODO
+        return arrayElementAccess;
+    }
+
+    @Override
+    public IROperand visit(StackFrameOperand stackFrameOperand) {
+        //TODO
+        return stackFrameOperand;
     }
 }

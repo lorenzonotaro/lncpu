@@ -18,8 +18,6 @@ public class Scope {
 
     private final Map<String, StructDefinitionType> structs = new HashMap<>();
 
-    private final List<BaseSymbol> parameters = new ArrayList<>();
-
     private final Map<Integer, Integer> childrenAtDepth = new HashMap<>();
 
 
@@ -54,17 +52,13 @@ public class Scope {
         return parent;
     }
 
-    public void define(BaseSymbol symbol, boolean isParameter){
+    public void define(BaseSymbol symbol){
         BaseSymbol existing = symbols.get(symbol.getName());
 
         symbol.setScope(this);
 
         if(existing != null && !existing.isForward() && !symbol.isForward()){
             throw new RuntimeException("symbol '%s' already defined here: '%s'".formatted(existing.getName(), existing.getToken().formatLocation()));
-        }
-
-        if (isParameter) {
-            parameters.add(symbol);
         }
 
         symbols.put(symbol.getName(), symbol);
@@ -181,10 +175,6 @@ public class Scope {
 
     public String getRootName() {
         return rootName;
-    }
-
-    public List<BaseSymbol> getParameters() {
-        return parameters;
     }
 
     public String getScopePrefix() {

@@ -6,7 +6,7 @@ import com.lnc.cc.ir.operands.IROperand;
 public class Unary extends IRInstruction {
 
     private final IROperand target;
-    private final IROperand operand;
+    private IROperand operand;
     private final UnaryExpression.Operator operator;
     private final UnaryExpression.UnaryPosition unaryPosition;
 
@@ -29,5 +29,21 @@ public class Unary extends IRInstruction {
 
     public UnaryExpression.UnaryPosition getUnaryPosition() {
         return unaryPosition;
+    }
+
+    public IROperand getTarget() {
+        return target;
+    }
+
+    public IROperand getOperand() {
+        return operand;
+    }
+
+    public void setOperand(IROperand operand) {
+        this.operand = operand;
+    }
+
+    public UnaryExpression.Operator getOperator() {
+        return operator;
     }
 }

@@ -260,8 +260,8 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         return null;
     }
 
-    protected void define(BaseSymbol symbol, boolean isParameter){
-        currentScope.define(symbol, isParameter);
+    protected void define(BaseSymbol symbol){
+        currentScope.define(symbol);
     }
 
 
