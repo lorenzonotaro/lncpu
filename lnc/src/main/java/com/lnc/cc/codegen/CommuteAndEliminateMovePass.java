@@ -10,36 +10,40 @@ public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
 
     @Override
     public Boolean visit(EncodedData encodedData) {
-        return null;
+        return false;
     }
 
     @Override
-    public Boolean visit(Instruction instruction) {
-        if(isCommutativeBinaryOp(instruction.getOpcode().type)) {
-            if(!getCursor().hasNext()){
-                return false; // No next instruction to commute with
+    public Boolean visit(Instruction inst) {
+        if(isCommutativeBinaryOp(inst.getOpcode().type)) {
+            AsmCursor cur = getCursor();
+            if(!cur.hasNext()){
+                return false; // No next inst to commute with
             }
-            var nextInstruction = getCursor().peekNext();
+            var nextInstruction = cur.peekNext();
 
             if(nextInstruction instanceof Instruction nextInst &&
                nextInst.getOpcode().type == TokenType.MOV &&
                nextInst.getArguments().length == 2 &&
-               nextInst.getArguments()[1].equals(instruction.getArguments()[1]) &&
-               nextInst.getArguments()[0].equals(instruction.getArguments()[0])) {
+               nextInst.getArguments()[1].toString().equals(inst.getArguments()[1].toString()) &&
+               nextInst.getArguments()[0].toString().equals(inst.getArguments()[0].toString())) {
 
 
                 Instruction commuted = new Instruction(
-                        instruction.getOpcode(),
+                        inst.getOpcode(),
                         new Argument[]{
                                 nextInst.getArguments()[1], // Use the second argument of the move
                                 nextInst.getArguments()[0]  // Use the first argument of the move
                         }
                 );
 
-                getCursor().replaceCurrent(commuted);
+                // 3) Replace the ADD in‐place with the commuted form
+                cur.replaceCurrent(commuted);
 
-                getCursor().next(); // Move to the next instruction after the current one
-                getCursor().removeCurrent();  // Remove the move instruction
+                cur.next(); // Move the cursor to the next instruction after replacement
+
+                // 4) Remove the next instruction (the MOV)
+                cur.removeCurrent();
 
                 return true; // Indicate that a change was made
             }

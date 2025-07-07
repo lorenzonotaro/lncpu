@@ -11,10 +11,12 @@ import java.util.ListIterator;
 
 public class AsmCursor {
     private final ListIterator<CodeElement> it;
+    private final LinkedList<CodeElement> backingList;
     private CodeElement current;
     private boolean canRemove = false;
 
     public AsmCursor(LinkedList<CodeElement> list) {
+        this.backingList = list;
         this.it = list.listIterator();
     }
 
@@ -117,6 +119,11 @@ public class AsmCursor {
     /** Replace the current element with a new one. */
     public void replaceCurrent(CodeElement e) {
         if (!canRemove) throw new IllegalStateException();
+        List<LabelInfo> movedLabels = new ArrayList<>(current.getLabels());
+        current.clearLabels();
+        e.setLabels(movedLabels);
+        current = e; // Update current to the new element
+        canRemove = false; // Reset remove state
         it.set(e);
     }
 
@@ -133,9 +140,8 @@ public class AsmCursor {
      * @return the next CodeElement, or null if at end
      */
     public CodeElement peekNext() {
-        if (!it.hasNext()) return null;
-        CodeElement next = it.next();
-        it.previous();  // rewind so the cursor is unchanged
-        return next;
+        int idx = it.nextIndex(); // where a next() would land
+        if (idx < 0 || idx >= backingList.size()) return null;
+        return backingList.get(idx);
     }
 }

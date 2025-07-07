@@ -9,7 +9,7 @@ import com.lnc.common.frontend.TokenType;
 public class RedundantGotoEliminationPass extends AbstractAsmLevelLinearPass {
     @Override
     public Boolean visit(EncodedData encodedData) {
-        return null;
+        return false;
     }
 
     @Override

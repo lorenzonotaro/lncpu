@@ -32,9 +32,6 @@ public final class CompilerOutput {
         this.code = new LinkedList<>();
         this.labels = new ArrayList<>();
         this.unit = unit;
-        if(unit != null) {
-            this.addLabel(unit.getFunctionDeclaration().name.lexeme);
-        }
     }
 
     public void append(CodeElement codeElement) {

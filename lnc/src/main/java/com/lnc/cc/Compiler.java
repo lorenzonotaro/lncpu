@@ -7,6 +7,7 @@ import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.CodeElement;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
+import com.lnc.cc.codegen.AsmLevelOptimizer;
 import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.codegen.GraphColoringRegisterAllocator;
@@ -80,7 +81,7 @@ public class Compiler {
             return false;
         }
 
-        Logger.setProgramState("optimization");
+        Logger.setProgramState("opt");
         StageOneIROptimizer optimizer = new StageOneIROptimizer();
 
         for (var unit : irGenerator.getResult().units()) {
@@ -110,9 +111,17 @@ public class Compiler {
         }
 
 
+        Logger.setProgramState("codegen");
         CodeGenerator codeGenerator = new CodeGenerator(irGenerator.getResult());
 
         this.output = codeGenerator.run();
+
+        Logger.setProgramState("asmopt");
+        AsmLevelOptimizer asmOptimizer = new AsmLevelOptimizer();
+
+        for (var output : this.output) {
+            asmOptimizer.optimize(output);
+        }
 
         if(LNC.settings.get("--standalone", Boolean.class)){
             return standalone(irGenerator.getResult());

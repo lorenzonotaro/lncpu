@@ -30,12 +30,12 @@ public class RegPreservationPass extends AbstractAsmLevelLinearPass{
 
     @Override
     public Boolean visit(EncodedData encodedData) {
-        return null;
+        return false;
     }
 
     @Override
     public Boolean visit(Instruction instruction) {
-        return null;
+        return false;
     }
 
     @Override
