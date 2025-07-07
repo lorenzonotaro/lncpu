@@ -13,6 +13,8 @@ public abstract class Argument implements IEncodeable {
         this.type = type;
     }
 
+    public abstract String toString();
+
     public abstract String getImmediateEncoding(ILabelSectionLocator sectionLocator);
 
     public enum Type {

@@ -6,6 +6,8 @@ import com.lnc.assembler.linker.LinkInfo;
 import com.lnc.cc.codegen.CodeElementVisitor;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class EncodedData extends CodeElement{
 
@@ -33,5 +35,18 @@ public class EncodedData extends CodeElement{
     @Override
     public <T> T accept(CodeElementVisitor<T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder val = new StringBuilder(".data ");
+
+        for (int i = 0; i < data.length; i++) {
+            if (i > 0) {
+                val.append(", ");
+            }
+            val.append(String.format("0x%02x", data[i] & 0xFF));
+        }
+        return val.toString();
     }
 }

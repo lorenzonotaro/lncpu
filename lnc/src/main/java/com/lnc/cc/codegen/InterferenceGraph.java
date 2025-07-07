@@ -1,9 +1,6 @@
 package com.lnc.cc.codegen;
 
-import com.lnc.cc.ir.Call;
-import com.lnc.cc.ir.IRBlock;
-import com.lnc.cc.ir.IRInstruction;
-import com.lnc.cc.ir.IRUnit;
+import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
@@ -116,15 +113,11 @@ public class InterferenceGraph {
 
         int index = 0;
         // walk the RPO to set the indices
-        for (var block : rpo) {
-            var instr = block.getLast();
-            while (instr != null) {
-                instr.setIndex(index);
-                instr = instr.getPrev();
-                ++index;
+        for (IRBlock block : rpo) {
+            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                inst.setIndex(index++);
             }
         }
-
 
         Map<IRBlock,Set<VirtualRegister>> liveIn = livenessInfo.liveIn(), liveOut = livenessInfo.liveOut();
 
@@ -159,6 +152,13 @@ public class InterferenceGraph {
                     lr.end = Math.max(lr.end, i);
                 }
             }
+        }
+
+        System.out.println("Live ranges:");
+        for (var entry : liveRanges.entrySet()) {
+            VirtualRegister vr = entry.getKey();
+            LiveRange lr = entry.getValue();
+            System.out.printf("  %s: %s\n", vr, lr);
         }
 
         return liveRanges;
@@ -216,7 +216,15 @@ public class InterferenceGraph {
                             }
                         }
                     }
-
+                }else if(inst instanceof Bin bin){
+                    var op = bin.getOperator();
+                    if (!op.isCommutative()) {
+                        VirtualRegister dest = (VirtualRegister) bin.getTarget();
+                        VirtualRegister rhs  = (VirtualRegister) bin.getRight();
+                        VirtualRegister lhs  = (VirtualRegister) bin.getLeft();
+                        graph.addEdge(dest, rhs);
+                        graph.addEdge(dest, lhs);
+                    }
                 }
             }
         }

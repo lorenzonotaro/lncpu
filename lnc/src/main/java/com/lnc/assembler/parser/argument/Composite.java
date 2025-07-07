@@ -38,6 +38,13 @@ public class Composite extends Argument {
     }
 
     @Override
+    public String toString() {
+        return high.toString() +
+                ":" +
+                low.toString();
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         if(high.type == Type.BYTE && low.type == Type.BYTE)
             return "dcst";

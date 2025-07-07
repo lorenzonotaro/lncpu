@@ -40,6 +40,11 @@ public class RegisterOffset extends Argument{
     }
 
     @Override
+    public String toString() {
+        return register.toString() + " " + operator.lexeme + " " + offset.toString();
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return register.getImmediateEncoding(sectionLocator) + "offset";
     }

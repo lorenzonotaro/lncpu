@@ -11,6 +11,7 @@ import com.lnc.common.frontend.TokenType;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public final class CompilerOutput {
@@ -18,6 +19,13 @@ public final class CompilerOutput {
     private final SectionInfo sectionInfo;
     private final IRUnit unit;
     private ArrayList<LabelInfo> labels;
+
+    public CompilerOutput(SectionInfo sectionInfo) {
+        this.sectionInfo = sectionInfo;
+        this.code = new LinkedList<>();
+        this.labels = new ArrayList<>();
+        this.unit = null; // No IRUnit associated with this output
+    }
 
     public CompilerOutput(IRUnit unit, SectionInfo sectionInfo) {
         this.sectionInfo = sectionInfo;
@@ -36,6 +44,7 @@ public final class CompilerOutput {
         }
         code.add(codeElement);
     }
+
 
     public void addLabel(String lexeme) {
         if (labels == null) {
@@ -72,9 +81,17 @@ public final class CompilerOutput {
 
     @Override
     public String toString() {
-        return "CompilerOutput[" +
-                "code=" + code + ", " +
-                "sectionInfo=" + sectionInfo + ']';
+        StringBuilder sb = new StringBuilder();
+        sb.append(".section ").append(sectionInfo.getName()).append("\n");
+
+        for (CodeElement element : code) {
+            for(var label : element.getLabels()) {
+                sb.append(label.name()).append(":\n");
+            }
+            sb.append("\t").append(element).append("\n");
+        }
+
+        return sb.toString();
     }
 
 }

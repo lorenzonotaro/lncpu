@@ -14,6 +14,7 @@ import com.lnc.common.frontend.TokenType;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Instruction extends CodeElement {
@@ -152,5 +153,13 @@ public class Instruction extends CodeElement {
     @Override
     public <T> T accept(CodeElementVisitor<T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return opcode.lexeme.toLowerCase() + " " +
+                Arrays.stream(arguments)
+                        .map(Argument::toString)
+                        .collect(Collectors.joining(", "));
     }
 }

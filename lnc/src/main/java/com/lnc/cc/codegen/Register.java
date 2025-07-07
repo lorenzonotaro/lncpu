@@ -51,6 +51,6 @@ public enum Register {
     }
 
     public TokenType getTokenType() {
-        return TokenType.valueOf(regName);
+        return TokenType.valueOf(getRegName());
     }
 }

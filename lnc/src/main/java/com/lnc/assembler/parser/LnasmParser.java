@@ -25,7 +25,7 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
     }
 
     private Token currentBlockSectionToken = null;
-    private List<CodeElement> currentInstructions = new ArrayList<>();
+    private LinkedList<CodeElement> currentInstructions = new LinkedList<>();
 
     private List<LabelInfo> currentInstructionLabels = new ArrayList<>();
 
@@ -67,12 +67,12 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
             if (currentBlockSectionToken != null) {
                 // end of block
-                blocks.add(new LnasmParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
+                blocks.add(new LnasmParsedBlock(currentBlockSectionToken, currentInstructions));
             }
 
             currentBlockSectionToken = nameToken;
             currentParentLabel = null;
-            currentInstructions = new ArrayList<>();
+            currentInstructions = new LinkedList<>();
 
             return true;
         }
@@ -242,12 +242,12 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
     @Override
     protected void endParse() {
         if(!currentInstructions.isEmpty())
-            blocks.add(new LnasmParsedBlock(currentBlockSectionToken, currentInstructions.toArray(new CodeElement[0])));
+            blocks.add(new LnasmParsedBlock(currentBlockSectionToken, currentInstructions));
     }
 
     @Override
     public LnasmParseResult getResult() {
-        return new LnasmParseResult(blocks.toArray(new LnasmParsedBlock[0]));
+        return new LnasmParseResult(blocks);
     }
 
     private static void intToBytes(ByteArrayOutputStream baos, Token token) {

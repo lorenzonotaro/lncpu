@@ -26,6 +26,11 @@ public class Byte extends NumericalArgument {
     }
 
     @Override
+    public String toString() {
+        return String.format("0x%02x", value & 0xFF);
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return "cst";
     }

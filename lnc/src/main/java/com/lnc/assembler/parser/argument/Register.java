@@ -27,6 +27,11 @@ public class Register extends Argument {
     }
 
     @Override
+    public String toString() {
+        return reg.toString();
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return reg.toString();
     }

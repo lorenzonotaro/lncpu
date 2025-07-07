@@ -36,6 +36,11 @@ public class LabelRef extends NumericalArgument {
     }
 
     @Override
+    public String toString() {
+        return token.lexeme;
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         var resolution = sectionLocator.getSectionInfo(labelToken);
         return resolution.sectionInfo().isDataPage() && !resolution.isSectionName() ? "cst" : "dcst";

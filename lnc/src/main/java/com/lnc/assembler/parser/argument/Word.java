@@ -40,6 +40,11 @@ public class Word extends NumericalArgument {
     }
 
     @Override
+    public String toString() {
+        return String.format("0x%04x", value & 0xFFFF);
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return "dcst";
     }

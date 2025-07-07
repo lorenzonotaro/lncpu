@@ -4,9 +4,9 @@ import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.EncodedData;
-import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.argument.*;
 import com.lnc.assembler.parser.argument.Byte;
+import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
@@ -45,13 +45,16 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             GraphColoringRegisterAllocator.run(unit);
 
             visit(unit);
+
+            outputs.add(currentOutput);
         }
 
         return outputs;
     }
 
     private void outputDataSection() {
-        var dataOutput = new CompilerOutput(null, new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIT, false, true, false));
+
+        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false));
 
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getType();
@@ -59,11 +62,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 dataPageVariable(entry.getAsmName(), type.allocSize());
             }
         }
+
+        outputs.add(currentOutput);
     }
 
     @Override
     public Void visit(Goto aGoto) {
-        var target = labelRef(aGoto.getTarget());
+        var target = CodeGenUtils.labelRef(aGoto.getTarget());
 
         instrf(TokenType.GOTO, target);
 
@@ -76,8 +81,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var left = condJump.getLeft().accept(this);
         var right = condJump.getRight().accept(this);
 
-        final var target = labelRef(condJump.getTarget());
-        final var falseTarget = labelRef(condJump.getFalseTarget());
+        final var target = CodeGenUtils.labelRef(condJump.getTarget());
+        final var falseTarget = CodeGenUtils.labelRef(condJump.getFalseTarget());
 
         instrf(TokenType.CMP, left, right);
 
@@ -167,15 +172,30 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Void visit(Bin bin) {
 
-        var target = bin.getTarget().accept(this);
+        var dest = bin.getTarget().accept(this);
         var left = bin.getLeft().accept(this);
         var right = bin.getRight().accept(this);
 
-        if(!bin.getTarget().equals(bin.getLeft())){
-            instrf(TokenType.MOV, left, target);
+        var destStr = dest.toString();
+        var leftStr = left.toString();
+        var rightStr = right.toString();
+
+        BinaryExpression.Operator operator = bin.getOperator();
+        if(destStr.equals(leftStr)){
+            emitBinOp(operator, dest, right);
+        }else if(operator.isCommutative() && destStr.equals(rightStr)){
+            // If the operator is commutative, we can swap left and right
+            emitBinOp(operator, dest, left);
+        }else{
+            instrf(TokenType.MOV, left, dest);
+            emitBinOp(operator, dest, right);
         }
 
-        switch(bin.getOperator()){
+        return null;
+    }
+
+    private void emitBinOp(BinaryExpression.Operator op, Argument target, Argument right) {
+        switch(op){
             case ADD -> {
                 instrf(TokenType.ADD, target, right);
             }
@@ -198,10 +218,9 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 instrf(TokenType.XOR, target, right);
             }
             default -> {
-                throw new UnsupportedOperationException("Unsupported binary operator: " + bin.getOperator());
+                throw new UnsupportedOperationException("Unsupported binary operator: " + op);
             }
         }
-        return null;
     }
 
     @Override
@@ -252,15 +271,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Argument visit(ImmediateOperand immediateOperand) {
         int value = immediateOperand.getValue();
-        return IntUtils.inByteRange(value) ? immByte(value) : immWord(value);
-    }
-
-    private Argument immByte(int value) {
-        return new Byte(Token.__internal(TokenType.INTEGER, value));
-    }
-
-    private Argument immWord(int value) {
-        return new Word(Token.__internal(TokenType.INTEGER, value));
+        return IntUtils.inByteRange(value) ? CodeGenUtils.immByte(value) : CodeGenUtils.immWord(value);
     }
 
     @Override
@@ -270,20 +281,16 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             Register[] components = assignedPhysicalRegister.getComponents();
             var high = components[0];
             var low = components[1];
-            return new Composite(reg(high), reg(low));
+            return new Composite(CodeGenUtils.reg(high), CodeGenUtils.reg(low));
         }else{
-            return reg(assignedPhysicalRegister);
+            return CodeGenUtils.reg(assignedPhysicalRegister);
         }
-    }
-
-    private Argument reg(Register physReg) {
-        return new com.lnc.assembler.parser.argument.Register(Token.__internal(physReg.getTokenType(), physReg.toString()));
     }
 
     @Override
     public Argument visit(Location location) {
         String asmName = location.getSymbol().getAsmName();
-        return labelRef(asmName);
+        return CodeGenUtils.labelRef(asmName);
     }
 
 
@@ -325,9 +332,9 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         int totalStackFrameSize = unit.getTotalStackFrameSize();
 
         if(totalStackFrameSize > 0) {
-            instrf(TokenType.PUSH, reg(TokenType.BP));
-            instrf(TokenType.MOV, reg(TokenType.SP), reg(TokenType.BP));
-            instrf(TokenType.SUB, reg(TokenType.SP), immByte(totalStackFrameSize));
+            instrf(TokenType.PUSH, CodeGenUtils.reg(TokenType.BP));
+            instrf(TokenType.MOV, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.reg(TokenType.BP));
+            instrf(TokenType.SUB, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.immByte(totalStackFrameSize));
         }
 
         // preserve registers
@@ -337,7 +344,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 .toArray(Register[]::new);
 
         for(Register reg : registers) {
-            instrf(TokenType.PUSH, reg(reg));
+            instrf(TokenType.PUSH, CodeGenUtils.reg(reg));
         }
 
         // visit the function body
@@ -346,28 +353,24 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         label("_ret");
         // restore registers
         for(int i = registers.length - 1; i >= 0; i--) {
-            instrf(TokenType.POP, reg(registers[i]));
+            instrf(TokenType.POP, CodeGenUtils.reg(registers[i]));
         }
 
         if(totalStackFrameSize > 0) {
             // restore stack pointer and base pointer
-            instrf(TokenType.POP, reg(TokenType.BP));
-            instrf(TokenType.SUB, reg(TokenType.SP), immByte(totalStackFrameSize));
+            instrf(TokenType.POP, CodeGenUtils.reg(TokenType.BP));
+            instrf(TokenType.SUB, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.immByte(totalStackFrameSize));
         }
 
 
         if(totalStackFrameSize > 0) {
             // return to caller
-            instrf(TokenType.RET, immByte(totalStackFrameSize));
+            instrf(TokenType.RET, CodeGenUtils.immByte(totalStackFrameSize));
         } else {
             // no stack frame, just return
             instrf(TokenType.RET);
 
         }
-    }
-
-    private Argument reg(TokenType regId) {
-        return new com.lnc.assembler.parser.argument.Register(Token.__internal(regId, regId.toString()));
     }
 
     private void dataPageVariable(String asmName, int size) {
@@ -380,15 +383,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     private void instrf(TokenType opcode, Argument... args) {
-        currentOutput.append(new Instruction(Token.__internal(opcode, opcode.toString()), args));
-    }
-
-    private LabelRef labelRef(IRBlock target) {
-        return new LabelRef(Token.__internal(TokenType.IDENTIFIER, target.toString()));
-    }
-
-    private Argument labelRef(String asmName) {
-        return new LabelRef(Token.__internal(TokenType.IDENTIFIER, asmName));
+        currentOutput.append(CodeGenUtils.instr(opcode, args));
     }
 
 }

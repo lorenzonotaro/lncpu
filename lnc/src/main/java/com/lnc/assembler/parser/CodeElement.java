@@ -24,4 +24,7 @@ public abstract class CodeElement implements IEncodeable {
     public void clearLabels() {
         setLabels(new ArrayList<>());
     }
+
+    @Override
+    public abstract String toString();
 }

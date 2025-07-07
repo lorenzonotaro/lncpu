@@ -4,6 +4,7 @@ import com.lnc.LNC;
 import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
+import com.lnc.assembler.parser.CodeElement;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
 import com.lnc.cc.codegen.CodeGenerator;
@@ -23,10 +24,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Compiler {
-    private static final SectionInfo START_SECTIONINFO = new SectionInfo("_START", 0, LinkTarget.ROM, LinkMode.FIXED, false, false, false);
     private final List<Path> sourceFiles;
     private List<CompilerOutput> output;
 
@@ -141,27 +142,12 @@ public class Compiler {
             var funDecl = unit.getFunctionDeclaration();
             return funDecl.name.lexeme.equals("main") && funDecl.declarator.typeSpecifier().type == TypeSpecifier.Type.VOID && funDecl.parameters.length == 0;
         })){
-            this.output.add(0, new CompilerOutput(getStartCode(), START_SECTIONINFO));
+            this.output.add(0, CodeSnippets.STANDALONE_START_CODE_OUTPUT);
             return true;
         }
 
         Logger.error("standalone mode requires a void main() function with no parameters.");
         return false;
-    }
-
-    private String getStartCode() {
-        try(var stream = LNC.class.getClassLoader().getResourceAsStream("standalone_start.lnasm")){
-            if(stream == null){
-                Logger.error("unable to load standalone start code.");
-                return null;
-            }
-
-            return new String(stream.readAllBytes());
-
-        } catch (IOException e) {
-            Logger.error("unable to load standalone start code.");
-            return null;
-        }
     }
 
     private List<Token> parseSourceFiles(FullSourceLexer lexer, List<Path> sourceFiles) {
@@ -182,4 +168,5 @@ public class Compiler {
     public List<CompilerOutput> getOutput() {
         return output;
     }
+
 }

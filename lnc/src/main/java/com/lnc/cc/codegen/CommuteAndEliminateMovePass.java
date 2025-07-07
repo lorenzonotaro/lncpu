@@ -3,6 +3,7 @@ package com.lnc.cc.codegen;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.argument.Argument;
+import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.common.frontend.TokenType;
 
 public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
@@ -46,10 +47,11 @@ public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
         return false;
     }
 
-    private boolean isCommutativeBinaryOp(TokenType tt){
+    private static boolean isCommutativeBinaryOp(TokenType tt){
         return switch (tt) {
-            case ADD, SUB, AND, OR, XOR -> true;
+            case ADD, AND, OR, XOR -> true;
             default -> false;
         };
     }
+
 }

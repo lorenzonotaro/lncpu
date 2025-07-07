@@ -27,6 +27,11 @@ public class Dereference extends Argument {
     }
 
     @Override
+    public String toString() {
+        return "[" + inner.toString() + "]";
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         String innerEncoding = inner.getImmediateEncoding(sectionLocator);
         switch(innerEncoding) {

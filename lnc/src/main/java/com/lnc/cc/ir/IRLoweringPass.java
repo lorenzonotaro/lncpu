@@ -40,7 +40,12 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
 
     private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
-            return restrictOrMoveTo((VirtualRegister) operand, registerClass);
+            VirtualRegister vr = (VirtualRegister) operand;
+            if(vr.getRegisterClass() == registerClass) {
+                return vr; // Already in the correct register class
+            } else {
+                return move(vr, registerClass); // Move to the correct register class
+            }
         } else if(operand.type == IROperand.Type.IMMEDIATE) {
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
@@ -66,7 +71,11 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     private IROperand restrictOrMoveTo(VirtualRegister register, RegisterClass registerClass) {
         if(register.getRegisterClass() == registerClass) {
             return register;
-        } else {
+        } else if(register.getRegisterClass() == RegisterClass.ANY) {
+            // If the register is of type ANY, we can just set its class
+            register.setRegisterClass(registerClass);
+            return register;
+        }else {
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister newVR = vrm.getRegister(register.getTypeSpecifier());
             newVR.setRegisterClass(registerClass);
@@ -98,6 +107,22 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
         }
 
         return null;
+    }
+
+    private IROperand move(IROperand value, RegisterClass registerClass) {
+        if(value.type == IROperand.Type.LOCATION) {
+            VirtualRegisterManager vrm = getUnit().getVrManager();
+            VirtualRegister vr = vrm.getRegister(value.getTypeSpecifier());
+            vr.setRegisterClass(registerClass);
+            getCurrentInstruction().insertBefore(new Load((Location) value, vr));
+            return vr;
+        } else {
+            VirtualRegisterManager vrm = getUnit().getVrManager();
+            VirtualRegister vr = vrm.getRegister(value.getTypeSpecifier());
+            vr.setRegisterClass(registerClass);
+            getCurrentInstruction().insertBefore(new Move(value, vr));
+            return vr;
+        }
     }
 
     @Override

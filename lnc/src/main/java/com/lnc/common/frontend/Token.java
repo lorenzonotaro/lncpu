@@ -46,10 +46,8 @@ public class Token {
             case STRING:
                 lexeme = "\n%s\n".formatted(literal);
                 break;
-            case INTEGER:
-                lexeme = literal.toString();
-                break;
             default:
+                lexeme = literal.toString();
                 break;
         }
 

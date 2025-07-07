@@ -14,6 +14,8 @@ public class NumberCast extends NumericalArgument{
 
     private final int targetSize;
 
+    private final Token targetType;
+
     public NumberCast(Argument source, Token castToken, Token targetType) {
         super(castToken, Type.CAST);
 
@@ -23,6 +25,8 @@ public class NumberCast extends NumericalArgument{
         }
 
         this.source = (NumericalArgument) source;
+
+        this.targetType = targetType;
 
         switch (targetType.lexeme) {
             case "byte", "8", "cst" -> targetSize = 1;
@@ -47,6 +51,11 @@ public class NumberCast extends NumericalArgument{
         }
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + source.toString() + ")::" + targetType.lexeme;
     }
 
     @Override

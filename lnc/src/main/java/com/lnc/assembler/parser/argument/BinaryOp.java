@@ -95,6 +95,11 @@ public class BinaryOp extends NumericalArgument{
     }
 
     @Override
+    public String toString() {
+        return "(%s %s %s)".formatted(left, operator.name, right);
+    }
+
+    @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return left.getImmediateEncoding(sectionLocator);
     }

@@ -198,6 +198,7 @@ public class GraphColoringRegisterAllocator {
 
                 // 3) Assign concrete stack slots and patch offsets
                 var livenessInfo = LivenessInfo.computeBlockLiveness(unit);
+
                 Map<VirtualRegister, LiveRange> allRanges = InterferenceGraph.computeLiveRanges(unit, livenessInfo);
                 Map<VirtualRegister, LiveRange> spillRanges = allRanges.entrySet().stream()
                         .filter(e -> spills.contains(ig.getNode(e.getKey())))

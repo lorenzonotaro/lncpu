@@ -14,7 +14,9 @@ import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.linker.LinkerConfig;
 import com.lnc.assembler.linker.LinkerConfigParser;
 import com.lnc.assembler.parser.LnasmParseResult;
+import com.lnc.assembler.parser.LnasmParsedBlock;
 import com.lnc.assembler.parser.LnasmParser;
+import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.common.Logger;
 import com.lnc.common.Preprocessor;
 import com.lnc.common.frontend.FullSourceLexer;
@@ -27,21 +29,23 @@ import com.lnc.common.io.ByteArrayChannel;
 public class Assembler {
     private final List<Path> sourceFiles;
     private final String linkerConfig;
-    private final SectionInfo[] additionalSections;
     private final Map<String, byte[]> outputs;
+    private final List<CompilerOutput> compilerOutputs;
 
     public Assembler(List<Path> sourceFiles, String linkerConfig) {
         this(sourceFiles, linkerConfig, null);
     }
 
-    public Assembler(List<Path> sourceFiles, String linkerConfig, SectionInfo[] additionalSections) {
+    public Assembler(List<Path> sourceFiles, String linkerConfig, List<CompilerOutput> compilerOutputs) {
         this.sourceFiles = sourceFiles;
         this.linkerConfig = linkerConfig;
-        this.additionalSections = additionalSections;
+
+        this.compilerOutputs = compilerOutputs;
+
         this.outputs = new HashMap<>();
     }
 
-    public boolean compile() {
+    public boolean assemble() {
         Logger.setProgramState("lexer");
 
         LexerConfig asmLexerConfig = new LexerConfig(
@@ -78,8 +82,8 @@ public class Assembler {
 
         LinkerConfig linkerConfig = linkerconfigParser.getResult();
 
-        if(this.additionalSections != null){
-            linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(this.additionalSections));
+        if(this.compilerOutputs != null){
+            linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(compilerOutputs.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new)));
         }
 
         Logger.setProgramState("preprocessor");
@@ -94,6 +98,10 @@ public class Assembler {
             return false;
 
         LnasmParseResult parseResult = parser.getResult();
+
+        if(compilerOutputs != null){
+            parseResult.join(compilerOutputs.stream().map(LnasmParsedBlock::fromCompilerOutput).toList());
+        }
 
         Logger.setProgramState("linker");
 

@@ -8,9 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.lnc.assembler.Assembler;
-import com.lnc.assembler.common.SectionInfo;
 import com.lnc.cc.Compiler;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.common.Logger;
@@ -89,14 +89,16 @@ public class LNC {
 
                 output = compiler.getOutput();
 
-                Files.writeString(Path.of("__lncout.lnasm"), String.join("\n", output.stream().map(CompilerOutput::code).toList()));
+                var assemblyOut = settings.get("-oA", String.class);
 
-                settings.addSourceFile("__lncout.lnasm");
+                if(!assemblyOut.isEmpty()) {
+                    Files.writeString(Path.of(assemblyOut), outputsToString(output));
+                }
             }
 
-            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new));
+            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output);
 
-            if(!assembler.compile())
+            if(!assembler.assemble())
                 System.exit(1);
             else if(!settings.get("-s", Boolean.class)){
                 assembler.writeOutputFiles();
@@ -109,6 +111,10 @@ public class LNC {
             return 1;
         }
         return 0;
+    }
+
+    private static String outputsToString(List<CompilerOutput> outputs) {
+        return outputs.stream().map(CompilerOutput::toString).collect(Collectors.joining("\n\n"));
     }
 
     private static List<Line> getLinesFromSourceFiles() throws FileNotFoundException {

@@ -147,7 +147,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         return sectionBuilders;
     }
 
-    private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(LnasmParsedBlock[] blocks) {
+    private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(List<LnasmParsedBlock> blocks) {
         LinkerLabelSectionLocator locator = new LinkerLabelSectionLocator(getConfig());
         for (LnasmParsedBlock block : blocks) {
             var sectionInfo = getConfig().getSectionInfo(block.sectionName);
