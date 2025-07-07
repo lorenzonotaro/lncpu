@@ -24,10 +24,9 @@ public class IRBlock implements Iterable<IRInstruction> {
 
 
     public void emit(IRInstruction instruction) {
+        if (last instanceof AbstractBranchInstr abi) {
 
-        if (last instanceof AbstractBranchInstr abi){
-
-            if(abi instanceof Goto){
+            if (abi instanceof Goto) {
                 throw new IllegalStateException("Cannot emit instruction after a Goto instruction: " + last);
             }
 
@@ -42,7 +41,9 @@ public class IRBlock implements Iterable<IRInstruction> {
             first = instruction;
         } else {
             last.setNext(instruction);
+            instruction.setPrev(last); // Maintain the two-way link
         }
+
         last = instruction;
     }
 

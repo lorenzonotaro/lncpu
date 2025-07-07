@@ -11,12 +11,18 @@ public class BaseSymbol extends AbstractSymbol {
     private String flatSymbolName;
 
     private boolean isParameter;
+    private final int parameterIndex;
 
-    public BaseSymbol(Token token, TypeSpecifier type, boolean isForward, boolean isParameter) {
+    public BaseSymbol(Token token, TypeSpecifier type, boolean isForward) {
+        this(token, type, isForward, false, -1);
+    }
+
+    public BaseSymbol(Token token, TypeSpecifier type, boolean isForward, boolean isParameter, int parameterIndex) {
         this.token = token;
         this.type = type;
         this.isForward = isForward;
         this.isParameter = isParameter;
+        this.parameterIndex = parameterIndex;
     }
 
     public String getName() {
@@ -80,5 +86,9 @@ public class BaseSymbol extends AbstractSymbol {
     @Override
     public String getAsmName() {
         return flatSymbolName;
+    }
+
+    public int getParameterIndex() {
+        return parameterIndex;
     }
 }

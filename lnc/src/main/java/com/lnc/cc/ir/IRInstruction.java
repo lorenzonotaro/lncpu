@@ -1,5 +1,9 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
+
+import java.util.Collection;
 import java.util.List;
 
 public abstract class IRInstruction {
@@ -12,7 +16,8 @@ public abstract class IRInstruction {
 
     private int loopNestedLevel = 0;
 
-    private IRInstruction prev;
+    protected IRInstruction prev;
+
     protected IRInstruction next;
     private IRBlock parentBlock;
 
@@ -107,8 +112,11 @@ public abstract class IRInstruction {
     public void insertBefore(IRInstruction other) {
         other.prev = this.prev;
         other.next = this;
-        if (this.prev != null) this.prev.next = other;
+        if (this.prev != null)
+            this.prev.next = other;
+
         this.prev = other;
+
         other.parentBlock = this.parentBlock;
 
         if (this.parentBlock != null && this.parentBlock.first == this) {
@@ -188,4 +196,9 @@ public abstract class IRInstruction {
     public IRBlock getParentBlock() {
         return parentBlock;
     }
+    public abstract Collection<IROperand> getReads();
+
+    public abstract Collection<IROperand> getWrites();
+
+    public abstract void replaceOperand(IROperand oldOp, IROperand newOp);
 }

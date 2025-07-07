@@ -2,9 +2,12 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
 
+import java.util.Collection;
+import java.util.List;
+
 public class Move extends IRInstruction {
-    private final IROperand source;
-    private final IROperand dest;
+    private IROperand source;
+    private IROperand dest;
 
     public Move(IROperand source, IROperand dest) {
         super();
@@ -24,6 +27,25 @@ public class Move extends IRInstruction {
     @Override
     public String toString() {
         return String.format("move %s <- %s", dest, source);
+    }
+
+    @Override
+    public Collection<IROperand> getReads() {
+        return List.of(source);
+    }
+
+    @Override
+    public Collection<IROperand> getWrites() {
+        return List.of(dest);
+    }
+
+    @Override
+    public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        if (source.equals(oldOp)) {
+            source = newOp;
+        } else if (dest.equals(oldOp)) {
+            dest = newOp;
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
 
+import java.util.Collection;
 import java.util.List;
 
 public class CondJump extends AbstractBranchInstr {
@@ -78,5 +79,24 @@ public class CondJump extends AbstractBranchInstr {
                 " " + right +
                 ": " + target.toString() +
                 " else: " + falseTarget.toString();
+    }
+
+    @Override
+    public Collection<IROperand> getReads() {
+        return List.of(left, right);
+    }
+
+    @Override
+    public Collection<IROperand> getWrites() {
+        return List.of();
+    }
+
+    @Override
+    public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        if (left.equals(oldOp)) {
+            left = newOp;
+        } else if (right.equals(oldOp)) {
+            right = newOp;
+        }
     }
 }

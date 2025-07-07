@@ -21,8 +21,4 @@ public interface IIRInstructionVisitor<E> {
 
     E visit(Push push);
 
-    default E visit(Label label) {
-        return null;
-    }
-
 }

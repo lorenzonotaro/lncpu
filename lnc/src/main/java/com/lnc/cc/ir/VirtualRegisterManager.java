@@ -15,7 +15,7 @@ public class VirtualRegisterManager {
     }
 
 
-    VirtualRegister getRegister(TypeSpecifier typeSpecifier){
+    public VirtualRegister getRegister(TypeSpecifier typeSpecifier){
         VirtualRegister vr = new VirtualRegister(virtualRegisters.size(), typeSpecifier);
 
         virtualRegisters.add(vr);

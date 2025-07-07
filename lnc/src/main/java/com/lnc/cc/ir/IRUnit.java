@@ -1,14 +1,17 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.FunctionDeclaration;
+import com.lnc.cc.codegen.Register;
 import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
 import com.lnc.cc.common.BaseSymbol;
+import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
 
 public class IRUnit implements Iterable<IRBlock>{
     private final FunctionDeclaration functionDeclaration;
+    private final FunctionType functionType;
 
     private IRBlock startBlock;
 
@@ -22,13 +25,21 @@ public class IRUnit implements Iterable<IRBlock>{
 
     private final Stack<LoopInfo> loopStack;
 
+    private int spillSpaceSize;
+    private Set<Register> usedRegisters;
+
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
         this.functionDeclaration = functionDeclaration;
         this.symbolTable = FlatSymbolTable.flatten(functionDeclaration.getScope());
         this.functionDeclaration.unit = this;
         this.loopStack = new Stack<>();
+        this.functionType = FunctionType.of(functionDeclaration);
         vrManager = new VirtualRegisterManager();
+    }
+
+    public FunctionType getFunctionType() {
+        return functionType;
     }
 
     public FlatSymbolTable getSymbolTable() {
@@ -157,5 +168,29 @@ public class IRUnit implements Iterable<IRBlock>{
         }
 
         postOrder.add(block);
+    }
+
+    public VirtualRegisterManager getVirtualRegisterManager() {
+        return vrManager;
+    }
+
+    public void setSpillSpaceSize(int spillSpaceSize) {
+        this.spillSpaceSize = spillSpaceSize;
+    }
+
+    public void setUsedRegisters(Set<Register> usedRegisters) {
+        this.usedRegisters = usedRegisters;
+    }
+
+    public int getSpillSpaceSize() {
+        return spillSpaceSize;
+    }
+
+    public Set<Register> getUsedRegisters() {
+        return usedRegisters;
+    }
+
+    public int getTotalStackFrameSize() {
+        return spillSpaceSize /* + localsSize */;
     }
 }

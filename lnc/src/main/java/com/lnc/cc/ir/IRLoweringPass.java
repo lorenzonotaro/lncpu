@@ -2,11 +2,12 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.BaseSymbol;
-import com.lnc.cc.common.StructMemberAccess;
+import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.optimization.IRPass;
+import com.lnc.cc.types.FunctionType;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperand> {
@@ -20,11 +21,11 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
 
         IROperand lreg = condJump.getLeft().accept(this), rreg = condJump.getRight().accept(this);
         if(lreg.type != IROperand.Type.VIRTUAL_REGISTER){
-            lreg = moveOrLoadIntoVR(condJump, lreg);
+            lreg = moveOrLoadIntoVR(lreg);
         }
 
         if(rreg.type != IROperand.Type.VIRTUAL_REGISTER && rreg.type != IROperand.Type.IMMEDIATE){
-            rreg = moveOrLoadIntoVR(condJump, rreg);
+            rreg = moveOrLoadIntoVR(rreg);
         }
 
         condJump.setLeft(lreg);
@@ -33,7 +34,7 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
         return null;
     }
 
-    private IROperand moveOrLoadIntoVR(IRInstruction instr, IROperand operand) {
+    private IROperand moveOrLoadIntoVR(IROperand operand) {
         return moveOrLoadIntoVR(operand, RegisterClass.ANY);
     }
 
@@ -45,7 +46,7 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
             vr.setRegisterClass(registerClass);
             getCurrentInstruction().insertBefore(new Move(operand, vr));
-            return operand;
+            return vr;
         } else if(operand.type == IROperand.Type.LOCATION) {
             // Otherwise, we need to move or load it into a virtual register
             VirtualRegisterManager vrm = getUnit().getVrManager();
@@ -92,7 +93,7 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     @Override
     public Void visit(Ret ret) {
 
-        if(ret.getValue() != null && ret.getValue().type != IROperand.Type.VIRTUAL_REGISTER) {
+        if(ret.getValue() != null) {
             ret.setValue(moveOrLoadIntoVR(ret.getValue(), RegisterClass.RETURN));
         }
 
@@ -106,14 +107,16 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
         IROperand right = bin.getRight().accept(this);
 
         if(left.type != IROperand.Type.VIRTUAL_REGISTER) {
-            left = moveOrLoadIntoVR(bin, left);
-            bin.setLeft(left);
+            left = moveOrLoadIntoVR(left);
         }
 
+        bin.setLeft(left);
+
         if(right.type != IROperand.Type.VIRTUAL_REGISTER && right.type != IROperand.Type.IMMEDIATE) {
-            right = moveOrLoadIntoVR(bin, right);
-            bin.setRight(right);
+            right = moveOrLoadIntoVR(right);
         }
+
+        bin.setRight(right);
 
         return null;
 
@@ -121,62 +124,35 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
 
     @Override
     public Void visit(Call call) {
-        IROperand[] originalArgs = call.getArguments();
-        boolean hasWordArg = Arrays.stream(originalArgs).anyMatch(IRLoweringPass::isWordOperand);
+        IROperand[] args = call.getArguments();
 
-        int byteIndex = 0;
+        var funType = (FunctionType) call.getCallee().getTypeSpecifier();
 
-        for (int i = 0; i < originalArgs.length; i++) {
-            IROperand arg = originalArgs[i].accept(this);
+        record StackArg(IROperand operand, int offset){}
 
-            if (isWordOperand(arg)) {
-                if (i == 0) {
-                    // First word argument → RC:RD
-                    moveOrLoadIntoVR(arg, RegisterClass.WORDPARAM_1);
-                } else {
-                    call.insertBefore(
-                            new Push(arg)
-                    );
-                }
+        List<StackArg> stackArgs = new ArrayList<>();
+
+        for (int i = 0; i < args.length; i++) {
+            CallingConvention.ParamLocation loc = funType.getParameterMapping().get(i);
+            if (loc.onStack()) {
+                stackArgs.add(new StackArg(args[i], loc.stackOffset()));
             } else {
-                RegisterClass regClass = switch (byteIndex++) {
-                    case 0 -> RegisterClass.BYTEPARAM_1;
-                    case 1 -> hasWordArg ? null : RegisterClass.BYTEPARAM_3;
-                    case 2 -> hasWordArg ? null : RegisterClass.BYTEPARAM_4;
-                    default -> null;
-                };
-
-                if (regClass != null) {
-                    moveOrLoadIntoVR(arg, regClass);
-                } else {
-                    call.insertBefore(
-                            new Push(arg)
-                    );
-                }
+                moveOrLoadIntoVR(args[i], loc.regClass());
             }
         }
 
-        // Handle result
-        VirtualRegister originalResult = call.getReturnTarget();
-        if (originalResult != null) {
-            RegisterClass retClass = isWordOperand(originalResult)
-                    ? RegisterClass.RET_WORD
-                    : RegisterClass.RET_BYTE;
+        // Sort descending by stack offset to ensure we push the highest offset first
+        stackArgs.sort((a, b) -> Integer.compare(b.offset, a.offset));
 
-            originalResult.setRegisterClass(retClass);
+        for(StackArg sa : stackArgs) {
+            call.insertBefore(new Push(sa.operand));
         }
 
-        // Replace arguments in-place on the original call
-        call.setArguments(new IROperand[0]);
+        RegisterClass retRC = CallingConvention.returnRegisterFor(call.getReturnTarget().getTypeSpecifier());
+        call.getReturnTarget().setRegisterClass(retRC);
 
         return null;
     }
-
-    private static boolean isWordOperand(IROperand arg) {
-        return arg.getTypeSpecifier().allocSize() == 2;
-    }
-
-
     @Override
     public Void visit(Unary unary) {
 
@@ -208,7 +184,16 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     public IROperand visit(Location location) {
 
         if(location.getSymbol() instanceof BaseSymbol bs && bs.isParameter()){
-            // Replace the parameter symbol with its respective (vr or stack frame offset) location, following the calling convention
+            CallingConvention.ParamLocation paramLocation = getUnit().getFunctionType().getParameterMapping().get(bs.getParameterIndex());
+            if(paramLocation.onStack()){
+                int offset = paramLocation.stackOffset();
+                return new StackFrameOperand(location.getTypeSpecifier(), offset);
+            }else{
+                VirtualRegisterManager vrm = getUnit().getVrManager();
+                VirtualRegister vr = vrm.getRegister(location.getTypeSpecifier());
+                vr.setRegisterClass(paramLocation.regClass());
+                return vr;
+            }
         }
 
         return location;

@@ -2,9 +2,14 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class Bin extends IRInstruction {
-    private final IROperand target;
+    private IROperand target;
 
     public IROperand left;
     public IROperand right;
@@ -28,8 +33,37 @@ public class Bin extends IRInstruction {
     }
 
     @Override
+    public Collection<IROperand> getReads() {
+        return List.of(left, right);
+    }
+
+    @Override
+    public Collection<IROperand> getWrites() {
+        return Collections.singleton(target);
+    }
+
+    @Override
+    public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        if (left.equals(oldOp)) {
+            left = newOp;
+        } else if (right.equals(oldOp)) {
+            right = newOp;
+        } else if (target.equals(oldOp)) {
+            target = newOp;
+        }
+    }
+
+    @Override
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.visit(this);
+    }
+
+    public IROperand getTarget() {
+        return target;
+    }
+
+    public void setTarget(IROperand target) {
+        this.target = target;
     }
 
     public IROperand getLeft() {

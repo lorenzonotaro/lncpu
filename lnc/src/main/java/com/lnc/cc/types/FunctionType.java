@@ -1,20 +1,24 @@
 package com.lnc.cc.types;
 
 import com.lnc.cc.ast.FunctionDeclaration;
+import com.lnc.cc.ir.CallingConvention;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class FunctionType extends TypeSpecifier {
 
     public final FunctionDeclaration functionDeclaration;
     public final TypeSpecifier returnType;
     public final TypeSpecifier[] parameterTypes;
+    private final List<CallingConvention.ParamLocation> parameterMapping;
 
     private FunctionType(FunctionDeclaration functionDeclaration, TypeSpecifier returnType, TypeSpecifier[] parameterTypes) {
         super(Type.FUNCTION);
         this.functionDeclaration = functionDeclaration;
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;
+        this.parameterMapping = CallingConvention.mapCallArguments(parameterTypes);
     }
 
     public static FunctionType of(FunctionDeclaration functionDeclaration) {
@@ -53,5 +57,9 @@ public class FunctionType extends TypeSpecifier {
     @Override
     public int typeSize() {
         return 2;
+    }
+
+    public List<CallingConvention.ParamLocation> getParameterMapping() {
+        return parameterMapping;
     }
 }

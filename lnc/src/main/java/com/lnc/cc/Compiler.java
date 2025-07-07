@@ -6,7 +6,9 @@ import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
+import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
+import com.lnc.cc.codegen.GraphColoringRegisterAllocator;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
 import com.lnc.cc.ir.IRLoweringPass;
@@ -106,6 +108,15 @@ public class Compiler {
             }
         }
 
+
+        CodeGenerator codeGenerator = new CodeGenerator(irGenerator.getResult());
+
+        this.output = codeGenerator.run();
+
+        if(LNC.settings.get("--standalone", Boolean.class)){
+            return standalone(irGenerator.getResult());
+        }
+
 /*        Logger.setProgramState("optimization");
         LinearOptimizer opt = new LinearOptimizer(irGenerator.getResult());
         var optimizationResult = opt.linearizeAndOptimize();
@@ -116,8 +127,6 @@ public class Compiler {
         codeGenerator.generate();
 
         this.output = codeGenerator.getOutput();*/
-
-        output = new ArrayList<>(); // While we don't have a code generator, we still need to return something
 
 /*        if(LNC.settings.get("--standalone", Boolean.class)){
             return standalone(optimizationResult);

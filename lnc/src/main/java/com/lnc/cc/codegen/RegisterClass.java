@@ -4,38 +4,38 @@ import java.util.Set;
 
 public enum RegisterClass {
 
-    ANY(new Register[]{Register.RC, Register.RB, Register.RA, Register.RD}),
+    ANY(Set.of(Register.RC, Register.RB, Register.RA, Register.RD)),
 
-    BYTEPARAM_1(new Register[]{Register.RA}),
+    BYTEPARAM_1(Set.of(Register.RA)),
 
-    BYTEPARAM_2(new Register[]{Register.RB}),
+    BYTEPARAM_2(Set.of(Register.RB)),
 
-    BYTEPARAM_3(new Register[]{Register.RC}),
+    BYTEPARAM_3(Set.of(Register.RC)),
 
-    BYTEPARAM_4(new Register[]{Register.RD}),
+    BYTEPARAM_4(Set.of(Register.RD)),
 
-    WORDPARAM_1(new Register[]{Register.RC, Register.RD}),
+    WORDPARAM_1(Set.of(Register.RCRD)),
 
-    RET_BYTE(new Register[]{Register.RB}),
+    RET_BYTE(Set.of(Register.RB)),
 
-    RET_WORD(new Register[]{Register.RC, Register.RD}),
+    RET_WORD(Set.of(Register.RCRD)),
 
-    SHIFT(new Register[]{Register.RA}),
-    INDEX(new Register[]{Register.RD}),
-    RETURN(new Register[]{Register.RB});
+    SHIFT(Set.of(Register.RA)),
+    INDEX(Set.of(Register.RD)),
+    RETURN(Set.of(Register.RB));
 
-    private final Register[] registers;
+    private final Set<Register> registers;
 
-    RegisterClass(Register[] registers) {
+    RegisterClass(Set<Register> registers) {
         this.registers = registers;
     }
 
-    public Register[] getRegisters() {
+    public Set<Register> getRegisters() {
         return registers;
     }
 
     public int getSize() {
-        return registers.length;
+        return registers.size();
     }
 
     public Register next(Set<Register> neighborAssignments) {
@@ -45,5 +45,13 @@ public enum RegisterClass {
             }
         }
         return null;
+    }
+
+    public boolean isSingleton() {
+        return registers.size() == 1;
+    }
+
+    public Register onlyRegister() {
+        return registers.size() == 1 ? registers.iterator().next() : null;
     }
 }

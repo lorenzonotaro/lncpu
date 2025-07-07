@@ -1,6 +1,6 @@
 package com.lnc.cc.ir;
 
-import com.lnc.cc.common.StructMemberAccess;
+import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
 
 public interface IIROperandVisitor<T> {

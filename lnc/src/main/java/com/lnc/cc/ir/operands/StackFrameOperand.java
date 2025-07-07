@@ -4,14 +4,12 @@ import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
 
 public class StackFrameOperand extends IROperand {
-    private final int offset;
+    private int offset;
     private TypeSpecifier typeSpecifier;
-    private final String paramName;
 
-    public StackFrameOperand(TypeSpecifier type, String paramName, int offset) {
+    public StackFrameOperand(TypeSpecifier type, int offset) {
         super(Type.STACK_FRAME_OPERAND);
         this.typeSpecifier = type;
-        this.paramName = paramName;
         this.offset = offset;
     }
 
@@ -27,10 +25,17 @@ public class StackFrameOperand extends IROperand {
 
     @Override
     public String toString() {
-        return "[BP " + offset + "] (" + paramName + ")";
+        return "[BP " + offset + "]";
     }
 
     public int getOffset() {
         return offset;
+    }
+
+    public void setOffset(int slot) {
+        if (slot < 0) {
+            throw new IllegalArgumentException("Stack frame operand offset cannot be negative");
+        }
+        this.offset = slot;
     }
 }

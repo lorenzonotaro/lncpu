@@ -3,10 +3,14 @@ package com.lnc.cc.ir;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
 public class Call extends IRInstruction {
     private VirtualRegister returnTarget;
-
-    private final IROperand callee;
+    private IROperand callee;
     private IROperand[] arguments;
 
     public Call(VirtualRegister returnTarget, IROperand callee, IROperand[] arguments) {
@@ -49,6 +53,30 @@ public class Call extends IRInstruction {
             sb.append(")");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Collection<IROperand> getReads() {
+        List<IROperand> reads = List.of(callee);
+        if (arguments != null) {
+            reads = Stream.concat(reads.stream(), Arrays.stream(arguments)).toList();
+        }
+        return reads;
+    }
+
+    @Override
+    public Collection<IROperand> getWrites() {
+        if (returnTarget != null) {
+            return List.of(returnTarget);
+        }
+        return List.of();
+    }
+
+    @Override
+    public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        if (callee.equals(oldOp)) {
+            callee = newOp;
+        }
     }
 
     @Override

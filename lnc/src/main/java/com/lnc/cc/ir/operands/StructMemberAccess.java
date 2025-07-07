@@ -1,7 +1,6 @@
-package com.lnc.cc.common;
+package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.ir.IIROperandVisitor;
-import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.types.StructFieldEntry;
 import com.lnc.cc.types.TypeSpecifier;
 

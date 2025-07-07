@@ -71,12 +71,6 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
-    public Void visit(Label label) {
-        sb.append("\n").append(label.toString()).append(":\n");
-        return super.visit(label);
-    }
-
-    @Override
     protected void visit(IRBlock block) {
         sb.append("\n_l").append(block.getId()).append(":\n");
 

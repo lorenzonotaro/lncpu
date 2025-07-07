@@ -61,5 +61,15 @@
   "-Wstack-access-before-setup": {
     "help": "Disables stack access before setup compile warning.",
     "value": true
+  },
+
+  "--reg-alloc-max-iter": {
+    "help": "Sets the maximum number of iterations for the register allocator.",
+    "value": 10
+  },
+
+  "--first-pass-opt-max-iter": {
+    "help": "Sets the maximum number of iterations for the first pass optimizer.",
+    "value": 20
   }
 }

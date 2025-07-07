@@ -3,9 +3,12 @@ package com.lnc.cc.ir;
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.operands.IROperand;
 
+import java.util.Collection;
+import java.util.List;
+
 public class Unary extends IRInstruction {
 
-    private final IROperand target;
+    private IROperand target;
     private IROperand operand;
     private final UnaryExpression.Operator operator;
     private final UnaryExpression.UnaryPosition unaryPosition;
@@ -25,6 +28,25 @@ public class Unary extends IRInstruction {
     @Override
     public String toString() {
         return String.format("%s <- %s %s", target, operator, operand);
+    }
+
+    @Override
+    public Collection<IROperand> getReads() {
+        return List.of(operand);
+    }
+
+    @Override
+    public Collection<IROperand> getWrites() {
+        return List.of(target);
+    }
+
+    @Override
+    public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        if (operand.equals(oldOp)) {
+            operand = newOp;
+        } else if (target.equals(oldOp)) {
+            target = newOp; // This line is not strictly necessary since target is final, but included for consistency
+        }
     }
 
     public UnaryExpression.UnaryPosition getUnaryPosition() {

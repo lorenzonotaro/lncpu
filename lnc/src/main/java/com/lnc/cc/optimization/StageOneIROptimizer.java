@@ -1,5 +1,6 @@
 package com.lnc.cc.optimization;
 
+import com.lnc.LNC;
 import com.lnc.cc.ir.IRUnit;
 
 import java.util.List;
@@ -26,7 +27,11 @@ public class StageOneIROptimizer {
 
     public void run(IRUnit unit){
         boolean changed;
+        int maxIter = LNC.settings.get("--first-pass-opt-max-iter", Double.class).intValue();
         do{
+            if(maxIter-- <= 0) {
+                throw new RuntimeException("Exceeded maximum iterations for first pass optimization.");
+            }
             changed = false;
             for (var pass : PASSES) {
                 pass.visit(unit);
