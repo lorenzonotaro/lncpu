@@ -9,6 +9,11 @@
     "value": ""
   },
 
+  "-oA": {
+    "help": "Output assembly code from lnc. This parameter must be followed by the output filename. ",
+    "value": ""
+  },
+
   "-oM": {
     "help": "Output intermediate representation code. This parameter must be followed by the output filename. ",
     "value": ""

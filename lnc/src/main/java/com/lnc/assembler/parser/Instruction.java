@@ -1,6 +1,7 @@
 package com.lnc.assembler.parser;
 
 import com.lnc.LNC;
+import com.lnc.cc.codegen.CodeElementVisitor;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.linker.ILabelResolver;
@@ -140,5 +141,16 @@ public class Instruction extends CodeElement {
         }).map(AbstractMap.SimpleEntry::getValue).toArray(Argument[]::new);
     }
 
+    public Argument[] getArguments() {
+        return arguments;
+    }
 
+    public Token getOpcode() {
+        return opcode;
+    }
+
+    @Override
+    public <T> T accept(CodeElementVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
 }

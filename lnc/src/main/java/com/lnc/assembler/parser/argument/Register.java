@@ -30,4 +30,6 @@ public class Register extends Argument {
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
         return reg.toString();
     }
+
+
 }

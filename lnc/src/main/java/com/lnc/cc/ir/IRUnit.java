@@ -1,5 +1,7 @@
 package com.lnc.cc.ir;
 
+import com.lnc.assembler.common.IEncodeable;
+import com.lnc.assembler.parser.EncodedData;
 import com.lnc.cc.ast.FunctionDeclaration;
 import com.lnc.cc.codegen.Register;
 import com.lnc.cc.common.FlatSymbolTable;

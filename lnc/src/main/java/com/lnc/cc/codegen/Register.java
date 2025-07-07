@@ -1,5 +1,7 @@
 package com.lnc.cc.codegen;
 
+import com.lnc.common.frontend.TokenType;
+
 import java.util.Arrays;
 
 public enum Register {
@@ -46,5 +48,9 @@ public enum Register {
 
     public static Register[] getCompoundRegisters() {
         return Arrays.stream(Register.values()).filter(Register::isCompound).toArray(Register[]::new);
+    }
+
+    public TokenType getTokenType() {
+        return TokenType.valueOf(regName);
     }
 }

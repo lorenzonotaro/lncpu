@@ -3,20 +3,27 @@ package com.lnc.cc.codegen;
 import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
+import com.lnc.assembler.parser.EncodedData;
+import com.lnc.assembler.parser.Instruction;
+import com.lnc.assembler.parser.argument.*;
+import com.lnc.assembler.parser.argument.Byte;
 import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.common.IntUtils;
+import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
 import java.util.*;
 import java.util.stream.Stream;
 
-public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisitor<String>{
+public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisitor<Argument>{
     private final IR ir;
-    private IRUnit currentUnit;
 
-    private final StringBuilder code = new StringBuilder();
-    private final StringBuilder dataSection = new StringBuilder();
+    private CompilerOutput currentOutput;
+
+    private final List<CompilerOutput> outputs = new ArrayList<>();
 
     public CodeGenerator(IR ir){
         this.ir = ir;
@@ -24,16 +31,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     public List<CompilerOutput> run(){
 
-        dataSection.append(".section LNCDATA\n");
-
-        for(var entry : ir.symbolTable().getSymbols().values()){
-            var type = entry.getType();
-            if(type.type != TypeSpecifier.Type.FUNCTION){
-                dataPageVariable(entry.getAsmName(), type.allocSize());
-            }
-        }
-
-        code.append(".section LNCCODE\n\n");
+        outputDataSection();
 
         for(IRUnit unit : ir.units()){
 
@@ -42,35 +40,32 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 continue;
             }
 
-            currentUnit = unit;
+            currentOutput = new CompilerOutput(unit, new SectionInfo("LNC_" + unit.getFunctionDeclaration().name.lexeme, -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
 
             GraphColoringRegisterAllocator.run(unit);
 
             visit(unit);
-
-            code.append("\n\n");
         }
 
-        return List.of(
-                new CompilerOutput(
-                        code.toString(), new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false)),
-                new CompilerOutput(
-                        dataSection.toString(), new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false))
-        );
+        return outputs;
     }
 
-    private void dataPageVariable(String asmName, int size) {
-        if(size <= 0) {
-            return; // Skip zero-sized variables
+    private void outputDataSection() {
+        var dataOutput = new CompilerOutput(null, new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIT, false, true, false));
+
+        for(var entry : ir.symbolTable().getSymbols().values()){
+            var type = entry.getType();
+            if(type.type != TypeSpecifier.Type.FUNCTION){
+                dataPageVariable(entry.getAsmName(), type.allocSize());
+            }
         }
-        dataSection.append(String.format("%s:\n\t.res %d\n", asmName, size));
     }
 
     @Override
     public Void visit(Goto aGoto) {
-        var target = aGoto.getTarget().toString();
+        var target = labelRef(aGoto.getTarget());
 
-        instrf("goto %s", target);
+        instrf(TokenType.GOTO, target);
 
         return null;
     }
@@ -81,47 +76,47 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var left = condJump.getLeft().accept(this);
         var right = condJump.getRight().accept(this);
 
-        final String target = condJump.getTarget().toString();
-        final String falseTarget = condJump.getFalseTarget().toString();
+        final var target = labelRef(condJump.getTarget());
+        final var falseTarget = labelRef(condJump.getFalseTarget());
 
-        instrf("cmp %s, %s", left, right);
+        instrf(TokenType.CMP, left, right);
 
 
         switch(condJump.getCond()){
             case EQ -> {
-                instrf("je %s", target);
+                instrf(TokenType.JZ, target);
 
                 enqueue(condJump.getFalseTarget());
                 enqueue(condJump.getTarget());
             }
             case NE -> {
-                instrf("je %s", falseTarget);
+                instrf(TokenType.JZ, falseTarget);
 
                 enqueue(condJump.getTarget());
                 enqueue(condJump.getFalseTarget());
             }
             case LT -> {
-                instrf("jn %s", target);
+                instrf(TokenType.JC, target);
 
                 enqueue(condJump.getFalseTarget());
                 enqueue(condJump.getTarget());
             }
             case LE -> {
-                instrf("jn %s", target);
-                instrf("je %s", target);
+                instrf(TokenType.JZ, target);
+                instrf(TokenType.JZ, target);
 
                 enqueue(condJump.getFalseTarget());
                 enqueue(condJump.getTarget());
             }
             case GT -> {
-                instrf("jn %s", falseTarget);
+                instrf(TokenType.JC, falseTarget);
 
                 enqueue(condJump.getTarget());
                 enqueue(condJump.getFalseTarget());
             }
             case GE -> {
-                instrf("jn %s", falseTarget);
-                instrf("je %s", falseTarget);
+                instrf(TokenType.JC, falseTarget);
+                instrf(TokenType.JC, falseTarget);
 
                 enqueue(condJump.getTarget());
                 enqueue(condJump.getFalseTarget());
@@ -137,7 +132,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var target = load.getDest().accept(this);
         var source = load.getSrc().accept(this);
 
-        instrf("mov %s, %s", source, target);
+        instrf(TokenType.MOV, source, target);
 
         return null;
     }
@@ -148,7 +143,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var target = move.getDest().accept(this);
         var source = move.getSource().accept(this);
 
-        instrf("mov %s, %s", source, target);
+        instrf(TokenType.MOV, source, target);
 
         return null;
     }
@@ -158,14 +153,14 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var target = store.getDest().accept(this);
         var value = store.getValue().accept(this);
 
-        instrf("mov %s, %s", value, target);
+        instrf(TokenType.MOV, value, target);
 
         return null;
     }
 
     @Override
     public Void visit(Ret ret) {
-        instrf("goto _ret");
+        instrf(TokenType.GOTO, new LabelRef(Token.__internal(TokenType.IDENTIFIER, "_ret")));
         return null;
     }
 
@@ -176,16 +171,16 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var left = bin.getLeft().accept(this);
         var right = bin.getRight().accept(this);
 
-        if(!target.equals(left)){
-            instrf("mov %s, %s", left, target);
+        if(!bin.getTarget().equals(bin.getLeft())){
+            instrf(TokenType.MOV, left, target);
         }
 
         switch(bin.getOperator()){
             case ADD -> {
-                instrf("add %s, %s", target, right);
+                instrf(TokenType.ADD, target, right);
             }
             case SUB -> {
-                instrf("sub %s, %s", target, right);
+                instrf(TokenType.SUB, target, right);
             }
             case MUL -> {
                 throw new UnsupportedOperationException("MUL operator is not supported in this code generator.");
@@ -194,13 +189,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 throw new UnsupportedOperationException("DIV operator is not supported in this code generator.");
             }
             case AND -> {
-                instrf("and %s, %s", target, right);
+                instrf(TokenType.AND, target, right);
             }
             case OR -> {
-                instrf("or %s, %s", target, right);
+                instrf(TokenType.OR, target, right);
             }
             case XOR -> {
-                instrf("xor %s, %s", target, right);
+                instrf(TokenType.XOR, target, right);
             }
             default -> {
                 throw new UnsupportedOperationException("Unsupported binary operator: " + bin.getOperator());
@@ -211,7 +206,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void visit(Call call) {
-        instrf("call %s", call.getCallee().accept(this));
+        instrf(TokenType.LCALL, call.getCallee().accept(this));
         return null;
     }
 
@@ -221,8 +216,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var operand = unary.getOperand().accept(this);
         var target = unary.getTarget().accept(this);
 
-        if(!operand.equals(target)){
-            instrf("mov %s, %s", operand, target);
+        if(!unary.getOperand().equals(unary.getTarget())){
+            instrf(TokenType.MOV, operand, target);
         }
 
         switch(unary.getOperator()){
@@ -230,7 +225,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 throw new UnsupportedOperationException("NEGATE operator is not supported in this code generator.");
             }
             case NOT -> {
-                instrf("not %s", target);
+                instrf(TokenType.NOT, target);
             }
             case DEREFERENCE -> {
                 throw new UnsupportedOperationException("DEREFERENCE operator is not supported in this code generator.");
@@ -239,10 +234,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 throw new UnsupportedOperationException("ADDRESS_OF operator is not supported in this code generator.");
             }
             case INCREMENT -> {
-                instrf("inc %s", target);
+                instrf(TokenType.INC, target);
             }
             case DECREMENT -> {
-                instrf("dec %s", target);
+                instrf(TokenType.DEC, target);
             }
         }
         return null;
@@ -250,43 +245,71 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void visit(Push push) {
-        instrf("push %s", push.getArg().accept(this));
+        instrf(TokenType.PUSH, push.getArg().accept(this));
         return null;
     }
 
     @Override
-    public String visit(ImmediateOperand immediateOperand) {
-        return immediateOperand.toString();
+    public Argument visit(ImmediateOperand immediateOperand) {
+        int value = immediateOperand.getValue();
+        return IntUtils.inByteRange(value) ? immByte(value) : immWord(value);
+    }
+
+    private Argument immByte(int value) {
+        return new Byte(Token.__internal(TokenType.INTEGER, value));
+    }
+
+    private Argument immWord(int value) {
+        return new Word(Token.__internal(TokenType.INTEGER, value));
     }
 
     @Override
-    public String visit(VirtualRegister vr) {
-        return vr.getAssignedPhysicalRegister().getRegName();
+    public Argument visit(VirtualRegister vr) {
+        Register assignedPhysicalRegister = vr.getAssignedPhysicalRegister();
+        if(assignedPhysicalRegister.isCompound()){
+            Register[] components = assignedPhysicalRegister.getComponents();
+            var high = components[0];
+            var low = components[1];
+            return new Composite(reg(high), reg(low));
+        }else{
+            return reg(assignedPhysicalRegister);
+        }
+    }
+
+    private Argument reg(Register physReg) {
+        return new com.lnc.assembler.parser.argument.Register(Token.__internal(physReg.getTokenType(), physReg.toString()));
     }
 
     @Override
-    public String visit(Location location) {
-        return String.format("[%s]", location.getSymbol().getAsmName());
+    public Argument visit(Location location) {
+        String asmName = location.getSymbol().getAsmName();
+        return labelRef(asmName);
     }
 
+
     @Override
-    public String visit(AddressOf addressOf) {
+    public Argument visit(AddressOf addressOf) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public String visit(StructMemberAccess structMemberAccess) {
+    public Argument visit(StructMemberAccess structMemberAccess) {
         throw new UnsupportedOperationException("StructMemberAccess is not supported in this code generator.");
     }
 
     @Override
-    public String visit(ArrayElementAccess arrayElementAccess) {
+    public Argument visit(ArrayElementAccess arrayElementAccess) {
         throw new UnsupportedOperationException("ArrayElementAccess is not supported in this code generator.");
     }
 
     @Override
-    public String visit(StackFrameOperand stackFrameOperand) {
-        return String.format("[BP + %d]", stackFrameOperand.getOffset());
+    public Argument visit(StackFrameOperand stackFrameOperand) {
+        return new Dereference(
+                new Composite(
+                        new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
+                        new Byte(Token.__internal(TokenType.INTEGER, stackFrameOperand.getOffset()))
+                )
+        );
     }
 
     @Override
@@ -302,19 +325,19 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         int totalStackFrameSize = unit.getTotalStackFrameSize();
 
         if(totalStackFrameSize > 0) {
-            instrf("push BP");
-            instrf("mov BP, SP");
-            instrf("sub SP, %d", totalStackFrameSize);
+            instrf(TokenType.PUSH, reg(TokenType.BP));
+            instrf(TokenType.MOV, reg(TokenType.SP), reg(TokenType.BP));
+            instrf(TokenType.SUB, reg(TokenType.SP), immByte(totalStackFrameSize));
         }
 
         // preserve registers
         var registers = unit.getUsedRegisters().stream()
                 .filter(r -> !CallingConvention.returnRegisterFor(unit.getFunctionDeclaration().declarator.typeSpecifier()).getRegisters().contains(r))
                 .flatMap(r -> r.isCompound() ? Arrays.stream(r.getComponents()) : Stream.of(r))
-                .map(Register::toString).toArray(String[]::new);
+                .toArray(Register[]::new);
 
-        for(String reg : registers) {
-           instrf("push %s", reg);
+        for(Register reg : registers) {
+            instrf(TokenType.PUSH, reg(reg));
         }
 
         // visit the function body
@@ -323,28 +346,49 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         label("_ret");
         // restore registers
         for(int i = registers.length - 1; i >= 0; i--) {
-            instrf("pop %s", registers[i]);
+            instrf(TokenType.POP, reg(registers[i]));
         }
 
         if(totalStackFrameSize > 0) {
             // restore stack pointer and base pointer
-            instrf("pop BP");
-            instrf("sub SP, %d", totalStackFrameSize);
+            instrf(TokenType.POP, reg(TokenType.BP));
+            instrf(TokenType.SUB, reg(TokenType.SP), immByte(totalStackFrameSize));
         }
 
 
-        instrf("ret %s", totalStackFrameSize > 0 ? String.valueOf(totalStackFrameSize) : "");
+        if(totalStackFrameSize > 0) {
+            // return to caller
+            instrf(TokenType.RET, immByte(totalStackFrameSize));
+        } else {
+            // no stack frame, just return
+            instrf(TokenType.RET);
 
-        if(totalStackFrameSize > 0){
-            code.append(" ").append(totalStackFrameSize);
         }
+    }
+
+    private Argument reg(TokenType regId) {
+        return new com.lnc.assembler.parser.argument.Register(Token.__internal(regId, regId.toString()));
+    }
+
+    private void dataPageVariable(String asmName, int size) {
+        label(asmName);
+        currentOutput.append(EncodedData.of(new byte[size]));
     }
 
     private void label(String lexeme) {
-        code.append(lexeme).append(":\n");
+        currentOutput.addLabel(lexeme);
     }
 
-    private void instrf(String format, Object... args) {
-        code.append("\t").append(String.format(format, args)).append("\n");
+    private void instrf(TokenType opcode, Argument... args) {
+        currentOutput.append(new Instruction(Token.__internal(opcode, opcode.toString()), args));
     }
+
+    private LabelRef labelRef(IRBlock target) {
+        return new LabelRef(Token.__internal(TokenType.IDENTIFIER, target.toString()));
+    }
+
+    private Argument labelRef(String asmName) {
+        return new LabelRef(Token.__internal(TokenType.IDENTIFIER, asmName));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.lnc.assembler.parser;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
 import com.lnc.assembler.linker.LinkInfo;
+import com.lnc.cc.codegen.CodeElementVisitor;
 
 import java.io.IOException;
 
@@ -29,4 +30,8 @@ public class EncodedData extends CodeElement{
     }
 
 
+    @Override
+    public <T> T accept(CodeElementVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
 }
