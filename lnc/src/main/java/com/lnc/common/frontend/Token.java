@@ -51,7 +51,7 @@ public class Token {
                 break;
         }
 
-        return new Token(type, lexeme, literal, new Location("<internal>", "<interal>", lexeme, 0, 0));
+        return new Token(type, lexeme, literal, new Location("<internal>", "<internal>", lexeme, 0, 0));
     }
 
     public String formatLocation(){

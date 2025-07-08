@@ -31,28 +31,28 @@ public class OpcodeMap {
     }
 
     public static byte getOpcode(String name){
-        OpcodeInfo info = byImmediateName.get(name);
+        OpcodeInfo info = byImmediateName.get(name.toLowerCase());
         if(info == null)
             throw new IllegalArgumentException("invalid instruction: " + name);
         return info.opcode;
     }
 
     public static byte getCodeLength(String name){
-        OpcodeInfo info = byImmediateName.get(name);
+        OpcodeInfo info = byImmediateName.get(name.toLowerCase());
         if(info == null)
             throw new IllegalArgumentException("invalid instruction");
         return info.codeLength;
     }
 
     public static byte getClockCycles(String name){
-        OpcodeInfo info = byImmediateName.get(name);
+        OpcodeInfo info = byImmediateName.get(name.toLowerCase());
         if(info == null)
             throw new IllegalArgumentException("invalid instruction");
         return info.clockCycles;
     }
 
     public static boolean isValid(String name){
-        return name != null && byImmediateName.containsKey(name);
+        return name != null && byImmediateName.containsKey(name.toLowerCase());
     }
 
     public static String getImmediateName(byte opcode) {

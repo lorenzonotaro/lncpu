@@ -16,7 +16,6 @@ import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisitor<Argument>{
     private final IR ir;
@@ -59,7 +58,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getType();
             if(type.type != TypeSpecifier.Type.FUNCTION){
-                dataPageVariable(entry.getAsmName(), type.allocSize());
+                dataPageVariable(entry.getName(), type.allocSize());
             }
         }
 
@@ -290,7 +289,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Argument visit(Location location) {
         String asmName = location.getSymbol().getAsmName();
-        return CodeGenUtils.labelRef(asmName);
+        return CodeGenUtils.deref(CodeGenUtils.labelRef(asmName));
     }
 
 
@@ -327,7 +326,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public void visit(IRUnit unit) {
-        label(unit.getFunctionDeclaration().name.lexeme);
+        unitLabel();
 
         int totalStackFrameSize = unit.getTotalStackFrameSize();
 
@@ -337,24 +336,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             instrf(TokenType.SUB, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.immByte(totalStackFrameSize));
         }
 
-        // preserve registers
-        var registers = unit.getUsedRegisters().stream()
-                .filter(r -> !CallingConvention.returnRegisterFor(unit.getFunctionDeclaration().declarator.typeSpecifier()).getRegisters().contains(r))
-                .flatMap(r -> r.isCompound() ? Arrays.stream(r.getComponents()) : Stream.of(r))
-                .toArray(Register[]::new);
-
-        for(Register reg : registers) {
-            instrf(TokenType.PUSH, CodeGenUtils.reg(reg));
-        }
-
         // visit the function body
         super.visit(unit);
 
         label("_ret");
-        // restore registers
-        for(int i = registers.length - 1; i >= 0; i--) {
-            instrf(TokenType.POP, CodeGenUtils.reg(registers[i]));
-        }
 
         if(totalStackFrameSize > 0) {
             // restore stack pointer and base pointer
@@ -381,6 +366,12 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     private void label(String lexeme) {
         currentOutput.addLabel(lexeme);
     }
+
+
+    private void unitLabel() {
+        currentOutput.addUnitLabel();
+    }
+
 
     private void instrf(TokenType opcode, Argument... args) {
         currentOutput.append(CodeGenUtils.instr(opcode, args));

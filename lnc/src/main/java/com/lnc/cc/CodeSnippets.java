@@ -3,14 +3,9 @@ package com.lnc.cc;
 import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
-import com.lnc.assembler.parser.CodeElement;
-import com.lnc.assembler.parser.argument.BinaryOp;
 import com.lnc.cc.codegen.CodeGenUtils;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.common.frontend.TokenType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CodeSnippets {
 
@@ -50,7 +45,7 @@ public class CodeSnippets {
                         CodeGenUtils.bin(
                         CodeGenUtils.labelRef("LNCDATA"),
                         CodeGenUtils.immByte(8),
-                        TokenType.SHR
+                        TokenType.BITWISE_RIGHT
                 ), "byte"),
                 CodeGenUtils.reg(TokenType.DS)));
 

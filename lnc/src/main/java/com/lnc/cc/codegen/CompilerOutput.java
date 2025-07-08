@@ -3,15 +3,13 @@ package com.lnc.cc.codegen;
 import com.lnc.assembler.common.LabelInfo;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.parser.CodeElement;
-import com.lnc.assembler.parser.EncodedData;
+import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.cc.ir.IRUnit;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
 public final class CompilerOutput {
@@ -47,7 +45,13 @@ public final class CompilerOutput {
         if (labels == null) {
             labels = new ArrayList<>();
         }
-        labels.add(new LabelInfo(Token.__internal(TokenType.IDENTIFIER, lexeme)));
+        labels.add(new LabelInfo(Token.__internal(TokenType.IDENTIFIER, lexeme), unit != null ? unit.getFunctionDeclaration().name.lexeme + LnasmParser.SUBLABEL_SEPARATOR + lexeme : lexeme));
+    }
+
+
+    public void addUnitLabel() {
+        var label = Objects.requireNonNull(unit).getFunctionDeclaration().name.lexeme;
+        labels.add(new LabelInfo(Token.__internal(TokenType.IDENTIFIER, label), label));
     }
 
     public LinkedList<CodeElement> code() {
@@ -83,7 +87,7 @@ public final class CompilerOutput {
 
         for (CodeElement element : code) {
             for(var label : element.getLabels()) {
-                sb.append(label.name()).append(":\n");
+                sb.append(label.extractSubLabelName()).append(":\n");
             }
             sb.append("\t").append(element).append("\n");
         }

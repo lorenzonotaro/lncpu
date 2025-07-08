@@ -48,4 +48,8 @@ public class CodeGenUtils {
     public static Argument reg(com.lnc.cc.codegen.Register physReg) {
         return new Register(Token.__internal(physReg.getTokenType(), physReg.toString()));
     }
+
+    public static Argument deref(Argument argument) {
+        return new Dereference(argument);
+    }
 }

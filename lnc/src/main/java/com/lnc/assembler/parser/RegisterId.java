@@ -16,11 +16,6 @@ public enum RegisterId {
         this.generalPurpose = generalPurpose;
     }
 
-    @Override
-    public String toString() {
-        return super.toString().toLowerCase();
-    }
-
     public static RegisterId fromString(String str) {
         return RegisterId.valueOf(str.toUpperCase());
     }

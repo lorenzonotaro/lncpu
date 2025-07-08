@@ -1,3 +1,12 @@
-int foo(int x, int y) {
+int foo(int x, int y, int z) {
+    if (x < 0) {
+        return 2 + z;
+    }else if (y < 0) {
+        return 3;
+    }
     return x + y;
+}
+
+void main(){
+    int i = 0;
 }

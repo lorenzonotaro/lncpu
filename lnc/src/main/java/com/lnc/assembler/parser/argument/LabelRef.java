@@ -4,6 +4,7 @@ import com.lnc.assembler.common.*;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
 import com.lnc.assembler.linker.LinkInfo;
+import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.common.frontend.Token;
 
 import java.io.IOException;
