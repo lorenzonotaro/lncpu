@@ -122,6 +122,12 @@ public class MemoryLayoutManager {
         while(current != null){
             if(current.isAllocated()){
 
+                int length = current.sectionBuilder.getCodeLength();
+                if (length == 0) {
+                    current = current.next;
+                    continue;
+                }
+
                 if(current.start != current.sectionBuilder.getStart() || current.end != current.sectionBuilder.getStart() + current.sectionBuilder.getCodeLength() - 1){
                     throw new IllegalStateException("section '%s': mismatch between allocated segment (%04x-%04x) and section boundaries (%04x-%04x)".formatted(current.sectionBuilder.getSectionInfo().getName(), current.start, current.end, current.sectionBuilder.getSectionInfo().getStart(), current.sectionBuilder.getSectionInfo().getStart() + current.sectionBuilder.getCodeLength() - 1));
                 }
