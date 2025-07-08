@@ -647,6 +647,36 @@
         "flags_modified": "-"
     },
     {
+        "name": "mov_cst_ibpoffset",
+        "description": "Copies a constant to a location in the address space (stack frame offset addressing mode)",
+        "microcode": [
+            {
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_ABL_IN": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0
+            },
+            {
+                "NOT_SS_OUT": 0,
+                "NOT_ABH_IN": 0
+            },
+            {
+                "OP_SEL": "add",
+                "X_SEL": "abl",
+                "Y_SEL": "bp",
+                "NOT_ABL_IN": 0
+            },
+            {
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "abh:abl",
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
         "name": "mov_ra_datap",
         "description": "Copies RA to a location in the address space (data page addressing mode)",
         "microcode": [

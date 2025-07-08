@@ -2,14 +2,27 @@ package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.common.frontend.Token;
 
 public class StackFrameOperand extends IROperand {
+
+    public enum OperandType {
+        LOCAL, PARAMETER
+    }
+
+    private final OperandType operandType;
     private int offset;
     private TypeSpecifier typeSpecifier;
 
-    public StackFrameOperand(TypeSpecifier type, int offset) {
+
+    public OperandType getOperandType() {
+        return operandType;
+    }
+
+    public StackFrameOperand(TypeSpecifier type, OperandType operandType, int offset) {
         super(Type.STACK_FRAME_OPERAND);
         this.typeSpecifier = type;
+        this.operandType = operandType;
         this.offset = offset;
     }
 

@@ -1,8 +1,6 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.codegen.RegisterClass;
-import com.lnc.cc.common.AbstractSymbol;
-import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.ArrayList;
@@ -13,6 +11,7 @@ public class CallingConvention {
     /** One parameter’s or return’s location. */
     public record ParamLocation(
             RegisterClass regClass,   // null if it lives on the stack
+            int size,
             boolean onStack,          // true ⇾ stack
             int stackOffset           // byte offset from SP (positive) for loads/pushes
     ) {}
@@ -32,35 +31,32 @@ public class CallingConvention {
                 // A word‐sized argument
                 if (locs.stream().noneMatch(pl -> pl.regClass == RegisterClass.WORDPARAM_1)) {
                     // first word → RC:RD
-                    locs.add(new ParamLocation(RegisterClass.WORDPARAM_1, false, -1));
+                    locs.add(new ParamLocation(RegisterClass.WORDPARAM_1, size, false, -1));
                 } else {
                     // further words → stack (2 bytes)
-                    locs.add(new ParamLocation(null, true, stackOffset));
+                    locs.add(new ParamLocation(null, size, true, stackOffset));
                     stackOffset += 2;
                 }
 
             } else {
                 // A byte‐sized argument
-                RegisterClass rc;
-                switch (byteIdx) {
-                    case 0:  rc = RegisterClass.BYTEPARAM_1; break;  // RA
-                    case 1:  rc = RegisterClass.BYTEPARAM_2; break;  // RB
-                    case 2:  rc = hasWordArg
+                RegisterClass rc = switch (byteIdx) {
+                    case 0 -> RegisterClass.BYTEPARAM_1;  // RA
+                    case 1 -> RegisterClass.BYTEPARAM_2;  // RB
+                    case 2 -> hasWordArg
                             ? null
                             : RegisterClass.BYTEPARAM_3;      // RC only if no word
-                        break;
-                    case 3:  rc = hasWordArg
+                    case 3 -> hasWordArg
                             ? null
                             : RegisterClass.BYTEPARAM_4;      // RD only if no word
-                        break;
-                    default: rc = null;
-                }
+                    default -> null;
+                };
 
                 if (rc != null) {
-                    locs.add(new ParamLocation(rc, false, -1));
+                    locs.add(new ParamLocation(rc,  size,false, -1));
                 } else {
                     // spill to stack (1 byte)
-                    locs.add(new ParamLocation(null, true, stackOffset));
+                    locs.add(new ParamLocation(null, size,true, stackOffset));
                     stackOffset += 1;
                 }
                 byteIdx++;

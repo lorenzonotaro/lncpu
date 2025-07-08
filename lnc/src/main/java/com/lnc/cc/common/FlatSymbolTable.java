@@ -25,6 +25,7 @@ public class FlatSymbolTable {
 
     private static void flattenRecursively(Scope scope, FlatSymbolTable table) {
         for (BaseSymbol symbol : scope.getSymbols().values()) {
+
             var prev = table.symbols.put(scope.getScopePrefix() + symbol.getName(), symbol);
             if(prev != null){
                 throw new IllegalStateException("unequivocal symbol name '%s', from scopes '%s' and '%s'"

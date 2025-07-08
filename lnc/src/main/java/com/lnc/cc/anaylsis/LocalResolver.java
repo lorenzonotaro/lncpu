@@ -88,7 +88,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){
-            define(new BaseSymbol(functionDeclaration.name, FunctionType.of(functionDeclaration), functionDeclaration.isForwardDeclaration()));
+            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), functionDeclaration.isForwardDeclaration(), false));
         }
 
         super.visitStatement(statement);
@@ -97,7 +97,13 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     @Override
     public Void visit(VariableDeclaration variableDeclaration) {
 
-        BaseSymbol symbol = new BaseSymbol(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern(), variableDeclaration.isParameter, variableDeclaration.getParameterIndex());
+        BaseSymbol symbol;
+
+        if (variableDeclaration.isParameter) {
+            symbol = BaseSymbol.parameter(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.getParameterIndex());
+        } else {
+            symbol = BaseSymbol.variable(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern(), variableDeclaration.declarator.typeQualifier().isStatic());
+        }
 
         define(symbol);
 

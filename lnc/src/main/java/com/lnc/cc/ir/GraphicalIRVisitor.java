@@ -14,12 +14,12 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
         Set<IRBlock> visited = new HashSet<>();
 
         void enqueue(IRBlock block) {
-            if (visited.contains(block)) return;
+            if (visited.contains(block) || worklist.contains(block)) return;
             worklist.push(block);
         }
 
         public IRBlock next() {
-            return worklist.pop();
+            return worklist.pollLast();
         }
 
         public boolean isEmpty() {
@@ -70,7 +70,9 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
 
             // Optionally enqueue all successors by default
             for (IRBlock succ : block.getSuccessors()) {
-                context.enqueue(succ);
+                {
+                    context.enqueue(succ);
+                }
             }
         }
     }

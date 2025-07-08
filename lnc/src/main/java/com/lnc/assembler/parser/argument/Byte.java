@@ -8,7 +8,7 @@ import com.lnc.assembler.linker.LinkInfo;
 import java.io.IOException;
 
 public class Byte extends NumericalArgument {
-    public final byte value;
+    public byte value;
 
     public Byte(Token token) {
         super(token, Type.BYTE);

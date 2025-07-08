@@ -1,18 +1,19 @@
 package com.lnc.cc.ir.operands;
 
-import com.lnc.cc.common.AbstractSymbol;
+import com.lnc.cc.common.BaseSymbol;
+import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
 
 public class Location extends IROperand {
-    private final AbstractSymbol symbol;
+    private final BaseSymbol symbol;
 
-    public Location(AbstractSymbol symbol) {
+    public Location(BaseSymbol symbol) {
         super(Type.LOCATION);
         this.symbol = symbol;
     }
 
-    public AbstractSymbol getSymbol() {
+    public BaseSymbol getSymbol() {
         return symbol;
     }
 

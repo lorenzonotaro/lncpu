@@ -380,7 +380,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("invalid type for member access", operatorToken);
         }
 
-        AbstractSymbol symbol = ((Location) left).getSymbol();
+        BaseSymbol symbol = ((Location) left).getSymbol();
 
         if(symbol.getType().type == TypeSpecifier.Type.STRUCT){
             StructType structType = (StructType) symbol.getType();

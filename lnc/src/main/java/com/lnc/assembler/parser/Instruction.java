@@ -2,6 +2,7 @@ package com.lnc.assembler.parser;
 
 import com.lnc.LNC;
 import com.lnc.cc.codegen.CodeElementVisitor;
+import com.lnc.common.ExtendedListIterator;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.linker.ILabelResolver;
@@ -12,14 +13,13 @@ import com.lnc.assembler.linker.LinkInfo;
 import com.lnc.assembler.parser.argument.Argument;
 import com.lnc.common.frontend.TokenType;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Instruction extends CodeElement {
     private final Token opcode;
-    private final Argument[] arguments;
+    private Argument[] arguments;
 
     private final static Map<String, Integer> IMMEDIATE_ENCODING_ORDER_LOOKUP = Map.of(
             "abs", 0,
@@ -151,8 +151,8 @@ public class Instruction extends CodeElement {
     }
 
     @Override
-    public <T> T accept(CodeElementVisitor<T> visitor) {
-        return visitor.visit(this);
+    public <T> T accept(CodeElementVisitor<T> visitor, ExtendedListIterator<CodeElement> iterator) {
+        return visitor.visit(this, iterator);
     }
 
     @Override
@@ -161,5 +161,9 @@ public class Instruction extends CodeElement {
                 Arrays.stream(arguments)
                         .map(Argument::toString)
                         .collect(Collectors.joining(", "));
+    }
+
+    public void setArguments(Argument[] arguments) {
+        this.arguments = arguments;
     }
 }

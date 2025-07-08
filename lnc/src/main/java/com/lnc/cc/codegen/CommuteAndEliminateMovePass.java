@@ -1,26 +1,26 @@
 package com.lnc.cc.codegen;
 
+import com.lnc.assembler.parser.CodeElement;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.argument.Argument;
-import com.lnc.cc.ast.BinaryExpression;
+import com.lnc.common.ExtendedListIterator;
 import com.lnc.common.frontend.TokenType;
 
 public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
 
     @Override
-    public Boolean visit(EncodedData encodedData) {
+    public Boolean visit(EncodedData encodedData, ExtendedListIterator<CodeElement> iterator) {
         return false;
     }
 
     @Override
-    public Boolean visit(Instruction inst) {
+    public Boolean visit(Instruction inst, ExtendedListIterator<CodeElement> iterator) {
         if(isCommutativeBinaryOp(inst.getOpcode().type)) {
-            AsmCursor cur = getCursor();
-            if(!cur.hasNext()){
+            if(!iterator.hasNext()){
                 return false; // No next inst to commute with
             }
-            var nextInstruction = cur.peekNext();
+            var nextInstruction = iterator.peek();
 
             if(nextInstruction instanceof Instruction nextInst &&
                nextInst.getOpcode().type == TokenType.MOV &&
@@ -37,13 +37,21 @@ public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
                         }
                 );
 
+                commuted.setLabels(inst.getLabels());
+                inst.clearLabels();
+
                 // 3) Replace the ADD in‐place with the commuted form
-                cur.replaceCurrent(commuted);
+                iterator.removeCurrent();
 
-                cur.next(); // Move the cursor to the next instruction after replacement
+                var movLabels = iterator.next().getLabels();
 
-                // 4) Remove the next instruction (the MOV)
-                cur.removeCurrent();
+                iterator.addBeforeCurrent(commuted);
+
+                iterator.removeCurrent();
+
+                if(iterator.hasNext()){
+                    iterator.peek().setLabels(movLabels);
+                }
 
                 return true; // Indicate that a change was made
             }

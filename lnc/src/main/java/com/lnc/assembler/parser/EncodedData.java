@@ -4,10 +4,7 @@ import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
 import com.lnc.assembler.linker.LinkInfo;
 import com.lnc.cc.codegen.CodeElementVisitor;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.IntStream;
+import com.lnc.common.ExtendedListIterator;
 
 public class EncodedData extends CodeElement{
 
@@ -33,8 +30,8 @@ public class EncodedData extends CodeElement{
 
 
     @Override
-    public <T> T accept(CodeElementVisitor<T> visitor) {
-        return visitor.visit(this);
+    public <T> T accept(CodeElementVisitor<T> visitor, ExtendedListIterator<CodeElement> iterator) {
+        return visitor.visit(this, iterator);
     }
 
     @Override

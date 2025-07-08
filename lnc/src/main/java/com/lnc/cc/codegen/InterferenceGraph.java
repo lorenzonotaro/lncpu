@@ -210,14 +210,11 @@ public class InterferenceGraph {
                         }
                     }
                 }else if(inst instanceof Bin bin){
-                    var op = bin.getOperator();
-                    if (!op.isCommutative()) {
-                        VirtualRegister dest = (VirtualRegister) bin.getTarget();
-                        VirtualRegister rhs  = (VirtualRegister) bin.getRight();
-                        VirtualRegister lhs  = (VirtualRegister) bin.getLeft();
-                        graph.addEdge(dest, rhs);
-                        graph.addEdge(dest, lhs);
-                    }
+                    VirtualRegister dest = (VirtualRegister) bin.getTarget();
+                    VirtualRegister rhs  = (VirtualRegister) bin.getRight();
+                    VirtualRegister lhs  = (VirtualRegister) bin.getLeft();
+                    graph.addEdge(dest, rhs);
+                    graph.addEdge(dest, lhs);
                 }
             }
         }

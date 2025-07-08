@@ -26,9 +26,10 @@ public class IRUnit implements Iterable<IRBlock>{
     private final VirtualRegisterManager vrManager;
 
     private final Stack<LoopInfo> loopStack;
-
     private int spillSpaceSize;
     private Set<Register> usedRegisters;
+
+    private FrameInfo frameInfo;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
@@ -194,5 +195,41 @@ public class IRUnit implements Iterable<IRBlock>{
 
     public int getTotalStackFrameSize() {
         return spillSpaceSize /* + localsSize */;
+    }
+
+    public record FrameInfo(
+            int localsSize,
+            int spillSpaceSize,
+            Map<String, Integer> localOffsets) {
+
+        public int allocSize() {
+            return localsSize + spillSpaceSize;
+        }
+    }
+
+    public FrameInfo getFrameInfo() {
+
+        return frameInfo;
+    }
+
+    public void compileFrameInfo() {
+        Map<String, Integer> localOffsets = new HashMap<>();
+
+        int currentOffset = spillSpaceSize;
+        for (BaseSymbol symbol : symbolTable.getSymbols().values()) {
+            if (symbol.isForward() || symbol.isParameter()) {
+                continue; // Skip forward declarations and parameters
+            }
+
+            localOffsets.put(symbol.getName(), currentOffset);
+
+            currentOffset += symbol.getType().allocSize();
+        }
+
+        this.frameInfo = new FrameInfo(
+                currentOffset, // localsSize
+                spillSpaceSize, // spillSpaceSize
+                localOffsets // localOffsets
+        );
     }
 }

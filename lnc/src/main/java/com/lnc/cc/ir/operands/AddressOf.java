@@ -1,14 +1,14 @@
 package com.lnc.cc.ir.operands;
 
-import com.lnc.cc.common.AbstractSymbol;
+import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.PointerType;
 import com.lnc.cc.types.TypeSpecifier;
 
 public class AddressOf extends IROperand {
-    private final AbstractSymbol symbol;
+    private final BaseSymbol symbol;
 
-    public AddressOf(AbstractSymbol symbol) {
+    public AddressOf(BaseSymbol symbol) {
         super(Type.ADDRESS_OF);
         this.symbol = symbol;
     }

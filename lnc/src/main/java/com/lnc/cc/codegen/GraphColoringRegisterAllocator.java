@@ -176,7 +176,7 @@ public class GraphColoringRegisterAllocator {
                         // after defs
                         for (IROperand def : inst.getWrites()) {
                             if (def instanceof VirtualRegister vr && spills.contains(ig.getNode(vr))) {
-                                Move move = new Move(vr, new StackFrameOperand(vr.getTypeSpecifier(), 0));
+                                Move move = new Move(vr, new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
                                 spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
                                 inst.insertBefore(move);
                             }
@@ -187,7 +187,7 @@ public class GraphColoringRegisterAllocator {
                                 // allocate a temp for the loaded value
                                 VirtualRegister temp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
                                 temp.setRegisterClass(vr.getRegisterClass());
-                                Move load = new Move(new StackFrameOperand(vr.getTypeSpecifier(), 0), temp);
+                                Move load = new Move(new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0), temp);
                                 spillLoads.add(new AbstractMap.SimpleEntry<>(vr, load));
                                 inst.insertBefore(load);
                                 inst.replaceOperand(use, temp);

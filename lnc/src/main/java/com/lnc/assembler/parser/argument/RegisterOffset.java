@@ -71,4 +71,8 @@ public class RegisterOffset extends Argument{
                 (byte) (val & 0xFF)
         };
     }
+
+    public Token getOperator() {
+        return operator;
+    }
 }

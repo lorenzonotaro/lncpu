@@ -1,16 +1,11 @@
 package com.lnc.cc;
 
 import com.lnc.LNC;
-import com.lnc.assembler.common.LinkMode;
-import com.lnc.assembler.common.SectionInfo;
-import com.lnc.assembler.linker.LinkTarget;
-import com.lnc.assembler.parser.CodeElement;
 import com.lnc.cc.anaylsis.Analyzer;
 import com.lnc.cc.ast.AST;
 import com.lnc.cc.codegen.AsmLevelOptimizer;
 import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
-import com.lnc.cc.codegen.GraphColoringRegisterAllocator;
 import com.lnc.cc.ir.IR;
 import com.lnc.cc.ir.IRGenerator;
 import com.lnc.cc.ir.IRLoweringPass;
@@ -24,8 +19,6 @@ import com.lnc.common.frontend.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Compiler {
@@ -121,6 +114,9 @@ public class Compiler {
 
         for (var output : this.output) {
             asmOptimizer.optimize(output);
+            if(output.unit() != null){
+                asmOptimizer.stackFramePreservation(output);
+            }
         }
 
         if(LNC.settings.get("--standalone", Boolean.class)){

@@ -1,12 +1,18 @@
-int foo(int x, int y, int z) {
-    if (x < 0) {
-        return 2 + z;
-    }else if (y < 0) {
-        return 3;
-    }
-    return x + y;
+/*
+int foo(int x, int y, int z, int k, int v) {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+    int d = 3;
+
+    return a + b + c + d + x + y + z + k + v;
 }
 
 void main(){
     int i = 0;
+}
+*/
+
+int foo(int a, int b, int c, int d, int k){
+    return a + b + c + d + k;
 }

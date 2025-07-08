@@ -208,11 +208,11 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     @Override
     public IROperand visit(Location location) {
 
-        if(location.getSymbol() instanceof BaseSymbol bs && bs.isParameter()){
-            CallingConvention.ParamLocation paramLocation = getUnit().getFunctionType().getParameterMapping().get(bs.getParameterIndex());
+        if(location.getSymbol().isParameter()){
+            CallingConvention.ParamLocation paramLocation = getUnit().getFunctionType().getParameterMapping().get(location.getSymbol().getParameterIndex());
             if(paramLocation.onStack()){
                 int offset = paramLocation.stackOffset();
-                return new StackFrameOperand(location.getTypeSpecifier(), offset);
+                return new StackFrameOperand(location.getTypeSpecifier(), StackFrameOperand.OperandType.PARAMETER, offset);
             }else{
                 VirtualRegisterManager vrm = getUnit().getVrManager();
                 VirtualRegister vr = vrm.getRegister(location.getTypeSpecifier());

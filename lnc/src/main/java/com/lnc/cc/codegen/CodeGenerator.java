@@ -43,6 +43,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
             GraphColoringRegisterAllocator.run(unit);
 
+            unit.compileFrameInfo();
+
             visit(unit);
 
             outputs.add(currentOutput);
@@ -57,7 +59,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getType();
-            if(type.type != TypeSpecifier.Type.FUNCTION){
+            if(type.type != TypeSpecifier.Type.FUNCTION && entry.isStatic() && !entry.isForward()){
                 dataPageVariable(entry.getName(), type.allocSize());
             }
         }
@@ -288,8 +290,31 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Argument visit(Location location) {
-        String asmName = location.getSymbol().getAsmName();
-        return CodeGenUtils.deref(CodeGenUtils.labelRef(asmName));
+
+        if(location.getSymbol().isParameter()){
+            CallingConvention.ParamLocation paramLocation = getUnit().getFunctionType().getParameterMapping().get(location.getSymbol().getParameterIndex());
+            if(paramLocation.onStack()){
+                int offset = paramLocation.stackOffset();
+                return new Dereference(new RegisterOffset(
+                        new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
+                        Token.__internal(TokenType.MINUS, "-"),
+                        new Byte(Token.__internal(TokenType.INTEGER, offset))
+                ));
+            }else{
+                return CodeGenUtils.reg(paramLocation.regClass().onlyRegister());
+            }
+        }else if(location.getSymbol().isStatic()){
+            String asmName = location.getSymbol().getAsmName();
+            return CodeGenUtils.deref(CodeGenUtils.labelRef(asmName));
+        }else{
+            return new Dereference(
+                    new RegisterOffset(
+                            new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
+                            Token.__internal(TokenType.PLUS, "-"),
+                            new Byte(Token.__internal(TokenType.INTEGER, getUnit().getFrameInfo().localOffsets().get(location.getSymbol().getName()))
+                    )
+            ));
+        }
     }
 
 
@@ -310,9 +335,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Argument visit(StackFrameOperand stackFrameOperand) {
+        Token opToken = stackFrameOperand.getOperandType() == StackFrameOperand.OperandType.LOCAL ?
+                Token.__internal(TokenType.PLUS, "+") :
+                Token.__internal(TokenType.MINUS, "-");
         return new Dereference(
-                new Composite(
+                new RegisterOffset(
                         new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
+                        opToken,
                         new Byte(Token.__internal(TokenType.INTEGER, stackFrameOperand.getOffset()))
                 )
         );
@@ -328,34 +357,11 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     public void visit(IRUnit unit) {
         unitLabel();
 
-        int totalStackFrameSize = unit.getTotalStackFrameSize();
-
-        if(totalStackFrameSize > 0) {
-            instrf(TokenType.PUSH, CodeGenUtils.reg(TokenType.BP));
-            instrf(TokenType.MOV, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.reg(TokenType.BP));
-            instrf(TokenType.SUB, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.immByte(totalStackFrameSize));
-        }
-
         // visit the function body
         super.visit(unit);
 
         label("_ret");
-
-        if(totalStackFrameSize > 0) {
-            // restore stack pointer and base pointer
-            instrf(TokenType.POP, CodeGenUtils.reg(TokenType.BP));
-            instrf(TokenType.SUB, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.immByte(totalStackFrameSize));
-        }
-
-
-        if(totalStackFrameSize > 0) {
-            // return to caller
-            instrf(TokenType.RET, CodeGenUtils.immByte(totalStackFrameSize));
-        } else {
-            // no stack frame, just return
-            instrf(TokenType.RET);
-
-        }
+        instrf(TokenType.RET);
     }
 
     private void dataPageVariable(String asmName, int size) {

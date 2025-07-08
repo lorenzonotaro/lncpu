@@ -33,7 +33,7 @@ public class Register extends Argument {
 
     @Override
     public String getImmediateEncoding(ILabelSectionLocator sectionLocator) {
-        return reg.toString();
+        return reg.toString().toLowerCase();
     }
 
 
