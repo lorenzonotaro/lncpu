@@ -9,6 +9,10 @@ import java.util.*;
 public class InterferenceGraph {
     private final Map<VirtualRegister, Node> vregNodes   = new LinkedHashMap<>();
     private final Map<Register,        Node> physNodes   = new LinkedHashMap<>();
+
+    // ✨ NEW: copy‑preference (move) edges. Stored as Node pairs.
+    private final Set<AbstractMap.SimpleEntry<Node,Node>> moveEdges  = new LinkedHashSet<>();
+
     private Map<VirtualRegister, LiveRange> liveRanges;
 
     public static class Node {
@@ -16,8 +20,8 @@ public class InterferenceGraph {
         public final Register        phys;
         public final Set<Node>       adj = new LinkedHashSet<>();
 
-        public Register    precolored = null;
-        public Register              assigned;
+        public Register precolored = null;
+        public Register assigned   = null;
 
         private Node(VirtualRegister vr) {
             this.vr   = vr; this.phys = null;
@@ -33,7 +37,6 @@ public class InterferenceGraph {
         }
 
         public boolean isPhysical() { return phys != null; }
-
         public Set<Register> allowedColors() {
             return isPhysical()
                     ? new LinkedHashSet<>(Set.of(phys))
@@ -46,15 +49,14 @@ public class InterferenceGraph {
         for (Register r : Register.values()) {
             physNodes.put(r, new Node(r));
         }
-        // now link each compound‐phys to its components
+        // compound ↔ components interfere
         for (Register r : Register.values()) {
             if (r.isCompound()) {
-                Node compNode = physNodes.get(r);
+                Node comp = physNodes.get(r);
                 for (Register sub : r.getComponents()) {
-                    Node subNode = physNodes.get(sub);
-                    // mutual interference so they never share
-                    compNode.adj.add(subNode);
-                    subNode.adj.add(compNode);
+                    Node subN = physNodes.get(sub);
+                    comp.adj.add(subN);
+                    subN.adj.add(comp);
                 }
             }
         }
@@ -77,6 +79,13 @@ public class InterferenceGraph {
         na.adj.add(nb);
         nb.adj.add(na);
     }
+
+    public void addPreference(VirtualRegister a, VirtualRegister b) {
+        if (a == b) return;
+        Node na = getNode(a), nb = getNode(b);
+        moveEdges.add(new AbstractMap.SimpleEntry<>(na, nb));
+    }
+    public Set<AbstractMap.SimpleEntry<Node,Node>> getMoveEdges() { return moveEdges; }
 
     /**
      * Add interference between a vreg and a phys register,
@@ -217,6 +226,10 @@ public class InterferenceGraph {
                     VirtualRegister lhs  = (VirtualRegister) bin.getLeft();
                     graph.addEdge(dest, rhs);
                     graph.addEdge(dest, lhs);
+                }else if (inst instanceof Move mv) {
+                    IROperand s = mv.getSource(), d = mv.getDest();
+                    if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd)
+                        graph.addPreference(vs, vd);
                 }
             }
         }

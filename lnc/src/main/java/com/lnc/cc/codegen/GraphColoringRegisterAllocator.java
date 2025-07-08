@@ -24,89 +24,154 @@ public class GraphColoringRegisterAllocator {
     private final Set<InterferenceGraph.Node> precoloredNodes = new LinkedHashSet<>();
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
+    // aliasing and degree tracking
+    private final Map<InterferenceGraph.Node,InterferenceGraph.Node> alias = new HashMap<>();
+    private final Map<InterferenceGraph.Node,Integer>                degree = new HashMap<>();
+    private final Set<AbstractMap.SimpleEntry<InterferenceGraph.Node,InterferenceGraph.Node>> worklistMoves = new LinkedHashSet<>();
+
     public GraphColoringRegisterAllocator(InterferenceGraph graph) {
         this.graph = graph;
+
         // count physical nodes (excluding compounds if you treat them specially)
         this.K = graph.getPhysicalNodes().size();
+
         // separate out pre-colored
         for (var n : graph.getVirtualNodes()) {
             if(n.precolored != null){
                 precoloredNodes.add(n);
             }
         }
+
+        worklistMoves.addAll(graph.getMoveEdges());
     }
 
     public void allocate() {
+        coalesce();
         simplify();
         select();
         assignColors();
     }
 
+    // ----------------------------------------------------------------------
+    // 1. Copy‑coalescing ----------------------------------------------------
+    private void coalesce() {
+        Iterator<AbstractMap.SimpleEntry<InterferenceGraph.Node,InterferenceGraph.Node>> it = worklistMoves.iterator();
+        while (it.hasNext()) {
+            var mv = it.next();
+            InterferenceGraph.Node x = getAlias(mv.getKey());
+            InterferenceGraph.Node y = getAlias(mv.getValue());
+            if (x == y) { it.remove(); continue; }
+
+            // always make x the pre‑coloured one if any
+            if (y.precolored != null) { var tmp = x; x = y; y = tmp; }
+
+            if (!x.adj.contains(y) && ok(x, y)) {
+                it.remove();
+                combine(x, y);
+            }
+        }
+    }
+
+
+    private InterferenceGraph.Node getAlias(InterferenceGraph.Node n) {
+        InterferenceGraph.Node a = alias.get(n);
+        if (a == null) return n;
+        a = getAlias(a);          // path compression
+        alias.put(n, a);
+        return a;
+    }
+
+    private boolean ok(InterferenceGraph.Node x, InterferenceGraph.Node y) {
+        for (InterferenceGraph.Node t : x.adj) {
+            t = getAlias(t);
+            if (t == y) continue;
+            if (t.precolored == null && !t.adj.contains(y) && degree.getOrDefault(t, t.adj.size()) >= K)
+                return false;
+        }
+        return true;
+    }
+
+    private void combine(InterferenceGraph.Node x, InterferenceGraph.Node y) {
+        alias.put(y, x);               // y → x
+        // move adjacency of y into x
+        for (InterferenceGraph.Node n : new ArrayList<>(y.adj)) {
+            y.adj.remove(n);
+            n.adj.remove(y);
+            if (n != x) {
+                x.adj.add(n); n.adj.add(x);
+            }
+        }
+        // update degree
+        degree.put(x, x.adj.size());
+    }
+
     private void simplify() {
         // build mutable work graph only over non-precolored nodes
-        var workGraph = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
+        var work = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
         for (var n : graph.getVirtualNodes()) {
-            if (precoloredNodes.contains(n)) continue;
+            n = getAlias(n); // ensure we have the alias
+            if (precoloredNodes.contains(n) || work.containsKey(n))
+                continue;
             // only keep non-precolored neighbors
-            Set<InterferenceGraph.Node> nbrs = n.adj.stream()
+            Set<InterferenceGraph.Node> nbrs =
+                    n.adj.stream()
+                    .map(this::getAlias)
                     .filter(neighbor -> !precoloredNodes.contains(neighbor))
                     .collect(Collectors.toCollection(LinkedHashSet::new));
-            workGraph.put(n, new LinkedHashSet<>(nbrs));
+            work.put(n, new LinkedHashSet<>(nbrs));
         }
 
         // removal loop unchanged
-        while (!workGraph.isEmpty()) {
-            var removable = workGraph.keySet().stream()
-                    .filter(n -> workGraph.get(n).size() < n.allowedColors().size())
+        while (!work.isEmpty()) {
+            var maybe = work.keySet().stream()
+                    .filter(n -> work.get(n).size() < n.allowedColors().size())
                     .min(Comparator.comparingInt(n -> n.allowedColors().size()));
-
-            if (removable.isPresent()) {
-                var node = removable.get();
-                selectStack.push(node);
-                for (var neighbor : workGraph.get(node)) {
-                    workGraph.get(neighbor).remove(node);
-                }
-                workGraph.remove(node);
+            InterferenceGraph.Node n;
+            if (maybe.isPresent()) {
+                n = maybe.get();
             } else {
-                var spill = workGraph.keySet().stream()
+                // TODO: figure out spill heuristic
+                n = work.keySet().stream()
                         .min(Comparator
-                                .comparingInt((InterferenceGraph.Node n) -> workGraph.get(n).size())
-                                .thenComparing(n -> n.vr.getRegisterNumber()))
+                                .comparingInt((InterferenceGraph.Node m) -> work.get(m).size())
+                                .thenComparing(m -> m.vr.getRegisterNumber()))
                         .get();
-                spillCandidates.add(spill);
-                selectStack.push(spill);
-                for (var neighbor : workGraph.get(spill)) {
-                    workGraph.get(neighbor).remove(spill);
-                }
-                workGraph.remove(spill);
+                spillCandidates.add(n);
             }
+
+            selectStack.push(n);
+            for (var neighbor : work.get(n)) {
+                work.get(neighbor).remove(n);
+            }
+            work.remove(n);
         }
     }
 
     private void select() {
         // by the time simplify is done, selectStack has every VR node
         while (!selectStack.isEmpty()) {
-            var node = selectStack.pop();
+            var n = selectStack.pop();
 
             // compute forbidden colors from already‐colored neighbors
             Set<Register> forbidden = new HashSet<>();
-            for (var nbr : node.adj) {
-                if (coloredNodes.contains(nbr) || precoloredNodes.contains(nbr)) {
-                    forbidden.add(nbr.assigned);
+            for (var w : n.adj) {
+                w = getAlias(w);
+                if (coloredNodes.contains(w) || precoloredNodes.contains(w)) {
+                    forbidden.add(w.assigned);
                 }
             }
 
             // pick an allowed color not forbidden
-            Optional<Register> maybeColor = node.allowedColors().stream()
+            Optional<Register> maybeColor = n.allowedColors().stream()
                     .filter(c -> !forbidden.contains(c))
                     .min(Comparator.comparingInt(Register::ordinal));
 
             if (maybeColor.isPresent()) {
-                node.assigned = maybeColor.get();
-                coloredNodes.add(node);
+                n.assigned = maybeColor.get();
+                coloredNodes.add(n);
             } else {
                 // real spill
-                spillCandidates.add(node);
+                spillCandidates.add(n);
             }
         }
     }
@@ -126,6 +191,16 @@ public class GraphColoringRegisterAllocator {
             if (n.precolored != null) continue;
             n.vr.setAssignedPhysicalRegister(n.assigned);
             this.usedRegisters.add(n.assigned);
+        }
+
+        // ✨ propagate colours to aliases
+        for (InterferenceGraph.Node n : graph.getVirtualNodes()) {
+            InterferenceGraph.Node rep = getAlias(n);
+            if (n.assigned == null && rep.assigned != null) {
+                n.assigned = rep.assigned;
+                n.vr.setAssignedPhysicalRegister(rep.assigned);
+                usedRegisters.add(rep.assigned);
+            }
         }
 
         // at this point, any node not in coloredNodes ∪ precoloredNodes is spilled
