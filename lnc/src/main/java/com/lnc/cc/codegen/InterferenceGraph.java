@@ -154,13 +154,6 @@ public class InterferenceGraph {
             }
         }
 
-        System.out.println("Live ranges:");
-        for (var entry : liveRanges.entrySet()) {
-            VirtualRegister vr = entry.getKey();
-            LiveRange lr = entry.getValue();
-            System.out.printf("  %s: %s\n", vr, lr);
-        }
-
         return liveRanges;
     }
 

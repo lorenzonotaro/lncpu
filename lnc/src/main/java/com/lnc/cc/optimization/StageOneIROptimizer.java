@@ -37,10 +37,6 @@ public class StageOneIROptimizer {
                 pass.visit(unit);
                 boolean passChanged = pass.isChanged();
 
-                if(passChanged){
-                    System.out.println("Pass " + pass.getClass().getSimpleName() + " changed the IR.");
-                }
-
                 changed |= passChanged;
             }
         }while(changed);
