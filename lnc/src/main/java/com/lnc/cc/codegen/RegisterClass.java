@@ -1,5 +1,6 @@
 package com.lnc.cc.codegen;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public enum RegisterClass {
@@ -27,7 +28,7 @@ public enum RegisterClass {
     private final Set<Register> registers;
 
     RegisterClass(Set<Register> registers) {
-        this.registers = registers;
+        this.registers = new LinkedHashSet<>(registers);
     }
 
     public Set<Register> getRegisters() {

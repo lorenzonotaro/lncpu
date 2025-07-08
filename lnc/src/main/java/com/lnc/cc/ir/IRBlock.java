@@ -155,4 +155,11 @@ public class IRBlock implements Iterable<IRInstruction> {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IRBlock irBlock)) return false;
+        return id == irBlock.id && Objects.equals(unit, irBlock.unit);
+    }
 }

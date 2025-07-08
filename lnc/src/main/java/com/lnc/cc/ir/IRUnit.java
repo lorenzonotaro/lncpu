@@ -53,7 +53,7 @@ public class IRUnit implements Iterable<IRBlock>{
         return symbolTable.resolveSymbol(scope, symbolName);
     }
 
-    VirtualRegisterManager getVrManager() {
+    public VirtualRegisterManager getVrManager() {
         return vrManager;
     }
 
@@ -231,5 +231,12 @@ public class IRUnit implements Iterable<IRBlock>{
                 spillSpaceSize, // spillSpaceSize
                 localOffsets // localOffsets
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IRUnit irUnit)) return false;
+        return Objects.equals(functionDeclaration, irUnit.functionDeclaration);
     }
 }

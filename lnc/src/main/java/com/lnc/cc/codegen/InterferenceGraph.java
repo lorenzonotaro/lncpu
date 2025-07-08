@@ -9,6 +9,7 @@ import java.util.*;
 public class InterferenceGraph {
     private final Map<VirtualRegister, Node> vregNodes   = new LinkedHashMap<>();
     private final Map<Register,        Node> physNodes   = new LinkedHashMap<>();
+    private Map<VirtualRegister, LiveRange> liveRanges;
 
     public static class Node {
         public final VirtualRegister vr;
@@ -35,7 +36,7 @@ public class InterferenceGraph {
 
         public Set<Register> allowedColors() {
             return isPhysical()
-                    ? Set.of(phys)
+                    ? new LinkedHashSet<>(Set.of(phys))
                     : vr.getRegisterClass().getRegisters();
         }
     }
@@ -102,61 +103,60 @@ public class InterferenceGraph {
         return physNodes.values();
     }
 
-    public static Map<VirtualRegister, LiveRange> computeLiveRanges(IRUnit unit, LivenessInfo livenessInfo) {
-        Map<VirtualRegister, LiveRange> liveRanges = new HashMap<>();
+    public static Map<VirtualRegister, LiveRange> computeLiveRanges(
+            IRUnit unit,
+            LivenessInfo li
+    ) {
+        // 1) create empty ranges
+        Map<VirtualRegister,LiveRange> ranges = new HashMap<>();
+        for (VirtualRegister vr : unit.getVrManager().getAllRegisters())
+            ranges.put(vr, new LiveRange(Integer.MAX_VALUE, Integer.MIN_VALUE));
 
-        for (VirtualRegister vr : unit.getVirtualRegisterManager().getAllRegisters()) {
-            liveRanges.put(vr, new LiveRange());
-        }
-
-        var rpo = unit.computeReversePostOrderAndCFG();
-
-        int index = 0;
-        // walk the RPO to set the indices
-        for (IRBlock block : rpo) {
-            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
-                inst.setIndex(index++);
+        // 2) number instructions in forward RPO
+        List<IRBlock> rpo = unit.computeReversePostOrderAndCFG();
+        int idx = 0;
+        for (IRBlock B : rpo) {
+            for (IRInstruction inst = B.getFirst(); inst != null; inst = inst.getNext()) {
+                inst.setIndex(idx++);
             }
         }
 
-        Map<IRBlock,Set<VirtualRegister>> liveIn = livenessInfo.liveIn(), liveOut = livenessInfo.liveOut();
-
-        // 2) number instructions in RPO as you already do…
-
-        // 3) now collect intervals
-        for (IRBlock bb : rpo) {
-            // start this block’s scan with the regs live on exit:
-            Set<VirtualRegister> live = new HashSet<>(liveOut.get(bb));
-
-            // scan instructions *backwards*, updating start/end exactly as before:
-            for (IRInstruction inst = bb.getLast(); inst != null; inst = inst.getPrev()) {
+        // 3) backward scan per block, seeded with liveOut
+        for (IRBlock B : rpo) {
+            Set<VirtualRegister> live = new HashSet<>(li.liveOut().get(B));
+            for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
                 int i = inst.getIndex();
-                // kill
-                for (IROperand def : inst.getWrites()) {
-                    if(def instanceof VirtualRegister vr) {
-                        live.remove(def);
-                    }
-                }
-                // gen
-                for (IROperand use : inst.getReads()) {
-                    if(use instanceof VirtualRegister vr) {
-                        live.add(vr);
-                        LiveRange lr = liveRanges.get(vr);
+
+                // kill defs *and* record def position
+                for (IROperand w : inst.getWrites()) {
+                    if (w instanceof VirtualRegister d) {
+                        live.remove(d);
+                        LiveRange lr = ranges.get(d);
                         lr.start = Math.min(lr.start, i);
-                        lr.end = Math.max(lr.end, i);
+                        lr.end   = Math.max(lr.end,   i);
                     }
                 }
-                // extend
+
+                // gen uses *and* record use position
+                for (IROperand r : inst.getReads()) {
+                    if (r instanceof VirtualRegister u) {
+                        live.add(u);
+                        LiveRange lr = ranges.get(u);
+                        lr.start = Math.min(lr.start, i);
+                        lr.end   = Math.max(lr.end,   i);
+                    }
+                }
+
+                // extend all still‐live
                 for (VirtualRegister v : live) {
-                    LiveRange lr = liveRanges.get(v);
+                    LiveRange lr = ranges.get(v);
                     lr.end = Math.max(lr.end, i);
                 }
             }
         }
 
-        return liveRanges;
+        return ranges;
     }
-
 
     public static InterferenceGraph buildInterferenceGraph(IRUnit unit) {
         InterferenceGraph graph = new InterferenceGraph();
@@ -171,6 +171,8 @@ public class InterferenceGraph {
 
         // 1) compute live ranges
         Map<VirtualRegister, LiveRange> liveRanges = computeLiveRanges(unit, livenessInfo);
+
+        graph.setLiveRanges(liveRanges);
 
         var liveOut = livenessInfo.liveOut();
         var liveIn = livenessInfo.liveIn();
@@ -220,6 +222,38 @@ public class InterferenceGraph {
         }
 
         return graph;
+    }
+
+    private void setLiveRanges(Map<VirtualRegister, LiveRange> liveRanges) {
+        this.liveRanges = liveRanges;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("InterferenceGraph:\n");
+
+        if(liveRanges != null && !liveRanges.isEmpty()) {
+            sb.append("Live Ranges:\n");
+            for (Map.Entry<VirtualRegister, LiveRange> entry : liveRanges.entrySet()) {
+                sb.append("  ").append(entry.getKey()).append(": ");
+                sb.append(entry.getValue()).append("\n");
+            }
+        } else {
+            sb.append("No live ranges computed.\n");
+        }
+
+        sb.append("Virtual Nodes:\n");
+        for (Node node : vregNodes.values()) {
+            sb.append("  ").append(node.vr).append(" -> ");
+            sb.append(node.adj.stream().map(n -> n.vr.toString()).toList()).append("\n");
+        }
+        sb.append("Physical Nodes:\n");
+        for (Node node : physNodes.values()) {
+            sb.append("  ").append(node.phys).append(" -> ");
+            sb.append(node.adj.stream().map(n -> n.phys.toString()).toList()).append("\n");
+        }
+        return sb.toString();
     }
 
 }

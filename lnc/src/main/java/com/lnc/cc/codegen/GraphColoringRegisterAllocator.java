@@ -44,14 +44,14 @@ public class GraphColoringRegisterAllocator {
 
     private void simplify() {
         // build mutable work graph only over non-precolored nodes
-        var workGraph = new HashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
+        var workGraph = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
         for (var n : graph.getVirtualNodes()) {
             if (precoloredNodes.contains(n)) continue;
             // only keep non-precolored neighbors
             Set<InterferenceGraph.Node> nbrs = n.adj.stream()
                     .filter(neighbor -> !precoloredNodes.contains(neighbor))
                     .collect(Collectors.toCollection(LinkedHashSet::new));
-            workGraph.put(n, nbrs);
+            workGraph.put(n, new LinkedHashSet<>(nbrs));
         }
 
         // removal loop unchanged
@@ -69,7 +69,9 @@ public class GraphColoringRegisterAllocator {
                 workGraph.remove(node);
             } else {
                 var spill = workGraph.keySet().stream()
-                        .max(Comparator.comparingInt(n -> workGraph.get(n).size()))
+                        .min(Comparator
+                                .comparingInt((InterferenceGraph.Node n) -> workGraph.get(n).size())
+                                .thenComparing(n -> n.vr.getRegisterNumber()))
                         .get();
                 spillCandidates.add(spill);
                 selectStack.push(spill);
@@ -157,6 +159,7 @@ public class GraphColoringRegisterAllocator {
 
             // 1) Build graph & run allocator
             InterferenceGraph ig = InterferenceGraph.buildInterferenceGraph(unit);
+            System.out.println(ig);
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();

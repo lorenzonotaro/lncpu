@@ -4,8 +4,9 @@ import java.util.List;
 
 public class AsmLevelOptimizer {
     private final List<AbstractAsmLevelLinearPass> passes = List.of(
-            //new RedundantGotoEliminationPass(),
-            //new CommuteAndEliminateMovePass()
+            new RedundantGotoEliminationPass(),
+            new RedundantRegisterMoveEliminationPass(),
+            new CommuteAndEliminateMovePass()
     );
 
     public void optimize(CompilerOutput output) {
