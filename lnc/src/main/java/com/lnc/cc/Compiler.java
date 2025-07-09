@@ -74,13 +74,14 @@ public class Compiler {
             return false;
         }
 
-        Logger.setProgramState("opt");
-        StageOneIROptimizer optimizer = new StageOneIROptimizer();
+        if(!LNC.settings.get("--no-ir-optimization", Boolean.class)) {
+            Logger.setProgramState("opt");
+            StageOneIROptimizer optimizer = new StageOneIROptimizer();
 
-        for (var unit : irGenerator.getResult().units()) {
-            optimizer.run(unit);
+            for (var unit : irGenerator.getResult().units()) {
+                optimizer.run(unit);
+            }
         }
-
         Logger.setProgramState("lowering");
         IRLoweringPass loweringPass = new IRLoweringPass();
 
@@ -112,7 +113,7 @@ public class Compiler {
         Logger.setProgramState("asmopt");
         AsmLevelOptimizer asmOptimizer = new AsmLevelOptimizer();
 
-        Boolean noAsmLevelOpts = LNC.settings.get("--no-asm-level-optimization", Boolean.class);
+        Boolean noAsmLevelOpts = LNC.settings.get("--no-asm-optimization", Boolean.class);
 
         for (var output : this.output) {
             if(!noAsmLevelOpts){

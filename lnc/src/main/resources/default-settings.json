@@ -53,12 +53,12 @@
     "value": false
   },
 
-  "--no-optimization": {
-    "help": "Disables optimization.",
+  "--no-ir-optimization": {
+    "help": "Disables IR level optimization.",
     "value": false
   },
 
-  "--no-asm-level-optimization": {
+  "--no-asm-optimization": {
     "help": "Disables assembly level optimization.",
     "value": false
   },

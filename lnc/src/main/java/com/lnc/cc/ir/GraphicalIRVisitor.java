@@ -18,6 +18,11 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
             worklist.push(block);
         }
 
+        void enqueueLast(IRBlock block) {
+            if (visited.contains(block) || worklist.contains(block)) return;
+            worklist.addLast(block);
+        }
+
         public IRBlock next() {
             return worklist.pop();
         }
@@ -71,7 +76,7 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
             // Optionally enqueue all successors by default
             for (IRBlock succ : block.getSuccessors()) {
                 {
-                    context.enqueue(succ);
+                    context.enqueueLast(succ);
                 }
             }
         }

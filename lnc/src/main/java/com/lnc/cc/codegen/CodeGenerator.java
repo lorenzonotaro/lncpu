@@ -82,54 +82,66 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var left = condJump.getLeft().accept(this);
         var right = condJump.getRight().accept(this);
 
-        final var target = CodeGenUtils.labelRef(condJump.getTarget());
-        final var falseTarget = CodeGenUtils.labelRef(condJump.getFalseTarget());
+        IRBlock trueTarget = condJump.getTarget();
+        final var targetStr = CodeGenUtils.labelRef(trueTarget);
+        IRBlock falseTarget = condJump.getFalseTarget();
+        final var falseTargetStr = CodeGenUtils.labelRef(falseTarget);
 
         instrf(TokenType.CMP, left, right);
 
+        boolean preserveBranchOrdering = condJump.preserveBranchOrdering();
 
         switch(condJump.getCond()){
             case EQ -> {
-                instrf(TokenType.JZ, target);
+                instrf(TokenType.JZ, targetStr);
 
-                enqueue(condJump.getTarget());
-                enqueue(condJump.getFalseTarget());
+                enqueueCondJumpTargets(preserveBranchOrdering, trueTarget, falseTarget);
+
             }
             case NE -> {
-                instrf(TokenType.JZ, falseTarget);
+                instrf(TokenType.JZ, falseTargetStr);
 
-                enqueue(condJump.getFalseTarget());
-                enqueue(condJump.getTarget());
+                enqueueCondJumpTargets(false, falseTarget, trueTarget);
+
             }
             case LT -> {
-                instrf(TokenType.JC, target);
+                instrf(TokenType.JC, targetStr);
+                enqueueCondJumpTargets(preserveBranchOrdering, trueTarget, falseTarget);
 
-                enqueue(condJump.getTarget());
-                enqueue(condJump.getFalseTarget());
             }
             case LE -> {
-                instrf(TokenType.JC, target);
-                instrf(TokenType.JZ, target);
+                instrf(TokenType.JC, targetStr);
+                instrf(TokenType.JZ, targetStr);
 
-                enqueue(condJump.getTarget());
-                enqueue(condJump.getFalseTarget());
+                enqueueCondJumpTargets(preserveBranchOrdering, trueTarget, falseTarget);
+
             }
             case GT -> {
-                instrf(TokenType.JC, falseTarget);
-                instrf(TokenType.JZ, falseTarget);
+                instrf(TokenType.JC, falseTargetStr);
+                instrf(TokenType.JZ, falseTargetStr);
 
-                enqueue(condJump.getFalseTarget());
-                enqueue(condJump.getTarget());
+                enqueueCondJumpTargets(false, falseTarget, trueTarget);
+
             }
             case GE -> {
-                instrf(TokenType.JC, falseTarget);
+                instrf(TokenType.JC, falseTargetStr);
 
-                enqueue(condJump.getFalseTarget());
-                enqueue(condJump.getTarget());
+                enqueueCondJumpTargets(false, falseTarget, trueTarget);
             }
         }
 
         return null;
+    }
+
+    private void enqueueCondJumpTargets(boolean loopTest, IRBlock first, IRBlock second) {
+        if(loopTest){
+            instrf(TokenType.GOTO, CodeGenUtils.labelRef(second));
+            enqueue(second);
+            enqueue(first);
+        }else{
+            enqueue(first);
+            enqueue(second);
+        }
     }
 
     @Override
