@@ -7,22 +7,17 @@ import com.lnc.cc.types.TypeSpecifier;
 
 public class VirtualRegister extends IROperand {
 
-    private static long virtualRegisterCounter = 0;
-
     private final TypeSpecifier typeSpecifier;
 
     private RegisterClass registerClass;
 
     private final int registerNumber;
 
-    private final long instanceId;
-
     private Register assignedPhysicalRegister;
 
     public VirtualRegister(int registerNumber, TypeSpecifier typeSpecifier) {
         super(Type.VIRTUAL_REGISTER);
         this.typeSpecifier = typeSpecifier;
-        this.instanceId = virtualRegisterCounter++;
         this.registerNumber = registerNumber;
         registerClass = RegisterClass.ANY;
     }
@@ -34,10 +29,6 @@ public class VirtualRegister extends IROperand {
     @Override
     public String toString() {
         return "r" + registerNumber + (registerClass == null ? "" : " {" + registerClass + "}");
-    }
-
-    public long getInstanceId() {
-        return instanceId;
     }
 
     public void setRegisterClass(RegisterClass registerClass) {
@@ -68,11 +59,11 @@ public class VirtualRegister extends IROperand {
 
     @Override
     public boolean equals(Object other){
-        return other instanceof VirtualRegister vr && (this == vr || (this.instanceId == vr.instanceId && this.registerNumber == vr.registerNumber));
+        return other instanceof VirtualRegister vr && (this == vr );
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(instanceId) ^ Integer.hashCode(registerNumber);
+        return Integer.hashCode(registerNumber);
     }
 }

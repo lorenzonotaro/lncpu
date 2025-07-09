@@ -7,6 +7,7 @@ import com.lnc.cc.codegen.Register;
 import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
 import com.lnc.cc.common.BaseSymbol;
+import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
@@ -30,6 +31,8 @@ public class IRUnit implements Iterable<IRBlock>{
     private Set<Register> usedRegisters;
 
     private FrameInfo frameInfo;
+
+    private Map<String, IROperand> parameterOperandMapping;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
@@ -195,6 +198,14 @@ public class IRUnit implements Iterable<IRBlock>{
 
     public int getTotalStackFrameSize() {
         return spillSpaceSize /* + localsSize */;
+    }
+
+    public void setParameterOperandMapping(Map<String, IROperand> parameterMapping) {
+        this.parameterOperandMapping = parameterMapping;
+    }
+
+    public Map<String, IROperand> getParameterOperandMapping() {
+        return parameterOperandMapping;
     }
 
     public record FrameInfo(

@@ -100,7 +100,7 @@ public class BaseSymbol{
     }
 
     public String getAsmName() {
-        return flatSymbolName;
+        return this.flatSymbolName == null ? token.lexeme : flatSymbolName;
     }
 
     public int getParameterIndex() {

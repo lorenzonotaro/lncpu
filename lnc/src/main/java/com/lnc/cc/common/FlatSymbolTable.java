@@ -31,7 +31,9 @@ public class FlatSymbolTable {
                 throw new IllegalStateException("unequivocal symbol name '%s', from scopes '%s' and '%s'"
                         .formatted(symbol.getName(), prev.getScope().getId(), symbol.getScope().getId()));
             }
-            symbol.setFlatSymbolName(scope.getScopePrefix() + symbol.getName());
+
+            if(!symbol.isParameter())
+                symbol.setFlatSymbolName(scope.getScopePrefix() + symbol.getName());
         }
 
         for (Scope child : scope.getChildren()) {

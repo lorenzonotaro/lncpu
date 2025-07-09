@@ -13,16 +13,16 @@ public class FunctionType extends TypeSpecifier {
     public final TypeSpecifier[] parameterTypes;
     private final List<CallingConvention.ParamLocation> parameterMapping;
 
-    private FunctionType(FunctionDeclaration functionDeclaration, TypeSpecifier returnType, TypeSpecifier[] parameterTypes) {
+    private FunctionType(FunctionDeclaration functionDeclaration, TypeSpecifier returnType) {
         super(Type.FUNCTION);
         this.functionDeclaration = functionDeclaration;
         this.returnType = returnType;
-        this.parameterTypes = parameterTypes;
-        this.parameterMapping = CallingConvention.mapCallArguments(parameterTypes);
+        this.parameterTypes = Arrays.stream(functionDeclaration.parameters).map(p -> p.declarator.typeSpecifier()).toArray(TypeSpecifier[]::new);
+        this.parameterMapping = CallingConvention.mapCallArguments(functionDeclaration.parameters);
     }
 
     public static FunctionType of(FunctionDeclaration functionDeclaration) {
-        return new FunctionType(functionDeclaration, functionDeclaration.declarator.typeSpecifier(), Arrays.stream(functionDeclaration.parameters).map(p -> p.declarator.typeSpecifier()).toArray(TypeSpecifier[]::new));
+        return new FunctionType(functionDeclaration, functionDeclaration.declarator.typeSpecifier());
     }
 
     public String toString() {

@@ -1,6 +1,8 @@
 package com.lnc.cc.ir;
 
 
+import com.lnc.assembler.parser.Instruction;
+
 import java.util.*;
 
 public class IRBlock implements Iterable<IRInstruction> {
@@ -22,6 +24,14 @@ public class IRBlock implements Iterable<IRInstruction> {
         this.id = id;
     }
 
+    public void emitFirst(IRInstruction instruction) {
+
+        instruction.setParentBlock(this);
+
+        instruction.next = first;
+        instruction.prev = null;
+        this.first = instruction;
+    }
 
     public void emit(IRInstruction instruction) {
         if (last instanceof AbstractBranchInstr abi) {

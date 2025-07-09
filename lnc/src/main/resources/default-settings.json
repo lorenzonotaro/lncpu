@@ -73,6 +73,11 @@
     "value": true
   },
 
+  "--print-ig": {
+    "help": "Prints the interference graph after of the register allocator.",
+    "value": false
+  },
+
   "--reg-alloc-max-iter": {
     "help": "Sets the maximum number of iterations for the register allocator.",
     "value": 10

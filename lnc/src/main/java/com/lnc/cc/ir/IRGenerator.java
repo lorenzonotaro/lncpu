@@ -275,7 +275,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public void visitStatement(Statement statement) {
 
-        if(statement instanceof FunctionDeclaration functionDeclaration){
+        if(statement instanceof FunctionDeclaration functionDeclaration && !functionDeclaration.isForwardDeclaration()){
             currentUnit = new IRUnit(functionDeclaration);
             blocks.add(currentUnit);
         }
@@ -315,12 +315,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(CallExpression callExpression) {
 
+        // 2) generate IR for the callee
+        IROperand callee = callExpression.callee.accept(this);
+
         List<IROperand> args = Arrays.stream(callExpression.arguments)
                 .map(a -> a.accept(this))
                 .toList();
-
-        // 2) generate IR for the callee
-        IROperand callee = callExpression.callee.accept(this);
 
         TypeSpecifier returnType = null;
 

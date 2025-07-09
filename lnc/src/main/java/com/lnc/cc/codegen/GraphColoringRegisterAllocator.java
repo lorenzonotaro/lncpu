@@ -21,7 +21,6 @@ public class GraphColoringRegisterAllocator {
     private final Deque<InterferenceGraph.Node> selectStack = new ArrayDeque<>();
     private final Set<InterferenceGraph.Node> spillCandidates = new LinkedHashSet<>();
     private final Set<InterferenceGraph.Node> coloredNodes    = new LinkedHashSet<>();
-    private final Set<InterferenceGraph.Node> precoloredNodes = new LinkedHashSet<>();
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
     // aliasing and degree tracking
@@ -34,13 +33,6 @@ public class GraphColoringRegisterAllocator {
 
         // count physical nodes (excluding compounds if you treat them specially)
         this.K = graph.getPhysicalNodes().size();
-
-        // separate out pre-colored
-        for (var n : graph.getVirtualNodes()) {
-            if(n.precolored != null){
-                precoloredNodes.add(n);
-            }
-        }
 
         worklistMoves.addAll(graph.getMoveEdges());
     }
@@ -62,11 +54,12 @@ public class GraphColoringRegisterAllocator {
             InterferenceGraph.Node y = getAlias(mv.getValue());
             if (x == y) { it.remove(); continue; }
 
-            // always make x the pre‑coloured one if any
-            if (y.precolored != null) { var tmp = x; x = y; y = tmp; }
+            // SKIP any move where either side is pre–colored (only one allowed color)
+            if (x.allowedColors().size() == 1 || y.allowedColors().size() == 1) {
+                continue;
+            }
 
             if (!x.adj.contains(y) && ok(x, y)) {
-                it.remove();
                 combine(x, y);
             }
         }
@@ -85,7 +78,7 @@ public class GraphColoringRegisterAllocator {
         for (InterferenceGraph.Node t : x.adj) {
             t = getAlias(t);
             if (t == y) continue;
-            if (t.precolored == null && !t.adj.contains(y) && degree.getOrDefault(t, t.adj.size()) >= K)
+            if (!t.adj.contains(y) && degree.getOrDefault(t, t.adj.size()) >= K)
                 return false;
         }
         return true;
@@ -110,13 +103,11 @@ public class GraphColoringRegisterAllocator {
         var work = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
         for (var n : graph.getVirtualNodes()) {
             n = getAlias(n); // ensure we have the alias
-            if (precoloredNodes.contains(n) || work.containsKey(n))
+            if (work.containsKey(n))
                 continue;
-            // only keep non-precolored neighbors
             Set<InterferenceGraph.Node> nbrs =
                     n.adj.stream()
                     .map(this::getAlias)
-                    .filter(neighbor -> !precoloredNodes.contains(neighbor))
                     .collect(Collectors.toCollection(LinkedHashSet::new));
             work.put(n, new LinkedHashSet<>(nbrs));
         }
@@ -136,19 +127,23 @@ public class GraphColoringRegisterAllocator {
                                 .comparingInt((InterferenceGraph.Node m) -> work.get(m).size())
                                 .thenComparing(m -> m.vr.getRegisterNumber()))
                         .get();
-                spillCandidates.add(n);
+                //spillCandidates.add(n);
             }
 
             selectStack.push(n);
             for (var neighbor : work.get(n)) {
-                work.get(neighbor).remove(n);
+                var nbrSet = work.get(neighbor);
+                if (nbrSet != null) {
+                    nbrSet.remove(n);
+                }
             }
             work.remove(n);
         }
     }
 
     private void select() {
-        // by the time simplify is done, selectStack has every VR node
+        // by the time simplify is done, selectStack has e
+        // ery VR node
         while (!selectStack.isEmpty()) {
             var n = selectStack.pop();
 
@@ -156,7 +151,7 @@ public class GraphColoringRegisterAllocator {
             Set<Register> forbidden = new HashSet<>();
             for (var w : n.adj) {
                 w = getAlias(w);
-                if (coloredNodes.contains(w) || precoloredNodes.contains(w)) {
+                if (coloredNodes.contains(w)) {
                     forbidden.add(w.assigned);
                 }
             }
@@ -180,15 +175,9 @@ public class GraphColoringRegisterAllocator {
         // precolored nodes already have assigned = precolored.get()
         // coloredNodes have their .assigned set
         // spillCandidates need spill code insertion downstream
-        for (var n : precoloredNodes) {
-            n.assigned = n.precolored;
-            n.vr.setAssignedPhysicalRegister(n.precolored);
-            this.usedRegisters.add(n.precolored);
-        }
 
         for(var n : coloredNodes) {
             // Skip any that were also pre-colored
-            if (n.precolored != null) continue;
             n.vr.setAssignedPhysicalRegister(n.assigned);
             this.usedRegisters.add(n.assigned);
         }
@@ -234,6 +223,9 @@ public class GraphColoringRegisterAllocator {
 
             // 1) Build graph & run allocator
             InterferenceGraph ig = InterferenceGraph.buildInterferenceGraph(unit);
+            if(LNC.settings.get("--print-ig", Boolean.class)) {
+                System.out.println("Interference Graph:\n" + ig);
+            }
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();

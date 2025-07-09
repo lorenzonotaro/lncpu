@@ -9,9 +9,11 @@ import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperand> {
+public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisitor<IROperand> {
     @Override
     public Void visit(Goto aGoto) {
         return null;
@@ -69,34 +71,34 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
         }
     }
 
-    private IROperand restrictOrMoveTo(VirtualRegister register, RegisterClass registerClass) {
-        if(register.getRegisterClass() == registerClass) {
-            return register;
-        } else if(register.getRegisterClass() == RegisterClass.ANY) {
-            // If the register is of type ANY, we can just set its class
-            register.setRegisterClass(registerClass);
-            return register;
-        }else {
-            VirtualRegisterManager vrm = getUnit().getVrManager();
-            VirtualRegister newVR = vrm.getRegister(register.getTypeSpecifier());
-            newVR.setRegisterClass(registerClass);
-            getCurrentInstruction().insertBefore(new Move(register, newVR));
-            return newVR;
-        }
-    }
-
     @Override
     public Void visit(Load load) {
+        var dest = load.getDest().accept(this);
+        var src = load.getSrc().accept(this);
+
+        if(src.type == IROperand.Type.VIRTUAL_REGISTER){
+            replaceAndContinue(new Move(src, dest));
+        }
+
         return null;
     }
 
     @Override
     public Void visit(Move move) {
+
         return null;
     }
 
     @Override
     public Void visit(Store store) {
+
+        IROperand value = store.getValue().accept(this);
+        IROperand location = store.getDest().accept(this);
+
+        if(location.type == IROperand.Type.VIRTUAL_REGISTER){
+            replaceAndContinue(new Move(location, value));
+        }
+
         return null;
     }
 
@@ -104,7 +106,7 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     public Void visit(Ret ret) {
 
         if(ret.getValue() != null) {
-            ret.setValue(moveOrLoadIntoVR(ret.getValue(), RegisterClass.RETURN));
+            ret.setValue(moveOrLoadIntoVR(ret.getValue().accept(this), RegisterClass.RETURN));
         }
 
         return null;
@@ -151,6 +153,10 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     @Override
     public Void visit(Call call) {
         IROperand[] args = call.getArguments();
+
+        for (int i = 0; i < args.length; i++) {
+            args[i] = args[i].accept(this);
+        }
 
         var funType = (FunctionType) call.getCallee().getTypeSpecifier();
 
@@ -212,16 +218,7 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     public IROperand visit(Location location) {
 
         if(location.getSymbol().isParameter()){
-            CallingConvention.ParamLocation paramLocation = getUnit().getFunctionType().getParameterMapping().get(location.getSymbol().getParameterIndex());
-            if(paramLocation.onStack()){
-                int offset = paramLocation.stackOffset();
-                return new StackFrameOperand(location.getTypeSpecifier(), StackFrameOperand.OperandType.PARAMETER, offset);
-            }else{
-                VirtualRegisterManager vrm = getUnit().getVrManager();
-                VirtualRegister vr = vrm.getRegister(location.getTypeSpecifier());
-                vr.setRegisterClass(paramLocation.regClass());
-                return vr;
-            }
+            return getUnit().getParameterOperandMapping().get(location.getSymbol().getName());
         }
 
         return location;
@@ -249,5 +246,37 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
     public IROperand visit(StackFrameOperand stackFrameOperand) {
         //TODO
         return stackFrameOperand;
+    }
+
+    @Override
+    public void visit(IRUnit unit) {
+        Map<String, IROperand> parameterMapping = new HashMap<>();
+        var parameters = CallingConvention.mapCallArguments(unit.getFunctionDeclaration().parameters);
+        for(var parameter : parameters){
+            if(parameter.onStack()) {
+                // If the parameter is on the stack, we create a StackFrameOperand
+                int offset = parameter.stackOffset();
+                IROperand operand = new StackFrameOperand(parameter.type(), StackFrameOperand.OperandType.PARAMETER, offset);
+                parameterMapping.put(parameter.name(), operand);
+            } else {
+                // Otherwise, we create a VirtualRegister assigned to the class and a move to a new virtual register
+                // of class any, that will be coalesced later if not necessary.
+                VirtualRegisterManager vrm = unit.getVrManager();
+
+                VirtualRegister vr = vrm.getRegister(parameter.type());
+                vr.setRegisterClass(parameter.regClass());
+
+                VirtualRegister movedVr = vrm.getRegister(parameter.type());
+                movedVr.setRegisterClass(RegisterClass.ANY); // Set to ANY for coalescing later
+
+                // we store the moved Vr in the parameter mapping
+                parameterMapping.put(parameter.name(), movedVr);
+
+                unit.getEntryBlock().emitFirst(new Move(vr, movedVr));
+            }
+        }
+        unit.setParameterOperandMapping(parameterMapping);
+
+        super.visit(unit);
     }
 }

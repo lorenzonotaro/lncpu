@@ -3,6 +3,7 @@ package com.lnc.cc.codegen;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
 
@@ -20,19 +21,16 @@ public class InterferenceGraph {
         public final Register        phys;
         public final Set<Node>       adj = new LinkedHashSet<>();
 
-        public Register precolored = null;
         public Register assigned   = null;
 
         private Node(VirtualRegister vr) {
-            this.vr   = vr; this.phys = null;
-            if (vr.getRegisterClass().isSingleton())
-                this.precolored = vr.getRegisterClass().onlyRegister();
+            this.vr   = vr;
+            this.phys = null;
         }
 
         private Node(Register phys) {
             this.vr = null;
             this.phys = phys;
-            this.precolored = phys;
             this.assigned   = phys;
         }
 
@@ -117,7 +115,7 @@ public class InterferenceGraph {
             LivenessInfo li
     ) {
         // 1) create empty ranges
-        Map<VirtualRegister,LiveRange> ranges = new HashMap<>();
+        Map<VirtualRegister,LiveRange> ranges = new LinkedHashMap<>();
         for (VirtualRegister vr : unit.getVrManager().getAllRegisters())
             ranges.put(vr, new LiveRange(Integer.MAX_VALUE, Integer.MIN_VALUE));
 
@@ -198,13 +196,6 @@ public class InterferenceGraph {
             }
         }
 
-        // Pre-color fixed nodes
-        for (VirtualRegister vr : unit.getVirtualRegisterManager().getAllRegisters()) {
-            if (vr.getRegisterClass().isSingleton()) {
-                graph.getNode(vr).precolored = vr.getRegisterClass().onlyRegister();
-            }
-        }
-
         // Call clobber registers
         for (IRBlock B : unit.computeReversePostOrderAndCFG()) {
             for (IRInstruction inst = B.getFirst(); inst != null; inst = inst.getNext()) {
@@ -261,12 +252,12 @@ public class InterferenceGraph {
         sb.append("Virtual Nodes:\n");
         for (Node node : vregNodes.values()) {
             sb.append("  ").append(node.vr).append(" -> ");
-            sb.append(node.adj.stream().map(n -> n.vr.toString()).toList()).append("\n");
+            sb.append(node.adj.stream().map(n -> n.vr != null ? n.vr.toString() : "").toList()).append("\n");
         }
         sb.append("Physical Nodes:\n");
         for (Node node : physNodes.values()) {
             sb.append("  ").append(node.phys).append(" -> ");
-            sb.append(node.adj.stream().map(n -> n.phys.toString()).toList()).append("\n");
+            sb.append(node.adj.stream().map(n -> n.phys != null ? n.phys.toString() : "").toList()).append("\n");
         }
         return sb.toString();
     }

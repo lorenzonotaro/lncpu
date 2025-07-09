@@ -1,8 +1,10 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ast.VariableDeclaration;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.types.TypeSpecifier;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.List;
 public class CallingConvention {
     /** One parameter’s or return’s location. */
     public record ParamLocation(
+            String name,
+            TypeSpecifier type,
             RegisterClass regClass,   // null if it lives on the stack
             int size,
             boolean onStack,          // true ⇾ stack
@@ -17,24 +21,26 @@ public class CallingConvention {
     ) {}
 
     /** Returns the calling‐convention mapping for a call’s actual arguments. */
-    public static List<ParamLocation> mapCallArguments(TypeSpecifier[] args) {
+    public static List<ParamLocation> mapCallArguments(VariableDeclaration[] params) {
         List<ParamLocation> locs = new ArrayList<>();
-        boolean hasWordArg = Arrays.stream(args)
-                .anyMatch(op -> op.allocSize() == 2);
+        boolean hasWordArg = Arrays.stream(params)
+                .anyMatch(op -> op.declarator.typeSpecifier().allocSize() == 2);
 
         int byteIdx = 0;          // counts only 1-byte args so far
         int stackOffset = 0;      // in bytes
 
-        for (TypeSpecifier arg : args) {
-            int size = arg.allocSize();
+        for (VariableDeclaration param : params) {
+            var type = param.declarator.typeSpecifier();
+            var name = param.name.lexeme;
+            int size = type.allocSize();
             if (size == 2) {
                 // A word‐sized argument
                 if (locs.stream().noneMatch(pl -> pl.regClass == RegisterClass.WORDPARAM_1)) {
                     // first word → RC:RD
-                    locs.add(new ParamLocation(RegisterClass.WORDPARAM_1, size, false, -1));
+                    locs.add(new ParamLocation(name, type, RegisterClass.WORDPARAM_1, size, false, -1));
                 } else {
                     // further words → stack (2 bytes)
-                    locs.add(new ParamLocation(null, size, true, stackOffset));
+                    locs.add(new ParamLocation(name, type, null, size, true, stackOffset));
                     stackOffset += 2;
                 }
 
@@ -53,10 +59,10 @@ public class CallingConvention {
                 };
 
                 if (rc != null) {
-                    locs.add(new ParamLocation(rc,  size,false, -1));
+                    locs.add(new ParamLocation(name, type, rc,  size,false, -1));
                 } else {
                     // spill to stack (1 byte)
-                    locs.add(new ParamLocation(null, size,true, stackOffset));
+                    locs.add(new ParamLocation(name, type, null, size,true, stackOffset));
                     stackOffset += 1;
                 }
                 byteIdx++;

@@ -37,8 +37,14 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
     }
 
     protected GraphicalIRVisitor() {
+        reset();
     }
 
+    protected void reset() {
+        this.context = null;
+        this.unit = null;
+        this.currentInstruction = null;
+    }
 
     protected void visit(IRBlock block){
         for (currentInstruction = block.first; currentInstruction != null;) {

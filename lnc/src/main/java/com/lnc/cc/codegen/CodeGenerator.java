@@ -48,6 +48,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             visit(unit);
 
             outputs.add(currentOutput);
+
+            super.reset();
         }
 
         return outputs;
@@ -304,17 +306,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     public Argument visit(Location location) {
 
         if(location.getSymbol().isParameter()){
-            CallingConvention.ParamLocation paramLocation = getUnit().getFunctionType().getParameterMapping().get(location.getSymbol().getParameterIndex());
-            if(paramLocation.onStack()){
-                int offset = paramLocation.stackOffset();
-                return new Dereference(new RegisterOffset(
-                        new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
-                        Token.__internal(TokenType.MINUS, "-"),
-                        new Byte(Token.__internal(TokenType.INTEGER, offset))
-                ));
-            }else{
-                return CodeGenUtils.reg(paramLocation.regClass().onlyRegister());
-            }
+            return getUnit().getParameterOperandMapping().get(location.getSymbol().getName()).accept(this);
         }else if(location.getSymbol().isStatic()){
             String asmName = location.getSymbol().getAsmName();
             return CodeGenUtils.deref(CodeGenUtils.labelRef(asmName));
