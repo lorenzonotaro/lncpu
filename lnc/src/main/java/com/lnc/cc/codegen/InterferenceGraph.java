@@ -222,10 +222,12 @@ public class InterferenceGraph {
                     }
                 }else if(inst instanceof Bin bin){
                     VirtualRegister dest = (VirtualRegister) bin.getTarget();
-                    VirtualRegister rhs  = (VirtualRegister) bin.getRight();
-                    VirtualRegister lhs  = (VirtualRegister) bin.getLeft();
-                    graph.addEdge(dest, rhs);
-                    graph.addEdge(dest, lhs);
+                    VirtualRegister rhs = bin.getRight().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getRight() : null;
+                    VirtualRegister lhs = bin.getLeft().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getLeft() : null;
+                    if (lhs != null)
+                        graph.addPreference(dest, lhs);   // dotted line, not interference
+                    if (bin.getOperator().isCommutative() && rhs != null)
+                        graph.addPreference(dest, rhs);   // optional for commutatives
                 }else if (inst instanceof Move mv) {
                     IROperand s = mv.getSource(), d = mv.getDest();
                     if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd)

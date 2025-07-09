@@ -6,6 +6,7 @@ import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.optimization.IRPass;
 import com.lnc.cc.types.FunctionType;
+import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,8 +174,10 @@ public class IRLoweringPass extends IRPass implements IIROperandVisitor<IROperan
             call.insertBefore(new Push(sa.operand));
         }
 
-        RegisterClass retRC = CallingConvention.returnRegisterFor(call.getReturnTarget().getTypeSpecifier());
-        call.getReturnTarget().setRegisterClass(retRC);
+        if(funType.returnType.type != TypeSpecifier.Type.VOID){
+            RegisterClass retRC = CallingConvention.returnRegisterFor(call.getReturnTarget().getTypeSpecifier());
+            call.getReturnTarget().setRegisterClass(retRC);
+        }
 
         return null;
     }

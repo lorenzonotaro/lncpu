@@ -68,6 +68,11 @@ public class CallingConvention {
 
     /** Pick the return register class for a given return type size. */
     public static RegisterClass returnRegisterFor(TypeSpecifier retType) {
+
+        if(retType == null || retType.type == TypeSpecifier.Type.VOID) {
+            return null;
+        }
+
         return retType.allocSize() == 2
                 ? RegisterClass.RET_WORD
                 : RegisterClass.RET_BYTE;

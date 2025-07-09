@@ -14,7 +14,7 @@ public class RegisterOffset extends Argument{
 
     public final Register register;
 
-    public final NumericalArgument offset;
+    public NumericalArgument offset;
     private final Token operator;
 
     public RegisterOffset(Argument register, Token operator, NumericalArgument offset) {

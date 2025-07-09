@@ -28,7 +28,8 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
                 .filter(CallingConvention.ParamLocation::onStack)
                 .mapToInt(CallingConvention.ParamLocation::size)
                 .sum();
-        this.returnRegisters = CallingConvention.returnRegisterFor(unit.getFunctionType().returnType).getRegisters().stream().map(Enum::toString).collect(Collectors.toSet());
+        RegisterClass registerClass = CallingConvention.returnRegisterFor(unit.getFunctionType().returnType);
+        this.returnRegisters = registerClass == null ? Set.of() : registerClass.getRegisters().stream().map(Enum::toString).collect(Collectors.toSet());
         this.frameInfo = unit.getFrameInfo();
     }
 
@@ -55,16 +56,18 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
 
         var iterator = new ExtendedListIterator<>(code);
 
-        iterator.next();
+        var firstInstr = iterator.next();
 
-        iterator.addSequenceBeforeCurrent(registersList.stream().map(
+        var list = new ArrayList<>(registersList.stream().map(
                 r -> new Instruction(Token.__internal(TokenType.PUSH, "push"), new Argument[]{
                         new Register(Token.__internal(TokenType.valueOf(r.toString()), r.toString()))
                 })).toList());
 
-        if(frameInfo.allocSize() > 0){
+        iterator.addSequenceBeforeCurrent(list);
+
+        if(frameInfo.allocSize() > 0 || stackParamsSize > 0) {
             // Allocate stack space for the frame
-            iterator.addSequenceBeforeCurrent(List.of(new Instruction(
+            list.addAll(List.of(new Instruction(
                     Token.__internal(TokenType.PUSH, "push"), new Argument[]{
                     CodeGenUtils.reg(TokenType.BP)
             }),
@@ -72,12 +75,22 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
                     Token.__internal(TokenType.MOV, "mov"), new Argument[]{
                     CodeGenUtils.reg(TokenType.SP),
                     CodeGenUtils.reg(TokenType.BP)
-            }),
-            new Instruction(
-                    Token.__internal(TokenType.ADD, "add"), new Argument[]{
-                    CodeGenUtils.reg(TokenType.SP),
-                    CodeGenUtils.immByte(frameInfo.allocSize())
             })));
+
+            if(frameInfo.allocSize() > 0) {
+                list.add(new Instruction(
+                        Token.__internal(TokenType.ADD, "add"), new Argument[]{
+                        CodeGenUtils.reg(TokenType.SP),
+                        CodeGenUtils.immByte(frameInfo.allocSize())
+                }));
+            }
+        }
+
+        if(!list.isEmpty()){
+            var labels = firstInstr.getLabels();
+            firstInstr.clearLabels();
+            list.get(0).setLabels(labels);
+            iterator.addSequenceBeforeCurrent(list);
         }
 
         Collections.reverse(registersList);
@@ -112,16 +125,19 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
 
                 var list = new ArrayList<Instruction>();
 
-                if (frameInfo.allocSize() > 0){
-                    list.addAll(List.of(
-                            new Instruction(Token.__internal(TokenType.MOV, "mov"), new Argument[]{
-                                    CodeGenUtils.reg(TokenType.BP),
-                                    CodeGenUtils.reg(TokenType.SP)
-                            }),
+                if (frameInfo.allocSize() > 0 || stackParamsSize > 0) {
+                    if(frameInfo.allocSize() > 0) {
+                        list.add(
+                                new Instruction(Token.__internal(TokenType.MOV, "mov"), new Argument[]{
+                                        CodeGenUtils.reg(TokenType.BP),
+                                        CodeGenUtils.reg(TokenType.SP)
+                                }));
+                    }
+                    list.add(
                             new Instruction(Token.__internal(TokenType.POP, "pop"), new Argument[]{
                                     CodeGenUtils.reg(TokenType.BP)
                             })
-                    ));
+                    );
                 }
 
                 for (RegisterId reg : registers) {
@@ -159,7 +175,8 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
                                 if(regOffsetOp.getOperator().type == TokenType.MINUS) {
                                     if(regOffsetOp.offset.type == Argument.Type.BYTE){
                                         var byteArg = (com.lnc.assembler.parser.argument.Byte) regOffsetOp.offset;
-                                        byteArg.value += (byte) (registers.size() + (frameInfo.allocSize() > 0 ? 1 : 0));
+                                        byteArg.value += 3; /* account for CS:PC + stack pointer actually pointing to the next available slot*/
+                                        byteArg.value += registers.size() + 1; /* account for the registers we pushed + BP */
                                     }else{
                                         // error
                                         throw new IllegalStateException("Unexpected argument type for stack parameter dereference: " + regOffsetOp.offset.type);

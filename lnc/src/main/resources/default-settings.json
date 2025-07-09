@@ -58,6 +58,11 @@
     "value": false
   },
 
+  "--no-asm-level-optimization": {
+    "help": "Disables assembly level optimization.",
+    "value": false
+  },
+
   "-Wdata-page-access-before-setup": {
     "help": "Disables data page access before setup compile warning.",
     "value": true

@@ -112,8 +112,12 @@ public class Compiler {
         Logger.setProgramState("asmopt");
         AsmLevelOptimizer asmOptimizer = new AsmLevelOptimizer();
 
+        Boolean noAsmLevelOpts = LNC.settings.get("--no-asm-level-optimization", Boolean.class);
+
         for (var output : this.output) {
-            asmOptimizer.optimize(output);
+            if(!noAsmLevelOpts){
+                asmOptimizer.optimize(output);
+            }
             if(output.unit() != null){
                 asmOptimizer.stackFramePreservation(output);
             }

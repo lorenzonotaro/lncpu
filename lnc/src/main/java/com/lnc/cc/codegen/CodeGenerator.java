@@ -307,13 +307,19 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             String asmName = location.getSymbol().getAsmName();
             return CodeGenUtils.deref(CodeGenUtils.labelRef(asmName));
         }else{
-            return new Dereference(
-                    new RegisterOffset(
-                            new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
-                            Token.__internal(TokenType.PLUS, "-"),
-                            new Byte(Token.__internal(TokenType.INTEGER, getUnit().getFrameInfo().localOffsets().get(location.getSymbol().getName()))
-                    )
-            ));
+            Integer localOffset = getUnit().getFrameInfo().localOffsets().get(location.getSymbol().getName());
+            if(localOffset != null){
+                return new Dereference(
+                        new RegisterOffset(
+                                new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
+                                Token.__internal(TokenType.PLUS, "+"),
+                                new Byte(Token.__internal(TokenType.INTEGER, localOffset)
+                                )
+                        ));
+            }else{
+                // global symbol
+                return CodeGenUtils.labelRef(location.getSymbol().getName());
+            }
         }
     }
 

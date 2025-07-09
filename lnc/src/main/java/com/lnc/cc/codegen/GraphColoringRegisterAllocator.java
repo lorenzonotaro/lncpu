@@ -234,7 +234,6 @@ public class GraphColoringRegisterAllocator {
 
             // 1) Build graph & run allocator
             InterferenceGraph ig = InterferenceGraph.buildInterferenceGraph(unit);
-            System.out.println(ig);
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();
