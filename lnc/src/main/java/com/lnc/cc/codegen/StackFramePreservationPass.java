@@ -63,8 +63,6 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
                         new Register(Token.__internal(TokenType.valueOf(r.toString()), r.toString()))
                 })).toList());
 
-        iterator.addSequenceBeforeCurrent(list);
-
         if(frameInfo.allocSize() > 0 || stackParamsSize > 0) {
             // Allocate stack space for the frame
             list.addAll(List.of(new Instruction(

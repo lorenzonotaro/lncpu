@@ -1,6 +1,9 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.common.frontend.CompileException;
+import com.lnc.common.frontend.Token;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,7 +43,31 @@ public class CondJump extends AbstractBranchInstr {
     }
 
 
-    public enum Cond { EQ, NE, LT, LE, GT, GE }
+    public enum Cond { EQ, NE, LT, LE, GT, GE;
+
+        public static Cond of(BinaryExpression.Operator operator, Token token) {
+            return switch (operator) {
+                case EQ -> CondJump.Cond.EQ;
+                case NE -> CondJump.Cond.NE;
+                case LT -> CondJump.Cond.LT;
+                case LE -> CondJump.Cond.LE;
+                case GT -> CondJump.Cond.GT;
+                case GE -> CondJump.Cond.GE;
+                default -> throw new CompileException("unsupported comparison", token);
+            };
+        }
+
+        public Cond inverse() {
+            return switch (this) {
+                case EQ -> NE;
+                case NE -> EQ;
+                case LT -> GE;
+                case LE -> GT;
+                case GT -> LE;
+                case GE -> LT;
+            };
+        }
+    }
     private final Cond         cond;           // the high-level relation
     private IROperand    left;
     private IROperand right;    // what to compare

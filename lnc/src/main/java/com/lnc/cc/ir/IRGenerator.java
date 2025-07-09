@@ -39,7 +39,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         currentUnit.enterLoop(new LoopInfo(header, next));
 
-        branch(whileStatement.condition, body, next);
+        branchIfFalse(whileStatement.condition, next, body);
 
         currentUnit.setCurrentBlock(body);
         whileStatement.body.accept(this);
@@ -66,7 +66,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         doStmt.body.accept(this);
 
         currentUnit.continueTo(header);
-        branch(doStmt.condition, body, exit);
+        branchIfTrue(doStmt.condition, body, exit);
         currentUnit.exitLoop();
 
         // 4) continue in exit
@@ -128,7 +128,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // 4) Emit the test (fall into body if true, else to exit)
         if (forStmt.condition != null) {
             // branchIfFalse(cond, falseTarget, trueTarget)
-            branch(forStmt.condition, body, exit);
+            branchIfFalse(forStmt.condition, exit, body);
         } else {
             // no condition means “always true”
             emit(new Goto(body));
@@ -188,7 +188,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         //    branchIfFalse(cond, falseTarget, trueTarget)
         if (ifStmt.condition != null) {
             IRBlock falseTarget = elseBlk != null ? elseBlk : exitBlk;
-            branch(ifStmt.condition, thenBlk, falseTarget);
+            branchIfFalse(ifStmt.condition, falseTarget, thenBlk);
         } else {
             // “if (true)” → always go to thenBlk
             emit(new Goto(thenBlk));
@@ -213,7 +213,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
 
-    private void branch(Expression condExpr,
+    private void branchIfTrue(Expression condExpr,
                                IRBlock takenIfTrue, IRBlock takenIfFalse) {
         IROperand left, right;
         CondJump.Cond originalCond;
@@ -221,15 +221,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         if (condExpr instanceof BinaryExpression be) {
             left  = be.left .accept(this);
             right = be.right.accept(this);
-            originalCond = switch (be.operator) {
-                case EQ -> CondJump.Cond.EQ;
-                case NE -> CondJump.Cond.NE;
-                case LT -> CondJump.Cond.LT;
-                case LE -> CondJump.Cond.LE;
-                case GT -> CondJump.Cond.GT;
-                case GE -> CondJump.Cond.GE;
-                default -> throw new CompileException("unsupported comparison", be.token);
-            };
+            originalCond = CondJump.Cond.of(be.operator, be.token);
         } else {
             left         = condExpr.accept(this);
             right        = new ImmediateOperand((byte)0);
@@ -243,6 +235,30 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 right,
                 /* true→ */ takenIfTrue,
                 /* false→*/ takenIfFalse
+        ));
+    }
+
+    private void branchIfFalse(Expression condExpr, IRBlock takenIfFalse, IRBlock takenIfTrue) {
+        IROperand left, right;
+        CondJump.Cond originalCond;
+
+        if (condExpr instanceof BinaryExpression be) {
+            left  = be.left .accept(this);
+            right = be.right.accept(this);
+            originalCond = CondJump.Cond.of(be.operator, be.token);
+        } else {
+            left         = condExpr.accept(this);
+            right        = new ImmediateOperand((byte)0);
+            originalCond = CondJump.Cond.EQ;  // “cond == 0”
+        }
+
+        // Emit with the original relation, but swap targets
+        emit(new CondJump(
+                originalCond.inverse(),
+                left,
+                right,
+                takenIfFalse,
+                takenIfTrue
         ));
     }
 

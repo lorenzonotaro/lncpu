@@ -92,40 +92,40 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             case EQ -> {
                 instrf(TokenType.JZ, target);
 
-                enqueue(condJump.getFalseTarget());
                 enqueue(condJump.getTarget());
+                enqueue(condJump.getFalseTarget());
             }
             case NE -> {
                 instrf(TokenType.JZ, falseTarget);
 
-                enqueue(condJump.getTarget());
                 enqueue(condJump.getFalseTarget());
+                enqueue(condJump.getTarget());
             }
             case LT -> {
                 instrf(TokenType.JC, target);
 
-                enqueue(condJump.getFalseTarget());
                 enqueue(condJump.getTarget());
+                enqueue(condJump.getFalseTarget());
             }
             case LE -> {
-                instrf(TokenType.JZ, target);
+                instrf(TokenType.JC, target);
                 instrf(TokenType.JZ, target);
 
-                enqueue(condJump.getFalseTarget());
                 enqueue(condJump.getTarget());
+                enqueue(condJump.getFalseTarget());
             }
             case GT -> {
                 instrf(TokenType.JC, falseTarget);
+                instrf(TokenType.JZ, falseTarget);
 
-                enqueue(condJump.getTarget());
                 enqueue(condJump.getFalseTarget());
+                enqueue(condJump.getTarget());
             }
             case GE -> {
                 instrf(TokenType.JC, falseTarget);
-                instrf(TokenType.JC, falseTarget);
 
-                enqueue(condJump.getTarget());
                 enqueue(condJump.getFalseTarget());
+                enqueue(condJump.getTarget());
             }
         }
 

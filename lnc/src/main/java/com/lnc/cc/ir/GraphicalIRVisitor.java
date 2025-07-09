@@ -19,7 +19,7 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
         }
 
         public IRBlock next() {
-            return worklist.pollLast();
+            return worklist.pop();
         }
 
         public boolean isEmpty() {
