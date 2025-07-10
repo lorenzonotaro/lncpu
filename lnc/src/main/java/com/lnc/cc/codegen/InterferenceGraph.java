@@ -217,8 +217,13 @@ public class InterferenceGraph {
                     VirtualRegister lhs = bin.getLeft().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getLeft() : null;
                     if (lhs != null)
                         graph.addPreference(dest, lhs);   // dotted line, not interference
-                    if (bin.getOperator().isCommutative() && rhs != null)
-                        graph.addPreference(dest, rhs);   // optional for commutatives
+                    if (rhs != null) {
+                        if(bin.getOperator().isCommutative()){
+                            graph.addPreference(dest, rhs);
+                        }else{
+                            graph.addEdge(dest, rhs); // interference edge
+                        }
+                    }
                 }else if (inst instanceof Move mv) {
                     IROperand s = mv.getSource(), d = mv.getDest();
                     if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd)

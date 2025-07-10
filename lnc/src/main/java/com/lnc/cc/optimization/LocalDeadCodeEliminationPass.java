@@ -64,4 +64,9 @@ public class LocalDeadCodeEliminationPass extends IRPass{
     public Void visit(Push push) {
         return null;
     }
+
+    @Override
+    public Void accept(LoadParam loadParam) {
+        return null;
+    }
 }

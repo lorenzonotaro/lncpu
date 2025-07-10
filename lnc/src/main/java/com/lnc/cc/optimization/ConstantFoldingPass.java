@@ -95,5 +95,10 @@ public class ConstantFoldingPass extends IRPass {
         return null;
     }
 
+    @Override
+    public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
 
 }

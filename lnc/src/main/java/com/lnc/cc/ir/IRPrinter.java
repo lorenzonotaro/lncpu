@@ -71,6 +71,12 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
+    public Void accept(LoadParam loadParam) {
+        sb.append("    ").append(loadParam.toString()).append("\n");
+        return null;
+    }
+
+    @Override
     protected void visit(IRBlock block) {
         sb.append("\n_l").append(block.getId()).append(":\n");
 

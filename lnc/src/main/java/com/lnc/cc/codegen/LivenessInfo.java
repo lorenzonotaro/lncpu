@@ -45,20 +45,6 @@ public record LivenessInfo(
             defs.put(B, defSet);
         }
 
-        // 2) Implicitly define any register‐passed parameters in the entry block
-        var paramMapping = unit.getFunctionType().getParameterMapping();
-        for (int i = 0; i < paramMapping.size(); i++) {
-            var loc = paramMapping.get(i);
-            if (!loc.onStack() && loc.regClass() != null) {
-                // find the VR in that class
-                for (VirtualRegister vr : unit.getVirtualRegisterManager().getAllRegisters()) {
-                    if (vr.getRegisterClass() == loc.regClass()) {
-                        defs.get(entry).add(vr);
-                    }
-                }
-            }
-        }
-
         // 3) Initialize liveIn/Out to empty sets
         Map<IRBlock, Set<VirtualRegister>> liveIn  = new LinkedHashMap<>();
         Map<IRBlock, Set<VirtualRegister>> liveOut = new LinkedHashMap<>();

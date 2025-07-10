@@ -8,9 +8,9 @@ int mod(int a, int m){
     }
     return a;
 }
+/*
 
-
-/*void fizzbuzz(int i){
+void fizzbuzz(int i){
     printhex(i);
     putc(':');
     putc(' ');
@@ -27,9 +27,9 @@ int mod(int a, int m){
         putc('z');
     }
     return;
-}*/
+}
 
-/*void main(){
+void main(){
     for(int i = 1; i <= 16; i++){
         fizzbuzz(i);
         putc('\n');
@@ -38,4 +38,7 @@ int mod(int a, int m){
 }
 */
 
-void main(){}
+void main(){
+    printhex(mod(10, 3));
+    return;
+}

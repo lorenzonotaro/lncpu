@@ -24,6 +24,35 @@ public class IRBlock implements Iterable<IRInstruction> {
         this.id = id;
     }
 
+    /**
+     * Prepend a sequence of instructions to this block, in the order they are provided.
+     * */
+    public void prependSequence(List<IRInstruction> instructions) {
+        if (instructions == null || instructions.isEmpty()) {
+            return;
+        }
+
+        IRInstruction lastInstruction = null;
+
+        for (IRInstruction instruction : instructions) {
+            instruction.setParentBlock(this);
+            if (lastInstruction != null) {
+                lastInstruction.setNext(instruction);
+                instruction.setPrev(lastInstruction);
+            } else {
+                first = instruction;
+            }
+            lastInstruction = instruction;
+        }
+
+        if (last == null) {
+            last = lastInstruction;
+        } else {
+            lastInstruction.setNext(last);
+            last.setPrev(lastInstruction);
+        }
+    }
+
     public void emitFirst(IRInstruction instruction) {
 
         instruction.setParentBlock(this);

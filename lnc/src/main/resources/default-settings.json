@@ -53,12 +53,12 @@
     "value": false
   },
 
-  "--no-ir-optimization": {
+  "--no-ir-opt": {
     "help": "Disables IR level optimization.",
     "value": false
   },
 
-  "--no-asm-optimization": {
+  "--no-asm-opt": {
     "help": "Disables assembly level optimization.",
     "value": false
   },
@@ -81,6 +81,11 @@
   "--reg-alloc-max-iter": {
     "help": "Sets the maximum number of iterations for the register allocator.",
     "value": 10
+  },
+
+  "--reg-alloc-no-coalesce": {
+    "help": "Disables coalesce optimization in the register allocator.",
+    "value": false
   },
 
   "--first-pass-opt-max-iter": {

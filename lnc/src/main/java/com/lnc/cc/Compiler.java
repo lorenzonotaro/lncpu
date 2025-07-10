@@ -74,7 +74,7 @@ public class Compiler {
             return false;
         }
 
-        if(!LNC.settings.get("--no-ir-optimization", Boolean.class)) {
+        if(!LNC.settings.get("--no-ir-opt", Boolean.class)) {
             Logger.setProgramState("opt");
             StageOneIROptimizer optimizer = new StageOneIROptimizer();
 
@@ -113,7 +113,7 @@ public class Compiler {
         Logger.setProgramState("asmopt");
         AsmLevelOptimizer asmOptimizer = new AsmLevelOptimizer();
 
-        Boolean noAsmLevelOpts = LNC.settings.get("--no-asm-optimization", Boolean.class);
+        Boolean noAsmLevelOpts = LNC.settings.get("--no-asm-opt", Boolean.class);
 
         for (var output : this.output) {
             if(!noAsmLevelOpts){

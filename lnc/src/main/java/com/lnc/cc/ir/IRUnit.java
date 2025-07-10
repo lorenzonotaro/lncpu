@@ -32,7 +32,7 @@ public class IRUnit implements Iterable<IRBlock>{
 
     private FrameInfo frameInfo;
 
-    private Map<String, IROperand> parameterOperandMapping;
+    private ParameterOperandMapping parameterOperandMapping;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
@@ -200,11 +200,11 @@ public class IRUnit implements Iterable<IRBlock>{
         return spillSpaceSize /* + localsSize */;
     }
 
-    public void setParameterOperandMapping(Map<String, IROperand> parameterMapping) {
+    public void setParameterOperandMapping(ParameterOperandMapping parameterMapping) {
         this.parameterOperandMapping = parameterMapping;
     }
 
-    public Map<String, IROperand> getParameterOperandMapping() {
+    public ParameterOperandMapping getParameterOperandMapping() {
         return parameterOperandMapping;
     }
 

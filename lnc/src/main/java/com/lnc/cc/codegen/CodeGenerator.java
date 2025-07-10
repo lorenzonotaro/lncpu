@@ -284,6 +284,11 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     @Override
+    public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
+    @Override
     public Argument visit(ImmediateOperand immediateOperand) {
         int value = immediateOperand.getValue();
         return IntUtils.inByteRange(value) ? CodeGenUtils.immByte(value) : CodeGenUtils.immWord(value);

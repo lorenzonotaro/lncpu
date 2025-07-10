@@ -96,7 +96,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         IROperand location = store.getDest().accept(this);
 
         if(location.type == IROperand.Type.VIRTUAL_REGISTER){
-            replaceAndContinue(new Move(location, value));
+            replaceAndContinue(new Move(value, location));
         }
 
         return null;
@@ -205,6 +205,11 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     }
 
     @Override
+    public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
+    @Override
     public IROperand visit(ImmediateOperand immediateOperand) {
         return immediateOperand;
     }
@@ -250,14 +255,16 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public void visit(IRUnit unit) {
-        Map<String, IROperand> parameterMapping = new HashMap<>();
+        Map<String, IROperand> entryParameterMappings = new HashMap<>();
+        Map<String, IROperand> copyParameterMappings = new HashMap<>();
         var parameters = CallingConvention.mapCallArguments(unit.getFunctionDeclaration().parameters);
+
         for(var parameter : parameters){
             if(parameter.onStack()) {
                 // If the parameter is on the stack, we create a StackFrameOperand
                 int offset = parameter.stackOffset();
                 IROperand operand = new StackFrameOperand(parameter.type(), StackFrameOperand.OperandType.PARAMETER, offset);
-                parameterMapping.put(parameter.name(), operand);
+                entryParameterMappings.put(parameter.name(), operand);
             } else {
                 // Otherwise, we create a VirtualRegister assigned to the class and a move to a new virtual register
                 // of class any, that will be coalesced later if not necessary.
@@ -269,13 +276,25 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
                 VirtualRegister movedVr = vrm.getRegister(parameter.type());
                 movedVr.setRegisterClass(RegisterClass.ANY); // Set to ANY for coalescing later
 
-                // we store the moved Vr in the parameter mapping
-                parameterMapping.put(parameter.name(), movedVr);
+                entryParameterMappings.put(parameter.name(), vr);
 
-                unit.getEntryBlock().emitFirst(new Move(vr, movedVr));
+                // we store the moved Vr in the parameter mapping
+                copyParameterMappings.put(parameter.name(), movedVr);
             }
         }
-        unit.setParameterOperandMapping(parameterMapping);
+
+        List<IRInstruction> list = new ArrayList<>();
+        for(var parameter : parameters){
+            list.add(new LoadParam(entryParameterMappings.get(parameter.name())));
+        }
+
+        for(var parameter : parameters){
+            list.add(new Move(entryParameterMappings.get(parameter.name()), copyParameterMappings.get(parameter.name())));
+        }
+
+        unit.getEntryBlock().prependSequence(list);
+
+        unit.setParameterOperandMapping(new ParameterOperandMapping(entryParameterMappings, copyParameterMappings));
 
         super.visit(unit);
     }

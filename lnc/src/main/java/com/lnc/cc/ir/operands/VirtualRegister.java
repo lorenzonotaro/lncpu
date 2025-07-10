@@ -59,7 +59,7 @@ public class VirtualRegister extends IROperand {
 
     @Override
     public boolean equals(Object other){
-        return other instanceof VirtualRegister vr && (this == vr );
+        return other instanceof VirtualRegister vr && (this == vr || this.registerNumber == vr.registerNumber);
     }
 
     @Override

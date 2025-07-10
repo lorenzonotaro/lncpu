@@ -16,9 +16,10 @@ import java.util.stream.Collectors;
 public class GraphColoringRegisterAllocator {
     private final InterferenceGraph graph;
     private final int K;  // total number of physical “colors”
+    private final boolean doCoalesce;
 
     // worklists and stacks
-    private final Deque<InterferenceGraph.Node> selectStack = new ArrayDeque<>();
+    private Deque<InterferenceGraph.Node> selectStack = new ArrayDeque<>();
     private final Set<InterferenceGraph.Node> spillCandidates = new LinkedHashSet<>();
     private final Set<InterferenceGraph.Node> coloredNodes    = new LinkedHashSet<>();
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
@@ -35,10 +36,14 @@ public class GraphColoringRegisterAllocator {
         this.K = graph.getPhysicalNodes().size();
 
         worklistMoves.addAll(graph.getMoveEdges());
+
+        this.doCoalesce = !LNC.settings.get("--reg-alloc-no-coalesce", Boolean.class);
     }
 
     public void allocate() {
-        coalesce();
+        if(doCoalesce) {
+            coalesce();
+        }
         simplify();
         select();
         assignColors();
@@ -53,11 +58,6 @@ public class GraphColoringRegisterAllocator {
             InterferenceGraph.Node x = getAlias(mv.getKey());
             InterferenceGraph.Node y = getAlias(mv.getValue());
             if (x == y) { it.remove(); continue; }
-
-            // SKIP any move where either side is pre–colored (only one allowed color)
-            if (x.allowedColors().size() == 1 || y.allowedColors().size() == 1) {
-                continue;
-            }
 
             if (!x.adj.contains(y) && ok(x, y)) {
                 combine(x, y);
@@ -100,50 +100,26 @@ public class GraphColoringRegisterAllocator {
 
     private void simplify() {
         // build mutable work graph only over non-precolored nodes
-        var work = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
-        for (var n : graph.getVirtualNodes()) {
-            n = getAlias(n); // ensure we have the alias
-            if (work.containsKey(n))
-                continue;
-            Set<InterferenceGraph.Node> nbrs =
-                    n.adj.stream()
-                    .map(this::getAlias)
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-            work.put(n, new LinkedHashSet<>(nbrs));
-        }
-
-        // removal loop unchanged
-        while (!work.isEmpty()) {
-            var maybe = work.keySet().stream()
-                    .filter(n -> work.get(n).size() < n.allowedColors().size())
-                    .min(Comparator.comparingInt(n -> n.allowedColors().size()));
-            InterferenceGraph.Node n;
-            if (maybe.isPresent()) {
-                n = maybe.get();
-            } else {
-                // TODO: figure out spill heuristic
-                n = work.keySet().stream()
-                        .min(Comparator
-                                .comparingInt((InterferenceGraph.Node m) -> work.get(m).size())
-                                .thenComparing(m -> m.vr.getRegisterNumber()))
-                        .get();
-                //spillCandidates.add(n);
+        var work = new ArrayList<>(graph.getVirtualNodes().stream()
+                .sorted(
+                        Comparator
+                                .comparingInt((InterferenceGraph.Node n) -> n.allowedColors().size())
+                                .thenComparingInt(n -> n.adj.size())
+                )
+                .toList());
+        Collections.reverse(work);
+        for (var n : work) {
+            // precolor nodes that have allowedColors.size() == 1
+            if (n.allowedColors().size() == 1) {
+                n.assigned = n.allowedColors().iterator().next();
+                coloredNodes.add(n);
+            }else{
+                // add to selectStack
+                selectStack.push(n);
             }
-
-            selectStack.push(n);
-            for (var neighbor : work.get(n)) {
-                var nbrSet = work.get(neighbor);
-                if (nbrSet != null) {
-                    nbrSet.remove(n);
-                }
-            }
-            work.remove(n);
         }
     }
-
     private void select() {
-        // by the time simplify is done, selectStack has e
-        // ery VR node
         while (!selectStack.isEmpty()) {
             var n = selectStack.pop();
 
