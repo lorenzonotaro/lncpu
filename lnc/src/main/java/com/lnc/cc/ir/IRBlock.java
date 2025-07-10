@@ -201,4 +201,14 @@ public class IRBlock implements Iterable<IRInstruction> {
         if (!(o instanceof IRBlock irBlock)) return false;
         return id == irBlock.id && Objects.equals(unit, irBlock.unit);
     }
+
+    public void emitAll(List<IRInstruction> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        for (IRInstruction instruction : list) {
+            emit(instruction);
+        }
+    }
 }

@@ -22,7 +22,7 @@ public class IRUnit implements Iterable<IRBlock>{
 
     private final FlatSymbolTable symbolTable;
 
-    private int blockCounter = 0;
+    private int blockCounter = 1;
 
     private final VirtualRegisterManager vrManager;
 
@@ -206,6 +206,26 @@ public class IRUnit implements Iterable<IRBlock>{
 
     public ParameterOperandMapping getParameterOperandMapping() {
         return parameterOperandMapping;
+    }
+
+    public void prepentEntryBlock(List<IRInstruction> list) {
+        if(getEntryBlock() == null) {
+            throw new IllegalStateException("Entry block is not set, cannot prepend instructions.");
+        }
+
+        var prevEntry = getEntryBlock();
+
+        if(prevEntry.getId() == 0){
+            throw new IllegalStateException("Entry block already set");
+        }
+
+        IRBlock newEntry = new IRBlock(this, 0);
+
+        newEntry.emitAll(list);
+
+        newEntry.emit(new Goto(prevEntry));
+
+        this.setEntryBlock(newEntry);
     }
 
     public record FrameInfo(

@@ -128,21 +128,6 @@ public class Compiler {
             return standalone(irGenerator.getResult());
         }
 
-/*        Logger.setProgramState("optimization");
-        LinearOptimizer opt = new LinearOptimizer(irGenerator.getResult());
-        var optimizationResult = opt.linearizeAndOptimize();
-
-        Logger.setProgramState("codegen");
-        CodeGenerator codeGenerator = new CodeGenerator(optimizationResult);
-
-        codeGenerator.generate();
-
-        this.output = codeGenerator.getOutput();*/
-
-/*        if(LNC.settings.get("--standalone", Boolean.class)){
-            return standalone(optimizationResult);
-        }*/
-
         return true;
 
     }

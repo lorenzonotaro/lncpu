@@ -21,11 +21,14 @@ public class RedundantGotoEliminationPass extends AbstractAsmLevelLinearPass {
 
             if (target.type == Argument.Type.LABEL){
                 var labelArg = (LabelRef) target;
-                var nextInstruction = iterator.peek();
-                if (nextInstruction instanceof Instruction nextInst &&
+                var ce = iterator.peek();
+                if (ce instanceof Instruction nextInst &&
                     nextInst.getLabels().stream().anyMatch(l -> l.extractSubLabelName().equals(labelArg.labelToken.lexeme))){
                     // If the next instruction is a label that matches the goto target, we can eliminate the goto
                     iterator.removeCurrent(); // Remove the goto instruction
+
+                    // move any labels of this goto instruction to the next instruction
+                    nextInst.getLabels().addAll(0, instruction.getLabels());
                     return true;
                 }
             }

@@ -292,6 +292,8 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             list.add(new Move(entryParameterMappings.get(parameter.name()), copyParameterMappings.get(parameter.name())));
         }
 
+        unit.prepentEntryBlock(list);
+
         unit.getEntryBlock().prependSequence(list);
 
         unit.setParameterOperandMapping(new ParameterOperandMapping(entryParameterMappings, copyParameterMappings));
