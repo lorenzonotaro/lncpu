@@ -4,8 +4,14 @@ import java.util.*;
 
 public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> {
 
-    private GraphTraversalContext context;
+    private final TraversalOrder traversalOrder;
 
+    public static enum TraversalOrder {
+        REVERSE_POST_ORDER_ONLY,
+        CUSTOM_ENQUEUE_WITH_SUCCESSORS,
+    }
+
+    private GraphTraversalContext context;
     private IRInstruction currentInstruction;
     private IRUnit unit;
 
@@ -37,7 +43,11 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
     }
 
     protected GraphicalIRVisitor() {
-        reset();
+        this(TraversalOrder.CUSTOM_ENQUEUE_WITH_SUCCESSORS);
+    }
+
+    protected GraphicalIRVisitor(TraversalOrder traversalOrder) {
+        this.traversalOrder = traversalOrder;
     }
 
     protected void reset() {
@@ -67,22 +77,31 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
 
         this.unit = unit;
 
-        unit.computeReversePostOrderAndCFG();
+        var rpo = unit.computeReversePostOrderAndCFG();
 
         this.context = new GraphTraversalContext();
-        context.enqueue(unit.getEntryBlock());
+        if(traversalOrder == TraversalOrder.CUSTOM_ENQUEUE_WITH_SUCCESSORS){
+            context.enqueue(unit.getEntryBlock());
 
-        while (!context.worklist.isEmpty()) {
-            IRBlock block = context.next();
+            while (!context.worklist.isEmpty()) {
+                IRBlock block = context.next();
 
-            if (!context.markVisited(block)) continue;
+                if (!context.markVisited(block)) continue;
 
-            visit(block);
+                visit(block);
 
-            // Optionally enqueue all successors by default
-            for (IRBlock succ : block.getSuccessors()) {
-                {
-                    context.enqueueLast(succ);
+                // Optionally enqueue all successors by default
+                for (IRBlock succ : block.getSuccessors()) {
+                    {
+                        context.enqueueLast(succ);
+                    }
+                }
+            }
+        }else{
+            // visit exactly in RPO
+            for (IRBlock block : rpo) {
+                if (context.markVisited(block)) {
+                    visit(block);
                 }
             }
         }

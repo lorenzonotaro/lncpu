@@ -3,7 +3,11 @@ package com.lnc.cc.ir;
 import java.util.List;
 
 public class IRPrinter extends GraphicalIRVisitor {
-    
+
+    public IRPrinter() {
+        super(TraversalOrder.REVERSE_POST_ORDER_ONLY);
+    }
+
     private final StringBuilder sb = new StringBuilder();
     
     @Override

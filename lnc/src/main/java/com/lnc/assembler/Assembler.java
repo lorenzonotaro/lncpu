@@ -83,7 +83,12 @@ public class Assembler {
         LinkerConfig linkerConfig = linkerconfigParser.getResult();
 
         if(this.compilerOutputs != null){
-            linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(compilerOutputs.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new)));
+            try{
+                linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(compilerOutputs.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new)));
+            }catch(IllegalArgumentException e){
+                Logger.error("unable to merge the provided linker config with the compiler-generated one: %s.".formatted(e.getMessage()));
+                return false;
+            }
         }
 
         Logger.setProgramState("preprocessor");
