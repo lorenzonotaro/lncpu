@@ -12,71 +12,68 @@ public class IRPrinter extends GraphicalIRVisitor {
     
     @Override
     public Void visit(Goto aGoto) {
-        sb.append("    ").append(aGoto.toString()).append("\n");
+        appendInstr(aGoto);
         return null;
     }
 
     @Override
     public Void visit(CondJump condJump) {
-        sb.append("    ").append(condJump.toString()).append("\n");
-
-        enqueue(condJump.getFalseTarget());
-        enqueue(condJump.getTarget());
+        appendInstr(condJump);
 
         return null;
     }
 
     @Override
     public Void visit(Load load) {
-        sb.append("    ").append(load.toString()).append("\n");
+        appendInstr(load);
         return null;
     }
 
     @Override
     public Void visit(Move move) {
-        sb.append("    ").append(move.toString()).append("\n");
+        appendInstr(move);
         return null;
     }
 
     @Override
     public Void visit(Store store) {
-        sb.append("    ").append(store.toString()).append("\n");
+        appendInstr(store);
         return null;
     }
 
     @Override
     public Void visit(Ret ret) {
-        sb.append("    ").append(ret.toString()).append("\n");
+        appendInstr(ret);
         return null;
     }
 
     @Override
     public Void visit(Bin bin) {
-        sb.append("    ").append(bin.toString()).append("\n");
+        appendInstr(bin);
         return null;
     }
 
     @Override
     public Void visit(Call call) {
-        sb.append("    ").append(call.toString()).append("\n");
+        appendInstr(call);
         return null;
     }
 
     @Override
     public Void visit(Unary unary) {
-        sb.append("    ").append(unary.toString()).append("\n");
+        appendInstr(unary);
         return null;
     }
 
     @Override
     public Void visit(Push push) {
-        sb.append("    ").append(push.toString()).append("\n");
+        appendInstr(push);
         return null;
     }
 
     @Override
     public Void accept(LoadParam loadParam) {
-        sb.append("    ").append(loadParam.toString()).append("\n");
+        appendInstr(loadParam);
         return null;
     }
 
@@ -92,6 +89,10 @@ public class IRPrinter extends GraphicalIRVisitor {
         sb.append("==== Function: ").append(unit.getFunctionDeclaration().name.lexeme).append(" ====");
         super.visit(unit);
         sb.append("\n");
+    }
+
+    public void appendInstr(IRInstruction instr) {
+        sb.append("\t").append(instr.toString()).append("\n");
     }
 
     public String getResult() {

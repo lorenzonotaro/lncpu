@@ -16,16 +16,21 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
     private IRUnit unit;
 
     static class GraphTraversalContext {
+        private final boolean allowEnqueue;
         Deque<IRBlock> worklist = new ArrayDeque<>();
         Set<IRBlock> visited = new HashSet<>();
 
+        private GraphTraversalContext(boolean allowEnqueue) {
+            this.allowEnqueue = allowEnqueue;
+        }
+
         void enqueue(IRBlock block) {
-            if (visited.contains(block) || worklist.contains(block)) return;
+            if (!allowEnqueue || visited.contains(block) || worklist.contains(block)) return;
             worklist.push(block);
         }
 
         void enqueueLast(IRBlock block) {
-            if (visited.contains(block) || worklist.contains(block)) return;
+            if (!allowEnqueue || visited.contains(block) || worklist.contains(block)) return;
             worklist.addLast(block);
         }
 
@@ -79,7 +84,7 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
 
         var rpo = unit.computeReversePostOrderAndCFG();
 
-        this.context = new GraphTraversalContext();
+        this.context = new GraphTraversalContext(traversalOrder == TraversalOrder.CUSTOM_ENQUEUE_WITH_SUCCESSORS);
         if(traversalOrder == TraversalOrder.CUSTOM_ENQUEUE_WITH_SUCCESSORS){
             context.enqueue(unit.getEntryBlock());
 
