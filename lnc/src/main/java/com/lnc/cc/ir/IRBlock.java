@@ -1,8 +1,6 @@
 package com.lnc.cc.ir;
 
 
-import com.lnc.assembler.parser.Instruction;
-
 import java.util.*;
 
 public class IRBlock implements Iterable<IRInstruction> {
@@ -18,10 +16,12 @@ public class IRBlock implements Iterable<IRInstruction> {
     protected IRInstruction first = null;
 
     protected IRInstruction last = null;
+    private final int loopDepth;
 
-    public IRBlock(IRUnit unit, int id) {
+    public IRBlock(IRUnit unit, int id, int loopDepth) {
         this.unit = unit;
         this.id = id;
+        this.loopDepth = loopDepth;
     }
 
     /**
@@ -210,5 +210,9 @@ public class IRBlock implements Iterable<IRInstruction> {
         for (IRInstruction instruction : list) {
             emit(instruction);
         }
+    }
+
+    public int getLoopDepth() {
+        return loopDepth;
     }
 }

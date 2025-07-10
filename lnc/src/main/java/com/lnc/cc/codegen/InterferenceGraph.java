@@ -3,7 +3,6 @@ package com.lnc.cc.codegen;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
-import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
 
@@ -13,8 +12,10 @@ public class InterferenceGraph {
 
     // ✨ NEW: copy‑preference (move) edges. Stored as Node pairs.
     private final Set<AbstractMap.SimpleEntry<Node,Node>> moveEdges  = new LinkedHashSet<>();
-
-    private Map<VirtualRegister, LiveRange> liveRanges;
+    private Map<VirtualRegister, Integer> loopWeights = new LinkedHashMap<>();
+    private Map<VirtualRegister, Integer> uses = new LinkedHashMap<>();
+    private Map<VirtualRegister, Integer> defs = new LinkedHashMap<>();
+    private Map<VirtualRegister, LiveRange> liveRanges = new LinkedHashMap<>();
 
     public static class Node {
         public final VirtualRegister vr;
@@ -39,6 +40,10 @@ public class InterferenceGraph {
             return isPhysical()
                     ? new LinkedHashSet<>(Set.of(phys))
                     : vr.getRegisterClass().getRegisters();
+        }
+
+        public int degree() {
+            return adj.size();
         }
     }
 
@@ -110,12 +115,27 @@ public class InterferenceGraph {
         return physNodes.values();
     }
 
-    public static Map<VirtualRegister, LiveRange> computeLiveRanges(
+    public Map<VirtualRegister, LiveRange> getLiveRanges() {
+        return liveRanges;
+    }
+
+    public record VrInfo(
+            Map<VirtualRegister, LiveRange> liveRanges,
+            Map<VirtualRegister, Integer> loopWeights,
+            Map<VirtualRegister, Integer> uses,
+            Map<VirtualRegister, Integer> defs
+    ) {}
+
+    public static VrInfo computeVrInfo(
             IRUnit unit,
             LivenessInfo li
     ) {
         // 1) create empty ranges
         Map<VirtualRegister,LiveRange> ranges = new LinkedHashMap<>();
+        var uses = new LinkedHashMap<VirtualRegister, Integer>();
+        var defs = new LinkedHashMap<VirtualRegister, Integer>();
+        var loopWeights = new LinkedHashMap<VirtualRegister, Integer>();
+
         for (VirtualRegister vr : unit.getVrManager().getAllRegisters())
             ranges.put(vr, new LiveRange(Integer.MAX_VALUE, Integer.MIN_VALUE));
 
@@ -130,6 +150,7 @@ public class InterferenceGraph {
 
         // 3) backward scan per block, seeded with liveOut
         for (IRBlock B : rpo) {
+            var blockLoopWeight = B.getLoopDepth();
             Set<VirtualRegister> live = new HashSet<>(li.liveOut().get(B));
             for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
                 int i = inst.getIndex();
@@ -141,6 +162,9 @@ public class InterferenceGraph {
                         LiveRange lr = ranges.get(d);
                         lr.start = Math.min(lr.start, i);
                         lr.end   = Math.max(lr.end,   i);
+                        defs.put(d, defs.getOrDefault(d, 0) + 1);
+
+                        loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), blockLoopWeight * 10));
                     }
                 }
 
@@ -151,6 +175,9 @@ public class InterferenceGraph {
                         LiveRange lr = ranges.get(u);
                         lr.start = Math.min(lr.start, i);
                         lr.end   = Math.max(lr.end,   i);
+
+                        uses.put(u, uses.getOrDefault(u, 0) + 1);
+                        loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), blockLoopWeight * 10));
                     }
                 }
 
@@ -162,7 +189,12 @@ public class InterferenceGraph {
             }
         }
 
-        return ranges;
+        return new VrInfo(
+                ranges,
+                loopWeights,
+                uses,
+                defs
+        );
     }
 
     public static InterferenceGraph buildInterferenceGraph(IRUnit unit) {
@@ -177,9 +209,17 @@ public class InterferenceGraph {
         LivenessInfo livenessInfo = LivenessInfo.computeBlockLiveness(unit);
 
         // 1) compute live ranges
-        Map<VirtualRegister, LiveRange> liveRanges = computeLiveRanges(unit, livenessInfo);
+        VrInfo vrInfo = computeVrInfo(unit, livenessInfo);
+
+        Map<VirtualRegister, LiveRange> liveRanges = vrInfo.liveRanges();
+        Map<VirtualRegister, Integer> loopWeights = vrInfo.loopWeights();
+        Map<VirtualRegister, Integer> uses = vrInfo.uses();
+        Map<VirtualRegister, Integer> defs = vrInfo.defs();
 
         graph.setLiveRanges(liveRanges);
+        graph.setLoopWeights(loopWeights);
+        graph.setUses(uses);
+        graph.setDefs(defs);
 
         var liveOut = livenessInfo.liveOut();
         var liveIn = livenessInfo.liveIn();
@@ -196,9 +236,10 @@ public class InterferenceGraph {
             }
         }
 
-        // Call clobber registers
         for (IRBlock B : unit.computeReversePostOrderAndCFG()) {
             for (IRInstruction inst = B.getFirst(); inst != null; inst = inst.getNext()) {
+
+                // Call clobber registers
                 if (inst instanceof Call call) {
                     // which phys regs get clobbered?
                     var ret = call.getReturnTarget();
@@ -267,4 +308,27 @@ public class InterferenceGraph {
         return sb.toString();
     }
 
+    public Map<VirtualRegister, Integer> getDefs() {
+        return defs;
+    }
+
+    public void setDefs(Map<VirtualRegister, Integer> defs) {
+        this.defs = defs;
+    }
+
+    public Map<VirtualRegister, Integer> getUses() {
+        return uses;
+    }
+
+    public void setUses(Map<VirtualRegister, Integer> uses) {
+        this.uses = uses;
+    }
+
+    public Map<VirtualRegister, Integer> getLoopWeights() {
+        return loopWeights;
+    }
+
+    public void setLoopWeights(Map<VirtualRegister, Integer> loopWeights) {
+        this.loopWeights = loopWeights;
+    }
 }

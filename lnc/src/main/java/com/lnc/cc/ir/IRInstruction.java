@@ -65,14 +65,6 @@ public abstract class IRInstruction {
         return uniqueId;
     }
 
-    public int getLoopNestedLevel() {
-        return loopNestedLevel;
-    }
-
-    public void setLoopNestedLevel(int loopNestedLevel) {
-        this.loopNestedLevel = loopNestedLevel;
-    }
-
     public void onRemove(){
     }
 

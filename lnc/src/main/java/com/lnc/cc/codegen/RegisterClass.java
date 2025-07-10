@@ -1,33 +1,36 @@
 package com.lnc.cc.codegen;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public enum RegisterClass {
+public class RegisterClass {
 
-    ANY(Set.of(Register.RC, Register.RB, Register.RA, Register.RD)),
+    public static RegisterClass ANY = new RegisterClass(Set.of(Register.RC, Register.RB, Register.RA, Register.RD));
 
-    BYTEPARAM_1(Set.of(Register.RA)),
+    public static RegisterClass BYTEPARAM_1 = new RegisterClass(Set.of(Register.RA));
 
-    BYTEPARAM_2(Set.of(Register.RB)),
+    public static RegisterClass BYTEPARAM_2 = new RegisterClass(Set.of(Register.RB));
 
-    BYTEPARAM_3(Set.of(Register.RC)),
+    public static RegisterClass BYTEPARAM_3 = new RegisterClass(Set.of(Register.RC));
 
-    BYTEPARAM_4(Set.of(Register.RD)),
+    public static RegisterClass BYTEPARAM_4 = new RegisterClass(Set.of(Register.RD));
 
-    WORDPARAM_1(Set.of(Register.RCRD)),
+    public static RegisterClass WORDPARAM_1 = new RegisterClass(Set.of(Register.RCRD));
 
-    RET_BYTE(Set.of(Register.RB)),
+    public static RegisterClass RET_BYTE = new RegisterClass(Set.of(Register.RB));
 
-    RET_WORD(Set.of(Register.RCRD)),
+    public static RegisterClass RET_WORD = new RegisterClass(Set.of(Register.RCRD));
 
-    SHIFT(Set.of(Register.RA)),
-    INDEX(Set.of(Register.RD)),
-    RETURN(Set.of(Register.RB));
+    public static RegisterClass SHIFT = new RegisterClass(Set.of(Register.RA));
+
+    public static RegisterClass INDEX = new RegisterClass(Set.of(Register.RD));
+
+    public static RegisterClass RETURN = new RegisterClass(Set.of(Register.RB));
 
     private final Set<Register> registers;
 
-    RegisterClass(Set<Register> registers) {
+    private RegisterClass(Collection<Register> registers) {
         this.registers = new LinkedHashSet<>(registers);
     }
 
@@ -39,20 +42,33 @@ public enum RegisterClass {
         return registers.size();
     }
 
-    public Register next(Set<Register> neighborAssignments) {
-        for (Register register : registers) {
-            if(!neighborAssignments.contains(register)) {
-                return register;
-            }
-        }
-        return null;
-    }
-
     public boolean isSingleton() {
         return registers.size() == 1;
     }
 
     public Register onlyRegister() {
         return registers.size() == 1 ? registers.iterator().next() : null;
+    }
+
+    public static RegisterClass of(Collection<Register> registers) {
+        return new RegisterClass(registers);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + String.join(", ", registers.stream().map(Register::toString).toList()) + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RegisterClass that = (RegisterClass) o;
+        return registers.equals(that.registers);
+    }
+
+    @Override
+    public int hashCode() {
+        return registers.hashCode();
     }
 }

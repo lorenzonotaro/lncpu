@@ -1,13 +1,10 @@
 package com.lnc.cc.ir;
 
-import com.lnc.assembler.common.IEncodeable;
-import com.lnc.assembler.parser.EncodedData;
 import com.lnc.cc.ast.FunctionDeclaration;
 import com.lnc.cc.codegen.Register;
 import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
 import com.lnc.cc.common.BaseSymbol;
-import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
@@ -26,7 +23,7 @@ public class IRUnit implements Iterable<IRBlock>{
 
     private final VirtualRegisterManager vrManager;
 
-    private final Stack<LoopInfo> loopStack;
+    private final ArrayDeque<LoopInfo> loopStack;
     private int spillSpaceSize;
     private Set<Register> usedRegisters;
 
@@ -35,13 +32,13 @@ public class IRUnit implements Iterable<IRBlock>{
     private ParameterOperandMapping parameterOperandMapping;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
-        this.startBlock = currentBlock = new IRBlock(this, blockCounter++);
         this.functionDeclaration = functionDeclaration;
         this.symbolTable = FlatSymbolTable.flatten(functionDeclaration.getScope());
         this.functionDeclaration.unit = this;
-        this.loopStack = new Stack<>();
+        this.loopStack = new ArrayDeque<>();
         this.functionType = FunctionType.of(functionDeclaration);
         vrManager = new VirtualRegisterManager();
+        this.startBlock = currentBlock = new IRBlock(this, blockCounter++, getCurrentLoopDepth());
     }
 
     public FunctionType getFunctionType() {
@@ -65,13 +62,11 @@ public class IRUnit implements Iterable<IRBlock>{
             currentBlock = startBlock;
         }
 
-        instruction.setLoopNestedLevel(loopStack.size());
-
         currentBlock.emit(instruction);
     }
 
     public IRBlock newBlock() {
-        return new IRBlock(this, blockCounter++);
+        return new IRBlock(this, blockCounter++, getCurrentLoopDepth());
     }
 
 
@@ -107,6 +102,9 @@ public class IRUnit implements Iterable<IRBlock>{
         return loopStack.isEmpty() ? null : loopStack.peek();
     }
 
+    public int getCurrentLoopDepth() {
+        return loopStack.size();
+    }
 
     public IRBlock getCurrentBlock() {
         return currentBlock;
@@ -219,7 +217,7 @@ public class IRUnit implements Iterable<IRBlock>{
             throw new IllegalStateException("Entry block already set");
         }
 
-        IRBlock newEntry = new IRBlock(this, 0);
+        IRBlock newEntry = new IRBlock(this, 0, getCurrentLoopDepth());
 
         newEntry.emitAll(list);
 

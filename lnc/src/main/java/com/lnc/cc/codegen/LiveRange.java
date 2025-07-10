@@ -48,4 +48,7 @@ public final class LiveRange {
                 "end=" + end + ']';
     }
 
+    public int getSpan() {
+        return end - start + 1;
+    }
 }

@@ -3,12 +3,11 @@ extern void printhex(int i);
 
 int mod(int a, int m){
     // modulo without using %
-    while(a > m){
+    while(a >= m){
         a = a - m;
     }
     return a;
 }
-
 
 void fizzbuzz(int i){
     printhex(i);
@@ -31,7 +30,7 @@ void fizzbuzz(int i){
 
 void main(){
 
-    for(int i = 1; i <= 16; i++){
+    for(int i = 1; i <= 16; i = i + 1){
         fizzbuzz(i);
         putc('\n');
     }

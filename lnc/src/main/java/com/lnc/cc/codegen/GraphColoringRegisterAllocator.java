@@ -24,20 +24,37 @@ public class GraphColoringRegisterAllocator {
     private final Set<InterferenceGraph.Node> coloredNodes    = new LinkedHashSet<>();
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
+    private final Map<VirtualRegister, Integer> spillCost = new LinkedHashMap<>();
+
     // aliasing and degree tracking
     private final Map<InterferenceGraph.Node,InterferenceGraph.Node> alias = new HashMap<>();
-    private final Map<InterferenceGraph.Node,Integer>                degree = new HashMap<>();
     private final Set<AbstractMap.SimpleEntry<InterferenceGraph.Node,InterferenceGraph.Node>> worklistMoves = new LinkedHashSet<>();
 
     public GraphColoringRegisterAllocator(InterferenceGraph graph) {
         this.graph = graph;
 
+        computeSpillCosts();
+
         // count physical nodes (excluding compounds if you treat them specially)
         this.K = graph.getPhysicalNodes().size();
+
+        coloredNodes.addAll(graph.getPhysicalNodes());
 
         worklistMoves.addAll(graph.getMoveEdges());
 
         this.doCoalesce = !LNC.settings.get("--reg-alloc-no-coalesce", Boolean.class);
+    }
+
+    private void computeSpillCosts() {
+        for(var node : graph.getVirtualNodes()){
+            int loopWeight = graph.getLoopWeights().getOrDefault(node.vr, 1);
+            int base = graph.getUses().getOrDefault(node.vr, 0) + 2 * graph.getDefs().getOrDefault(node.vr, 0);
+            int span = graph.getLiveRanges().get(node.vr).getSpan() / 10;
+            int size = node.vr.getTypeSpecifier().allocSize();
+            int classWt = K / node.allowedColors().size();
+            int cost = loopWeight * (base + span) * size * classWt;
+            spillCost.put(node.vr, cost);
+        }
     }
 
     public void allocate() {
@@ -47,6 +64,10 @@ public class GraphColoringRegisterAllocator {
         simplify();
         select();
         assignColors();
+    }
+
+    int spillCost(InterferenceGraph.Node n) {          // use your existing metric
+        return n.vr.spillCost();
     }
 
     // ----------------------------------------------------------------------
@@ -75,13 +96,41 @@ public class GraphColoringRegisterAllocator {
     }
 
     private boolean ok(InterferenceGraph.Node x, InterferenceGraph.Node y) {
-        for (InterferenceGraph.Node t : x.adj) {
-            t = getAlias(t);
-            if (t == y) continue;
-            if (!t.adj.contains(y) && degree.getOrDefault(t, t.adj.size()) >= K)
-                return false;
+        /* 1.  Reject if classes are incompatible */
+        Set<Register> palette = colorIntersection(x, y);
+        if (palette.isEmpty()) return false;      // no common colour
+
+        int P = palette.size();                   // |C|
+
+    /* 2.  George if either node is pre-coloured,
+            Briggs otherwise, both using P as the threshold */
+        if (x.isPhysical() || y.isPhysical()) {
+        /* George: every high-degree neighbour of the virtual node
+           must already interfere with the other node               */
+            InterferenceGraph.Node v = x.isPhysical() ? y : x;      // the virtual endpoint
+            InterferenceGraph.Node p = x.isPhysical() ? x : y;      // the physical endpoint
+            for (InterferenceGraph.Node t : v.adj) {
+                t = getAlias(t);
+                if (t == p) continue;
+                if (t.degree() >= P && !t.adj.contains(p))
+                    return false;                 // merge would be unsafe
+            }
+            return true;
+        } else {
+            /* Briggs: the merged node must have < P high-degree neighbours */
+            Set<InterferenceGraph.Node> union = new HashSet<>(x.adj);
+            union.addAll(y.adj);
+            long high = union.stream()
+                    .filter(t -> t.degree() >= P)
+                    .count();
+            return high < P;
         }
-        return true;
+    }
+
+    private Set<Register> colorIntersection(InterferenceGraph.Node x, InterferenceGraph.Node y) {
+        var set = new LinkedHashSet<>(x.allowedColors());
+        set.retainAll(y.allowedColors());
+        return set;
     }
 
     private void combine(InterferenceGraph.Node x, InterferenceGraph.Node y) {
@@ -94,29 +143,42 @@ public class GraphColoringRegisterAllocator {
                 x.adj.add(n); n.adj.add(x);
             }
         }
-        // update degree
-        degree.put(x, x.adj.size());
     }
 
     private void simplify() {
-        // build mutable work graph only over non-precolored nodes
-        var work = new ArrayList<>(graph.getVirtualNodes().stream()
-                .sorted(
-                        Comparator
-                                .comparingInt((InterferenceGraph.Node n) -> n.allowedColors().size())
-                                .thenComparingInt(n -> n.adj.size())
-                )
-                .toList());
-        Collections.reverse(work);
-        for (var n : work) {
-            // precolor nodes that have allowedColors.size() == 1
-            if (n.allowedColors().size() == 1) {
-                n.assigned = n.allowedColors().iterator().next();
-                coloredNodes.add(n);
-            }else{
-                // add to selectStack
-                selectStack.push(n);
+        var work = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
+        for (var n : graph.getVirtualNodes()) {
+            n = getAlias(n); // ensure we have the alias
+            if (work.containsKey(n))
+                continue;
+            Set<InterferenceGraph.Node> nbrs =
+                    n.adj.stream()
+                            .map(this::getAlias)
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+            work.put(n, new LinkedHashSet<>(nbrs));
+        }
+
+        // removal loop unchanged
+        while (!work.isEmpty()) {
+            var maybe = work.keySet().stream()
+                    .filter(n -> work.get(n).size() < n.allowedColors().size())
+                    .max(Comparator.comparingInt(n -> n.allowedColors().size()));
+            InterferenceGraph.Node n;
+
+            n = maybe.orElseGet(() -> work.keySet().stream()
+                    .min(Comparator
+                            .comparingInt((InterferenceGraph.Node m) -> spillCost.get(m.vr)) // ★
+                            .thenComparingInt(m -> m.vr.getRegisterNumber()))
+                    .get());
+
+            for (var neighbor : work.get(n)) {
+                Set<InterferenceGraph.Node> nbrs = work.get(neighbor);
+                if (nbrs != null) {               // neighbour still in the graph
+                    nbrs.remove(n);               // decrement its degree
+                }
             }
+            work.remove(n);                       // finally delete n itself
+            selectStack.push(n);
         }
     }
     private void select() {
@@ -143,6 +205,7 @@ public class GraphColoringRegisterAllocator {
             } else {
                 // real spill
                 spillCandidates.add(n);
+                return;
             }
         }
     }
@@ -154,6 +217,9 @@ public class GraphColoringRegisterAllocator {
 
         for(var n : coloredNodes) {
             // Skip any that were also pre-colored
+
+            if (n.isPhysical()) continue;
+
             n.vr.setAssignedPhysicalRegister(n.assigned);
             this.usedRegisters.add(n.assigned);
         }
@@ -223,7 +289,7 @@ public class GraphColoringRegisterAllocator {
                             if (def instanceof VirtualRegister vr && spills.contains(ig.getNode(vr))) {
                                 Move move = new Move(vr, new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
                                 spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
-                                inst.insertBefore(move);
+                                inst.insertAfter(move);
                             }
                         }
                         // before uses
@@ -244,7 +310,7 @@ public class GraphColoringRegisterAllocator {
                 // 3) Assign concrete stack slots and patch offsets
                 var livenessInfo = LivenessInfo.computeBlockLiveness(unit);
 
-                Map<VirtualRegister, LiveRange> allRanges = InterferenceGraph.computeLiveRanges(unit, livenessInfo);
+                Map<VirtualRegister, LiveRange> allRanges = ig.getLiveRanges();
                 Map<VirtualRegister, LiveRange> spillRanges = allRanges.entrySet().stream()
                         .filter(e -> spills.contains(ig.getNode(e.getKey())))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
