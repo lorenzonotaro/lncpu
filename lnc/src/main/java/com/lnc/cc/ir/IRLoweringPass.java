@@ -1,17 +1,13 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.codegen.RegisterClass;
-import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
-import com.lnc.cc.optimization.IRPass;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisitor<IROperand> {
     @Override
@@ -222,11 +218,9 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     @Override
     public IROperand visit(Location location) {
 
-        if(location.getSymbol().isParameter()){
-            return getUnit().getParameterOperandMapping().get(location.getSymbol().getName());
-        }
+        var resolvedLocal = getUnit().getLocalMappingInfo().mappings().get(location.getSymbol().getName());
 
-        return location;
+        return resolvedLocal != null ? resolvedLocal : location;
     }
 
     @Override
@@ -255,48 +249,24 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public void visit(IRUnit unit) {
-        Map<String, IROperand> entryParameterMappings = new HashMap<>();
-        Map<String, IROperand> copyParameterMappings = new HashMap<>();
-        var parameters = CallingConvention.mapCallArguments(unit.getFunctionDeclaration().parameters);
+        VirtualRegisterManager vrm = unit.getVrManager();
 
-        for(var parameter : parameters){
-            if(parameter.onStack()) {
-                // If the parameter is on the stack, we create a StackFrameOperand
-                int offset = parameter.stackOffset();
-                IROperand operand = new StackFrameOperand(parameter.type(), StackFrameOperand.OperandType.PARAMETER, offset);
-                entryParameterMappings.put(parameter.name(), operand);
-            } else {
-                // Otherwise, we create a VirtualRegister assigned to the class and a move to a new virtual register
-                // of class any, that will be coalesced later if not necessary.
-                VirtualRegisterManager vrm = unit.getVrManager();
+        unit.compileLocalMappings();
 
-                VirtualRegister vr = vrm.getRegister(parameter.type());
-                vr.setRegisterClass(parameter.regClass());
-
-                VirtualRegister movedVr = vrm.getRegister(parameter.type());
-                movedVr.setRegisterClass(RegisterClass.ANY); // Set to ANY for coalescing later
-
-                entryParameterMappings.put(parameter.name(), vr);
-
-                // we store the moved Vr in the parameter mapping
-                copyParameterMappings.put(parameter.name(), movedVr);
-            }
-        }
+        var parameters = unit.getLocalMappingInfo().originalRegParamMappings().entrySet().stream().toList();
 
         List<IRInstruction> list = new ArrayList<>();
         for(var parameter : parameters){
-            list.add(new LoadParam(entryParameterMappings.get(parameter.name())));
+            list.add(new LoadParam(parameter.getValue()));
         }
 
         for(var parameter : parameters){
-            list.add(new Move(entryParameterMappings.get(parameter.name()), copyParameterMappings.get(parameter.name())));
+            list.add(new Move(parameter.getValue(), unit.getLocalMappingInfo().mappings().get(parameter.getKey())));
         }
 
-        unit.prepentEntryBlock(list);
+        unit.prependEntryBlock(list);
 
         unit.getEntryBlock().prependSequence(list);
-
-        unit.setParameterOperandMapping(new ParameterOperandMapping(entryParameterMappings, copyParameterMappings));
 
         super.visit(unit);
     }

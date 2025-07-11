@@ -309,27 +309,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Argument visit(Location location) {
-
-        if(location.getSymbol().isParameter()){
-            return getUnit().getParameterOperandMapping().get(location.getSymbol().getName()).accept(this);
-        }else if(location.getSymbol().isStatic()){
-            String asmName = location.getSymbol().getAsmName();
-            return CodeGenUtils.deref(CodeGenUtils.labelRef(asmName));
-        }else{
-            Integer localOffset = getUnit().getFrameInfo().localOffsets().get(location.getSymbol().getName());
-            if(localOffset != null){
-                return new Dereference(
-                        new RegisterOffset(
-                                new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
-                                Token.__internal(TokenType.PLUS, "+"),
-                                new Byte(Token.__internal(TokenType.INTEGER, localOffset)
-                                )
-                        ));
-            }else{
-                // global symbol
-                return CodeGenUtils.labelRef(location.getSymbol().getName());
-            }
-        }
+        // by this time, if this is still a location, it is either a static local or a global variable
+        return CodeGenUtils.labelRef(location.getSymbol().getName());
     }
 
 

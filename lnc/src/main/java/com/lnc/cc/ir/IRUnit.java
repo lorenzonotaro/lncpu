@@ -2,9 +2,14 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.FunctionDeclaration;
 import com.lnc.cc.codegen.Register;
+import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
 import com.lnc.cc.common.BaseSymbol;
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.Location;
+import com.lnc.cc.ir.operands.StackFrameOperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
 import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
@@ -28,8 +33,7 @@ public class IRUnit implements Iterable<IRBlock>{
     private Set<Register> usedRegisters;
 
     private FrameInfo frameInfo;
-
-    private ParameterOperandMapping parameterOperandMapping;
+    private LocalMappingInfo localMappingInfo;
 
     public IRUnit(FunctionDeclaration functionDeclaration) {
         this.functionDeclaration = functionDeclaration;
@@ -198,15 +202,12 @@ public class IRUnit implements Iterable<IRBlock>{
         return spillSpaceSize /* + localsSize */;
     }
 
-    public void setParameterOperandMapping(ParameterOperandMapping parameterMapping) {
-        this.parameterOperandMapping = parameterMapping;
+
+    public LocalMappingInfo getLocalMappingInfo() {
+        return localMappingInfo ;
     }
 
-    public ParameterOperandMapping getParameterOperandMapping() {
-        return parameterOperandMapping;
-    }
-
-    public void prepentEntryBlock(List<IRInstruction> list) {
+    public void prependEntryBlock(List<IRInstruction> list) {
         if(getEntryBlock() == null) {
             throw new IllegalStateException("Entry block is not set, cannot prepend instructions.");
         }
@@ -226,40 +227,82 @@ public class IRUnit implements Iterable<IRBlock>{
         this.setEntryBlock(newEntry);
     }
 
+    public void compileLocalMappings() {
+        var originalRegParamMappings = new HashMap<String, IROperand>();
+        var mappings = new HashMap<String, IROperand>();
+        int forcedStackFrameLocalsSize = 0;
+
+        // parameters
+        var parameters = CallingConvention.mapCallArguments(getFunctionDeclaration().parameters);
+        for (var parameter : parameters){
+            IROperand operand;
+            if(parameter.onStack()){
+                int offset = parameter.stackOffset();
+                operand = new StackFrameOperand(parameter.type(), StackFrameOperand.OperandType.PARAMETER, offset);
+            }else{
+                VirtualRegister originalReg = vrManager.getRegister(parameter.type());
+                originalReg.setRegisterClass(parameter.regClass());
+
+                VirtualRegister copyReg = vrManager.getRegister(parameter.type());
+                copyReg.setRegisterClass(RegisterClass.ANY);
+
+                originalRegParamMappings.put(parameter.name(), originalReg);
+                operand = copyReg;
+            }
+            mappings.put(parameter.name(), operand);
+        }
+
+        // locals
+        for(var entry : symbolTable.getSymbols().entrySet()){
+            var name = entry.getKey();
+            var symbol = entry.getValue();
+
+            if(symbol.isForward() || symbol.isParameter())
+                continue;
+
+            if(symbol.isStatic()){
+                mappings.put(symbol.getName(), new Location(symbol));
+            }else if(symbol.canResideInRegister()){
+                var vr = vrManager.getRegister(symbol.getType());
+                mappings.put(symbol.getName(), vr);
+            }else{
+                // If the symbol is not a parameter and not static, we create a StackFrameOperand
+                int offset = forcedStackFrameLocalsSize;
+                IROperand operand = new StackFrameOperand(symbol.getType(), StackFrameOperand.OperandType.LOCAL, offset);
+                mappings.put(symbol.getName(), operand);
+                forcedStackFrameLocalsSize += symbol.getType().allocSize();
+            }
+        }
+
+        this.localMappingInfo = new LocalMappingInfo(mappings, originalRegParamMappings, forcedStackFrameLocalsSize);
+    }
+
+    public void compileFrameInfo() {
+        int forcedLocalsSize = localMappingInfo.forcedStackFrameLocalsSize;
+        int spillSpaceSize = getSpillSpaceSize();
+
+        Map<String, Integer> localOffsets = new HashMap<>();
+        for (var entry : localMappingInfo.mappings().entrySet()) {
+            if (entry.getValue() instanceof StackFrameOperand stackFrameOperand) {
+                localOffsets.put(entry.getKey(), stackFrameOperand.getOffset());
+            }
+        }
+
+        this.frameInfo = new FrameInfo(forcedLocalsSize, spillSpaceSize, localOffsets);
+    }
+
     public record FrameInfo(
-            int localsSize,
+            int forcedLocalsSize,
             int spillSpaceSize,
             Map<String, Integer> localOffsets) {
 
         public int allocSize() {
-            return localsSize + spillSpaceSize;
+            return forcedLocalsSize + spillSpaceSize;
         }
     }
 
     public FrameInfo getFrameInfo() {
-
         return frameInfo;
-    }
-
-    public void compileFrameInfo() {
-        Map<String, Integer> localOffsets = new HashMap<>();
-
-        int currentOffset = spillSpaceSize;
-        for (BaseSymbol symbol : symbolTable.getSymbols().values()) {
-            if (symbol.isForward() || symbol.isParameter()) {
-                continue; // Skip forward declarations and parameters
-            }
-
-            localOffsets.put(symbol.getName(), currentOffset);
-
-            currentOffset += symbol.getType().allocSize();
-        }
-
-        this.frameInfo = new FrameInfo(
-                currentOffset, // localsSize
-                spillSpaceSize, // spillSpaceSize
-                localOffsets // localOffsets
-        );
     }
 
     @Override
@@ -267,5 +310,8 @@ public class IRUnit implements Iterable<IRBlock>{
         if (this == o) return true;
         if (!(o instanceof IRUnit irUnit)) return false;
         return Objects.equals(functionDeclaration, irUnit.functionDeclaration);
+    }
+
+    public record LocalMappingInfo(HashMap<String, IROperand> mappings, HashMap<String, IROperand> originalRegParamMappings, int forcedStackFrameLocalsSize) {
     }
 }

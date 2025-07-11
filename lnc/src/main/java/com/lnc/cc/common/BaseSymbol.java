@@ -110,4 +110,9 @@ public class BaseSymbol{
     public boolean isStatic() {
         return isStatic;
     }
+
+    public boolean canResideInRegister() {
+        // TODO: guard against address-of operator
+        return !isForward && !isParameter && !isStatic && type.allocSize() < 2 && type.allocSize() > 0;
+    }
 }
