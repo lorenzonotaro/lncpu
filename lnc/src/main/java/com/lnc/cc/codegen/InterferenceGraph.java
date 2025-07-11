@@ -37,10 +37,18 @@ public class InterferenceGraph {
         }
 
         public boolean isPhysical() { return phys != null; }
+
+        public boolean isPseudoPhysical() {
+            return isPhysical() || allowedColors().size() == 1;
+        }
         public Set<Register> allowedColors() {
             return isPhysical()
                     ? new LinkedHashSet<>(Set.of(phys))
                     : vr.getRegisterClass().getRegisters();
+        }
+
+        public String toString() {
+            return isPhysical() ? phys.toString() : vr.toString();
         }
 
         public int degree() {

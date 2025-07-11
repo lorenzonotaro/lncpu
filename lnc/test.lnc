@@ -9,31 +9,3 @@ int mod(int a, int m){
     return a;
 }
 
-void fizzbuzz(int i){
-    printhex(i);
-    putc(':');
-    putc(' ');
-    if(mod(i, 3) == 0){
-        putc('F');
-        putc('i');
-        putc('z');
-        putc('z');
-    }
-    if(mod(i, 5) == 0){
-        putc('B');
-        putc('u');
-        putc('z');
-        putc('z');
-    }
-    return;
-}
-
-void main(){
-
-    for(int i = 1; i <= 16; i = i + 1){
-        fizzbuzz(i);
-        putc('\n');
-    }
-
-    return;
-}

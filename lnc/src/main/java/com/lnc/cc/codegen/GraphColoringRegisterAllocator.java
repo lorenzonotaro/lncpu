@@ -98,33 +98,38 @@ public class GraphColoringRegisterAllocator {
     private boolean ok(InterferenceGraph.Node x, InterferenceGraph.Node y) {
         /* 1.  Reject if classes are incompatible */
         Set<Register> palette = colorIntersection(x, y);
-        if (palette.isEmpty()) return false;      // no common colour
+        if (palette.isEmpty()) return false;
 
-        int P = palette.size();                   // |C|
+        int P = palette.size();
 
-    /* 2.  George if either node is pre-coloured,
-            Briggs otherwise, both using P as the threshold */
-        if (x.isPhysical() || y.isPhysical()) {
-        /* George: every high-degree neighbour of the virtual node
-           must already interfere with the other node               */
-            InterferenceGraph.Node v = x.isPhysical() ? y : x;      // the virtual endpoint
-            InterferenceGraph.Node p = x.isPhysical() ? x : y;      // the physical endpoint
-            for (InterferenceGraph.Node t : v.adj) {
-                t = getAlias(t);
-                if (t == p) continue;
-                if (t.degree() >= P && !t.adj.contains(p))
-                    return false;                 // merge would be unsafe
-            }
-            return true;
-        } else {
-            /* Briggs: the merged node must have < P high-degree neighbours */
-            Set<InterferenceGraph.Node> union = new HashSet<>(x.adj);
-            union.addAll(y.adj);
-            long high = union.stream()
-                    .filter(t -> t.degree() >= P)
-                    .count();
-            return high < P;
+        if (x.isPseudoPhysical() && !y.isPseudoPhysical())
+            return george(y, x, P);        // y virtual, x pseudo-phys
+        if (y.isPseudoPhysical() && !x.isPseudoPhysical())
+            return george(x, y, P);        // x virtual, y pseudo-phys
+
+        /* otherwise fall back to Briggs with palette-aware threshold */
+        return briggs(x, y, P);
+    }
+
+    private boolean george(InterferenceGraph.Node a, InterferenceGraph.Node b, int P) {
+        InterferenceGraph.Node v = a.isPhysical() ? b : a;      // the virtual endpoint
+        InterferenceGraph.Node p = a.isPhysical() ? a : b;      // the physical endpoint
+        for (InterferenceGraph.Node t : v.adj) {
+            t = getAlias(t);
+            if (t == p) continue;
+            if (t.degree() >= P && !t.adj.contains(p))
+                return false;
         }
+        return true;
+    }
+
+    private static boolean briggs(InterferenceGraph.Node x, InterferenceGraph.Node y, int P) {
+        Set<InterferenceGraph.Node> union = new HashSet<>(x.adj);
+        union.addAll(y.adj);
+        long high = union.stream()
+                .filter(t -> t.degree() >= P)
+                .count();
+        return high < P;
     }
 
     private Set<Register> colorIntersection(InterferenceGraph.Node x, InterferenceGraph.Node y) {
