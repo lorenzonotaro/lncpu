@@ -1,7 +1,6 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,9 +64,6 @@ public abstract class IRInstruction {
         return uniqueId;
     }
 
-    public void onRemove(){
-    }
-
     public boolean hasNext() {
         return next != null;
     }
@@ -90,7 +86,7 @@ public abstract class IRInstruction {
         }
     }
 
-    void delete() {
+    public void remove() {
         if (prev != null) prev.next = next;
         if (next != null) next.prev = prev;
         if (parentBlock != null) {

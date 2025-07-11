@@ -23,6 +23,7 @@ public class InterferenceGraph {
         public final Set<Node>       adj = new LinkedHashSet<>();
 
         public Register assigned   = null;
+        public Set<InterferenceGraph.Node> movePartners = new LinkedHashSet<>();
 
         private Node(VirtualRegister vr) {
             this.vr   = vr;
@@ -87,6 +88,8 @@ public class InterferenceGraph {
         if (a == b) return;
         Node na = getNode(a), nb = getNode(b);
         moveEdges.add(new AbstractMap.SimpleEntry<>(na, nb));
+        na.movePartners.add(nb);
+        nb.movePartners.add(na);
     }
     public Set<AbstractMap.SimpleEntry<Node,Node>> getMoveEdges() { return moveEdges; }
 
@@ -253,7 +256,7 @@ public class InterferenceGraph {
                         }
                     }
                 }else if(inst instanceof Bin bin){
-                    VirtualRegister dest = (VirtualRegister) bin.getTarget();
+                    VirtualRegister dest = (VirtualRegister) bin.getDest();
                     VirtualRegister rhs = bin.getRight().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getRight() : null;
                     VirtualRegister lhs = bin.getLeft().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getLeft() : null;
                     if (lhs != null)

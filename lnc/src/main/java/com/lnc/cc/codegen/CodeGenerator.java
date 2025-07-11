@@ -41,7 +41,9 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
             currentOutput = new CompilerOutput(unit, new SectionInfo("LNC_" + unit.getFunctionDeclaration().name.lexeme, -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
 
-            GraphColoringRegisterAllocator.run(unit);
+            GraphColoringRegisterAllocator.AllocationInfo allocationInfo = GraphColoringRegisterAllocator.run(unit);
+
+            PostRAOptimizer.run(unit, allocationInfo);
 
             unit.compileFrameInfo();
 
@@ -187,7 +189,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Void visit(Bin bin) {
 
-        var dest = bin.getTarget().accept(this);
+        var dest = bin.getDest().accept(this);
         var left = bin.getLeft().accept(this);
         var right = bin.getRight().accept(this);
 

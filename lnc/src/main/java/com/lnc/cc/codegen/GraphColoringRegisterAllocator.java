@@ -143,6 +143,7 @@ public class GraphColoringRegisterAllocator {
                 x.adj.add(n); n.adj.add(x);
             }
         }
+        x.movePartners.addAll(y.movePartners);
     }
 
     private void simplify() {
@@ -194,10 +195,23 @@ public class GraphColoringRegisterAllocator {
                 }
             }
 
+            Map<Register,Integer> freq = new HashMap<>();          // colour → count
+            for (InterferenceGraph.Node p : n.movePartners) {
+                p = getAlias(p);
+                if (coloredNodes.contains(p)) {
+                    Register c = p.assigned;
+                    if (n.allowedColors().contains(c) && !forbidden.contains(c))
+                        freq.merge(c, 1, Integer::sum);
+                }
+            }
+
             // pick an allowed color not forbidden
             Optional<Register> maybeColor = n.allowedColors().stream()
                     .filter(c -> !forbidden.contains(c))
-                    .min(Comparator.comparingInt(Register::ordinal));
+                    .min(Comparator
+                            .comparingInt((Register c) -> -freq.getOrDefault(c, 0))            // larger freq wins
+                            .thenComparingInt(this::spillHarm)                   // lower harm wins
+                            .thenComparingInt(Register::ordinal));
 
             if (maybeColor.isPresent()) {
                 n.assigned = maybeColor.get();
@@ -208,6 +222,13 @@ public class GraphColoringRegisterAllocator {
                 return;
             }
         }
+    }
+
+    int spillHarm(Register c) {
+        return coloredNodes.stream()
+                .filter(v -> v.assigned == c)
+                .mapToInt(v -> spillCost.getOrDefault(v.vr, 0))
+                .sum();
     }
 
     private void assignColors() {
@@ -246,10 +267,11 @@ public class GraphColoringRegisterAllocator {
     }
 
 
-    public static void run(IRUnit unit){
+    public static AllocationInfo run(IRUnit unit){
 
         int maxIter = LNC.settings.get("--reg-alloc-max-iter", Double.class).intValue();
 
+        Set<InterferenceGraph.Node> spills;
         List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores = new ArrayList<>();
         List<AbstractMap.SimpleEntry<VirtualRegister, Move>>  spillLoads  = new ArrayList<>();
 
@@ -257,30 +279,28 @@ public class GraphColoringRegisterAllocator {
 
         Set<Register> usedRegisters = new LinkedHashSet<>();
 
-        while (true) {
+        InterferenceGraph ig = null;
+        LivenessInfo livenessInfo = null;
+
+        do{
 
             if(maxIter-- <= 0) {
                 throw new RuntimeException("Exceeded maximum iterations for register allocation.");
             }
 
             // 1) Build graph & run allocator
-            InterferenceGraph ig = InterferenceGraph.buildInterferenceGraph(unit);
+            ig = InterferenceGraph.buildInterferenceGraph(unit);
             if(LNC.settings.get("--print-ig", Boolean.class)) {
                 System.out.println("Interference Graph:\n" + ig);
             }
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();
-            Set<InterferenceGraph.Node> spills = allocator.getSpills();
+            spills = allocator.getSpills();
 
             usedRegisters = allocator.getUsedRegisters();
 
-
-            if (spills.isEmpty()) {
-                // no more spills ⇒ every vreg (including temps) has allocator-assigned registers
-                break;
-            }else{
-
+            if(!spills.isEmpty()) {
                 // 2) Insert spill code for each spilled vreg
                 for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
                     for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
@@ -307,22 +327,25 @@ public class GraphColoringRegisterAllocator {
                     }
                 }
 
-                // 3) Assign concrete stack slots and patch offsets
-                var livenessInfo = LivenessInfo.computeBlockLiveness(unit);
-
                 Map<VirtualRegister, LiveRange> allRanges = ig.getLiveRanges();
+                InterferenceGraph finalIg = ig;
+                Set<InterferenceGraph.Node> finalSpills = spills;
                 Map<VirtualRegister, LiveRange> spillRanges = allRanges.entrySet().stream()
-                        .filter(e -> spills.contains(ig.getNode(e.getKey())))
+                        .filter(e -> finalSpills.contains(finalIg.getNode(e.getKey())))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                 slotAssigner.assignSlots(spillRanges);
                 patchSpillOffsets(spillStores, spillLoads, slotAssigner.slotOffset);
             }
 
+            livenessInfo = LivenessInfo.computeBlockLiveness(unit);
+
             // loop back and re-allocate on the new IR (temps + spill code)
-        }
+        }while(!spills.isEmpty());
 
         unit.setSpillSpaceSize(slotAssigner.getTotalSlots());
         unit.setUsedRegisters(usedRegisters);
+
+        return new AllocationInfo(ig, livenessInfo);
     }
 
     private static void patchSpillOffsets(List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores, List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillLoads, Map<VirtualRegister, Integer> slotOf) {
@@ -341,5 +364,7 @@ public class GraphColoringRegisterAllocator {
         }
     }
 
+    public record AllocationInfo(InterferenceGraph interferenceGraph, LivenessInfo livenessInfo) {
+    }
 }
 

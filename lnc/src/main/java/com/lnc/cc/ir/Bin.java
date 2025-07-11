@@ -2,21 +2,20 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class Bin extends IRInstruction {
-    private IROperand target;
+    private IROperand dest;
 
     public IROperand left;
     public IROperand right;
     private final BinaryExpression.Operator operator;
-    public Bin(IROperand target, IROperand left, IROperand right, BinaryExpression.Operator operator) {
+    public Bin(IROperand dest, IROperand left, IROperand right, BinaryExpression.Operator operator) {
         super();
-        this.target = target;
+        this.dest = dest;
         this.left = left;
         this.right = right;
         this.operator = operator;
@@ -29,7 +28,7 @@ public class Bin extends IRInstruction {
 
     @Override
     public String toString() {
-        return String.format("%s <- %s %s, %s", this.target, this.operator.toString(), this.left, this.right);
+        return String.format("%s <- %s %s, %s", this.dest, this.operator.toString(), this.left, this.right);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class Bin extends IRInstruction {
 
     @Override
     public Collection<IROperand> getWrites() {
-        return Collections.singleton(target);
+        return Collections.singleton(dest);
     }
 
     @Override
@@ -48,8 +47,8 @@ public class Bin extends IRInstruction {
             left = newOp;
         } else if (right.equals(oldOp)) {
             right = newOp;
-        } else if (target.equals(oldOp)) {
-            target = newOp;
+        } else if (dest.equals(oldOp)) {
+            dest = newOp;
         }
     }
 
@@ -58,12 +57,12 @@ public class Bin extends IRInstruction {
         return visitor.visit(this);
     }
 
-    public IROperand getTarget() {
-        return target;
+    public IROperand getDest() {
+        return dest;
     }
 
-    public void setTarget(IROperand target) {
-        this.target = target;
+    public void setDest(IROperand dest) {
+        this.dest = dest;
     }
 
     public IROperand getLeft() {
@@ -84,5 +83,11 @@ public class Bin extends IRInstruction {
 
     public BinaryExpression.Operator getOperator() {
         return operator;
+    }
+
+    public void swapOperands() {
+        IROperand temp = left;
+        left = right;
+        right = temp;
     }
 }

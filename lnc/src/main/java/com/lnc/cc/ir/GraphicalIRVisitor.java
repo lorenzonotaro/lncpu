@@ -25,12 +25,20 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
         }
 
         void enqueue(IRBlock block) {
-            if (!allowEnqueue || visited.contains(block) || worklist.contains(block)) return;
+
+            if(!allowEnqueue){
+                throw new IllegalStateException("enqueue() called on a context that does not allow enqueueing blocks.");
+            }
+
+            if (visited.contains(block) || worklist.contains(block)) return;
             worklist.push(block);
         }
 
         void enqueueLast(IRBlock block) {
-            if (!allowEnqueue || visited.contains(block) || worklist.contains(block)) return;
+            if(!allowEnqueue){
+                throw new IllegalStateException("enqueue() called on a context that does not allow enqueueing blocks.");
+            }
+            if (visited.contains(block) || worklist.contains(block)) return;
             worklist.addLast(block);
         }
 
@@ -119,7 +127,7 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
 
     protected final void deleteAndContinue() {
         IRInstruction next = currentInstruction.next;
-        currentInstruction.delete();
+        currentInstruction.remove();
         currentInstruction = next;
     }
 
