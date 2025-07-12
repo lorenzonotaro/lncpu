@@ -2,10 +2,19 @@ extern void putc(int c);
 extern void printhex(int i);
 
 int mod(int a, int m){
+    static int c = 0;
     // modulo without using %
     while(a >= m){
         a = a - m;
     }
-    return a;
+    return c;
 }
 
+
+void main(){
+    for(int i = 0; i < 100; i++){
+        int r = mod(i, 10);
+        printhex(r);
+        putc('\n');
+    }
+}

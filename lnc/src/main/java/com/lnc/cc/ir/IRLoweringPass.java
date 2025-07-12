@@ -51,7 +51,13 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             vr.setRegisterClass(registerClass);
             getCurrentInstruction().insertBefore(new Move(operand, vr));
             return vr;
-        } else if(operand.type == IROperand.Type.LOCATION) {
+        } else {
+            return move(operand, registerClass);
+        }
+    }
+
+    private IROperand move(IROperand operand, RegisterClass registerClass) {
+        if(operand.type == IROperand.Type.LOCATION) {
             // Otherwise, we need to move or load it into a virtual register
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
@@ -106,22 +112,6 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         }
 
         return null;
-    }
-
-    private IROperand move(IROperand value, RegisterClass registerClass) {
-        if(value.type == IROperand.Type.LOCATION) {
-            VirtualRegisterManager vrm = getUnit().getVrManager();
-            VirtualRegister vr = vrm.getRegister(value.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            getCurrentInstruction().insertBefore(new Load((Location) value, vr));
-            return vr;
-        } else {
-            VirtualRegisterManager vrm = getUnit().getVrManager();
-            VirtualRegister vr = vrm.getRegister(value.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            getCurrentInstruction().insertBefore(new Move(value, vr));
-            return vr;
-        }
     }
 
     @Override

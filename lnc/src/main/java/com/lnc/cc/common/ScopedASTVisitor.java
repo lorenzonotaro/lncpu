@@ -101,7 +101,7 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         if(functionDeclaration.parameters != null){
             for(VariableDeclaration parameter : functionDeclaration.parameters){
                 try{
-                    parameter.accept(this);
+                    visitStatement(parameter);
                 } catch (CompileException e){
                     e.log();
                     fail();

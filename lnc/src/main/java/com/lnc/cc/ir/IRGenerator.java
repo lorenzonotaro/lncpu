@@ -42,7 +42,9 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         branchIfTrue(whileStatement.condition, body, next, true);
 
         currentUnit.setCurrentBlock(body);
-        whileStatement.body.accept(this);
+
+        visitStatement(whileStatement.body);
+
         emit(new Goto(header));
 
         currentUnit.exitLoop();
@@ -63,7 +65,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         currentUnit.continueTo(body);
         currentUnit.enterLoop(new LoopInfo(header, exit));
 
-        doStmt.body.accept(this);
+        visitStatement(doStmt.body);
 
         currentUnit.continueTo(header);
         branchIfTrue(doStmt.condition, body, exit, true);
@@ -109,7 +111,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public Void visit(ForStatement forStmt) {
         // 1) Emit the initializer in the *current* (pre-header) block
         if (forStmt.initializer != null) {
-            forStmt.initializer.accept(this);
+            visitStatement(forStmt.initializer);
         }
 
         // 2) Create the four conceptual blocks:
@@ -136,7 +138,9 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // 5) Enter the loop and emit the body
         currentUnit.enterLoop(new LoopInfo(header, exit));
         currentUnit.setCurrentBlock(body);
-        forStmt.body.accept(this);
+
+        visitStatement(forStmt.body);
+
 
         // after the body, unconditionally go to the incr block
         if (forStmt.increment != null) {
