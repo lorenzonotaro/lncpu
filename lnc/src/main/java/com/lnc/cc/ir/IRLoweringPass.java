@@ -156,9 +156,11 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             if (loc.onStack()) {
                 stackArgs.add(new StackArg(args[i], loc.stackOffset()));
             } else {
-                moveOrLoadIntoVR(args[i], loc.regClass());
+                args[i] = moveOrLoadIntoVR(args[i], loc.regClass());
             }
         }
+
+        call.setArguments(args);
 
         // Sort descending by stack offset to ensure we push the highest offset first
         stackArgs.sort((a, b) -> Integer.compare(b.offset, a.offset));
