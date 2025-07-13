@@ -37,6 +37,10 @@ public class PostRAOptimizer extends GraphicalIRVisitor {
 
     @Override
     public Void visit(Move move) {
+        // dead move elimination
+        if(move.getDest() instanceof VirtualRegister vr && isDeadAfter(vr, move)){
+            deleteAndContinue();
+        }
         return null;
     }
 
