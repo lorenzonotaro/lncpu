@@ -1,10 +1,6 @@
 package com.lnc.cc.optimization;
 
 import com.lnc.cc.ir.*;
-import com.lnc.cc.ir.operands.IROperand;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ConstantFoldingPass extends IRPass {
     private ConstantPropagationEvaluator evaluator;
@@ -77,16 +73,12 @@ public class ConstantFoldingPass extends IRPass {
 
     @Override
     public Void visit(Bin bin) {
+        // TODO
         return null;
     }
 
     @Override
     public Void visit(Call call) {
-        return null;
-    }
-
-    @Override
-    public Void visit(Unary unary) {
         return null;
     }
 
@@ -97,6 +89,12 @@ public class ConstantFoldingPass extends IRPass {
 
     @Override
     public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
+    @Override
+    public Void visit(Unary unary) {
+        // TODO
         return null;
     }
 

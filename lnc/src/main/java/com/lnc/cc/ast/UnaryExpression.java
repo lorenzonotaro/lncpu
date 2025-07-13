@@ -41,7 +41,7 @@ public class    UnaryExpression extends Expression {
     }
 
     public enum UnaryPosition {
-        LEFT,
-        RIGHT
+        PRE,
+        POST
     }
 }

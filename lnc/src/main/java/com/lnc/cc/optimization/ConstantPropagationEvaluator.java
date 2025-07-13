@@ -21,11 +21,6 @@ public class ConstantPropagationEvaluator implements IIROperandVisitor<PropValue
     }
 
     @Override
-    public PropValue visit(AddressOf addressOf) {
-        return PropValue.unknown();
-    }
-
-    @Override
     public PropValue visit(StructMemberAccess structMemberAccess) {
         return PropValue.unknown();
     }

@@ -10,7 +10,7 @@ public class Store extends IRInstruction {
     private Location dest;
     private IROperand value;
 
-    public Store(Location dest, IROperand value) {
+    public Store(IROperand value, Location dest) {
         super();
         this.dest = dest;
         this.value = value;

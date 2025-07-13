@@ -247,39 +247,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     @Override
-    public Void visit(Unary unary) {
-
-        var operand = unary.getOperand().accept(this);
-        var target = unary.getTarget().accept(this);
-
-        if(!unary.getOperand().equals(unary.getTarget())){
-            instrf(TokenType.MOV, operand, target);
-        }
-
-        switch(unary.getOperator()){
-            case NEGATE -> {
-                throw new UnsupportedOperationException("NEGATE operator is not supported in this code generator.");
-            }
-            case NOT -> {
-                instrf(TokenType.NOT, target);
-            }
-            case DEREFERENCE -> {
-                throw new UnsupportedOperationException("DEREFERENCE operator is not supported in this code generator.");
-            }
-            case ADDRESS_OF -> {
-                throw new UnsupportedOperationException("ADDRESS_OF operator is not supported in this code generator.");
-            }
-            case INCREMENT -> {
-                instrf(TokenType.INC, target);
-            }
-            case DECREMENT -> {
-                instrf(TokenType.DEC, target);
-            }
-        }
-        return null;
-    }
-
-    @Override
     public Void visit(Push push) {
         instrf(TokenType.PUSH, push.getArg().accept(this));
         return null;
@@ -287,6 +254,43 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
+    @Override
+    public Void visit(Unary unary) {
+        var target = unary.getTarget().accept(this);
+        var operand = unary.getOperand().accept(this);
+
+        var targetStr = target.toString();
+        var operandStr = operand.toString();
+
+        if(!operandStr.equals(targetStr)){
+            // If the target is not the same as the operand, we need to move the operand into the target
+            instrf(TokenType.MOV, operand, target);
+        }
+
+        switch(unary.getOperator()){
+            case NEGATE -> {
+                // for negate, we can negate the value and add 1
+                instrf(TokenType.NOT, target);
+                instrf(TokenType.INC, target);
+            }
+            case NOT -> {
+                instrf(TokenType.NOT, target);
+            }
+            case INCREMENT -> {
+                instrf(TokenType.INC, target);
+            }
+            case DECREMENT -> {
+                instrf(TokenType.DEC, target);
+            }
+            default -> {
+                // The IR lowering pass should have resolved the other unary operators
+                throw new UnsupportedOperationException("Unary operator is unsupported by this code generator: " + unary.getOperator());
+            }
+        }
+
         return null;
     }
 
@@ -315,11 +319,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         return CodeGenUtils.labelRef(location.getSymbol().getName());
     }
 
-
-    @Override
-    public Argument visit(AddressOf addressOf) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public Argument visit(StructMemberAccess structMemberAccess) {

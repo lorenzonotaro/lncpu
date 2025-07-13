@@ -10,11 +10,10 @@ public interface IIROperandVisitor<T> {
 
     T visit(Location location);
 
-    T visit(AddressOf addressOf);
-
     T visit(StructMemberAccess structMemberAccess);
 
     T visit(ArrayElementAccess arrayElementAccess);
 
     T visit(StackFrameOperand stackFrameOperand);
+
 }

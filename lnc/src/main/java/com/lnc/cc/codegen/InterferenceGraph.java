@@ -280,6 +280,11 @@ public class InterferenceGraph {
                     IROperand s = mv.getSource(), d = mv.getDest();
                     if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd)
                         graph.addPreference(vs, vd);
+                }else if(inst instanceof Unary un){
+                    VirtualRegister dest = (VirtualRegister) un.getTarget();
+                    VirtualRegister src = un.getOperand().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) un.getOperand() : null;
+                    if (src != null)
+                        graph.addPreference(dest, src);   // dotted line, not interference
                 }
             }
         }

@@ -11,13 +11,11 @@ public class Unary extends IRInstruction {
     private IROperand target;
     private IROperand operand;
     private final UnaryExpression.Operator operator;
-    private final UnaryExpression.UnaryPosition unaryPosition;
 
-    public Unary(IROperand target, IROperand operand, UnaryExpression.Operator operator, UnaryExpression.UnaryPosition unaryPosition) {
+    public Unary(IROperand target, IROperand operand, UnaryExpression.Operator operator) {
         this.target = target;
         this.operand = operand;
         this.operator = operator;
-        this.unaryPosition = unaryPosition;
     }
 
     @Override
@@ -49,10 +47,6 @@ public class Unary extends IRInstruction {
         }
     }
 
-    public UnaryExpression.UnaryPosition getUnaryPosition() {
-        return unaryPosition;
-    }
-
     public IROperand getTarget() {
         return target;
     }
@@ -67,5 +61,12 @@ public class Unary extends IRInstruction {
 
     public UnaryExpression.Operator getOperator() {
         return operator;
+    }
+
+    public void setTarget(IROperand target) {
+        if (target == null) {
+            throw new IllegalArgumentException("Target operand cannot be null");
+        }
+        this.target = target;
     }
 }

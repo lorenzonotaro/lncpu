@@ -1,3 +1,4 @@
+/*
 extern void putc(int c);
 extern void printhex(int i);
 
@@ -9,12 +10,11 @@ int mod(int a, int m){
     }
     return c;
 }
+*/
 
+extern void printhex(int i);
 
 void main(){
-    for(int i = 0; i < 100; i++){
-        int r = mod(i, 10);
-        printhex(r);
-        putc('\n');
-    }
+    static int i = 0;
+    printhex(++i);
 }

@@ -56,17 +56,17 @@ public class LocalDeadCodeEliminationPass extends IRPass{
     }
 
     @Override
-    public Void visit(Unary unary) {
-        return null;
-    }
-
-    @Override
     public Void visit(Push push) {
         return null;
     }
 
     @Override
     public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
+    @Override
+    public Void visit(Unary unary) {
         return null;
     }
 }

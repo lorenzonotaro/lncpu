@@ -1,5 +1,6 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
@@ -40,7 +41,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
             VirtualRegister vr = (VirtualRegister) operand;
-            if(vr.getRegisterClass() == registerClass) {
+            if(registerClass == RegisterClass.ANY || vr.getRegisterClass() == registerClass) {
                 return vr; // Already in the correct register class
             } else {
                 return move(vr, registerClass); // Move to the correct register class
@@ -173,13 +174,6 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         return null;
     }
-    @Override
-    public Void visit(Unary unary) {
-
-        unary.setOperand(unary.getOperand().accept(this));
-
-        return null;
-    }
 
     @Override
     public Void visit(Push push) {
@@ -192,6 +186,24 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public Void accept(LoadParam loadParam) {
+        return null;
+    }
+
+    @Override
+    public Void visit(Unary unary) {
+        IROperand operand = unary.getOperand().accept(this);
+        IROperand target = unary.getTarget().accept(this);
+
+        if(operand.type != IROperand.Type.VIRTUAL_REGISTER) {
+            unary.setOperand(moveOrLoadIntoVR(operand));
+        }
+
+        unary.setTarget(target);
+
+        if(unary.getOperator() == UnaryExpression.Operator.INCREMENT || unary.getOperator() == UnaryExpression.Operator.DECREMENT && unary.getOperand() != operand) {
+            getCurrentInstruction().insertAfter(new Move(target, operand));
+        }
+
         return null;
     }
 
@@ -211,12 +223,6 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         var resolvedLocal = getUnit().getLocalMappingInfo().mappings().get(location.getSymbol().getName());
 
         return resolvedLocal != null ? resolvedLocal : location;
-    }
-
-    @Override
-    public IROperand visit(AddressOf addressOf) {
-        //TODO
-        return addressOf;
     }
 
     @Override

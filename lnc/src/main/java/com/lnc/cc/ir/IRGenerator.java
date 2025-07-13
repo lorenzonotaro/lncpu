@@ -1,5 +1,6 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.ir.operands.*;
@@ -295,7 +296,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         var dest = assignmentExpression.left.accept(this);
 
         if(dest.type == IROperand.Type.LOCATION){
-            emit(new Store((Location) dest, value));
+            emit(new Store(value, (Location) dest));
         }else{
             emit(new Move(value, dest));
         }
@@ -428,11 +429,23 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(UnaryExpression unaryExpression) {
         IROperand operand = unaryExpression.operand.accept(this);
-        IROperand target = allocVR(operand.getTypeSpecifier());
 
-        emit(new Unary(target, operand, unaryExpression.operator, unaryExpression.unaryPosition));
+        VirtualRegister returnVr = null, target = allocVR(operand.getTypeSpecifier());
 
-        return target;
+        if((unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
+            unaryExpression.operator == UnaryExpression.Operator.DECREMENT) && unaryExpression.unaryPosition == UnaryExpression.UnaryPosition.POST){
+            // load into a temporary VR
+            VirtualRegister vr = moveOrLoadIntoVR(operand);
+
+            emit(new Unary(target, operand, unaryExpression.operator));
+
+            returnVr = vr;
+        }else{
+            emit(new Unary(target, operand, unaryExpression.operator));
+            returnVr = target;
+        }
+
+        return returnVr;
     }
     private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
         return currentUnit.getVrManager().getRegister(typeSpecifier);
@@ -445,4 +458,43 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public IR getResult() {
         return new IR(blocks, globalSymbolTable);
     }
+
+    private VirtualRegister moveOrLoadIntoVR(IROperand operand) {
+        return moveOrLoadIntoVR(operand, RegisterClass.ANY);
+    }
+
+    private VirtualRegister moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
+        if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
+            VirtualRegister vr = (VirtualRegister) operand;
+            if(registerClass == RegisterClass.ANY || vr.getRegisterClass() == registerClass) {
+                return vr; // Already in the correct register class
+            } else {
+                return moveToVr(vr, registerClass); // Move to the correct register class
+            }
+        } else if(operand.type == IROperand.Type.IMMEDIATE) {
+            VirtualRegisterManager vrm = currentUnit.getVrManager();
+            VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
+            vr.setRegisterClass(registerClass);
+            emit(new Move(operand, vr));
+            return vr;
+        } else {
+            return moveToVr(operand, registerClass);
+        }
+    }
+
+    private VirtualRegister moveToVr(IROperand operand, RegisterClass registerClass) {
+        if(operand.type == IROperand.Type.LOCATION) {
+            // Otherwise, we need to move or load it into a virtual register
+            VirtualRegister vr = allocVR(operand.getTypeSpecifier());
+            vr.setRegisterClass(registerClass);
+            emit(new Load((Location) operand, vr));
+            return vr;
+        } else {
+            VirtualRegister vr = allocVR(operand.getTypeSpecifier());
+            vr.setRegisterClass(registerClass);
+            emit(new Move(operand, vr));
+            return vr;
+        }
+    }
+
 }

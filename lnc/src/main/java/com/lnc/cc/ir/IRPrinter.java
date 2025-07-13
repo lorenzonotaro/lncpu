@@ -1,7 +1,5 @@
 package com.lnc.cc.ir;
 
-import java.util.List;
-
 public class IRPrinter extends GraphicalIRVisitor {
 
     public IRPrinter() {
@@ -60,12 +58,6 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
-    public Void visit(Unary unary) {
-        appendInstr(unary);
-        return null;
-    }
-
-    @Override
     public Void visit(Push push) {
         appendInstr(push);
         return null;
@@ -74,6 +66,12 @@ public class IRPrinter extends GraphicalIRVisitor {
     @Override
     public Void accept(LoadParam loadParam) {
         appendInstr(loadParam);
+        return null;
+    }
+
+    @Override
+    public Void visit(Unary unary) {
+        appendInstr(unary);
         return null;
     }
 
