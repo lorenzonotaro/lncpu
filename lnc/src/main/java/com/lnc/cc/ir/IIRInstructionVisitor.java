@@ -22,4 +22,6 @@ public interface IIRInstructionVisitor<E> {
     E accept(LoadParam loadParam);
 
     E visit(Unary unary);
+
+    E visit(Deref deref);
 }

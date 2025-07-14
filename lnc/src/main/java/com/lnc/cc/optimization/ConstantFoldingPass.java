@@ -98,5 +98,10 @@ public class ConstantFoldingPass extends IRPass {
         return null;
     }
 
+    @Override
+    public Void visit(Deref deref) {
+        return null;
+    }
+
 
 }

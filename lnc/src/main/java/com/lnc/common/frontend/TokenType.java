@@ -157,7 +157,8 @@ public enum TokenType {
     STATIC("static"),
     EXTERN("extern"),
     CONST("const"),
-    ;
+    NEAR("near"),
+    FAR("far");
 
     public static final TokenType[] LNASM_KEYWORDSET = new TokenType[]{
             TokenType.NOP,
@@ -269,7 +270,9 @@ public enum TokenType {
             TokenType.SIZEOF,
             TokenType.STATIC,
             TokenType.EXTERN,
-            TokenType.CONST
+            TokenType.CONST,
+            TokenType.NEAR,
+            TokenType.FAR
     };
 
     private final String strValue;

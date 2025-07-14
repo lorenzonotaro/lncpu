@@ -119,9 +119,7 @@ public class LncParser extends FullSourceParser<AST> {
         }
 
         //while we have a pointer, keep wrapping the type specifier
-        while(match(TokenType.STAR)){
-            declarator = Declarator.wrapPointer(declarator);
-        }
+        declarator = pointer(declarator);
 
         if(!isParameter && declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT && match(TokenType.SEMICOLON)){
             var structDecl = (StructType) declarator.typeSpecifier();
@@ -158,6 +156,24 @@ public class LncParser extends FullSourceParser<AST> {
         }
 
         return decl;
+    }
+
+    private Declarator pointer(Declarator declarator) {
+        while(match(TokenType.STAR, TokenType.NEAR, TokenType.FAR)){
+            TokenType pointerType = previous().type;
+            if(pointerType == TokenType.STAR){
+                declarator = Declarator.wrapPointer(declarator, PointerType.PointerKind.NEAR);
+            }else if(pointerType == TokenType.NEAR){
+                consume("expected pointer", TokenType.STAR);
+                declarator = Declarator.wrapPointer(declarator, PointerType.PointerKind.NEAR);
+            }else if(pointerType == TokenType.FAR){
+                consume("expected pointer", TokenType.STAR);
+                declarator = Declarator.wrapPointer(declarator, PointerType.PointerKind.FAR);
+            }else{
+                throw new CompileException("unexpected token in pointer declaration", previous());
+            }
+        }
+        return declarator;
     }
 
     private Declarator declarator(){

@@ -2,8 +2,20 @@ package com.lnc.cc.types;
 
 public class PointerType extends AbstractSubscriptableType {
 
-    public PointerType(TypeSpecifier baseType){
+    private final PointerKind pointerKind;
+
+    public PointerKind getPointerKind() {
+        return pointerKind;
+    }
+
+    // near/far type
+    public enum PointerKind {
+        NEAR, FAR
+    }
+
+    public PointerType(TypeSpecifier baseType, PointerKind kind) {
         super(Type.POINTER, baseType);
+        this.pointerKind = kind;
     }
 
     @Override

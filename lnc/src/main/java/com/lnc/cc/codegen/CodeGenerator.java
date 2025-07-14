@@ -265,11 +265,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var targetStr = target.toString();
         var operandStr = operand.toString();
 
-        if(!operandStr.equals(targetStr)){
-            // If the target is not the same as the operand, we need to move the operand into the target
-            instrf(TokenType.MOV, operand, target);
-        }
-
         switch(unary.getOperator()){
             case NEGATE -> {
                 // for negate, we can negate the value and add 1
@@ -291,6 +286,15 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             }
         }
 
+        return null;
+    }
+
+    @Override
+    public Void visit(Deref deref) {
+        instrf(TokenType.MOV,
+                deref.getResult().accept(this),
+                new Dereference(deref.getOperand().accept(this))
+        );
         return null;
     }
 

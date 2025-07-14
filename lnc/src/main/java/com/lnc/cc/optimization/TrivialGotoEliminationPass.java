@@ -59,6 +59,11 @@ public class TrivialGotoEliminationPass extends IRPass{
     }
 
     @Override
+    public Void visit(Deref deref) {
+        return null;
+    }
+
+    @Override
     protected void visit(IRBlock block) {
         var first = block.getFirst();
         var last = block.getLast();

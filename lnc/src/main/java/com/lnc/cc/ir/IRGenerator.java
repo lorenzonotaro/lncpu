@@ -440,9 +440,22 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             emit(new Unary(target, operand, unaryExpression.operator));
 
             returnVr = vr;
-        }else{
+        }else if(unaryExpression.operator == UnaryExpression.Operator.NOT ||
+                  unaryExpression.operator == UnaryExpression.Operator.NEGATE ||
+                unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
+                unaryExpression.operator == UnaryExpression.Operator.DECREMENT){
             emit(new Unary(target, operand, unaryExpression.operator));
             returnVr = target;
+        }else if(unaryExpression.operator == UnaryExpression.Operator.DEREFERENCE) {
+            VirtualRegister vr = moveOrLoadIntoVR(operand, RegisterClass.DEREF);
+            emit(new Deref(target, vr));
+            returnVr = target;
+        }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
+            if(operand.type != IROperand.Type.LOCATION){
+                throw new CompileException("requested address of non-memory operand", unaryExpression.token);
+            }
+
+            return (Location) operand;
         }
 
         return returnVr;

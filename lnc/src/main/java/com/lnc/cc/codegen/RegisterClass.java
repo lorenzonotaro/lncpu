@@ -24,7 +24,7 @@ public class RegisterClass {
 
     public static RegisterClass SHIFT = new RegisterClass(Set.of(Register.RA));
 
-    public static RegisterClass INDEX = new RegisterClass(Set.of(Register.RD));
+    public static RegisterClass DEREF = new RegisterClass(Set.of(Register.RD));
 
     public static RegisterClass RETURN = new RegisterClass(Set.of(Register.RB));
 

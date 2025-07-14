@@ -106,6 +106,11 @@ public class PostRAOptimizer extends GraphicalIRVisitor {
         return null;
     }
 
+    @Override
+    public Void visit(Deref deref) {
+        return null;
+    }
+
     boolean isDeadAfter(VirtualRegister vr, IRInstruction instr) {
         // backward walk inside the current basic block
         for (IRInstruction p = instr.getNext(); p != null; p = p.getNext()) {

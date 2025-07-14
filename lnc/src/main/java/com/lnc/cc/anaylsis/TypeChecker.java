@@ -217,7 +217,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             }
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
             TypeSpecifier operandType = unaryExpression.operand.accept(this);
-            PointerType pointerType = new PointerType(operandType);
+            PointerType pointerType = new PointerType(operandType, PointerType.PointerKind.NEAR);
             unaryExpression.setTypeSpecifier(pointerType);
             return pointerType;
         }

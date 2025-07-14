@@ -88,7 +88,8 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public Void visit(Move move) {
-
+        move.setSource(move.getSource().accept(this));
+        move.setDest(move.getDest().accept(this));
         return null;
     }
 
@@ -202,6 +203,21 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         if(unary.getOperator() == UnaryExpression.Operator.INCREMENT || unary.getOperator() == UnaryExpression.Operator.DECREMENT && operand.type != IROperand.Type.VIRTUAL_REGISTER) {
             getCurrentInstruction().insertAfter(new Move(target, operand));
         }
+
+        return null;
+    }
+
+    @Override
+    public Void visit(Deref deref) {
+        IROperand operand = deref.getOperand().accept(this);
+        IROperand result = deref.getResult().accept(this);
+
+        if(operand.type != IROperand.Type.VIRTUAL_REGISTER) {
+            operand = moveOrLoadIntoVR(operand, RegisterClass.DEREF);
+        }
+
+        deref.setOperand(operand);
+        deref.setResult(result);
 
         return null;
     }

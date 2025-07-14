@@ -12,11 +12,8 @@ int mod(int a, int m){
 }
 */
 
-extern void printhex(int i);
-
 void main(){
-    int i = 0;
-    while(i < 16){
-        printhex(i++);
+    for(int near * i = 0; i <= 0xFF; ++i){
+        *i = i;
     }
 }

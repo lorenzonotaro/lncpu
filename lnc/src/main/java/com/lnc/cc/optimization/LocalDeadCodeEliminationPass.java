@@ -69,4 +69,9 @@ public class LocalDeadCodeEliminationPass extends IRPass{
     public Void visit(Unary unary) {
         return null;
     }
+
+    @Override
+    public Void visit(Deref deref) {
+        return null;
+    }
 }

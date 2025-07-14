@@ -52,4 +52,12 @@ public class Move extends IRInstruction {
     public <E> E accept(IIRInstructionVisitor<E> visitor) {
         return visitor.visit(this);
     }
+
+    public void setSource(IROperand source) {
+        this.source = source;
+    }
+
+    public void setDest(IROperand dest) {
+        this.dest = dest;
+    }
 }
