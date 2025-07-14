@@ -70,7 +70,12 @@ public class VirtualRegister extends IROperand {
     }
 
     @Override
-    public List<VirtualRegister> getVRReferences() {
+    public List<VirtualRegister> getVRReads() {
+        return List.of(this);
+    }
+
+    @Override
+    public List<VirtualRegister> getVRWrites() {
         return List.of(this);
     }
 }

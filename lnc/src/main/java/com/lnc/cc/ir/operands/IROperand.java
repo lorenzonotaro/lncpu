@@ -29,7 +29,10 @@ public abstract class IROperand {
 
     public abstract String toString();
 
-    public List<VirtualRegister> getVRReferences(){
+    public List<VirtualRegister> getVRReads(){
+        return List.of();
+    }
+    public List<VirtualRegister> getVRWrites(){
         return List.of();
     }
 

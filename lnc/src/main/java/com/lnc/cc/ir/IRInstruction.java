@@ -5,6 +5,7 @@ import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class IRInstruction {
 
@@ -189,14 +190,16 @@ public abstract class IRInstruction {
         return parentBlock;
     }
     public final Collection<VirtualRegister> getReads(){
-        return getReadOperands().stream()
-                .flatMap((IROperand irOperand) -> irOperand.getVRReferences().stream())
-                .toList();
+        return Stream.concat(getReadOperands().stream()
+                .flatMap((IROperand irOperand) -> irOperand.getVRReads().stream()),
+                getWriteOperands().stream()
+                        .flatMap((IROperand irOperand) -> irOperand.getVRReads().stream())
+        ).toList();
     }
 
     public final Collection<VirtualRegister> getWrites(){
         return getWriteOperands().stream()
-                .flatMap((IROperand irOperand) -> irOperand.getVRReferences().stream())
+                .flatMap((IROperand irOperand) -> irOperand.getVRWrites().stream())
                 .toList();
     }
 

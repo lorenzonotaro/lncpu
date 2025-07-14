@@ -31,12 +31,11 @@ public class Deref extends IROperand {
         return "*" + target.toString();
     }
 
-    @Override
-    public List<VirtualRegister> getVRReferences() {
-        return List.of(target);
-    }
-
     public VirtualRegister getTarget() {
         return target;
+    }
+    @Override
+    public List<VirtualRegister> getVRReads() {
+        return List.of(target);
     }
 }
