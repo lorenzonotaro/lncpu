@@ -148,6 +148,7 @@ public class GraphColoringRegisterAllocator {
                 x.adj.add(n); n.adj.add(x);
             }
         }
+        x.vr.setRegisterClass(RegisterClass.of(colorIntersection(x, y)));
         x.movePartners.addAll(y.movePartners);
     }
 
