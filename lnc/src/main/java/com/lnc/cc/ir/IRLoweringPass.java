@@ -199,7 +199,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         unary.setOperand(moveOrLoadIntoVR(operand));
         unary.setTarget(target);
 
-        if(unary.getOperator() == UnaryExpression.Operator.INCREMENT || unary.getOperator() == UnaryExpression.Operator.DECREMENT && unary.getOperand() != operand) {
+        if(unary.getOperator() == UnaryExpression.Operator.INCREMENT || unary.getOperator() == UnaryExpression.Operator.DECREMENT && operand.type != IROperand.Type.VIRTUAL_REGISTER) {
             getCurrentInstruction().insertAfter(new Move(target, operand));
         }
 
