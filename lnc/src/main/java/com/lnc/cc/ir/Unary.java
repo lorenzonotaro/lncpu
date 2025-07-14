@@ -29,12 +29,12 @@ public class Unary extends IRInstruction {
     }
 
     @Override
-    public Collection<IROperand> getReads() {
+    public Collection<IROperand> getReadOperands() {
         return List.of(operand);
     }
 
     @Override
-    public Collection<IROperand> getWrites() {
+    public Collection<IROperand> getWriteOperands() {
         return List.of(target);
     }
 

@@ -14,17 +14,7 @@ public class TrivialGotoEliminationPass extends IRPass{
     }
 
     @Override
-    public Void visit(Load load) {
-        return null;
-    }
-
-    @Override
     public Void visit(Move move) {
-        return null;
-    }
-
-    @Override
-    public Void visit(Store store) {
         return null;
     }
 
@@ -55,11 +45,6 @@ public class TrivialGotoEliminationPass extends IRPass{
 
     @Override
     public Void visit(Unary unary) {
-        return null;
-    }
-
-    @Override
-    public Void visit(Deref deref) {
         return null;
     }
 

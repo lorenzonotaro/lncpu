@@ -149,33 +149,12 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     @Override
-    public Void visit(Load load) {
-
-        var target = load.getDest().accept(this);
-        var source = load.getSrc().accept(this);
-
-        instrf(TokenType.MOV, source, target);
-
-        return null;
-    }
-
-    @Override
     public Void visit(Move move) {
 
         var target = move.getDest().accept(this);
         var source = move.getSource().accept(this);
 
         instrf(TokenType.MOV, source, target);
-
-        return null;
-    }
-
-    @Override
-    public Void visit(Store store) {
-        var target = store.getDest().accept(this);
-        var value = store.getValue().accept(this);
-
-        instrf(TokenType.MOV, value, target);
 
         return null;
     }
@@ -290,15 +269,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     @Override
-    public Void visit(Deref deref) {
-        instrf(TokenType.MOV,
-                deref.getResult().accept(this),
-                new Dereference(deref.getOperand().accept(this))
-        );
-        return null;
-    }
-
-    @Override
     public Argument visit(ImmediateOperand immediateOperand) {
         int value = immediateOperand.getValue();
         return IntUtils.inByteRange(value) ? CodeGenUtils.immByte(value) : CodeGenUtils.immWord(value);
@@ -306,6 +276,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Argument visit(VirtualRegister vr) {
+        return visitRegister(vr);
+    }
+
+    private Argument visitRegister(VirtualRegister vr) {
         Register assignedPhysicalRegister = vr.getAssignedPhysicalRegister();
         if(assignedPhysicalRegister.isCompound()){
             Register[] components = assignedPhysicalRegister.getComponents();
@@ -346,6 +320,11 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                         new Byte(Token.__internal(TokenType.INTEGER, stackFrameOperand.getOffset()))
                 )
         );
+    }
+
+    @Override
+    public Argument visit(Deref deref) {
+        return new Dereference(deref.getTarget().accept(this));
     }
 
     @Override

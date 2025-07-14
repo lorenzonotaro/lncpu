@@ -1,6 +1,7 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.Collection;
 import java.util.List;
@@ -182,11 +183,26 @@ public abstract class IRInstruction {
     }
 
     public IRBlock getParentBlock() {
+        if (parentBlock == null) {
+            throw new IllegalStateException("Instruction is not associated with any block.");
+        }
         return parentBlock;
     }
-    public abstract Collection<IROperand> getReads();
+    public final Collection<VirtualRegister> getReads(){
+        return getReadOperands().stream()
+                .flatMap((IROperand irOperand) -> irOperand.getVRReferences().stream())
+                .toList();
+    }
 
-    public abstract Collection<IROperand> getWrites();
+    public final Collection<VirtualRegister> getWrites(){
+        return getWriteOperands().stream()
+                .flatMap((IROperand irOperand) -> irOperand.getVRReferences().stream())
+                .toList();
+    }
+
+    protected abstract Collection<IROperand> getReadOperands();
+
+    protected abstract Collection<IROperand> getWriteOperands();
 
     public abstract void replaceOperand(IROperand oldOp, IROperand newOp);
 }

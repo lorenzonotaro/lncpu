@@ -32,12 +32,12 @@ public class Bin extends IRInstruction {
     }
 
     @Override
-    public Collection<IROperand> getReads() {
+    public Collection<IROperand> getReadOperands() {
         return List.of(left, right);
     }
 
     @Override
-    public Collection<IROperand> getWrites() {
+    public Collection<IROperand> getWriteOperands() {
         return Collections.singleton(dest);
     }
 

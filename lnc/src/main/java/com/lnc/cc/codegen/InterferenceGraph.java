@@ -167,29 +167,25 @@ public class InterferenceGraph {
                 int i = inst.getIndex();
 
                 // kill defs *and* record def position
-                for (IROperand w : inst.getWrites()) {
-                    if (w instanceof VirtualRegister d) {
-                        live.remove(d);
-                        LiveRange lr = ranges.get(d);
-                        lr.start = Math.min(lr.start, i);
-                        lr.end   = Math.max(lr.end,   i);
-                        defs.put(d, defs.getOrDefault(d, 0) + 1);
+                for (VirtualRegister d : inst.getWrites()) {
+                    live.remove(d);
+                    LiveRange lr = ranges.get(d);
+                    lr.start = Math.min(lr.start, i);
+                    lr.end   = Math.max(lr.end,   i);
+                    defs.put(d, defs.getOrDefault(d, 0) + 1);
 
-                        loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), blockLoopWeight * 10));
-                    }
+                    loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), blockLoopWeight * 10));
                 }
 
                 // gen uses *and* record use position
-                for (IROperand r : inst.getReads()) {
-                    if (r instanceof VirtualRegister u) {
-                        live.add(u);
-                        LiveRange lr = ranges.get(u);
-                        lr.start = Math.min(lr.start, i);
-                        lr.end   = Math.max(lr.end,   i);
+                for (VirtualRegister u : inst.getReads()) {
+                    live.add(u);
+                    LiveRange lr = ranges.get(u);
+                    lr.start = Math.min(lr.start, i);
+                    lr.end   = Math.max(lr.end,   i);
 
-                        uses.put(u, uses.getOrDefault(u, 0) + 1);
-                        loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), blockLoopWeight * 10));
-                    }
+                    uses.put(u, uses.getOrDefault(u, 0) + 1);
+                    loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), blockLoopWeight * 10));
                 }
 
                 // extend all still‐live

@@ -86,7 +86,7 @@ if [ $build_lnc = true ] ; then
 
     echo "Building lnc..."
 
-    mvn clean package
+    mvn package
 
     if [ $? -ne 0 ]; then
         echo "Error: lnc build failed"

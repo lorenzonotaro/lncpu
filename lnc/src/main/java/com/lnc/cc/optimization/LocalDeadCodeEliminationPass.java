@@ -20,17 +20,7 @@ public class LocalDeadCodeEliminationPass extends IRPass{
     }
 
     @Override
-    public Void visit(Load load) {
-        return null;
-    }
-
-    @Override
     public Void visit(Move move) {
-        return null;
-    }
-
-    @Override
-    public Void visit(Store store) {
         return null;
     }
 
@@ -70,8 +60,4 @@ public class LocalDeadCodeEliminationPass extends IRPass{
         return null;
     }
 
-    @Override
-    public Void visit(Deref deref) {
-        return null;
-    }
 }

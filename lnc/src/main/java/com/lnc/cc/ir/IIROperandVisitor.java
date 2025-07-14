@@ -16,4 +16,5 @@ public interface IIROperandVisitor<T> {
 
     T visit(StackFrameOperand stackFrameOperand);
 
+    T visit(Deref deref);
 }

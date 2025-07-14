@@ -72,17 +72,13 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
     protected void visit(IRBlock block){
         for (currentInstruction = block.first; currentInstruction != null;) {
             IRInstruction current = currentInstruction;
-            IRInstruction next = current.next;
-
             current.accept(this);
 
+            // If the current instruction wasn't replaced or removed, move to the next one
             if (currentInstruction == current) {
-                currentInstruction = next;
-            }else if(currentInstruction.next != next){
-                // If the instructions after the current instruction have been modified,
-                // we need to continue from the next instruction
                 currentInstruction = current.next;
             }
+            // else, currentInstruction was already set to a new instruction
         }
     }
 

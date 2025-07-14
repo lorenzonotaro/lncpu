@@ -3,7 +3,7 @@ package com.lnc.cc.optimization;
 import com.lnc.cc.ir.*;
 
 public class ConstantFoldingPass extends IRPass {
-    private ConstantPropagationEvaluator evaluator;
+    private final ConstantPropagationEvaluator evaluator;
 
     public ConstantFoldingPass() {
         this.evaluator = new ConstantPropagationEvaluator();
@@ -52,17 +52,7 @@ public class ConstantFoldingPass extends IRPass {
     }
 
     @Override
-    public Void visit(Load load) {
-        return null;
-    }
-
-    @Override
     public Void visit(Move move) {
-        return null;
-    }
-
-    @Override
-    public Void visit(Store store) {
         return null;
     }
 
@@ -95,11 +85,6 @@ public class ConstantFoldingPass extends IRPass {
     @Override
     public Void visit(Unary unary) {
         // TODO
-        return null;
-    }
-
-    @Override
-    public Void visit(Deref deref) {
         return null;
     }
 

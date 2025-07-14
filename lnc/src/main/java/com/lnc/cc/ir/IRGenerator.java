@@ -295,11 +295,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         var dest = assignmentExpression.left.accept(this);
 
-        if(dest.type == IROperand.Type.LOCATION){
-            emit(new Store(value, (Location) dest));
-        }else{
-            emit(new Move(value, dest));
-        }
+        emit(new Move(value, dest));
 
         return dest;
     }
@@ -430,27 +426,33 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     public IROperand visit(UnaryExpression unaryExpression) {
         IROperand operand = unaryExpression.operand.accept(this);
 
-        VirtualRegister returnVr = null, target = allocVR(operand.getTypeSpecifier());
+        IROperand returnVal = null;
+
 
         if((unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
             unaryExpression.operator == UnaryExpression.Operator.DECREMENT) && unaryExpression.unaryPosition == UnaryExpression.UnaryPosition.POST){
+            VirtualRegister target = allocVR(operand.getTypeSpecifier());
             // load into a temporary VR
             VirtualRegister vr = moveOrLoadIntoVR(operand);
 
             emit(new Unary(target, operand, unaryExpression.operator));
 
-            returnVr = vr;
+            returnVal = vr;
         }else if(unaryExpression.operator == UnaryExpression.Operator.NOT ||
                   unaryExpression.operator == UnaryExpression.Operator.NEGATE ||
                 unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
                 unaryExpression.operator == UnaryExpression.Operator.DECREMENT){
+            VirtualRegister target = allocVR(operand.getTypeSpecifier());
             emit(new Unary(target, operand, unaryExpression.operator));
-            returnVr = target;
+            returnVal = target;
         }else if(unaryExpression.operator == UnaryExpression.Operator.DEREFERENCE) {
-            VirtualRegister vr = moveOrLoadIntoVR(operand, RegisterClass.DEREF);
-            emit(new Deref(target, vr));
-            returnVr = target;
+            if(operand.getTypeSpecifier().type != TypeSpecifier.Type.POINTER){
+                throw new CompileException("dereference of non-pointer type", unaryExpression.token);
+            }
+
+            returnVal = new Deref(moveOrLoadIntoVR(operand, RegisterClass.DEREF));
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
+
             if(operand.type != IROperand.Type.LOCATION){
                 throw new CompileException("requested address of non-memory operand", unaryExpression.token);
             }
@@ -458,7 +460,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             return (Location) operand;
         }
 
-        return returnVr;
+        return returnVal;
     }
     private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
         return currentUnit.getVrManager().getRegister(typeSpecifier);
@@ -496,18 +498,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     private VirtualRegister moveToVr(IROperand operand, RegisterClass registerClass) {
-        if(operand.type == IROperand.Type.LOCATION) {
-            // Otherwise, we need to move or load it into a virtual register
-            VirtualRegister vr = allocVR(operand.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            emit(new Load((Location) operand, vr));
-            return vr;
-        } else {
-            VirtualRegister vr = allocVR(operand.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            emit(new Move(operand, vr));
-            return vr;
-        }
+        VirtualRegister vr = allocVR(operand.getTypeSpecifier());
+        vr.setRegisterClass(registerClass);
+        emit(new Move(operand, vr));
+        return vr;
     }
 
 }

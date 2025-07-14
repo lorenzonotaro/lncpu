@@ -5,6 +5,8 @@ import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
 
+import java.util.List;
+
 public class VirtualRegister extends IROperand {
 
     private final TypeSpecifier typeSpecifier;
@@ -65,5 +67,10 @@ public class VirtualRegister extends IROperand {
     @Override
     public int hashCode() {
         return Integer.hashCode(registerNumber);
+    }
+
+    @Override
+    public List<VirtualRegister> getVRReferences() {
+        return List.of(this);
     }
 }

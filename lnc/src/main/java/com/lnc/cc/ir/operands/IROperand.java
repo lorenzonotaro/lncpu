@@ -4,6 +4,8 @@ import com.lnc.cc.codegen.LiveRange;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
 
+import java.util.List;
+
 public abstract class IROperand {
     public Type type;
 
@@ -27,6 +29,10 @@ public abstract class IROperand {
 
     public abstract String toString();
 
+    public List<VirtualRegister> getVRReferences(){
+        return List.of();
+    }
+
     public enum Type{
         IMMEDIATE,
 
@@ -35,7 +41,8 @@ public abstract class IROperand {
         STRUCT_MEMBER_ACCESS,
         ADDRESS_OF,
         ARRAY_ACCESS,
-
-        STACK_FRAME_OPERAND, LOCATION
+        STACK_FRAME_OPERAND,
+        DEREF,
+        LOCATION;
     }
 }

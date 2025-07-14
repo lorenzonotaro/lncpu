@@ -34,4 +34,9 @@ public class ConstantPropagationEvaluator implements IIROperandVisitor<PropValue
     public PropValue visit(StackFrameOperand stackFrameOperand) {
         return PropValue.unknown();
     }
+
+    @Override
+    public PropValue visit(Deref deref) {
+        return PropValue.unknown();
+    }
 }

@@ -58,51 +58,17 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     }
 
     private IROperand move(IROperand operand, RegisterClass registerClass) {
-        if(operand.type == IROperand.Type.LOCATION) {
-            // Otherwise, we need to move or load it into a virtual register
-            VirtualRegisterManager vrm = getUnit().getVrManager();
-            VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            getCurrentInstruction().insertBefore(new Load((Location) operand, vr));
-            return vr;
-        } else {
-            VirtualRegisterManager vrm = getUnit().getVrManager();
-            VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            getCurrentInstruction().insertBefore(new Move(operand, vr));
-            return vr;
-        }
-    }
-
-    @Override
-    public Void visit(Load load) {
-        var dest = load.getDest().accept(this);
-        var src = load.getSrc().accept(this);
-
-        if(src.type == IROperand.Type.VIRTUAL_REGISTER){
-            replaceAndContinue(new Move(src, dest));
-        }
-
-        return null;
+        VirtualRegisterManager vrm = getUnit().getVrManager();
+        VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
+        vr.setRegisterClass(registerClass);
+        getCurrentInstruction().insertBefore(new Move(operand, vr));
+        return vr;
     }
 
     @Override
     public Void visit(Move move) {
         move.setSource(move.getSource().accept(this));
         move.setDest(move.getDest().accept(this));
-        return null;
-    }
-
-    @Override
-    public Void visit(Store store) {
-
-        IROperand value = store.getValue().accept(this);
-        IROperand location = store.getDest().accept(this);
-
-        if(location.type == IROperand.Type.VIRTUAL_REGISTER){
-            replaceAndContinue(new Move(value, location));
-        }
-
         return null;
     }
 
@@ -208,21 +174,6 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     }
 
     @Override
-    public Void visit(Deref deref) {
-        IROperand operand = deref.getOperand().accept(this);
-        IROperand result = deref.getResult().accept(this);
-
-        if(operand.type != IROperand.Type.VIRTUAL_REGISTER) {
-            operand = moveOrLoadIntoVR(operand, RegisterClass.DEREF);
-        }
-
-        deref.setOperand(operand);
-        deref.setResult(result);
-
-        return null;
-    }
-
-    @Override
     public IROperand visit(ImmediateOperand immediateOperand) {
         return immediateOperand;
     }
@@ -256,6 +207,11 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     public IROperand visit(StackFrameOperand stackFrameOperand) {
         //TODO
         return stackFrameOperand;
+    }
+
+    @Override
+    public IROperand visit(Deref deref) {
+        return deref;
     }
 
     @Override

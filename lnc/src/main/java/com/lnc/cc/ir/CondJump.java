@@ -115,12 +115,12 @@ public class CondJump extends AbstractBranchInstr {
     }
 
     @Override
-    public Collection<IROperand> getReads() {
+    public Collection<IROperand> getReadOperands() {
         return List.of(left, right);
     }
 
     @Override
-    public Collection<IROperand> getWrites() {
+    public Collection<IROperand> getWriteOperands() {
         return List.of();
     }
 

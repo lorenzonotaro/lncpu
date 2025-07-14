@@ -5,11 +5,7 @@ public interface IIRInstructionVisitor<E> {
 
     E visit(CondJump condJump);
 
-    E visit(Load load);
-
     E visit(Move move);
-
-    E visit(Store store);
 
     E visit(Ret ret);
 
@@ -23,5 +19,4 @@ public interface IIRInstructionVisitor<E> {
 
     E visit(Unary unary);
 
-    E visit(Deref deref);
 }

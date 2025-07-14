@@ -56,7 +56,7 @@ public class Call extends IRInstruction {
     }
 
     @Override
-    public Collection<IROperand> getReads() {
+    public Collection<IROperand> getReadOperands() {
         List<IROperand> reads = List.of(callee);
         if (arguments != null) {
             reads = Stream.concat(reads.stream(), Arrays.stream(arguments)).toList();
@@ -65,7 +65,7 @@ public class Call extends IRInstruction {
     }
 
     @Override
-    public Collection<IROperand> getWrites() {
+    public Collection<IROperand> getWriteOperands() {
         if (returnTarget != null) {
             return List.of(returnTarget);
         }

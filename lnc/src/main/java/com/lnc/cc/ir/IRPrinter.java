@@ -22,20 +22,8 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
-    public Void visit(Load load) {
-        appendInstr(load);
-        return null;
-    }
-
-    @Override
     public Void visit(Move move) {
         appendInstr(move);
-        return null;
-    }
-
-    @Override
-    public Void visit(Store store) {
-        appendInstr(store);
         return null;
     }
 
@@ -72,12 +60,6 @@ public class IRPrinter extends GraphicalIRVisitor {
     @Override
     public Void visit(Unary unary) {
         appendInstr(unary);
-        return null;
-    }
-
-    @Override
-    public Void visit(Deref deref) {
-        appendInstr(deref);
         return null;
     }
 

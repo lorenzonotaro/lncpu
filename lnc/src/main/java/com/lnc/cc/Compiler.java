@@ -74,6 +74,13 @@ public class Compiler {
             return false;
         }
 
+        Logger.setProgramState("lowering");
+        IRLoweringPass loweringPass = new IRLoweringPass();
+
+        for (var unit : irGenerator.getResult().units()) {
+            loweringPass.visit(unit);
+        }
+
         if(!LNC.settings.get("--no-ir-opt", Boolean.class)) {
             Logger.setProgramState("opt");
             StageOneIROptimizer optimizer = new StageOneIROptimizer();
@@ -81,12 +88,6 @@ public class Compiler {
             for (var unit : irGenerator.getResult().units()) {
                 optimizer.run(unit);
             }
-        }
-        Logger.setProgramState("lowering");
-        IRLoweringPass loweringPass = new IRLoweringPass();
-
-        for (var unit : irGenerator.getResult().units()) {
-            loweringPass.visit(unit);
         }
 
         if(!LNC.settings.get("-oM", String.class).isBlank()){

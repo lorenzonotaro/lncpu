@@ -22,12 +22,12 @@ public class Ret extends IRInstruction {
     }
 
     @Override
-    public Collection<IROperand> getReads() {
+    public Collection<IROperand> getReadOperands() {
         return value != null ? List.of(value) : List.of();
     }
 
     @Override
-    public Collection<IROperand> getWrites() {
+    public Collection<IROperand> getWriteOperands() {
         return List.of();
     }
 

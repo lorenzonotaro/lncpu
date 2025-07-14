@@ -1,6 +1,8 @@
 package com.lnc.cc.optimization;
 
 import com.lnc.LNC;
+import com.lnc.cc.codegen.GraphColoringRegisterAllocator;
+import com.lnc.cc.codegen.LivenessInfo;
 import com.lnc.cc.ir.IRUnit;
 
 import java.util.List;
@@ -22,7 +24,8 @@ public class StageOneIROptimizer {
     private static final List<IRPass> PASSES = List.of(
             new ConstantFoldingPass(),
             new LocalDeadCodeEliminationPass(),
-            new TrivialGotoEliminationPass()
+            new TrivialGotoEliminationPass(),
+            new DeadMoveEliminationPass()
     );
 
     public void run(IRUnit unit){
@@ -33,13 +36,19 @@ public class StageOneIROptimizer {
                 throw new RuntimeException("Exceeded maximum iterations for first pass optimization.");
             }
             changed = false;
+            LivenessInfo livenessInfo = LivenessInfo.computeBlockLiveness(unit);
             for (var pass : PASSES) {
+                pass.setLivenessInfo(livenessInfo);
                 pass.visit(unit);
                 boolean passChanged = pass.isChanged();
-
                 changed |= passChanged;
+
+                if(passChanged) {
+                    livenessInfo = LivenessInfo.computeBlockLiveness(unit);
+                }
             }
         }while(changed);
     }
+
 
 }
