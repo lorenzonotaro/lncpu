@@ -222,11 +222,6 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
                             ? Collections.singleton(((Register) arg).reg)
                             : Collections.emptySet();
                 }
-                case SWAP -> // all arguments
-                        Arrays.stream(instruction.getArguments())
-                                .filter(arg -> arg.type == Argument.Type.REGISTER)
-                                .map(arg -> ((Register) arg).reg)
-                                .collect(Collectors.toSet());
                 default -> Collections.emptySet();
             };
         }

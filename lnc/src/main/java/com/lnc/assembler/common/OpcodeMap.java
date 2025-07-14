@@ -70,6 +70,7 @@ public class OpcodeMap {
             case "dcst" -> "<word>";
             case "datap" -> "[<data page address>]";
             case "abs" -> "[<full address>]";
+            case "ird" -> "[RD]";
             case "ircrd" -> "[RC:RD]";
             case "rcrd" -> "RC:RD";
             case "bpoffset" -> "BP +/ <offset>";

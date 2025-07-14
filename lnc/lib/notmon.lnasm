@@ -43,9 +43,8 @@ _backspace:
     goto            _loop
 
 _parse:
-    swap            RB,             RD              ; swap RB and RD so that:
-                                                    ; RD becomes 0 (index to read the buffer from now on)
-                                                    ; RB becomes the buffer length
+    mov             RD,             RB              ; RB now contains the number of characters in the buffer
+    xor             RD,             RD              ; reset RD to 0 (we start reading from the start of the buffer)                                                
 
     cmp             RB,             1               ; single character?
     jz              _command

@@ -1270,6 +1270,188 @@
         "flags_modified": "-"
     },
     {
+        "name": "mov_ird_ra",
+        "description": "Copies from a location in the address space (short indirect addressing mode) to RA",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "NOT_DEVICE_OUT": 0,
+                "ADDR_SEL": "abh:abl",
+                "RA_S": "input"
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_ird_rb",
+        "description": "Copies from a location in the address space (short indirect addressing mode) to RB",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_IN": "rb",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_OUT": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_ird_rc",
+        "description": "Copies from a location in the address space (short indirect addressing mode) to RC",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_IN": "rc",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_OUT": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_ird_rd",
+        "description": "Copies from a location in the address space (short indirect addressing mode) to RD",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_IN": "rd",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_OUT": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_ra_ird",
+        "description": "Copies RA to a location in the address space (short indirect addressing mode)",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "abh:abl",
+                "NOT_RA_OUT": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_rb_ird",
+        "description": "Copies RB to a location in the address space (short indirect addressing mode)",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_OUT": "rb",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_rc_ird",
+        "description": "Copies RC to a location in the address space (short indirect addressing mode)",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_OUT": "rc",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_rd_ird",
+        "description": "Copies RD to a location in the address space (short indirect addressing mode)",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_OUT": "rd",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "mov_cst_ird",
+        "description": "Copies a constant to a location in the address space (short indirect addressing mode)",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "abh:abl",
+                "NOT_DATA_LATCH_OUT": 0,
+                "NOT_PC_INC": 0,
+                "NOT_FETCH": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
         "name": "push_ra",
         "description": "Pushes RA onto the stack",
         "microcode": [
@@ -1342,6 +1524,34 @@
             {
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ds:abl",
+                "NOT_RT_IN": 0
+            },
+            {
+                "NOT_RT_OUT": 0,
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {
+                "SP_MODE_SEL": "inc"
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "push_ird",
+        "description": "Pushes a location in the address space (short indirect addressing mode) onto the stack",
+        "microcode": [
+            {
+                "NOT_ABH_IN": 0,
+                "NOT_DS_OUT": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "NOT_DEVICE_OUT": 0,
+                "ADDR_SEL": "abh:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1519,6 +1729,28 @@
                 "NOT_RT_OUT": 0,
                 "NOT_DEVICE_IN": 0,
                 "ADDR_SEL": "ds:abl"
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "pop_ird",
+        "description": "Pops from the stack into a location in the address space (short indirect addressing mode)",
+        "microcode": [
+            {
+                "SP_MODE_SEL": "dec",
+                "NOT_DEVICE_OUT": 0,
+                "ADDR_SEL": "ss:sp",
+                "NOT_ABH_IN": 0
+            },
+            {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rb"
+            },
+            {
+                "REG_OUT": "rc",
+                "ADDR_SEL": "abh:abl",
+                "NOT_DEVICE_IN": 0
             }
         ],
         "flags_modified": "-"
@@ -3660,120 +3892,6 @@
         "microcode": [
             {
                 "RA_S": "shift_right"
-            }
-        ],
-        "flags_modified": "-"
-    },
-    {
-        "name": "swap_ra_rb",
-        "description": "Swaps the values of RA and RB",
-        "microcode": [
-            {
-                "NOT_RA_OUT": 0,
-                "NOT_RT_IN": 0
-            },
-            {
-                "REG_OUT": "rb",
-                "RA_S": "input"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "REG_IN": "rb"
-            }
-        ],
-        "flags_modified": "-"
-    },
-    {
-        "name": "swap_ra_rc",
-        "description": "Swaps the values of RA and RC",
-        "microcode": [
-            {
-                "NOT_RA_OUT": 0,
-                "NOT_RT_IN": 0
-            },
-            {
-                "REG_OUT": "rc",
-                "RA_S": "input"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "REG_IN": "rc"
-            }
-        ],
-        "flags_modified": "-"
-    },
-    {
-        "name": "swap_ra_rd",
-        "description": "Swaps the values of RA and RD",
-        "microcode": [
-            {
-                "NOT_RA_OUT": 0,
-                "NOT_RT_IN": 0
-            },
-            {
-                "REG_OUT": "rd",
-                "RA_S": "input"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "REG_IN": "rd"
-            }
-        ],
-        "flags_modified": "-"
-    },
-    {
-        "name": "swap_rb_rc",
-        "description": "Swaps the values of RB and RC",
-        "microcode": [
-            {
-                "REG_OUT": "rb",
-                "NOT_RT_IN": 0
-            },
-            {
-                "REG_OUT": "rc",
-                "REG_IN": "rb"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "REG_IN": "rc"
-            }
-        ],
-        "flags_modified": "-"
-    },
-    {
-        "name": "swap_rb_rd",
-        "description": "Swaps the values of RB and RD",
-        "microcode": [
-            {
-                "REG_OUT": "rb",
-                "NOT_RT_IN": 0
-            },
-            {
-                "REG_OUT": "rd",
-                "REG_IN": "rb"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "REG_IN": "rd"
-            }
-        ],
-        "flags_modified": "-"
-    },
-    {
-        "name": "swap_rc_rd",
-        "description": "Swaps the values of RC and RD",
-        "microcode": [
-            {
-                "REG_OUT": "rc",
-                "NOT_RT_IN": 0
-            },
-            {
-                "REG_OUT": "rd",
-                "REG_IN": "rc"
-            },
-            {
-                "NOT_RT_OUT": 0,
-                "REG_IN": "rd"
             }
         ],
         "flags_modified": "-"

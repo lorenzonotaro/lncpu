@@ -41,6 +41,8 @@ public class Dereference extends Argument {
                 return "abs";
             case "rcrd":
                 return "ircrd";
+            case "rd":
+                return "ird";
             case "bpoffset":
                 return "ibpoffset";
             default:

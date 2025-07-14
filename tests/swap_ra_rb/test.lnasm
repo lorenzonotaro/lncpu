@@ -1,7 +1,0 @@
-.section CODE
-	mov 0x01, RA
-	mov 0x02, RB
-	swap RA, RB
-	hlt
-; RA = 0x02
-; RB = 0x01

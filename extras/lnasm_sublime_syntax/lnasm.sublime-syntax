@@ -23,7 +23,7 @@ contexts:
       push: line_comment
 
     # Keywords
-    - match: '\b(nop|hlt|mov|push|pop|add|sub|cmp|and|or|xor|swap|not|inc|dec|shl|shr|l?jc|l?jz|l?jn|l?goto|lcall|ret|iret|sid|cid|clc|sec|int)\b'
+    - match: '\b(nop|hlt|mov|push|pop|add|sub|cmp|and|or|xor|not|inc|dec|shl|shr|l?jc|l?jz|l?jn|l?goto|lcall|ret|iret|sid|cid|clc|sec|int)\b'
       scope: keyword.control.lnasm
 
     # Reserved words

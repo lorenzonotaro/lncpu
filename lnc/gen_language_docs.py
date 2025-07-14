@@ -29,6 +29,8 @@ def convert_immediate_param(param: str):
         return "[<data page address>]"
     elif param == "abs":
         return "[<full address>]"
+    elif param == "ird":
+        return "[RD]"
     elif param == "ircrd":
         return "[RC:RD]"
     elif param == "rcrd":

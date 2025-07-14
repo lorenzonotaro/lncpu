@@ -137,10 +137,11 @@ Interrupts can be disabled with the `sid` (set interrupt disable) instruction, w
 
 # Addressing modes
 The CPU supports several addressing modes, which determine how the operands of an instruction are accessed. The addressing modes are:
-| Addressing mode | Description |
-|-----------------|-------------|
-| `immediate`     | The operand is a constant value, specified in the instruction. |
-| `abs`        | The operand is a 2-byte address of a location in the address space. |
-| `dpage`      | The operand is a 1-byte offset from the data segment, which is specified in the `DS` register. |
-| `ibpoffset`  | The operand is a 1-byte offset from the base pointer, which is specified in the `BP` register. |
-| `ircrd` | Requires no operands, the location is specified by the contents of the RC and RD registers.
+| Addressing mode | Name | Description |
+|-----------------|------|-------------|
+| `immediate`     | Immediate | The operand is a constant value, specified in the instruction. |
+| `abs`        | Absolute | The operand is a 2-byte address of a location in the address space. |
+| `dpage`      | Data page | The operand is a 1-byte offset from the data segment, which is specified in the `DS` register. |
+| `ibpoffset`  | Stack frame | The operand is a 1-byte offset from the base pointer, which is specified in the `BP` register. |
+| `ird`        | Data page indirect | Requires no operands, the location is in the data page at the address specified by the contents of the `RD` register. |
+| `ircrd` | Full indirect | Requires no operands, the location is specified by the contents of the RC and RD registers.

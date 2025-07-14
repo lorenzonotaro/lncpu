@@ -1,8 +1,0 @@
-.section CODE
-; swap RB, RD - Swaps the values of RB and RD - 
-	mov 0x22, RB
-	mov 0x33, RD
-	swap RB, RD
-	hlt
-; RB = 0x33
-; RD = 0x22 
