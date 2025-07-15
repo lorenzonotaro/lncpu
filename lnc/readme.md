@@ -252,35 +252,32 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
  - [ ] Unions
  - [ ] Reentrant functions (see below)
 
- ### Interfacing lnc and lnasm
 
- lnc handles functions in the following ways:
- 
- * Parameters and local variables are all **implicitly static**. This means that **all lnc functions are NOT reentrant** and may exist only once in the call stack. This is a deliberate design choice for simplicity and may be changed in the future (e.g. with a parameter stack).
+### Calling convention
 
- * If the function returns a value, it does so through the `RB` register.
+#### Parameters
 
- * Register preservation is handled by the callee.
+The calling convention for functions in `lnc` allows for up to 4 1-byte paramters and 2 2-byte parameters to be passed in the general purpose registers `RA`, `RB`, `RC` and `RD`. If more than 4 parameters are needed, the remaining parameters must be passed via the stack. Specifically:
+- if the callee doesn't require any 2-byte parameters, the first 4 parameters are passed in `RA`, `RB`, `RC` and `RD`; the remaining parameters are passed on the stack.
+- if the callee requires a 2-byte parameter, such parameter is passed in `RC:RD`; `RA` and `RB` are used for the first two 1-byte parameters, while the remaining parameters are passed on the stack.
+
+#### Return values
+If the function returns a 1-byte value, it is returned in the `RB` register. If the function returns a 2-byte value, it is returned in the `RC:RD` registers.
+
+#### Register preservation
+The calling convention requires that the *callee* preserves the values of any registers it uses, except for the register(s) used to return a value (`RB` or `RC:RD`, see above).
+
+#### Interfacing with lnasm
 
 To inform the C compiler of the existence of an `lnasm` function that will be linked with the compiler output, you may declare it as `extern`.
 
     extern int doublei(int i);
 
-In the lnasm code, the function must follow lnc's "calling convention" and get its parameters from memory. Parameters are store in the data page (lnc defaults to page 20xx, first page of RAM) and their name will be determined as follows:
-
-    functionname__parametername
-
-    Example:
-
+In the lnasm code, the function must follow lnc's calling convention and register preservation.
+Example:
+```C
     //lnc:
     extern int doublei(int i);
-
-    //will reserve 1 byte for its parameter in the data page as follows:
-
-    ; lnasm:
-    ...
-    doublei__i:
-        .res 1
     ...
 
 The function code in lnasm could then be:
