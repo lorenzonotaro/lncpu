@@ -261,6 +261,8 @@ The calling convention for functions in `lnc` allows for up to 4 1-byte paramter
 - if the callee doesn't require any 2-byte parameters, the first 4 parameters are passed in `RA`, `RB`, `RC` and `RD`; the remaining parameters are passed on the stack.
 - if the callee requires a 2-byte parameter, such parameter is passed in `RC:RD`; `RA` and `RB` are used for the first two 1-byte parameters, while the remaining parameters are passed on the stack.
 
+In case any parameters are passed on the stack, the *callee* is responsible for clearing the stack (including its parameters) before returning. This can be easily done by using the `ret <stack size>` instruction, specifying the number of bytes to pop from the stack after the function returns.
+
 #### Return values
 If the function returns a 1-byte value, it is returned in the `RB` register. If the function returns a 2-byte value, it is returned in the `RC:RD` registers.
 
@@ -270,36 +272,27 @@ The calling convention requires that the *callee* preserves the values of any re
 #### Interfacing with lnasm
 
 To inform the C compiler of the existence of an `lnasm` function that will be linked with the compiler output, you may declare it as `extern`.
-
-    extern int doublei(int i);
-
 In the lnasm code, the function must follow lnc's calling convention and register preservation.
 Example:
 ```C
     //lnc:
     extern int doublei(int i);
-    ...
-
+```
 The function code in lnasm could then be:
-
+```
     doublei:
-        mov [doublei__i],   RB
-        add RB,             RB
+        mov     RA,     RB ; move RA to the return register
+        add     RB,     RB ; double the value in RB
         ret
-
+```
 The same goes the other way around:
-
-    /* lnc code */
+```c
     int doublei(int i){
         return i + i;
     }
-
-    ...
-
-    ; lnasm code
-
-    ...
-    mov     15,             [doublei__i]
+```
+```
+    mov     15,             RA
     lcall   doublei
     ; at this point RB will contain 30
-    ...
+```
