@@ -1,0 +1,6 @@
+.section CODE
+    mov 0x20, DS
+    mov 0x44, [0x21]
+    mov 0x21, RD
+    mov [RD], RC
+    hlt

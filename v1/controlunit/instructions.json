@@ -1274,16 +1274,12 @@
         "description": "Copies from a location in the address space (short indirect addressing mode) to RA",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "RA_S": "input"
             }
         ],
@@ -1294,16 +1290,12 @@
         "description": "Copies from a location in the address space (short indirect addressing mode) to RB",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "REG_IN": "rb",
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
         ],
@@ -1314,16 +1306,12 @@
         "description": "Copies from a location in the address space (short indirect addressing mode) to RC",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "REG_IN": "rc",
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
         ],
@@ -1334,16 +1322,12 @@
         "description": "Copies from a location in the address space (short indirect addressing mode) to RD",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "REG_IN": "rd",
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_OUT": 0
             }
         ],
@@ -1354,16 +1338,12 @@
         "description": "Copies RA to a location in the address space (short indirect addressing mode)",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RA_OUT": 0
             }
         ],
@@ -1374,16 +1354,12 @@
         "description": "Copies RB to a location in the address space (short indirect addressing mode)",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "REG_OUT": "rb",
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
@@ -1394,16 +1370,12 @@
         "description": "Copies RC to a location in the address space (short indirect addressing mode)",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "REG_OUT": "rc",
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
@@ -1414,16 +1386,12 @@
         "description": "Copies RD to a location in the address space (short indirect addressing mode)",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "REG_OUT": "rd",
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],
@@ -1434,16 +1402,12 @@
         "description": "Copies a constant to a location in the address space (short indirect addressing mode)",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "NOT_DEVICE_IN": 0,
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_DATA_LATCH_OUT": 0,
                 "NOT_PC_INC": 0,
                 "NOT_FETCH": 0
@@ -1542,16 +1506,12 @@
         "description": "Pushes a location in the address space (short indirect addressing mode) onto the stack",
         "microcode": [
             {
-                "NOT_ABH_IN": 0,
-                "NOT_DS_OUT": 0
-            },
-            {
                 "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
+                "REG_OUT": "rd"
             },
             {
                 "NOT_DEVICE_OUT": 0,
-                "ADDR_SEL": "abh:abl",
+                "ADDR_SEL": "ds:abl",
                 "NOT_RT_IN": 0
             },
             {
@@ -1738,18 +1698,18 @@
         "description": "Pops from the stack into a location in the address space (short indirect addressing mode)",
         "microcode": [
             {
+                "NOT_ABL_IN": 0,
+                "REG_OUT": "rd"
+            },
+            {
                 "SP_MODE_SEL": "dec",
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp",
-                "NOT_ABH_IN": 0
+                "NOT_RT_IN": 0
             },
             {
-                "NOT_ABL_IN": 0,
-                "REG_OUT": "rb"
-            },
-            {
-                "REG_OUT": "rc",
-                "ADDR_SEL": "abh:abl",
+                "NOT_RT_OUT": 0,
+                "ADDR_SEL": "ds:abl",
                 "NOT_DEVICE_IN": 0
             }
         ],

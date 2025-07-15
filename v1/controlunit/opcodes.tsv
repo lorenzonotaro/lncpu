@@ -68,21 +68,21 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0x42	mov_abs_rd	3	3	Copies from location in the address space (absolute addressing mode) to RD	-
 0x43	mov_cst_abs	4	4	Copies a constant to a location in the address space (absolute addressing mode)	-
 0x44	mov_datap_datap	3	4	Copies a location in the address space (data page addressing mode) to another location in the address space (data page addressing mode)	-
-0x45	mov_ird_ra	1	3	Copies from a location in the address space (short indirect addressing mode) to RA	-
-0x46	mov_ird_rb	1	3	Copies from a location in the address space (short indirect addressing mode) to RB	-
-0x47	mov_ird_rc	1	3	Copies from a location in the address space (short indirect addressing mode) to RC	-
-0x48	mov_ird_rd	1	3	Copies from a location in the address space (short indirect addressing mode) to RD	-
-0x49	mov_ra_ird	1	3	Copies RA to a location in the address space (short indirect addressing mode)	-
-0x4a	mov_rb_ird	1	3	Copies RB to a location in the address space (short indirect addressing mode)	-
-0x4b	mov_rc_ird	1	3	Copies RC to a location in the address space (short indirect addressing mode)	-
-0x4c	mov_rd_ird	1	3	Copies RD to a location in the address space (short indirect addressing mode)	-
-0x4d	mov_cst_ird	2	4	Copies a constant to a location in the address space (short indirect addressing mode)	-
+0x45	mov_ird_ra	1	2	Copies from a location in the address space (short indirect addressing mode) to RA	-
+0x46	mov_ird_rb	1	2	Copies from a location in the address space (short indirect addressing mode) to RB	-
+0x47	mov_ird_rc	1	2	Copies from a location in the address space (short indirect addressing mode) to RC	-
+0x48	mov_ird_rd	1	2	Copies from a location in the address space (short indirect addressing mode) to RD	-
+0x49	mov_ra_ird	1	2	Copies RA to a location in the address space (short indirect addressing mode)	-
+0x4a	mov_rb_ird	1	2	Copies RB to a location in the address space (short indirect addressing mode)	-
+0x4b	mov_rc_ird	1	2	Copies RC to a location in the address space (short indirect addressing mode)	-
+0x4c	mov_rd_ird	1	2	Copies RD to a location in the address space (short indirect addressing mode)	-
+0x4d	mov_cst_ird	2	3	Copies a constant to a location in the address space (short indirect addressing mode)	-
 0x4e	push_ra	1	2	Pushes RA onto the stack	-
 0x4f	push_rb	1	2	Pushes RB onto the stack	-
 0x50	push_rc	1	2	Pushes RC onto the stack	-
 0x51	push_rd	1	2	Pushes RD onto the stack	-
 0x52	push_datap	2	4	Pushes a location in the address space (data page addressing mode) onto the stack	-
-0x53	push_ird	1	5	Pushes a location in the address space (short indirect addressing mode) onto the stack	-
+0x53	push_ird	1	4	Pushes a location in the address space (short indirect addressing mode) onto the stack	-
 0x54	push_ircrd	1	5	Pushes a location in the address space (full indirect addressing mode) onto the stack	-
 0x55	push_abs	3	5	Pushes a location in the address space (absolute addressing mode) onto the stack	-
 0x56	push_cst	2	2	Pushes a constant onto the stack	-

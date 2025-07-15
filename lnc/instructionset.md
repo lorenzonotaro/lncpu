@@ -74,21 +74,21 @@
 | 42 | `mov [<full address>],	RD` | Copies from location in the address space (absolute addressing mode) to RD | 3 | - |
 | 43 | `mov <byte>,	[<full address>]` | Copies a constant to a location in the address space (absolute addressing mode) | 4 | - |
 | 44 | `mov [<data page address>],	[<data page address>]` | Copies a location in the address space (data page addressing mode) to another location in the address space (data page addressing mode) | 4 | - |
-| 45 | `mov [RD],	RA` | Copies from a location in the address space (short indirect addressing mode) to RA | 3 | - |
-| 46 | `mov [RD],	RB` | Copies from a location in the address space (short indirect addressing mode) to RB | 3 | - |
-| 47 | `mov [RD],	RC` | Copies from a location in the address space (short indirect addressing mode) to RC | 3 | - |
-| 48 | `mov [RD],	RD` | Copies from a location in the address space (short indirect addressing mode) to RD | 3 | - |
-| 49 | `mov RA,	[RD]` | Copies RA to a location in the address space (short indirect addressing mode) | 3 | - |
-| 4a | `mov RB,	[RD]` | Copies RB to a location in the address space (short indirect addressing mode) | 3 | - |
-| 4b | `mov RC,	[RD]` | Copies RC to a location in the address space (short indirect addressing mode) | 3 | - |
-| 4c | `mov RD,	[RD]` | Copies RD to a location in the address space (short indirect addressing mode) | 3 | - |
-| 4d | `mov <byte>,	[RD]` | Copies a constant to a location in the address space (short indirect addressing mode) | 4 | - |
+| 45 | `mov [RD],	RA` | Copies from a location in the address space (short indirect addressing mode) to RA | 2 | - |
+| 46 | `mov [RD],	RB` | Copies from a location in the address space (short indirect addressing mode) to RB | 2 | - |
+| 47 | `mov [RD],	RC` | Copies from a location in the address space (short indirect addressing mode) to RC | 2 | - |
+| 48 | `mov [RD],	RD` | Copies from a location in the address space (short indirect addressing mode) to RD | 2 | - |
+| 49 | `mov RA,	[RD]` | Copies RA to a location in the address space (short indirect addressing mode) | 2 | - |
+| 4a | `mov RB,	[RD]` | Copies RB to a location in the address space (short indirect addressing mode) | 2 | - |
+| 4b | `mov RC,	[RD]` | Copies RC to a location in the address space (short indirect addressing mode) | 2 | - |
+| 4c | `mov RD,	[RD]` | Copies RD to a location in the address space (short indirect addressing mode) | 2 | - |
+| 4d | `mov <byte>,	[RD]` | Copies a constant to a location in the address space (short indirect addressing mode) | 3 | - |
 | 4e | `push RA` | Pushes RA onto the stack | 2 | - |
 | 4f | `push RB` | Pushes RB onto the stack | 2 | - |
 | 50 | `push RC` | Pushes RC onto the stack | 2 | - |
 | 51 | `push RD` | Pushes RD onto the stack | 2 | - |
 | 52 | `push [<data page address>]` | Pushes a location in the address space (data page addressing mode) onto the stack | 4 | - |
-| 53 | `push [RD]` | Pushes a location in the address space (short indirect addressing mode) onto the stack | 5 | - |
+| 53 | `push [RD]` | Pushes a location in the address space (short indirect addressing mode) onto the stack | 4 | - |
 | 54 | `push [RC:RD]` | Pushes a location in the address space (full indirect addressing mode) onto the stack | 5 | - |
 | 55 | `push [<full address>]` | Pushes a location in the address space (absolute addressing mode) onto the stack | 5 | - |
 | 56 | `push <byte>` | Pushes a constant onto the stack | 2 | - |
@@ -98,7 +98,7 @@
 | 5a | `pop RC` | Pops from the stack into RC | 1 | - |
 | 5b | `pop RD` | Pops from the stack into RD | 1 | - |
 | 5c | `pop [<data page address>]` | Pops from the stack into a location in the address space (data page addressing mode) | 3 | - |
-| 5d | `pop [RD]` | Pops from the stack into a location in the address space (short indirect addressing mode) | 3 | - |
+| 5d | `pop [RD]` | Pops from the stack into a location in the address space (short indirect addressing mode) | 2 | - |
 | 5e | `pop [RC:RD]` | Pops from the stack into a location in the address space (full indirect addressing mode) | 4 | - |
 | 5f | `pop [<full address>]` | Pops from the stack into a location in the address space (absolute addressing mode) | 4 | - |
 | 60 | `pop BP` | Pops from the stack into BP | 1 | - |

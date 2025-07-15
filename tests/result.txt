@@ -1,0 +1,772 @@
+======TEST======mov_bp_sp: Passed
+Message:
+
+======TEST======mov_ibpoffset_rd: Passed
+Message:
+
+======TEST======mov_rd_ra: Passed
+Message:
+
+======TEST======add_ra_rc: Passed
+Message:
+
+======TEST======push_ra: Passed
+Message:
+
+======TEST======sub_ra_rd: Passed
+Message:
+
+======TEST======mov_ds_rd: Passed
+Message:
+
+======TEST======pop_rc: Passed
+Message:
+
+======TEST======int: Passed
+Message:
+
+======TEST======goto_cst: Passed
+Message:
+
+======TEST======xor_ra_rd: Passed
+Message:
+
+======TEST======pop_datap: Passed
+Message:
+
+======TEST======sub_rc_rc: Passed
+Message:
+
+======TEST======and_rc_rd: Passed
+Message:
+
+======TEST======cmp_ra_rc: Passed
+Message:
+
+======TEST======or_rd_rb: Passed
+Message:
+
+======TEST======sub_sp_cst: Passed
+Message:
+
+======TEST======add_rb_cst: Passed
+Message:
+
+======TEST======jn_cst: Passed
+Message:
+
+======TEST======mov_ra_datap: Passed
+Message:
+
+======TEST======xor_rc_rc: Passed
+Message:
+
+======TEST======not_ra: Passed
+Message:
+
+======TEST======add_sp_cst: Passed
+Message:
+
+======TEST======mov_cst_rb: Passed
+Message:
+
+======TEST======add_rc_rb: Passed
+Message:
+
+======TEST======and_ra_cst: Passed
+Message:
+
+======TEST======cmp_rc_rc: Passed
+Message:
+
+======TEST======mov_rd_ibpoffset: Passed
+Message:
+
+======TEST======or_rd_cst: Passed
+Message:
+
+======TEST======cmp_rb_cst: Passed
+Message:
+
+======TEST======mov_ra_ibpoffset: Passed
+Message:
+
+======TEST======mov_ra_ircrd: Passed
+Message:
+
+======TEST======mov_ircrd_rb: Passed
+Message:
+
+======TEST======mov_rc_ibpoffset: Passed
+Message:
+
+======TEST======or_rb_rc: Passed
+Message:
+
+======TEST======and_ra_rd: Passed
+Message:
+
+======TEST======mov_rb_ibpoffset: Passed
+Message:
+
+======TEST======sub_rb_cst: Passed
+Message:
+
+======TEST======mov_sp_bp: Passed
+Message:
+
+======TEST======add_ra_rb: Passed
+Message:
+
+======TEST======push_rb: Passed
+Message:
+
+======TEST======sub_ra_rc: Passed
+Message:
+
+======TEST======pop_rd: Passed
+Message:
+
+======TEST======mov_rd_datap: Passed
+Message:
+
+======TEST======and_rb_ra: Passed
+Message:
+
+======TEST======jc_cst: Passed
+Message:
+
+======TEST======or_rc_cst: Passed
+Message:
+
+======TEST======mov_rb_ra: Passed
+Message:
+
+======TEST======xor_ra_rc: Passed
+Message:
+
+======TEST======sub_rc_rb: Passed
+Message:
+
+======TEST======cmp_ra_cst: Passed
+Message:
+
+======TEST======xor_rb_ra: Passed
+Message:
+
+======TEST======cmp_ra_rd: Passed
+Message:
+
+======TEST======mov_cst_ss: Passed
+Message:
+
+======TEST======or_rd_ra: Passed
+Message:
+
+======TEST======mov_cst_ircrd: Passed
+Message:
+
+======TEST======xor_rc_rb: Passed
+Message:
+
+======TEST======add_rc_ra: Passed
+Message:
+
+======TEST======mov_cst_ra: Passed
+Message:
+
+======TEST======mov_rd_ircrd: Passed
+Message:
+
+======TEST======or_rb_rb: Passed
+Message:
+
+======TEST======mov_cst_datap: Passed
+Message:
+
+======TEST======cmp_rc_rb: Passed
+Message:
+
+======TEST======mov_ircrd_rc: Passed
+Message:
+
+======TEST======and_ra_rc: Passed
+Message:
+
+======TEST======ljn_dcst: Passed
+Message:
+
+======TEST======mov_ibpoffset_rb: Passed
+Message:
+
+======TEST======add_ra_ra: Passed
+Message:
+
+======TEST======add_rd_rd: Passed
+Message:
+
+======TEST======mov_rc_datap: Passed
+Message:
+
+======TEST======lcall_rcrd: Passed
+Message:
+
+======TEST======sub_rd_ra: Passed
+Message:
+
+======TEST======and_rb_rb: Passed
+Message:
+
+======TEST======xor_rd_ra: Passed
+Message:
+
+======TEST======and_rc_rb: Passed
+Message:
+
+======TEST======sub_rc_ra: Passed
+Message:
+
+======TEST======or_rd_rd: Passed
+Message:
+
+======TEST======mov_rb_rd: Passed
+Message:
+
+======TEST======mov_sp_rd: Passed
+Message:
+
+======TEST======push_bp: Passed
+Message:
+
+======TEST======dec_rd: Passed
+Message:
+
+======TEST======xor_rc_ra: Passed
+Message:
+
+======TEST======cid: Passed
+Message:
+
+======TEST======push_abs: Passed
+Message:
+
+======TEST======add_rc_rd: Passed
+Message:
+
+======TEST======mov_rd_abs: Passed
+Message:
+
+======TEST======add_rb_ra: Passed
+Message:
+
+======TEST======mov_rd_sp: Passed
+Message:
+
+======TEST======or_rb_ra: Passed
+Message:
+
+======TEST======cmp_rc_ra: Passed
+Message:
+
+======TEST======and_ra_rb: Passed
+Message:
+
+======TEST======ret: Passed
+Message:
+
+======TEST======mov_abs_rd: Passed
+Message:
+
+======TEST======inc_ra: Passed
+Message:
+
+======TEST======mov_ibpoffset_rc: Passed
+Message:
+
+======TEST======mov_ra_abs: Passed
+Message:
+
+======TEST======and_rb_rc: Passed
+Message:
+
+======TEST======xor_rd_rb: Passed
+Message:
+
+======TEST======and_rc_rc: Passed
+Message:
+
+======TEST======cmp_rd_ra: Passed
+Message:
+
+======TEST======or_rd_rc: Passed
+Message:
+
+======TEST======iret: Passed
+Message:
+
+======TEST======dec_rc: Passed
+Message:
+
+======TEST======mov_rb_rc: Passed
+Message:
+
+======TEST======mov_rc_rd: Passed
+Message:
+
+======TEST======mov_rb_abs: Passed
+Message:
+
+======TEST======or_rc_ra: Passed
+Message:
+
+======TEST======lcall_dcst: Passed
+Message:
+
+======TEST======add_rc_rc: Passed
+Message:
+
+======TEST======push_ircrd: Passed
+Message:
+
+======TEST======add_rb_rb: Passed
+Message:
+
+======TEST======ljc_dcst: Passed
+Message:
+
+======TEST======mov_ircrd_ra: Passed
+Message:
+
+======TEST======and_ra_ra: Passed
+Message:
+
+======TEST======mov_rb_ircrd: Passed
+Message:
+
+======TEST======cmp_rb_rc: Passed
+Message:
+
+======TEST======xor_rc_cst: Passed
+Message:
+
+======TEST======add_rd_rb: Passed
+Message:
+
+======TEST======and_rb_rd: Passed
+Message:
+
+======TEST======mov_ra_rb: Passed
+Message:
+
+======TEST======or_ra_rc: Passed
+Message:
+
+======TEST======xor_rb_rd: Passed
+Message:
+
+======TEST======mov_rc_abs: Passed
+Message:
+
+======TEST======xor_rd_rc: Passed
+Message:
+
+======TEST======sub_rd_rc: Passed
+Message:
+
+======TEST======mov_cst_sp: Passed
+Message:
+
+======TEST======cmp_rd_rb: Passed
+Message:
+
+======TEST======dec_rb: Passed
+Message:
+
+======TEST======pop_bp: Passed
+Message:
+
+======TEST======and_rd_rd: Passed
+Message:
+
+======TEST======lgoto_dcst: Passed
+Message:
+
+======TEST======sub_rb_rc: Passed
+Message:
+
+======TEST======mov_datap_rb: Passed
+Message:
+
+======TEST======mov_rc_ra: Passed
+Message:
+
+======TEST======or_rc_rb: Passed
+Message:
+
+======TEST======add_rb_rc: Passed
+Message:
+
+======TEST======mov_cst_bp: Passed
+Message:
+
+======TEST======mov_cst_ds: Passed
+Message:
+
+======TEST======or_ra_cst: Passed
+Message:
+
+======TEST======mov_abs_rb: Passed
+Message:
+
+======TEST======inc_rc: Passed
+Message:
+
+======TEST======shr_ra: Passed
+Message:
+
+======TEST======mov_cst_abs: Passed
+Message:
+
+======TEST======add_rd_rc: Passed
+Message:
+
+======TEST======mov_ibpoffset_ra: Passed
+Message:
+
+======TEST======and_rd_cst: Passed
+Message:
+
+======TEST======cmp_rb_rd: Passed
+Message:
+
+======TEST======sub_rd_cst: Passed
+Message:
+
+======TEST======or_ra_rd: Passed
+Message:
+
+======TEST======mov_ra_rc: Passed
+Message:
+
+======TEST======xor_rd_rd: Passed
+Message:
+
+======TEST======sub_rd_rb: Passed
+Message:
+
+======TEST======and_rc_ra: Passed
+Message:
+
+======TEST======pop_abs: Passed
+Message:
+
+======TEST======cmp_rd_rc: Passed
+Message:
+
+======TEST======sub_bp_cst: Passed
+Message:
+
+======TEST======dec_ra: Passed
+Message:
+
+======TEST======and_rc_cst: Passed
+Message:
+
+======TEST======and_rd_rc: Passed
+Message:
+
+======TEST======mov_datap_ra: Passed
+Message:
+
+======TEST======sub_rb_rd: Passed
+Message:
+
+======TEST======or_rb_cst: Passed
+Message:
+
+======TEST======mov_rc_rb: Passed
+Message:
+
+======TEST======or_rc_rc: Passed
+Message:
+
+======TEST======add_rb_rd: Passed
+Message:
+
+======TEST======sec: Passed
+Message:
+
+======TEST======xor_rd_cst: Passed
+Message:
+
+======TEST======not_rd: Passed
+Message:
+
+======TEST======mov_abs_rc: Passed
+Message:
+
+======TEST======inc_rb: Passed
+Message:
+
+======TEST======lgoto_rcrd: Passed
+Message:
+
+======TEST======cmp_rb_ra: Passed
+Message:
+
+======TEST======push_datap: Passed
+Message:
+
+======TEST======mov_rd_rc: Passed
+Message:
+
+======TEST======pop_ra: Passed
+Message:
+
+======TEST======mov_ra_rd: Passed
+Message:
+
+======TEST======push_rc: Passed
+Message:
+
+======TEST======sub_ra_rb: Passed
+Message:
+
+======TEST======xor_ra_rb: Passed
+Message:
+
+======TEST======sub_rc_cst: Passed
+Message:
+
+======TEST======xor_rb_rb: Passed
+Message:
+
+======TEST======or_ra_ra: Passed
+Message:
+
+======TEST======cmp_rd_rd: Passed
+Message:
+
+======TEST======and_rb_cst: Passed
+Message:
+
+======TEST======push_cst: Passed
+Message:
+
+======TEST======cmp_ra_ra: Passed
+Message:
+
+======TEST======mov_rd_ds: Passed
+Message:
+
+======TEST======or_rc_rd: Passed
+Message:
+
+======TEST======sub_rb_ra: Passed
+Message:
+
+======TEST======xor_rb_cst: Passed
+Message:
+
+======TEST======mov_ss_rd: Passed
+Message:
+
+======TEST======ljz_dcst: Passed
+Message:
+
+======TEST======and_rd_rb: Passed
+Message:
+
+======TEST======mov_datap_rd: Passed
+Message:
+
+======TEST======mov_cst_rd: Passed
+Message:
+
+======TEST======add_rd_cst: Passed
+Message:
+
+======TEST======add_ra_cst: Passed
+Message:
+
+======TEST======mov_rc_ircrd: Passed
+Message:
+
+======TEST======shl_ra: Passed
+Message:
+
+======TEST======mov_datap_datap: Passed
+Message:
+
+======TEST======not_rc: Passed
+Message:
+
+======TEST======sid: Passed
+Message:
+
+======TEST======mov_ircrd_rd: Passed
+Message:
+
+======TEST======cmp_rb_rb: Passed
+Message:
+
+======TEST======ret_cst: Passed
+Message:
+
+======TEST======add_rd_ra: Passed
+Message:
+
+======TEST======cmp_rd_cst: Passed
+Message:
+
+======TEST======mov_rd_rb: Passed
+Message:
+
+======TEST======or_ra_rb: Passed
+Message:
+
+======TEST======sub_ra_cst: Passed
+Message:
+
+======TEST======sub_rd_rd: Passed
+Message:
+
+======TEST======xor_rb_rc: Passed
+Message:
+
+======TEST======add_ra_rd: Passed
+Message:
+
+======TEST======add_rc_cst: Passed
+Message:
+
+======TEST======pop_rb: Passed
+Message:
+
+======TEST======push_rd: Passed
+Message:
+
+======TEST======sub_ra_ra: Passed
+Message:
+
+======TEST======xor_ra_ra: Passed
+Message:
+
+======TEST======xor_ra_cst: Passed
+Message:
+
+======TEST======sub_rc_rd: Passed
+Message:
+
+======TEST======clc: Passed
+Message:
+
+======TEST======mov_rb_datap: Passed
+Message:
+
+======TEST======cmp_ra_rb: Passed
+Message:
+
+======TEST======cmp_rc_cst: Passed
+Message:
+
+======TEST======jz_cst: Passed
+Message:
+
+======TEST======and_rd_ra: Passed
+Message:
+
+======TEST======sub_rb_rb: Passed
+Message:
+
+======TEST======mov_cst_ibpoffset: Passed
+Message:
+
+======TEST======mov_cst_rc: Passed
+Message:
+
+======TEST======mov_datap_rc: Passed
+Message:
+
+======TEST======pop_ircrd: Passed
+Message:
+
+======TEST======cmp_rc_rd: Passed
+Message:
+
+======TEST======mov_rd_ss: Passed
+Message:
+
+======TEST======not_rb: Passed
+Message:
+
+======TEST======add_bp_cst: Passed
+Message:
+
+======TEST======mov_abs_ra: Passed
+Message:
+
+======TEST======inc_rd: Passed
+Message:
+
+======TEST======or_rb_rd: Passed
+Message:
+
+======TEST======xor_rc_rd: Passed
+Message:
+
+======TEST======mov_rc_ird: Failed
+Message:
+Failed conditions:
+[0x0021] = 0x90 (actual: 0x00)
+
+======TEST======mov_ra_ird: Failed
+Message:
+Failed conditions:
+[0x0042] = 0x11 (actual: 0x00)
+
+======TEST======pop_ird: Failed
+Message:
+Failed conditions:
+[0x00ff] = 0x42 (actual: 0x00)
+
+======TEST======mov_rd_ird: Failed
+Message:
+Failed conditions:
+[0x0021] = 0x21 (actual: 0x00)
+
+======TEST======mov_ird_rd: Failed
+Message:
+Failed conditions:
+RD = 0x11 (actual: 0x00)
+
+======TEST======push_ird: Failed
+Message:
+Failed conditions:
+[0x0100] = 0x11 (actual: 0x00)
+
+======TEST======mov_rb_ird: Failed
+Message:
+Failed conditions:
+[0x0055] = 0x24 (actual: 0x00)
+
+======TEST======mov_ird_ra: Failed
+Message:
+Failed conditions:
+RA = 0x42 (actual: 0x00)
+
+======TEST======mov_ird_rc: Failed
+Message:
+Failed conditions:
+RC = 0x44 (actual: 0x00)
+
+======TEST======mov_ird_rb: Failed
+Message:
+Failed conditions:
+RB = 0x29 (actual: 0x00)
+
+======TEST======mov_cst_ird: Failed
+Message:
+Failed conditions:
+[0x0029] = 0x44 (actual: 0x00)
+
