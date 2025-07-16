@@ -1,43 +1,33 @@
 package com.lnc.cc.common;
 
+import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.types.TypeQualifier;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
 
 public class BaseSymbol{
     private final Token token;
-    private final TypeSpecifier type;
-    private boolean isForward;
+    private final TypeSpecifier typeSpecifier;
+    private final TypeQualifier qualifier;
     private Scope scope;
     private String flatSymbolName;
-
-    private boolean isParameter;
+    private final boolean isParameter;
     private final int parameterIndex;
-    private final boolean isStatic;
 
-
-    private BaseSymbol(Token token, TypeSpecifier type, boolean isForward, boolean isParameter, int parameterIndex, boolean isStatic) {
+    private BaseSymbol(Token token, TypeSpecifier typeSpecifier, TypeQualifier qualifier, boolean isParameter, int parameterIndex) {
         this.token = token;
-        this.type = type;
-        this.isForward = isForward;
+        this.typeSpecifier = typeSpecifier;
+        this.qualifier = qualifier;
         this.isParameter = isParameter;
         this.parameterIndex = parameterIndex;
-        this.isStatic = isStatic;
     }
 
-    public static BaseSymbol forward(Token token, TypeSpecifier type, boolean isStatic) {
-        return new BaseSymbol(token, type, true, false, -1, isStatic);
+    public static BaseSymbol parameter(Token token, TypeSpecifier type, TypeQualifier qualifier, int parameterIndex) {
+        return new BaseSymbol(token, type, qualifier, true, parameterIndex);
     }
 
-    public static BaseSymbol parameter(Token token, TypeSpecifier type, int parameterIndex) {
-        return new BaseSymbol(token, type, false, true, parameterIndex, false);
-    }
-
-    public static BaseSymbol static_(Token token, TypeSpecifier type, boolean isForward) {
-        return new BaseSymbol(token, type, isForward, false, -1, true);
-    }
-
-    public static BaseSymbol variable(Token token, TypeSpecifier type, boolean isForward, boolean isStatic) {
-        return new BaseSymbol(token, type, isForward, false, -1, isStatic);
+    public static BaseSymbol variable(Token token, TypeSpecifier type, TypeQualifier qualifier) {
+        return new BaseSymbol(token, type, qualifier, false, -1);
     }
 
 
@@ -45,12 +35,8 @@ public class BaseSymbol{
         return flatSymbolName == null ? token.lexeme : flatSymbolName;
     }
 
-    public TypeSpecifier getType() {
-        return type;
-    }
-
-    public boolean isForward() {
-        return isForward;
+    public TypeSpecifier getTypeSpecifier() {
+        return typeSpecifier;
     }
 
     public boolean isParameter() {
@@ -67,19 +53,15 @@ public class BaseSymbol{
         if (o == null || getClass() != o.getClass()) return false;
 
         BaseSymbol symbol = (BaseSymbol) o;
-        return isForward == symbol.isForward && token.equals(symbol.token) && type.equals(symbol.type);
+        return qualifier.equals(symbol.qualifier) && token.equals(symbol.token) && typeSpecifier.equals(symbol.typeSpecifier);
     }
 
     @Override
     public int hashCode() {
         int result = token.hashCode();
-        result = 31 * result + type.hashCode();
-        result = 31 * result + Boolean.hashCode(isForward);
+        result = 31 * result + typeSpecifier.hashCode();
+        result = 31 * result + qualifier.hashCode();
         return result;
-    }
-
-    public void setForward(boolean forward) {
-        this.isForward = forward;
     }
 
     public void setScope(Scope scope) {
@@ -92,7 +74,7 @@ public class BaseSymbol{
 
     @Override
     public String toString() {
-        return String.format("%s %s [%s]", token.lexeme, flatSymbolName == null ? "" : "( " + flatSymbolName + ")", type);
+        return String.format("%s %s [%s]", token.lexeme, flatSymbolName == null ? "" : "( " + flatSymbolName + ")", typeSpecifier);
     }
 
     public void setFlatSymbolName(String name) {
@@ -108,11 +90,15 @@ public class BaseSymbol{
     }
 
     public boolean isStatic() {
-        return isStatic;
+        return qualifier.isStatic();
     }
 
     public boolean canResideInRegister() {
         // TODO: guard against address-of operator
-        return !isForward && !isParameter && !isStatic && type.allocSize() < 2 && type.allocSize() > 0;
+        return !qualifier.isExtern() && !isParameter && !qualifier.isStatic() && typeSpecifier.allocSize() < 2 && typeSpecifier.allocSize() > 0;
+    }
+
+    public TypeQualifier getTypeQualifier() {
+        return qualifier;
     }
 }

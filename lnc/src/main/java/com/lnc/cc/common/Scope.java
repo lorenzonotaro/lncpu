@@ -57,7 +57,7 @@ public class Scope {
 
         symbol.setScope(this);
 
-        if(existing != null && !existing.isForward() && !symbol.isForward()){
+        if(existing != null && !existing.getTypeQualifier().isExtern() && !symbol.getTypeQualifier().isExtern()){
             throw new RuntimeException("symbol '%s' already defined here: '%s'".formatted(existing.getName(), existing.getToken().formatLocation()));
         }
 
@@ -135,7 +135,7 @@ public class Scope {
             for (int i = 0; i < indent; i++) {
                 System.out.print("  ");
             }
-            System.out.println("  Symbol: " + symbol.getName() + " [" + symbol.getType() + "]");
+            System.out.println("  Symbol: " + symbol.getName() + " [" + symbol.getTypeSpecifier() + "]");
         }
 
         for (Scope child : children) {

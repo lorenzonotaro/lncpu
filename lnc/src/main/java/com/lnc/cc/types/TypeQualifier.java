@@ -5,20 +5,19 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
-public record TypeQualifier(boolean isExtern, boolean isStatic, boolean isDpage) {
+public record TypeQualifier(boolean isExtern, boolean isStatic, boolean isConst) {
     public static final TypeQualifier NONE = new TypeQualifier(false, false, false);
 
     public static final TokenType[] VALID_TOKENS = new TokenType[] {
         TokenType.EXTERN,
         TokenType.STATIC,
-        TokenType.DPAGE
+        TokenType.CONST
     };
 
     public static TypeQualifier parse(LncParser parser) {
         boolean isExtern = false;
         boolean isStatic = false;
-        boolean isDpage = false;
-
+        boolean isConst = false;
         while(parser.check(VALID_TOKENS)){
             Token token = parser.advance();
             switch(token.type){
@@ -30,19 +29,19 @@ public record TypeQualifier(boolean isExtern, boolean isStatic, boolean isDpage)
                     if(isStatic) throw new CompileException("duplicate 'static' qualifier", token);
                     isStatic = true;
                 break;
-                case DPAGE:
-                    if(isDpage) throw new CompileException("duplicate 'dpage' qualifier", token);
-                    isDpage = true;
-                break;
+                case CONST:
+                    if(isConst) throw new CompileException("duplicate 'const' qualifier", token);
+                    isConst = true;
+                    break;
                 default:
                     throw new CompileException("Invalid type qualifier: " + token, token);
             }
         }
 
-        return new TypeQualifier(isExtern, isStatic, isDpage);
+        return new TypeQualifier(isExtern, isStatic, isConst);
     }
 
     public boolean isNone() {
-        return !isExtern && !isStatic && !isDpage;
+        return !isExtern && !isStatic;
     }
 }

@@ -4,6 +4,7 @@ import com.lnc.cc.ast.*;
 import com.lnc.cc.common.ScopedASTVisitor;
 import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.types.FunctionType;
+import com.lnc.cc.types.TypeQualifier;
 
 public class LocalResolver extends ScopedASTVisitor<Void> {
 
@@ -88,7 +89,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){
-            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), functionDeclaration.isForwardDeclaration(), false));
+            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), new TypeQualifier(functionDeclaration.isForwardDeclaration(), false, true)));
         }
 
         super.visitStatement(statement);
@@ -100,9 +101,9 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
         BaseSymbol symbol;
 
         if (variableDeclaration.isParameter) {
-            symbol = BaseSymbol.parameter(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.getParameterIndex());
+            symbol = BaseSymbol.parameter(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier(), variableDeclaration.getParameterIndex());
         } else {
-            symbol = BaseSymbol.variable(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier().isExtern(), variableDeclaration.declarator.typeQualifier().isStatic());
+            symbol = BaseSymbol.variable(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier());
         }
 
         define(symbol);

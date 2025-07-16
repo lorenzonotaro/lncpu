@@ -257,20 +257,20 @@ public class IRUnit implements Iterable<IRBlock>{
             var name = entry.getKey();
             var symbol = entry.getValue();
 
-            if(symbol.isForward() || symbol.isParameter())
+            if(symbol.getTypeQualifier().isExtern() || symbol.isParameter())
                 continue;
 
             if(symbol.isStatic()){
                 mappings.put(symbol.getName(), new Location(symbol));
             }else if(symbol.canResideInRegister()){
-                var vr = vrManager.getRegister(symbol.getType());
+                var vr = vrManager.getRegister(symbol.getTypeSpecifier());
                 mappings.put(symbol.getName(), vr);
             }else{
                 // If the symbol is not a parameter and not static, we create a StackFrameOperand
                 int offset = forcedStackFrameLocalsSize;
-                IROperand operand = new StackFrameOperand(symbol.getType(), StackFrameOperand.OperandType.LOCAL, offset);
+                IROperand operand = new StackFrameOperand(symbol.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, offset);
                 mappings.put(symbol.getName(), operand);
-                forcedStackFrameLocalsSize += symbol.getType().allocSize();
+                forcedStackFrameLocalsSize += symbol.getTypeSpecifier().allocSize();
             }
         }
 

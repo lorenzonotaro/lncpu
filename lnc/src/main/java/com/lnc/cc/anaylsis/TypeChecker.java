@@ -114,7 +114,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier visit(IdentifierExpression identifierExpression) {
-        var type = resolveSymbol(identifierExpression.token).getType();
+        var type = resolveSymbol(identifierExpression.token).getTypeSpecifier();
 
         identifierExpression.setTypeSpecifier(type);
 

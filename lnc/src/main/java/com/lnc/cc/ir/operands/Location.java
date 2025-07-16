@@ -1,7 +1,6 @@
 package com.lnc.cc.ir.operands;
 
 import com.lnc.cc.common.BaseSymbol;
-import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.types.TypeSpecifier;
 
@@ -29,6 +28,6 @@ public class Location extends IROperand {
 
     @Override
     public TypeSpecifier getTypeSpecifier() {
-        return symbol.getType();
+        return symbol.getTypeSpecifier();
     }
 }

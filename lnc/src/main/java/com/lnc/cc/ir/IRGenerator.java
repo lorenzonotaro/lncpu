@@ -295,6 +295,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         var dest = assignmentExpression.left.accept(this);
 
+        if(!assignmentExpression.isInitializer() && dest.type == IROperand.Type.LOCATION && ((Location) dest).getSymbol().getTypeQualifier().isConst()){
+            throw new CompileException("assignment to constant variable", assignmentExpression.left.token);
+        }
+
         emit(new Move(value, dest));
 
         return dest;
@@ -373,11 +377,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         BaseSymbol symbol = ((Location) left).getSymbol();
 
-        if(symbol.getType().type == TypeSpecifier.Type.STRUCT){
-            StructType structType = (StructType) symbol.getType();
+        if(symbol.getTypeSpecifier().type == TypeSpecifier.Type.STRUCT){
+            StructType structType = (StructType) symbol.getTypeSpecifier();
             return structType.getDefinition();
-        }else if (symbol.getType().type == TypeSpecifier.Type.POINTER){
-            PointerType pointerType = (PointerType) symbol.getType();
+        }else if (symbol.getTypeSpecifier().type == TypeSpecifier.Type.POINTER){
+            PointerType pointerType = (PointerType) symbol.getTypeSpecifier();
             if(pointerType.getBaseType().type == TypeSpecifier.Type.STRUCT){
                 StructType structType = (StructType) pointerType.getBaseType();
                 return structType.getDefinition();

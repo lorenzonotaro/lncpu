@@ -146,7 +146,7 @@ public class LncParser extends FullSourceParser<AST> {
 
             var initializer = expression();
 
-            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer), isParameter, parameterIndex);
+            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer, true), isParameter, parameterIndex);
         }else{
             decl = new VariableDeclaration(declarator, ident, null, isParameter, parameterIndex);
         }
@@ -321,7 +321,7 @@ public class LncParser extends FullSourceParser<AST> {
         if(match(TokenType.EQUALS)){
             var operator = previous();
             var right = assignment();
-            return new AssignmentExpression(left, operator, right);
+            return new AssignmentExpression(left, operator, right, false);
         }
         return left;
     }

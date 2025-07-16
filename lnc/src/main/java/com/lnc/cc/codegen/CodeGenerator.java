@@ -62,8 +62,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         this.currentOutput = new CompilerOutput(null, new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false));
 
         for(var entry : ir.symbolTable().getSymbols().values()){
-            var type = entry.getType();
-            if(type.type != TypeSpecifier.Type.FUNCTION && entry.isStatic() && !entry.isForward()){
+            var type = entry.getTypeSpecifier();
+            if(type.type != TypeSpecifier.Type.FUNCTION && entry.isStatic() && !entry.getTypeQualifier().isExtern()){
                 dataPageVariable(entry.getName(), type.allocSize());
             }
         }
