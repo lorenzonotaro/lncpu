@@ -6,10 +6,7 @@ import com.lnc.cc.ast.AST;
 import com.lnc.cc.codegen.AsmLevelOptimizer;
 import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
-import com.lnc.cc.ir.IR;
-import com.lnc.cc.ir.IRGenerator;
-import com.lnc.cc.ir.IRLoweringPass;
-import com.lnc.cc.ir.IRPrinter;
+import com.lnc.cc.ir.*;
 import com.lnc.cc.optimization.StageOneIROptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
@@ -74,10 +71,20 @@ public class Compiler {
             return false;
         }
 
+        IR result = irGenerator.getResult();
+
+        Logger.setProgramState("iranalysis");
+        IRAnalysisPass irAnalysisPass = new IRAnalysisPass();
+
+        for (var unit : result.units()) {
+            irAnalysisPass.visit(unit);
+        }
+
+
         Logger.setProgramState("lowering");
         IRLoweringPass loweringPass = new IRLoweringPass();
 
-        for (var unit : irGenerator.getResult().units()) {
+        for (var unit : result.units()) {
             loweringPass.visit(unit);
         }
 
@@ -85,7 +92,7 @@ public class Compiler {
             Logger.setProgramState("opt");
             StageOneIROptimizer optimizer = new StageOneIROptimizer();
 
-            for (var unit : irGenerator.getResult().units()) {
+            for (var unit : result.units()) {
                 optimizer.run(unit);
             }
         }
@@ -93,7 +100,7 @@ public class Compiler {
         if(!LNC.settings.get("-oM", String.class).isBlank()){
             var irPrinter = new IRPrinter();
 
-            for (var unit : irGenerator.getResult().units()) {
+            for (var unit : result.units()) {
                 irPrinter.visit(unit);
             }
 
@@ -107,7 +114,7 @@ public class Compiler {
 
 
         Logger.setProgramState("codegen");
-        CodeGenerator codeGenerator = new CodeGenerator(irGenerator.getResult());
+        CodeGenerator codeGenerator = new CodeGenerator(result);
 
         this.output = codeGenerator.run();
 
@@ -126,7 +133,7 @@ public class Compiler {
         }
 
         if(LNC.settings.get("--standalone", Boolean.class)){
-            return standalone(irGenerator.getResult());
+            return standalone(result);
         }
 
         return true;
