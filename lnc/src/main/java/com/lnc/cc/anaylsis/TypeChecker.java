@@ -3,6 +3,7 @@ package com.lnc.cc.anaylsis;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.common.ScopedASTVisitor;
 import com.lnc.cc.types.*;
+import com.lnc.common.IntUtils;
 import com.lnc.common.Logger;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
@@ -67,7 +68,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier rightType = assignmentExpression.right.accept(this);
 
-        check(rightType, leftType, assignmentExpression.operator);
+        check(leftType, rightType, assignmentExpression.operator);
 
         assignmentExpression.setTypeSpecifier(leftType);
 
@@ -171,9 +172,16 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier visit(NumericalExpression numericalExpression) {
-        I8Type i8Type = new I8Type();
-        numericalExpression.setTypeSpecifier(i8Type);
-        return i8Type;
+        int value = numericalExpression.value;
+
+        TypeSpecifier type = IntUtils.getTypeFor(value);
+
+        if (type == null) {
+            throw new CompileException("numerical literal out of range", numericalExpression.token);
+        }
+
+        numericalExpression.setTypeSpecifier(type);
+        return type;
     }
 
     @Override

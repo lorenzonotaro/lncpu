@@ -227,7 +227,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             originalCond = CondJump.Cond.of(be.operator, be.token);
         } else {
             left         = condExpr.accept(this);
-            right        = new ImmediateOperand((byte)0);
+            right        = new ImmediateOperand((byte)0, new I8Type());
             originalCond = CondJump.Cond.NE;  // “cond != 0”
         }
 
@@ -394,11 +394,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(NumericalExpression numericalExpression) {
 
-        if(IntUtils.inByteRange(numericalExpression.value)){
-            return new ImmediateOperand((byte) (numericalExpression.value & 0xFF));
-        }
+        int value = numericalExpression.value;
 
-        throw new CompileException("value out of range: " + numericalExpression.value, numericalExpression.token);
+        return new ImmediateOperand(
+                value,
+                numericalExpression.typeSpecifier
+        );
     }
 
     @Override
@@ -454,7 +455,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 throw new CompileException("dereference of non-pointer type", unaryExpression.token);
             }
 
-            returnVal = new Deref(moveOrLoadIntoVR(operand, RegisterClass.DEREF));
+            returnVal = new Deref(operand);
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
 
             if(operand.type != IROperand.Type.LOCATION){

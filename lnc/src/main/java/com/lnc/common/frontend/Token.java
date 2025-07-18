@@ -73,9 +73,12 @@ public class Token {
             int value = (Integer) literal;
             if(IntUtils.inByteRange(value)){
                 return (byte) value;
+            }else{
+                throw new CompileException("value out of range for byte", this);
             }
+        }else{
+            throw new CompileException("expected integer token, got " + type, this);
         }
-        throw new CompileException("value out of range for byte", this);
     }
 
 }

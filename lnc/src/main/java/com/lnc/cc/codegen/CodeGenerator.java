@@ -12,6 +12,7 @@ import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
+import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
@@ -151,10 +152,28 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Void visit(Move move) {
 
+        int destSize = move.getDest().getTypeSpecifier().allocSize();
+        int srcSize = move.getSource().getTypeSpecifier().allocSize();
+
         var target = move.getDest().accept(this);
         var source = move.getSource().accept(this);
 
-        instrf(TokenType.MOV, source, target);
+        if(destSize != srcSize){
+            throw new IllegalArgumentException("Mov argument size mismatch: " +
+                    destSize + " vs " +
+                    srcSize);
+        }
+
+        if(destSize == 1){
+            instrf(TokenType.MOV, source, target);
+        }else{
+            var splitSource = CodeGenUtils.splitWord(source);
+            var splitTarget = CodeGenUtils.splitWord(target);
+
+            instrf(TokenType.MOV, splitSource[0], splitTarget[0]);
+            instrf(TokenType.MOV, splitSource[1], splitTarget[1]);
+        }
+
 
         return null;
     }

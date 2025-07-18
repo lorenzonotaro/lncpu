@@ -264,6 +264,7 @@ public class IRUnit implements Iterable<IRBlock>{
                 mappings.put(symbol.getName(), new Location(symbol));
             }else if(symbol.canResideInRegister()){
                 var vr = vrManager.getRegister(symbol.getTypeSpecifier());
+                vr.setRegisterClass(symbol.getTypeSpecifier().allocSize() == 1 ? RegisterClass.ANY : RegisterClass.WORD);
                 mappings.put(symbol.getName(), vr);
             }else{
                 // If the symbol is not a parameter and not static, we create a StackFrameOperand

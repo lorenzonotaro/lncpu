@@ -5,11 +5,13 @@ import com.lnc.cc.types.I8Type;
 import com.lnc.cc.types.TypeSpecifier;
 
 public class ImmediateOperand extends IROperand {
-    private final byte value;
+    private final int value;
+    private final TypeSpecifier typeSpecifier;
 
-    public ImmediateOperand(byte value) {
+    public ImmediateOperand(int value, TypeSpecifier typeSpecifier) {
         super(Type.IMMEDIATE);
         this.value = value;
+        this.typeSpecifier = typeSpecifier;
     }
 
     public int getValue() {
@@ -28,6 +30,6 @@ public class ImmediateOperand extends IROperand {
 
     @Override
     public TypeSpecifier getTypeSpecifier() {
-        return new I8Type();
+        return typeSpecifier;
     }
 }

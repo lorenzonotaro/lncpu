@@ -211,6 +211,14 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public IROperand visit(Deref deref) {
+        IROperand target = deref.getTarget().accept(this);
+
+        if(target.type != IROperand.Type.VIRTUAL_REGISTER) {
+            target = moveOrLoadIntoVR(target);
+        }
+
+        deref.setTarget(target);
+
         return deref;
     }
 

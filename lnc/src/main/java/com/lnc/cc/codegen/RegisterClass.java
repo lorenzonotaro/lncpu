@@ -8,6 +8,8 @@ public class RegisterClass {
 
     public static RegisterClass ANY = new RegisterClass(Set.of(Register.RC, Register.RB, Register.RA, Register.RD));
 
+    public static RegisterClass WORD = new RegisterClass(Set.of(Register.RCRD));
+
     public static RegisterClass BYTEPARAM_1 = new RegisterClass(Set.of(Register.RA));
 
     public static RegisterClass BYTEPARAM_2 = new RegisterClass(Set.of(Register.RB));
@@ -27,6 +29,7 @@ public class RegisterClass {
     public static RegisterClass DEREF = new RegisterClass(Set.of(Register.RD));
 
     public static RegisterClass RETURN = new RegisterClass(Set.of(Register.RB));
+
 
     private final Set<Register> registers;
 

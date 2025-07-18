@@ -13,6 +13,6 @@ int mod(int a, int m){
 */
 
 void main(){
-    const char far *o = 0x1;
-    o = 1;
+    const int far * o = main;
+    o();
 }

@@ -4,6 +4,7 @@ import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.argument.*;
 import com.lnc.assembler.parser.argument.Byte;
 import com.lnc.assembler.parser.argument.Register;
+import com.lnc.cc.ast.Expression;
 import com.lnc.cc.ir.IRBlock;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
@@ -51,5 +52,49 @@ public class CodeGenUtils {
 
     public static Argument deref(Argument argument) {
         return new Dereference(argument);
+    }
+
+    public static Argument[] splitWord(Argument argument){
+        if(argument.type == Argument.Type.WORD){
+            return new Argument[]{
+                    new Byte(Token.__internal(TokenType.INTEGER, ((Word) argument).value >> 8 & 0xFF)),
+                    new Byte(Token.__internal(TokenType.INTEGER, ((Word) argument).value & 0xFF))
+            };
+        } else if (argument.type == Argument.Type.BYTE) {
+            return new Argument[]{new Byte(Token.__internal(TokenType.INTEGER, 0)), argument};
+        } else if(argument.type == Argument.Type.LABEL) {
+            return new Argument[]{
+                    new NumberCast(new BinaryOp(new LabelRef(argument.token), new Byte(Token.__internal(TokenType.INTEGER, 8)), Token.__internal(TokenType.BITWISE_RIGHT, ">>")), argument.token, Token.__internal(TokenType.IDENTIFIER, "byte")),
+                    new NumberCast(argument, argument.token, Token.__internal(TokenType.IDENTIFIER, "byte"))
+            };
+        } else if(argument.type == Argument.Type.COMPOSITE) {
+            return new Argument[]{
+                    ((Composite) argument).high,
+                    ((Composite) argument).low
+            };
+        }else if(argument.type == Argument.Type.DEREFERENCE) {
+            Argument inner = ((Dereference) argument).inner;
+            Argument[] splitWord = splitWord(inner);
+            return new Argument[]{
+                    new Dereference(splitWord[0]),
+                    new Dereference(splitWord[1])
+            };
+        } else if(argument.type == Argument.Type.REGISTER_OFFSET) {
+            var regOffset = (RegisterOffset) argument;
+            return new Argument[] {
+                    regOffset,
+                    new RegisterOffset(
+                            regOffset.register,
+                            regOffset.token,
+                            new BinaryOp(
+                                    regOffset.offset,
+                                    new Byte(Token.__internal(TokenType.INTEGER, 1)),
+                                    Token.__internal(TokenType.PLUS, "+")
+                            )
+                    )
+            };
+        } else {
+            throw new IllegalArgumentException("Argument must be a Word or Byte type");
+        }
     }
 }

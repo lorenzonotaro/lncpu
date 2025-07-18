@@ -97,7 +97,7 @@ public abstract class TypeSpecifier {
         UI8,
         POINTER,
         FUNCTION,
-        STRUCT, ARRAY
+        STRUCT, I16, UI16, ARRAY
     }
 
 }

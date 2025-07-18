@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Deref extends IROperand {
 
-    private final VirtualRegister target;
+    private IROperand target;
 
-    public Deref(VirtualRegister target) {
+    public Deref(IROperand target) {
         super(Type.DEREF);
         this.target = target;
     }
@@ -31,11 +31,16 @@ public class Deref extends IROperand {
         return "*" + target.toString();
     }
 
-    public VirtualRegister getTarget() {
+    public IROperand getTarget() {
         return target;
     }
+
     @Override
     public List<VirtualRegister> getVRReads() {
-        return List.of(target);
+        return target.getVRReads();
+    }
+
+    public void setTarget(IROperand target) {
+        this.target = target;
     }
 }
