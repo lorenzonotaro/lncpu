@@ -33,6 +33,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
         outputDataSection();
 
+        outputConstSection();
+
         for(IRUnit unit : ir.units()){
 
             if(unit.getFunctionDeclaration().isForwardDeclaration()){
@@ -56,6 +58,17 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         }
 
         return outputs;
+    }
+
+    private void outputConstSection() {
+        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNC_CONST", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
+
+        for(var constSymbol : ir.symbolTable().getConstants().values()){
+            label(constSymbol.getAsmName());
+            currentOutput.append(constSymbol.getValue());
+        }
+
+        outputs.add(currentOutput);
     }
 
     private void outputDataSection() {

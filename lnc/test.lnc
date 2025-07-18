@@ -1,18 +1,30 @@
-/*
-extern void putc(int c);
-extern void printhex(int i);
+extern void IOUTILS_PUTS(char far *s);
+extern void IOUTILS_PUTBYTE(int n);
+extern void IO_PUTC(char c);
 
 int mod(int a, int m){
-    static int c = 0;
     // modulo without using %
     while(a >= m){
         a = a - m;
     }
-    return c;
+
+    return a;
 }
-*/
+
+void fizzbuzz(int i){
+    IOUTILS_PUTBYTE(i);
+
+    IO_PUTC(' ');
+
+    if(mod(i, 3) == 0){
+        IOUTILS_PUTS("Fizz");
+    }
+    if(mod(i, 5) == 0){
+        IOUTILS_PUTS("Buzz");
+    }
+}
 
 void main(){
-    const int far * o = main;
-    o();
+    const char far * o = "Hello, World!\n";
+    IOUTILS_PUTS(o);
 }

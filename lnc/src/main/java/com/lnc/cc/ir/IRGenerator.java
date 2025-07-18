@@ -17,7 +17,6 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
 
     private final List<IRUnit> blocks = new ArrayList<>();
-
     private final FlatSymbolTable globalSymbolTable;
     private final Scope globalScope;
 
@@ -404,7 +403,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand visit(StringExpression stringExpression) {
-        throw new CompileException("string expressions not supported", stringExpression.token);
+        return new Location(resolveConstant(
+                stringExpression.token.lexeme));
+    }
+
+    private BaseSymbol resolveConstant(String lexeme) {
+        return globalSymbolTable.resolveConstant(lexeme);
     }
 
     @Override

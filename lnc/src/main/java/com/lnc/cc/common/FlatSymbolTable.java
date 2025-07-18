@@ -4,11 +4,15 @@ import java.util.Map;
 
 public class FlatSymbolTable {
     private final Map<String, BaseSymbol> symbols;
+
+    private final Map<Object, ConstantSymbol> constants;
+
     private final String name;
 
     private FlatSymbolTable(String name) {
         this.name = name;
         this.symbols = new java.util.HashMap<>();
+        this.constants = new java.util.HashMap<>();
     }
 
     public static FlatSymbolTable flatten(Scope scope) {
@@ -34,6 +38,16 @@ public class FlatSymbolTable {
 
             if(!symbol.isParameter())
                 symbol.setFlatSymbolName(scope.getScopePrefix() + symbol.getName());
+        }
+
+        int constantCounter = 0;
+        for (Map.Entry<Object, BaseSymbol> entry : scope.getConstants().entrySet()) {
+            var constant = (ConstantSymbol) entry.getValue();
+
+            if(!table.constants.containsKey(entry.getKey())) {
+                table.constants.put(entry.getKey(), constant);
+            }
+            constant.setFlatSymbolName(scope.getScopePrefix() + "const_" + constantCounter++);
         }
 
         for (Scope child : scope.getChildren()) {
@@ -75,6 +89,15 @@ public class FlatSymbolTable {
         return null;
     }
 
+    public BaseSymbol resolveConstant(Object object) {
+
+        BaseSymbol symbol = constants.get(object);
+        if(symbol == null){
+            throw new IllegalStateException("Constant '%s' not found".formatted(object));
+        }
+        return symbol;
+    }
+
     public void join(FlatSymbolTable symbolTable) {
 
         for (Map.Entry<String, BaseSymbol> entry : symbolTable.symbols.entrySet()) {
@@ -88,5 +111,9 @@ public class FlatSymbolTable {
 
     public Map<String, BaseSymbol> getSymbols() {
         return symbols;
+    }
+
+    public Map<Object, ConstantSymbol> getConstants() {
+        return constants;
     }
 }

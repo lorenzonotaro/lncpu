@@ -186,7 +186,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier visit(StringExpression stringExpression) {
-        throw new Error("String expression not implemented");
+        return new PointerType(new CharType(), PointerType.PointerKind.FAR);
     }
 
     @Override

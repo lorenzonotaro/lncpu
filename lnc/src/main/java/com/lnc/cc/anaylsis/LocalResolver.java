@@ -1,6 +1,7 @@
 package com.lnc.cc.anaylsis;
 
 import com.lnc.cc.ast.*;
+import com.lnc.cc.common.ConstantSymbol;
 import com.lnc.cc.common.ScopedASTVisitor;
 import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.types.FunctionType;
@@ -65,6 +66,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
     @Override
     public Void visit(StringExpression stringExpression) {
+        defineConstant(stringExpression.token.lexeme, ConstantSymbol.string(stringExpression.token));
         return null;
     }
 

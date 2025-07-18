@@ -98,7 +98,7 @@
 | 5a | `pop RC` | Pops from the stack into RC | 1 | - |
 | 5b | `pop RD` | Pops from the stack into RD | 1 | - |
 | 5c | `pop [<data page address>]` | Pops from the stack into a location in the address space (data page addressing mode) | 3 | - |
-| 5d | `pop [RD]` | Pops from the stack into a location in the address space (short indirect addressing mode) | 2 | - |
+| 5d | `pop [RD]` | Pops from the stack into a location in the address space (short indirect addressing mode) | 3 | - |
 | 5e | `pop [RC:RD]` | Pops from the stack into a location in the address space (full indirect addressing mode) | 4 | - |
 | 5f | `pop [<full address>]` | Pops from the stack into a location in the address space (absolute addressing mode) | 4 | - |
 | 60 | `pop BP` | Pops from the stack into BP | 1 | - |

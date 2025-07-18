@@ -264,6 +264,11 @@ public abstract class ScopedASTVisitor<T> extends ASTVisitor<T> {
         currentScope.define(symbol);
     }
 
+    protected void defineConstant(Object literal, ConstantSymbol constantSymbol){
+        // constants go in the global scope
+        getAST().getGlobalScope().defineConstant(literal, constantSymbol);
+    }
+
 
     public Scope pushLocalScope() {
         return currentScope = currentScope.createChild();

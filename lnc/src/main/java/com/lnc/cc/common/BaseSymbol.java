@@ -14,7 +14,7 @@ public class BaseSymbol{
     private final boolean isParameter;
     private final int parameterIndex;
 
-    private BaseSymbol(Token token, TypeSpecifier typeSpecifier, TypeQualifier qualifier, boolean isParameter, int parameterIndex) {
+    protected BaseSymbol(Token token, TypeSpecifier typeSpecifier, TypeQualifier qualifier, boolean isParameter, int parameterIndex) {
         this.token = token;
         this.typeSpecifier = typeSpecifier;
         this.qualifier = qualifier;
@@ -29,7 +29,6 @@ public class BaseSymbol{
     public static BaseSymbol variable(Token token, TypeSpecifier type, TypeQualifier qualifier) {
         return new BaseSymbol(token, type, qualifier, false, -1);
     }
-
 
     public String getName() {
         return flatSymbolName == null ? token.lexeme : flatSymbolName;

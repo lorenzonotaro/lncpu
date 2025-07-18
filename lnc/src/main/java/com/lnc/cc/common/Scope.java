@@ -16,6 +16,8 @@ public class Scope {
 
     private final Map<String, BaseSymbol> symbols = new HashMap<>();
 
+    private final Map<Object, BaseSymbol> constants = new HashMap<>();
+
     private final Map<String, StructDefinitionType> structs = new HashMap<>();
 
     private final Map<Integer, Integer> childrenAtDepth = new HashMap<>();
@@ -169,6 +171,10 @@ public class Scope {
         return symbols;
     }
 
+    public Map<Object, BaseSymbol> getConstants() {
+        return constants;
+    }
+
     public List<Scope> getChildren() {
         return children;
     }
@@ -181,4 +187,9 @@ public class Scope {
         return id.isEmpty() ? "" : id + "__";
     }
 
+    public void defineConstant(Object literal, ConstantSymbol constantSymbol) {
+        constantSymbol.setScope(this);
+        if(!constants.containsKey(literal))
+            constants.put(literal, constantSymbol);
+    }
 }
