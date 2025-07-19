@@ -189,6 +189,7 @@ public abstract class IRInstruction {
         }
         return parentBlock;
     }
+
     public final Collection<VirtualRegister> getReads(){
         return Stream.concat(getReadOperands().stream()
                 .flatMap((IROperand irOperand) -> irOperand.getVRReads().stream()),
