@@ -50,14 +50,15 @@ public class DeadMoveEliminationPass extends IRPass{
                 if (nextMov.getDest().equals(left)) {
                     bin.setDest(left);        // tmp ← op left,right   →   left ← op left,right
                     nextMov.remove();
+                    markAsChanged();
                 } else if (bin.getOperator().isCommutative() &&
                         nextMov.getDest().equals(right)) {
                     // swap operands so that 'right' becomes the two-address target
                     bin.swapOperands();       // helper you may need to add
                     bin.setDest(right);
                     nextMov.remove();
+                    markAsChanged();
                 }
-                markAsChanged();
             }
         }
 
