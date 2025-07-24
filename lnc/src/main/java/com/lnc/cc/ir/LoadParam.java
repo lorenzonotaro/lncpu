@@ -28,12 +28,12 @@ public class LoadParam extends IRInstruction{
 
     @Override
     public Collection<IROperand> getReadOperands() {
-        return List.of();
+        return List.of(originalReg);
     }
 
     @Override
     public Collection<IROperand> getWriteOperands() {
-        return List.of(originalReg, copyReg);
+        return List.of(copyReg);
     }
 
     @Override

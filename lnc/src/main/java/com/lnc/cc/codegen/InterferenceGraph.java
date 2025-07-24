@@ -170,8 +170,8 @@ public class InterferenceGraph {
                 for (VirtualRegister d : inst.getWrites()) {
                     live.remove(d);
                     LiveRange lr = ranges.get(d);
-                    lr.start = Math.min(lr.start, i);
-                    lr.end   = Math.max(lr.end,   i);
+                    lr.start = Math.min(lr.start, i + 1);
+                    lr.end   = Math.max(lr.end,   i + 1);
                     defs.put(d, defs.getOrDefault(d, 0) + 1);
 
                     loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), blockLoopWeight * 10));

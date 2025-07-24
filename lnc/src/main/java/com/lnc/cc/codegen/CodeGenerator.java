@@ -265,6 +265,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void accept(LoadParam loadParam) {
+        instrf(TokenType.MOV, loadParam.getOriginalReg().accept(this), loadParam.getCopyReg().accept(this));
         return null;
     }
 
