@@ -71,11 +71,11 @@ public class VirtualRegister extends IROperand {
 
     @Override
     public List<VirtualRegister> getVRReads() {
-        return List.of(this);
+        throw new UnsupportedOperationException("getVRReads called on a VirtualRegister, which should not happen.");
     }
 
     @Override
     public List<VirtualRegister> getVRWrites() {
-        return List.of(this);
+        throw new UnsupportedOperationException("getVRWrites called on a VirtualRegister, which should not happen.");
     }
 }

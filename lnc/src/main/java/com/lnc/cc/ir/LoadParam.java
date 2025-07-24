@@ -7,11 +7,13 @@ import java.util.List;
 
 public class LoadParam extends IRInstruction{
 
-    private IROperand dest;
+    private IROperand originalReg;
+    private final IROperand copyReg;
 
-    public LoadParam(IROperand dest) {
+    public LoadParam(IROperand originalReg, IROperand copyReg) {
         super();
-        this.dest = dest;
+        this.originalReg = originalReg;
+        this.copyReg = copyReg;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class LoadParam extends IRInstruction{
 
     @Override
     public String toString() {
-        return "loadparam " + getDest();
+        return "loadparam " + copyReg + " <- " + getOriginalReg();
     }
 
     @Override
@@ -31,17 +33,21 @@ public class LoadParam extends IRInstruction{
 
     @Override
     public Collection<IROperand> getWriteOperands() {
-        return List.of(dest);
+        return List.of(originalReg, copyReg);
     }
 
     @Override
     public void replaceOperand(IROperand oldOp, IROperand newOp) {
-        if (dest.equals(oldOp)) {
-            dest = newOp;
+        if (originalReg.equals(oldOp)) {
+            originalReg = newOp;
         }
     }
 
-    public IROperand getDest() {
-        return dest;
+    public IROperand getOriginalReg() {
+        return originalReg;
+    }
+
+    public IROperand getCopyReg() {
+        return copyReg;
     }
 }

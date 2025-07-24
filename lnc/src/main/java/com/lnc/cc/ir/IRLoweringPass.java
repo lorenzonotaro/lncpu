@@ -232,11 +232,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         List<IRInstruction> list = new ArrayList<>();
         for(var parameter : parameters){
-            list.add(new LoadParam(parameter.getValue()));
-        }
-
-        for(var parameter : parameters){
-            list.add(new Move(parameter.getValue(), unit.getLocalMappingInfo().mappings().get(parameter.getKey())));
+            list.add(new LoadParam(parameter.getValue(), unit.getLocalMappingInfo().mappings().get(parameter.getKey())));
         }
 
         unit.prependEntryBlock(list);
