@@ -25,6 +25,5 @@ void fizzbuzz(int i){
 }
 
 void main(){
-    const char far * o = "Hello, World!\n";
-    IOUTILS_PUTS(o);
+    fizzbuzz(15);
 }

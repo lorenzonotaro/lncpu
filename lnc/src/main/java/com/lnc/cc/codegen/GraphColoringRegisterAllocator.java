@@ -112,8 +112,8 @@ public class GraphColoringRegisterAllocator {
     }
 
     private boolean george(InterferenceGraph.Node a, InterferenceGraph.Node b, int P) {
-        InterferenceGraph.Node v = a.isPhysical() ? b : a;      // the virtual endpoint
-        InterferenceGraph.Node p = a.isPhysical() ? a : b;      // the physical endpoint
+        InterferenceGraph.Node v = a.isPseudoPhysical() ? b : a;      // the virtual endpoint
+        InterferenceGraph.Node p = a.isPseudoPhysical() ? a : b;      // the physical endpoint
         for (InterferenceGraph.Node t : v.adj) {
             t = getAlias(t);
             if (t == p) continue;
@@ -197,7 +197,7 @@ public class GraphColoringRegisterAllocator {
             for (var w : n.adj) {
                 w = getAlias(w);
                 if (coloredNodes.contains(w)) {
-                    forbidden.add(w.assigned);
+                    forbidden.addAll(List.of(w.assigned.getComponents()));
                 }
             }
 
@@ -232,7 +232,7 @@ public class GraphColoringRegisterAllocator {
 
     int spillHarm(Register c) {
         return coloredNodes.stream()
-                .filter(v -> v.assigned == c)
+                .filter(v -> Set.of(v.assigned.getComponents()).contains(c))
                 .mapToInt(v -> spillCost.getOrDefault(v.vr, 0))
                 .sum();
     }

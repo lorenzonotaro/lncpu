@@ -189,17 +189,18 @@ public abstract class IRInstruction {
         }
         return parentBlock;
     }
+
     public final Collection<VirtualRegister> getReads(){
         return Stream.concat(getReadOperands().stream()
-                .flatMap((IROperand irOperand) -> irOperand.getVRReads().stream()),
+                .flatMap((IROperand irOperand) -> irOperand instanceof VirtualRegister vr ? Stream.of(vr) : irOperand.getVRReads().stream()),
                 getWriteOperands().stream()
-                        .flatMap((IROperand irOperand) -> irOperand.getVRReads().stream())
+                        .flatMap((IROperand irOperand) -> irOperand instanceof VirtualRegister ? Stream.empty() : irOperand.getVRReads().stream())
         ).toList();
     }
 
     public final Collection<VirtualRegister> getWrites(){
         return getWriteOperands().stream()
-                .flatMap((IROperand irOperand) -> irOperand.getVRWrites().stream())
+                .flatMap((IROperand irOperand) -> irOperand instanceof VirtualRegister vr ? Stream.of(vr) : irOperand.getVRWrites().stream())
                 .toList();
     }
 
