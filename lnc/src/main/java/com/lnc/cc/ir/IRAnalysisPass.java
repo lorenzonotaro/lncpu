@@ -41,11 +41,6 @@ public class IRAnalysisPass extends IRPass {
     }
 
     @Override
-    public Void accept(LoadParam loadParam) {
-        return null;
-    }
-
-    @Override
     public Void visit(Unary unary) {
         return null;
     }

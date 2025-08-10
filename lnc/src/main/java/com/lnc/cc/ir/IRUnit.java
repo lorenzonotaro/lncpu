@@ -228,7 +228,6 @@ public class IRUnit implements Iterable<IRBlock>{
     }
 
     public void compileLocalMappings() {
-        var originalRegParamMappings = new HashMap<String, IROperand>();
         var mappings = new HashMap<String, IROperand>();
         int forcedStackFrameLocalsSize = 0;
 
@@ -242,12 +241,7 @@ public class IRUnit implements Iterable<IRBlock>{
             }else{
                 VirtualRegister originalReg = vrManager.getRegister(parameter.type());
                 originalReg.setRegisterClass(parameter.regClass());
-
-                VirtualRegister copyReg = vrManager.getRegister(parameter.type());
-                copyReg.setRegisterClass(RegisterClass.ANY);
-
-                originalRegParamMappings.put(parameter.name(), originalReg);
-                operand = copyReg;
+                operand = originalReg;
             }
             mappings.put(parameter.name(), operand);
         }
@@ -275,7 +269,7 @@ public class IRUnit implements Iterable<IRBlock>{
             }
         }
 
-        this.localMappingInfo = new LocalMappingInfo(mappings, originalRegParamMappings, forcedStackFrameLocalsSize);
+        this.localMappingInfo = new LocalMappingInfo(mappings, forcedStackFrameLocalsSize);
     }
 
     public void compileFrameInfo() {
@@ -313,6 +307,6 @@ public class IRUnit implements Iterable<IRBlock>{
         return Objects.equals(functionDeclaration, irUnit.functionDeclaration);
     }
 
-    public record LocalMappingInfo(HashMap<String, IROperand> mappings, HashMap<String, IROperand> originalRegParamMappings, int forcedStackFrameLocalsSize) {
+    public record LocalMappingInfo(HashMap<String, IROperand> mappings, int forcedStackFrameLocalsSize) {
     }
 }

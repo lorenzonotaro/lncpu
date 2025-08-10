@@ -78,11 +78,6 @@ public class ConstantFoldingPass extends IRPass {
     }
 
     @Override
-    public Void accept(LoadParam loadParam) {
-        return null;
-    }
-
-    @Override
     public Void visit(Unary unary) {
         // TODO
         return null;

@@ -52,12 +52,6 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
-    public Void accept(LoadParam loadParam) {
-        appendInstr(loadParam);
-        return null;
-    }
-
-    @Override
     public Void visit(Unary unary) {
         appendInstr(unary);
         return null;

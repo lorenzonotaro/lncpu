@@ -76,11 +76,6 @@ public class DeadMoveEliminationPass extends IRPass{
     }
 
     @Override
-    public Void accept(LoadParam loadParam) {
-        return null;
-    }
-
-    @Override
     public Void visit(Unary unary) {
         if(
                 !unary.getTarget().equals(unary.getOperand()) &&

@@ -154,11 +154,6 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     }
 
     @Override
-    public Void accept(LoadParam loadParam) {
-        return null;
-    }
-
-    @Override
     public Void visit(Unary unary) {
         IROperand operand = unary.getOperand().accept(this);
         IROperand target = unary.getTarget().accept(this);
@@ -224,20 +219,8 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public void visit(IRUnit unit) {
-        VirtualRegisterManager vrm = unit.getVrManager();
 
         unit.compileLocalMappings();
-
-        var parameters = unit.getLocalMappingInfo().originalRegParamMappings().entrySet().stream().toList();
-
-        List<IRInstruction> list = new ArrayList<>();
-        for(var parameter : parameters){
-            list.add(new LoadParam(parameter.getValue(), unit.getLocalMappingInfo().mappings().get(parameter.getKey())));
-        }
-
-        unit.prependEntryBlock(list);
-
-        unit.getEntryBlock().prependSequence(list);
 
         super.visit(unit);
     }

@@ -159,6 +159,14 @@ public class InterferenceGraph {
             }
         }
 
+        // Set parameter defs at index 0
+        for(var param : unit.getFunctionType().getParameterMapping()){
+            if(!param.onStack()){
+                var vrParam = (VirtualRegister) unit.getLocalMappingInfo().mappings().get(param.name());
+                ranges.get(vrParam).start = 0;
+            }
+        }
+
         // 3) backward scan per block, seeded with liveOut
         for (IRBlock B : rpo) {
             var blockLoopWeight = B.getLoopDepth();

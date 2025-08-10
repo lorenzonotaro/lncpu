@@ -55,11 +55,6 @@ public class PostRAOptimizer extends GraphicalIRVisitor {
     }
 
     @Override
-    public Void accept(LoadParam loadParam) {
-        return null;
-    }
-
-    @Override
     public Void visit(Unary unary) {
         return null;
     }

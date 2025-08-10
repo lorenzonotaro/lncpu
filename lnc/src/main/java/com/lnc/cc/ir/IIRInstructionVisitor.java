@@ -15,8 +15,6 @@ public interface IIRInstructionVisitor<E> {
 
     E visit(Push push);
 
-    E accept(LoadParam loadParam);
-
     E visit(Unary unary);
 
 }
