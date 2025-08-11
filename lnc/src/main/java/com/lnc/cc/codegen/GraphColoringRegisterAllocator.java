@@ -66,9 +66,6 @@ public class GraphColoringRegisterAllocator {
         assignColors();
     }
 
-    int spillCost(InterferenceGraph.Node n) {          // use your existing metric
-        return n.vr.spillCost();
-    }
 
     // ----------------------------------------------------------------------
     // 1. Copy‑coalescing ----------------------------------------------------
@@ -82,6 +79,7 @@ public class GraphColoringRegisterAllocator {
 
             if (!x.adj.contains(y) && ok(x, y)) {
                 combine(x, y);
+                it.remove();
             }
         }
     }
@@ -95,40 +93,158 @@ public class GraphColoringRegisterAllocator {
         return a;
     }
 
+    private boolean dominated(InterferenceGraph.Node a, InterferenceGraph.Node b) {
+        // a is dominated by b if a's palette is subset of b's and a's neighbors ⊆ b's (ignoring each other)
+        if (!b.allowedColors().containsAll(a.allowedColors())) return false;
+        Set<InterferenceGraph.Node> an = new HashSet<>(a.adj); an.remove(b);
+        Set<InterferenceGraph.Node> bn = new HashSet<>(b.adj); bn.remove(a);
+        return bn.containsAll(an);
+    }
+
     private boolean ok(InterferenceGraph.Node x, InterferenceGraph.Node y) {
-        /* 1.  Reject if classes are incompatible */
         Set<Register> palette = colorIntersection(x, y);
         if (palette.isEmpty()) return false;
 
-        int P = palette.size();
+        //if (dominated(x,y) || dominated(y,x)) return true;
 
-        if (x.isPseudoPhysical() && !y.isPseudoPhysical())
-            return george(y, x, P);        // y virtual, x pseudo-phys
-        if (y.isPseudoPhysical() && !x.isPseudoPhysical())
-            return george(x, y, P);        // x virtual, y pseudo-phys
-
-        /* otherwise fall back to Briggs with palette-aware threshold */
-        return briggs(x, y, P);
+        boolean xPseudo = x.isPseudoPhysical();
+        boolean yPseudo = y.isPseudoPhysical();
+        if (xPseudo ^ yPseudo) return georgeSingleColorDistinct(x, y, palette);
+        return briggsPaletteAware(x, y, palette);
     }
 
-    private boolean george(InterferenceGraph.Node a, InterferenceGraph.Node b, int P) {
-        InterferenceGraph.Node v = a.isPseudoPhysical() ? b : a;      // the virtual endpoint
-        InterferenceGraph.Node p = a.isPseudoPhysical() ? a : b;      // the physical endpoint
-        for (InterferenceGraph.Node t : v.adj) {
-            t = getAlias(t);
-            if (t == p) continue;
-            if (t.degree() >= P && !t.adj.contains(p))
+    private boolean georgeSingleColorDistinct(InterferenceGraph.Node x,
+                                              InterferenceGraph.Node y,
+                                              Set<Register> palette) {
+        if (palette.size() != 1) return false;
+
+        // v = virtual, p = precolored single-color node
+        InterferenceGraph.Node v = x.isPseudoPhysical() ? y : x;
+        InterferenceGraph.Node p = x.isPseudoPhysical() ? x : y;
+        Register c = palette.iterator().next();
+
+        for (InterferenceGraph.Node t0 : v.adj) {
+            InterferenceGraph.Node t = getAlias(t0);
+            if (t == v || t == p) continue;
+
+            // t not affected if it can’t use c
+            if (!t.allowedColors().contains(c)) continue;
+
+            // If t already adjacent to p, c is already unusable → unaffected
+            if (t.adj.contains(p)) continue;
+
+            // After merge, t loses c from its palette
+            Set<Register> A = t.allowedColors();
+            if (!A.contains(c)) continue;
+            Set<Register> Aafter = new HashSet<>(A);
+            Aafter.remove(c);
+
+            // Build distinct fixed colors contributed by precolored neighbors of t
+            Set<Register> fixedColors = new HashSet<>();
+            int riskyNeighbors = 0;
+
+            for (InterferenceGraph.Node u0 : t.adj) {
+                InterferenceGraph.Node u = getAlias(u0);
+                if (u == t || u == v || u == p) continue;
+
+                // Consider only neighbors that can actually compete for Aafter
+                Set<Register> uA = u.allowedColors();
+                if (Collections.disjoint(uA, Aafter)) continue;
+
+                if (u.isPseudoPhysical()) {
+                    // Precolored: contributes exactly its (single) color if in Aafter
+                    if (uA.size() == 1) {
+                        Register uc = uA.iterator().next();
+                        if (Aafter.contains(uc)) fixedColors.add(uc);
+                    } else {
+                        // If you ever model multi-color "precolored" (unlikely), treat as risky
+                        riskyNeighbors++;
+                    }
+                } else {
+                    // Uncolored neighbor: only matters if it’s "high" for its own palette
+                    if (u.degree() >= u.allowedColors().size()) riskyNeighbors++;
+                }
+            }
+
+            int budget = Aafter.size();
+            int consumption = fixedColors.size() + riskyNeighbors;
+
+            // Need strictly less than: at least one color remains for t
+            if (consumption >= budget) {
                 return false;
+            }
         }
         return true;
     }
 
-    private static boolean briggs(InterferenceGraph.Node x, InterferenceGraph.Node y, int P) {
+
+    private boolean georgePaletteAware(InterferenceGraph.Node x,
+                                       InterferenceGraph.Node y,
+                                       Set<Register> palette) {
+        if (palette.size() != 1) return false;
+
+        InterferenceGraph.Node v = x.isPseudoPhysical() ? y : x; // virtual
+        InterferenceGraph.Node p = x.isPseudoPhysical() ? x : y; // single-color
+        Register c = palette.iterator().next();
+
+        for (InterferenceGraph.Node t0 : v.adj) {
+            InterferenceGraph.Node t = getAlias(t0);
+            if (t == v || t == p) continue;
+
+            // t doesn't care about c → unaffected
+            if (!t.allowedColors().contains(c)) continue;
+
+            // t already adjacent to p → t already can't take c → unaffected
+            if (t.adj.contains(p)) continue;
+
+            // Compute an *effective* degree of t: neighbors that can actually
+            // constrain a color from t's palette after we remove c from t.
+            int A  = t.allowedColors().size();
+            int Aafter = A - 1; // we'll lose c
+            int degEff = 0;
+            for (InterferenceGraph.Node u0 : t.adj) {
+                InterferenceGraph.Node u = getAlias(u0);
+                if (u == t || u == v || u == p) continue;
+
+                // If u shares no color with t's palette (sans c), it can't constrain t.
+                if (Collections.disjoint(u.allowedColors(), t.allowedColors())) continue;
+
+                // If u is a single-color node equal to c and already adjacent to p,
+                // it won't block t from using any non-c color after the merge.
+                if (u.isPseudoPhysical() && u.allowedColors().size() == 1) {
+                    Register uc = u.allowedColors().iterator().next();
+                    if (uc.equals(c) && u.adj.contains(p)) continue;
+                }
+
+                degEff++;
+            }
+
+            // If after losing c, t still has headroom vs. *effective* constraints, it's fine.
+            if (degEff < Aafter) continue;
+
+            // Risky neighbor: reject this coalesce.
+            return false;
+        }
+        return true;
+    }
+
+
+
+    private boolean briggsPaletteAware(InterferenceGraph.Node x, InterferenceGraph.Node y, Set<Register> palette) {
+        int P = palette.size();
         Set<InterferenceGraph.Node> union = new HashSet<>(x.adj);
         union.addAll(y.adj);
+
         long high = union.stream()
+                .map(this::getAlias)
+                // neighbors that cannot use any color from the merged palette don't constrain us
+                .filter(t -> !Collections.disjoint(t.allowedColors(), palette))
+                // ignore trivially-low neighbors: they will simplify anyway
+                .filter(t -> t.degree() >= t.allowedColors().size())
+                // count only those that are also high relative to *our* future palette size
                 .filter(t -> t.degree() >= P)
                 .count();
+
         return high < P;
     }
 
@@ -201,26 +317,10 @@ public class GraphColoringRegisterAllocator {
                 }
             }
 
-            Map<Register,Integer> freq = new HashMap<>();          // colour → count
-            for (InterferenceGraph.Node p : n.movePartners) {
-                p = getAlias(p);
-                if (coloredNodes.contains(p)) {
-                    Register c = p.assigned;
-                    if (n.allowedColors().contains(c) && !forbidden.contains(c))
-                        freq.merge(c, 1, Integer::sum);
-                }
-            }
+            var okColors = n.allowedColors().stream().filter(c -> !forbidden.contains(c)).collect(Collectors.toCollection(LinkedHashSet::new));
 
-            // pick an allowed color not forbidden
-            Optional<Register> maybeColor = n.allowedColors().stream()
-                    .filter(c -> !forbidden.contains(c))
-                    .min(Comparator
-                            .comparingInt((Register c) -> -freq.getOrDefault(c, 0))            // larger freq wins
-                            .thenComparingInt(this::spillHarm)                   // lower harm wins
-                            .thenComparingInt(Register::ordinal));
-
-            if (maybeColor.isPresent()) {
-                n.assigned = maybeColor.get();
+            if (!okColors.isEmpty()) {
+                n.assigned = chooseColor(n, okColors, forbidden);
                 coloredNodes.add(n);
             } else {
                 // real spill
@@ -229,6 +329,49 @@ public class GraphColoringRegisterAllocator {
             }
         }
     }
+
+    private Register chooseColor(InterferenceGraph.Node n,
+                                 Set<Register> okColors,   // allowed(n) minus used neighbor colors
+                                 Set<Register> usedColors) // phys colors already used by colored neighbors
+    {
+        // 0) Strong bias: if we have a single-color move partner (RA/RB/RC/RD) and that color is open, take it.
+        for (InterferenceGraph.Node partner0 : n.movePartners) {
+            InterferenceGraph.Node partner = getAlias(partner0);
+            if (!partner.isPseudoPhysical()) continue;
+
+            Register c = partner.onlyColor();  // your helper for single-color nodes
+            if (okColors.contains(c) && !usedColors.contains(c)) {
+                return c;  // pick the precolored partner's color, delete the copy later
+            }
+        }
+
+        // 1) Otherwise, your existing weighted frequency heuristic (but weight by move weights if you have them).
+        Map<Register,Integer> freq = new HashMap<>();
+        for (InterferenceGraph.Node partner0 : n.movePartners) {
+            InterferenceGraph.Node partner = getAlias(partner0);
+            if (!coloredNodes.contains(partner)) continue;
+            for (Register c : partner.assigned.getComponents()) {
+                if (okColors.contains(c) && !usedColors.contains(c)) {
+                    int w = moveWeight(n, partner); // 3 for entry demotes, 2 for call args, 1 default
+                    freq.merge(c, w, Integer::sum);
+                }
+            }
+        }
+
+        if (!freq.isEmpty()) {
+            return freq.entrySet().stream()
+                    .max(Map.Entry.comparingByValue())
+                    .get().getKey();
+        }
+
+        // 2) Fallback: pick any available color deterministically.
+        return okColors.iterator().next();
+    }
+
+    private int moveWeight(InterferenceGraph.Node n, InterferenceGraph.Node partner) {
+        return 1; // TODO: implement move weights
+    }
+
 
     int spillHarm(Register c) {
         return coloredNodes.stream()

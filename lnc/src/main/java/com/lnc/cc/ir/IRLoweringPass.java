@@ -138,7 +138,13 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         if(funType.returnType.type != TypeSpecifier.Type.VOID){
             RegisterClass retRC = CallingConvention.returnRegisterFor(call.getReturnTarget().getTypeSpecifier());
-            call.getReturnTarget().setRegisterClass(retRC);
+            VirtualRegister userTarget = call.getReturnTarget(); //
+            // the register that will be used for the rest of the function
+            VirtualRegister constrainedTarget = getUnit().getVrManager().getRegister(userTarget.getTypeSpecifier());
+            constrainedTarget.setRegisterClass(retRC);
+
+            call.setReturnTarget(constrainedTarget);
+            call.insertAfter(new Move(constrainedTarget, userTarget));
         }
 
         return null;
@@ -221,6 +227,15 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     public void visit(IRUnit unit) {
 
         unit.compileLocalMappings();
+
+        List<IRInstruction> instrs = new ArrayList<>();
+
+        for(var entry : unit.getLocalMappingInfo().originalRegParamMappings().entrySet()){
+            instrs.add(new Move(entry.getValue(), unit.getLocalMappingInfo().mappings().get(entry.getKey())));
+        }
+
+        if(!instrs.isEmpty())
+            unit.prependEntryBlock(instrs);
 
         super.visit(unit);
     }

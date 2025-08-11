@@ -54,6 +54,12 @@ public class InterferenceGraph {
         public int degree() {
             return adj.size();
         }
+
+        public Register onlyColor() {
+            if(!isPseudoPhysical())
+                throw new IllegalStateException("Node is not a pseudo-physical node.");
+            return isPhysical() ? phys : allowedColors().iterator().next();
+        }
     }
 
     public InterferenceGraph() {
@@ -162,7 +168,7 @@ public class InterferenceGraph {
         // Set parameter defs at index 0
         for(var param : unit.getFunctionType().getParameterMapping()){
             if(!param.onStack()){
-                var vrParam = (VirtualRegister) unit.getLocalMappingInfo().mappings().get(param.name());
+                var vrParam = unit.getLocalMappingInfo().originalRegParamMappings().get(param.name());
                 ranges.get(vrParam).start = 0;
             }
         }
@@ -178,11 +184,11 @@ public class InterferenceGraph {
                 for (VirtualRegister d : inst.getWrites()) {
                     live.remove(d);
                     LiveRange lr = ranges.get(d);
-                    lr.start = Math.min(lr.start, i + 1);
-                    lr.end   = Math.max(lr.end,   i + 1);
+                    lr.start = Math.min(lr.start, i);
+                    lr.end   = Math.max(lr.end,   i);
                     defs.put(d, defs.getOrDefault(d, 0) + 1);
 
-                    loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), blockLoopWeight * 10));
+                    loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), (int) Math.pow(10, blockLoopWeight)));
                 }
 
                 // gen uses *and* record use position
@@ -193,7 +199,7 @@ public class InterferenceGraph {
                     lr.end   = Math.max(lr.end,   i);
 
                     uses.put(u, uses.getOrDefault(u, 0) + 1);
-                    loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), blockLoopWeight * 10));
+                    loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), (int) Math.pow(10, blockLoopWeight)));
                 }
 
                 // extend all still‐live
