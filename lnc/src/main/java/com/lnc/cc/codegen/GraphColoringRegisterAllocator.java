@@ -9,6 +9,7 @@ import com.lnc.cc.ir.Move;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.StackFrameOperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
+import com.mxgraph.view.mxGraph;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ public class GraphColoringRegisterAllocator {
     public void allocate() {
         if(doCoalesce) {
             coalesce();
+            showIg();
         }
         simplify();
         select();
@@ -302,6 +304,7 @@ public class GraphColoringRegisterAllocator {
             }
             work.remove(n);                       // finally delete n itself
             selectStack.push(n);
+            showIg();
         }
     }
     private void select() {
@@ -327,6 +330,7 @@ public class GraphColoringRegisterAllocator {
                 spillCandidates.add(n);
                 return;
             }
+            showIg();
         }
     }
 
@@ -439,9 +443,8 @@ public class GraphColoringRegisterAllocator {
 
             // 1) Build graph & run allocator
             ig = InterferenceGraph.buildInterferenceGraph(unit);
-            if(LNC.settings.get("--print-ig", Boolean.class)) {
-                System.out.println("Interference Graph:\n" + ig);
-            }
+            InterferenceGraphVisualizer.setGraph(ig.getVirtualNodes());
+            showIg();
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();
@@ -495,6 +498,24 @@ public class GraphColoringRegisterAllocator {
         unit.setUsedRegisters(usedRegisters);
 
         return new AllocationInfo(ig, livenessInfo);
+    }
+
+    private static void showIg() {
+        if(LNC.settings.get("--print-ig", Boolean.class)) {
+            InterferenceGraphVisualizer.showVisualizer();
+        }
+    }
+
+    private static void updateGraph(mxGraph mxGraph, Collection<InterferenceGraph.Node> virtualNodes) {
+        mxGraph.getModel().beginUpdate();
+        mxGraph.removeCells();
+        try{
+            for(InterferenceGraph.Node n : virtualNodes) {
+                mxGraph.insertVertex(mxGraph.getDefaultParent(), null, n.vr.getRegisterNumber(), 0, 0, 80, 30);
+            }
+        }finally {
+            mxGraph.getModel().endUpdate();
+        }
     }
 
     private static void patchSpillOffsets(List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores, List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillLoads, Map<VirtualRegister, Integer> slotOf) {
