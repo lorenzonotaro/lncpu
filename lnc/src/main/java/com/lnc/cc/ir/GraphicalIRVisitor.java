@@ -19,9 +19,18 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
         private final boolean allowEnqueue;
         Deque<IRBlock> worklist = new ArrayDeque<>();
         Set<IRBlock> visited = new HashSet<>();
+        private boolean scheduledThisBlock = false;
 
         private GraphTraversalContext(boolean allowEnqueue) {
             this.allowEnqueue = allowEnqueue;
+        }
+
+        void resetSchedule() {
+            scheduledThisBlock = false;
+        }
+
+        boolean scheduledAny() {
+            return scheduledThisBlock;
         }
 
         void enqueue(IRBlock block) {
@@ -32,6 +41,7 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
 
             if (visited.contains(block) || worklist.contains(block)) return;
             worklist.push(block);
+            scheduledThisBlock = true;
         }
 
         void enqueueLast(IRBlock block) {
@@ -40,6 +50,7 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
             }
             if (visited.contains(block) || worklist.contains(block)) return;
             worklist.addLast(block);
+            scheduledThisBlock = true;
         }
 
         public IRBlock next() {
@@ -97,11 +108,13 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
 
                 if (!context.markVisited(block)) continue;
 
+                // allow the block (its instructions) to schedule successors explicitly
+                context.resetSchedule();
                 visit(block);
 
-                // Optionally enqueue all successors by default
-                for (IRBlock succ : block.getSuccessors()) {
-                    {
+                // If nothing was explicitly scheduled, fall back to enqueuing all successors
+                if (!context.scheduledAny()) {
+                    for (IRBlock succ : block.getSuccessors()) {
                         context.enqueueLast(succ);
                     }
                 }

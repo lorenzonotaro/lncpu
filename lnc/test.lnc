@@ -3,7 +3,7 @@ extern void puts(char far* str);
 
 extern void putc(char c);
 
-extern void puti(int n);
+extern void printhex(int n);
 
 int mod(int a, int m){
     do{
@@ -14,7 +14,7 @@ int mod(int a, int m){
 
 
 void fizzbuzz(int i) {
-    puti(i);
+    printhex(i);
 
     putc(' ');
 
@@ -26,4 +26,10 @@ void fizzbuzz(int i) {
     }
 
     putc('\n');
+}
+
+void main(){
+    for(int i = 0; i < 16; ++i){
+        fizzbuzz(i);
+    }
 }

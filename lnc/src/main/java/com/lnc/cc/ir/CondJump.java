@@ -42,10 +42,6 @@ public class CondJump extends AbstractBranchInstr {
         this.right = right;
     }
 
-    public boolean preserveBranchOrdering() {
-        return preserveBranchOrdering;
-    }
-
 
     public enum Cond { EQ, NE, LT, LE, GT, GE;
 
@@ -77,19 +73,16 @@ public class CondJump extends AbstractBranchInstr {
     private IROperand right;    // what to compare
     private IRBlock      falseTarget;    // else
 
-    private final boolean preserveBranchOrdering;
-
     public IRBlock getFalseTarget() {
         return falseTarget;
     }
 
-    public CondJump(Cond cond, IROperand left, IROperand right, IRBlock target, IRBlock falseTarget, boolean preserveBranchOrdering) {
+    public CondJump(Cond cond, IROperand left, IROperand right, IRBlock target, IRBlock falseTarget) {
         super(target);
         this.cond = cond;
         this.left = left;
         this.right = right;
         this.falseTarget = falseTarget;
-        this.preserveBranchOrdering = preserveBranchOrdering;
     }
 
     @Override

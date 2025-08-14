@@ -5,7 +5,6 @@ import com.lnc.cc.common.*;
 import com.lnc.cc.ast.*;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.*;
-import com.lnc.common.IntUtils;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
@@ -39,7 +38,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         currentUnit.enterLoop(new LoopInfo(header, next));
 
-        branchIfTrue(whileStatement.condition, body, next, true);
+        branchIfTrue(whileStatement.condition, body, next);
 
         currentUnit.setCurrentBlock(body);
 
@@ -68,7 +67,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         visitStatement(doStmt.body);
 
         currentUnit.continueTo(header);
-        branchIfTrue(doStmt.condition, body, exit, true);
+        branchIfTrue(doStmt.condition, body, exit);
         currentUnit.exitLoop();
 
         // 4) continue in exit
@@ -129,7 +128,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // 4) Emit the test (fall into body if true, else to exit)
         if (forStmt.condition != null) {
             // branchIfFalse(cond, falseTarget, trueTarget)
-            branchIfTrue(forStmt.condition, body, exit, true);
+            branchIfTrue(forStmt.condition, body, exit);
         } else {
             // no condition means “always true”
             emit(new Goto(body));
@@ -190,7 +189,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         //    branchIfFalse(cond, falseTarget, trueTarget)
         if (ifStmt.condition != null) {
             IRBlock falseTarget = elseBlk != null ? elseBlk : exitBlk;
-            branchIfTrue(ifStmt.condition, thenBlk, falseTarget, false);
+            branchIfTrue(ifStmt.condition, thenBlk, falseTarget);
         } else {
             // “if (true)” → always go to thenBlk
             emit(new Goto(thenBlk));
@@ -216,7 +215,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
 
     private void branchIfTrue(Expression condExpr,
-                               IRBlock takenIfTrue, IRBlock takenIfFalse, boolean loopTest) {
+                               IRBlock takenIfTrue, IRBlock takenIfFalse) {
         IROperand left, right;
         CondJump.Cond originalCond;
 
@@ -236,8 +235,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 left,
                 right,
                 /* true→ */ takenIfTrue,
-                /* false→*/ takenIfFalse,
-                loopTest));
+                /* false→*/ takenIfFalse
+        ));
     }
 
     @Override
