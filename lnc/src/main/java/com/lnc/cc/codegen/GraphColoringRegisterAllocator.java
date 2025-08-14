@@ -6,7 +6,6 @@ import com.lnc.cc.ir.IRBlock;
 import com.lnc.cc.ir.IRInstruction;
 import com.lnc.cc.ir.IRUnit;
 import com.lnc.cc.ir.Move;
-import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.StackFrameOperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import com.mxgraph.view.mxGraph;
@@ -26,6 +25,9 @@ public class GraphColoringRegisterAllocator {
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
     private final Map<VirtualRegister, Integer> spillCost = new LinkedHashMap<>();
+
+    // simplify work graph (rebuilt when the interference graph changes via coalescing)
+    private LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>> simplifyWork = new LinkedHashMap<>();
 
     // aliasing and degree tracking
     private final Map<InterferenceGraph.Node,InterferenceGraph.Node> alias = new HashMap<>();
@@ -59,11 +61,34 @@ public class GraphColoringRegisterAllocator {
     }
 
     public void allocate() {
-        if(doCoalesce) {
-            coalesce();
-            showIg();
-        }
-        simplify();
+        // Initialize the simplify work graph
+        buildSimplifyWork();
+
+        boolean progress;
+        do {
+            progress = false;
+
+            // Try to coalesce as much as possible; rebuild simplify graph when the topology changes
+            if (doCoalesce) {
+                boolean merged;
+                do {
+                    merged = coalesce();
+                    if (merged) {
+                        progress = true;
+                        buildSimplifyWork();
+                    }
+                } while (merged);
+            }
+
+            // Remove a single node (either trivially colorable or chosen as a spill candidate)
+            boolean didSimplify = simplifyStep();
+            if (didSimplify) {
+                progress = true;
+            }
+
+        } while (progress);
+
+        // Color in reverse removal order
         select();
         assignColors();
     }
@@ -71,7 +96,8 @@ public class GraphColoringRegisterAllocator {
 
     // ----------------------------------------------------------------------
     // 1. Copy‑coalescing ----------------------------------------------------
-    private void coalesce() {
+    private boolean coalesce() {
+        boolean changed = false;
         Iterator<AbstractMap.SimpleEntry<InterferenceGraph.Node,InterferenceGraph.Node>> it = worklistMoves.iterator();
         while (it.hasNext()) {
             var mv = it.next();
@@ -82,8 +108,10 @@ public class GraphColoringRegisterAllocator {
             if (!x.adj.contains(y) && ok(x, y)) {
                 combine(x, y);
                 it.remove();
+                changed = true;
             }
         }
+        return changed;
     }
 
 
@@ -270,42 +298,46 @@ public class GraphColoringRegisterAllocator {
         x.movePartners.addAll(y.movePartners);
     }
 
-    private void simplify() {
-        var work = new LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>>();
-        for (var n : graph.getVirtualNodes()) {
-            n = getAlias(n); // ensure we have the alias
-            if (work.containsKey(n))
+    private void buildSimplifyWork() {
+        simplifyWork.clear();
+        for (var n0 : graph.getVirtualNodes()) {
+            var n = getAlias(n0); // ensure we consider the current representative
+            if (simplifyWork.containsKey(n))
                 continue;
             Set<InterferenceGraph.Node> nbrs =
                     n.adj.stream()
                             .map(this::getAlias)
                             .collect(Collectors.toCollection(LinkedHashSet::new));
-            work.put(n, new LinkedHashSet<>(nbrs));
+            // remove potential self-edges created by aliasing
+            nbrs.remove(n);
+            simplifyWork.put(n, new LinkedHashSet<>(nbrs));
         }
+    }
 
-        // removal loop unchanged
-        while (!work.isEmpty()) {
-            var maybe = work.keySet().stream()
-                    .filter(n -> work.get(n).size() < n.allowedColors().size())
-                    .max(Comparator.comparingInt(n -> n.allowedColors().size()));
-            InterferenceGraph.Node n;
+    private boolean simplifyStep() {
+        if (simplifyWork.isEmpty()) return false;
 
-            n = maybe.orElseGet(() -> work.keySet().stream()
-                    .min(Comparator
-                            .comparingInt((InterferenceGraph.Node m) -> spillCost.get(m.vr)) // ★
-                            .thenComparingInt(m -> m.vr.getRegisterNumber()))
-                    .get());
+        // Prefer a trivially-colorable node; otherwise choose a spill candidate
+        Optional<InterferenceGraph.Node> maybe =
+                simplifyWork.keySet().stream()
+                        .filter(n -> simplifyWork.get(n).size() < n.allowedColors().size())
+                        .max(Comparator.comparingInt(n -> n.allowedColors().size()));
 
-            for (var neighbor : work.get(n)) {
-                Set<InterferenceGraph.Node> nbrs = work.get(neighbor);
-                if (nbrs != null) {               // neighbour still in the graph
-                    nbrs.remove(n);               // decrement its degree
-                }
+        InterferenceGraph.Node n = maybe.orElseGet(() -> simplifyWork.keySet().stream()
+                .min(Comparator
+                        .comparingInt((InterferenceGraph.Node m) -> spillCost.get(m.vr))
+                        .thenComparingInt(m -> m.vr.getRegisterNumber()))
+                .get());
+
+        for (var neighbor : simplifyWork.get(n)) {
+            Set<InterferenceGraph.Node> nbrs = simplifyWork.get(neighbor);
+            if (nbrs != null) {               // neighbour still in the graph
+                nbrs.remove(n);               // decrement its degree
             }
-            work.remove(n);                       // finally delete n itself
-            selectStack.push(n);
-            showIg();
         }
+        simplifyWork.remove(n);               // finally delete n itself
+        selectStack.push(n);
+        return true;
     }
     private void select() {
         while (!selectStack.isEmpty()) {
@@ -330,7 +362,6 @@ public class GraphColoringRegisterAllocator {
                 spillCandidates.add(n);
                 return;
             }
-            showIg();
         }
     }
 
@@ -434,7 +465,6 @@ public class GraphColoringRegisterAllocator {
             // 1) Build graph & run allocator
             ig = InterferenceGraph.buildInterferenceGraph(unit);
             InterferenceGraphVisualizer.setGraph(ig.getVirtualNodes());
-            showIg();
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();
@@ -488,12 +518,6 @@ public class GraphColoringRegisterAllocator {
         unit.setUsedRegisters(usedRegisters);
 
         return new AllocationInfo(ig, livenessInfo);
-    }
-
-    private static void showIg() {
-        if(LNC.settings.get("--print-ig", Boolean.class)) {
-            InterferenceGraphVisualizer.showVisualizer();
-        }
     }
 
     private static void updateGraph(mxGraph mxGraph, Collection<InterferenceGraph.Node> virtualNodes) {
