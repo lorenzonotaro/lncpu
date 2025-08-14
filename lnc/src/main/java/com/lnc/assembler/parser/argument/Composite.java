@@ -52,4 +52,11 @@ public class Composite extends Argument {
             return "rcrd";
         throw new CompileException("Invalid composite argument: " + high.type + ", " + low.type, token);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Composite other)) return false;
+        return high.equals(other.high) && low.equals(other.low);
+    }
 }

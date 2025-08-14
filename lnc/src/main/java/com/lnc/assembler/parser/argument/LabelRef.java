@@ -48,6 +48,13 @@ public class LabelRef extends NumericalArgument {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof LabelRef other)) return false;
+        return labelToken.equals(other.labelToken);
+    }
+
+    @Override
     public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         LabelResolution resolution = labelResolver.resolve(labelToken);
         return resolution.address();

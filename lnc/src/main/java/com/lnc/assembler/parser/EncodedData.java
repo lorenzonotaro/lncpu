@@ -49,11 +49,8 @@ public class EncodedData extends CodeElement{
     public String toString() {
         StringBuilder val = new StringBuilder(".data ");
 
-        for (int i = 0; i < data.length; i++) {
-            if (i > 0) {
-                val.append(", ");
-            }
-            val.append(String.format("0x%02x", data[i] & 0xFF));
+        for (byte datum : data) {
+            val.append(String.format("0x%02x ", datum & 0xFF));
         }
         return val.toString();
     }

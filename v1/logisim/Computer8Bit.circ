@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#C8BComponents.circ" name="12"/>
-  <lib desc="file#Devices.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="file#C8BComponents.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1658,10 +1658,10 @@ end TCL_Generic;
     <comp lib="10" loc="(730,210)" name="Switch">
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="13" loc="(1080,1790)" name="KeyboardAdapter"/>
-    <comp lib="13" loc="(1630,1810)" name="TTYAdapter"/>
-    <comp lib="13" loc="(2220,1850)" name="RGBScreenAdapter"/>
-    <comp lib="13" loc="(2830,1870)" name="JoystickAdapter"/>
+    <comp lib="12" loc="(1080,1790)" name="KeyboardAdapter"/>
+    <comp lib="12" loc="(1630,1810)" name="TTYAdapter"/>
+    <comp lib="12" loc="(2220,1850)" name="RGBScreenAdapter"/>
+    <comp lib="12" loc="(2830,1870)" name="JoystickAdapter"/>
     <comp lib="4" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
@@ -2723,8 +2723,8 @@ end TCL_Generic;
     <comp lib="1" loc="(310,370)" name="NOR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -3832,9 +3832,38 @@ end TCL_Generic;
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
 9 21 8 0 a 20 f4 0
-a 1 4e 51 4 0 9d ff
-eb 16 ed 16 ee 1b 13 49
-e1 ee e 5b 58 f6
+88 1 51 4e 4f 50 13 1a
+f4 0 4e 4 20 f4 0 65
+1a 5 3 f4 0 7f 9e 0
+ed 40 ee 40 1a 5 5 f4
+0 7f 9e 0 ed 37 ee 37
+4 a f4 0 65 ee 49 6
+0 7 9d f4 0 69 ee 30
+6 0 7 a2 f4 0 69 ee
+24 5a 59 58 5b f6 4e 4e
+4*ea f4 1 24 3b 60 0 58
+c5 f f4 1 24 3b 60 0
+58 f6 3b 60 0 f6 4e 50
+51 36 9d 0 ed 7c 3b 60
+0 e4 eb 79 ee 7a e3 ee
+6c 5b 5a 58 4e 78 eb 85
+ee 7f 11 58 f6 4f 4e 5
+0 9e 10 eb 92 ee 9a 14
+f4 0 a e1 11 ee 8c 58
+59 f6 42 75 7a 7a 0 46
+69 7a 7a 90*0 87 30 ec 1e
+9d 9 ec 23 ed 23 87 11
+ec 1e 9d 5 ec 21 ed 21
+87 20 ec 1e 9d 5 ec 21
+ed 21 4 ff f6 71 a f6
+c5 f 9d a ec 2f 87 a
+71 41 f6 71 30 f6 36 f4
+1 0 9d ff ed 67 4*e9 11
+e4 36 f4 1 0 9d ff ed
+67 65 4f e4 36 f4 1 0
+9d ff ed 66 4*e9 11 e4 36
+f4 1 0 9d ff ed 66 65
+e4 fb 58 f6 58 fc f6
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>

@@ -68,6 +68,13 @@ public class NumberCast extends NumericalArgument{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof NumberCast other)) return false;
+        return source.equals(other.source) && targetSize == other.targetSize && targetType.equals(other.targetType);
+    }
+
+    @Override
     public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         if (targetSize == 1) {
             return source.value(labelResolver, linkInfo, instructionAddress) & 0xFF; // Cast to byte

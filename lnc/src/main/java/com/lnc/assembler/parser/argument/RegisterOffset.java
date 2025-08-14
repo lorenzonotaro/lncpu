@@ -50,6 +50,13 @@ public class RegisterOffset extends Argument{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof RegisterOffset other)) return false;
+        return register.equals(other.register) && offset.equals(other.offset) && operator.equals(other.operator);
+    }
+
+    @Override
     public int size(ILabelSectionLocator sectionLocator) {
         return 1;
     }

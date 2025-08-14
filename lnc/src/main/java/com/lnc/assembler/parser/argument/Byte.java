@@ -36,6 +36,13 @@ public class Byte extends NumericalArgument {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Byte other)) return false;
+        return value == other.value;
+    }
+
+    @Override
     public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         return value & 0xFF;
     }

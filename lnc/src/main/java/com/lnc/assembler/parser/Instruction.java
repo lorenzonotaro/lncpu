@@ -49,7 +49,7 @@ public class Instruction extends CodeElement {
         }
     }
 
-    private boolean isShortJump() {
+    public boolean isShortJump() {
         return opcode.type == TokenType.JZ || opcode.type == TokenType.JC || opcode.type == TokenType.JN || opcode.type == TokenType.GOTO;
     }
 

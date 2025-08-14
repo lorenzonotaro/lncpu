@@ -49,4 +49,11 @@ public class Dereference extends Argument {
                 throw new CompileException("invalid dereference argument: " + inner.type, inner.token);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Dereference other)) return false;
+        return inner.equals(other.inner);
+    }
 }

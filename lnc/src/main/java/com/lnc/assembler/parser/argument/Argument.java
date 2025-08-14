@@ -17,6 +17,9 @@ public abstract class Argument implements IEncodeable {
 
     public abstract String getImmediateEncoding(ILabelSectionLocator sectionLocator);
 
+    @Override
+    public abstract boolean equals(Object obj);
+
     public enum Type {
         REGISTER("register"),
         DEREFERENCE("dereference"),

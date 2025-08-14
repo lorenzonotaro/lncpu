@@ -36,5 +36,12 @@ public class Register extends Argument {
         return reg.toString().toLowerCase();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Register other)) return false;
+        return reg == other.reg;
+    }
+
 
 }

@@ -105,6 +105,14 @@ public class BinaryOp extends NumericalArgument{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof BinaryOp other)) return false;
+
+        return left.equals(other.left) && right.equals(other.right) && operator == other.operator;
+    }
+
+    @Override
     public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
         byte[] leftBytes = left.encode(labelResolver, linkInfo, instructionAddress);
         byte[] rightBytes = right.encode(labelResolver, linkInfo, instructionAddress);
