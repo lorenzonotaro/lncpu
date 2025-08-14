@@ -316,7 +316,7 @@ public class GraphColoringRegisterAllocator {
             for (var w : n.adj) {
                 w = getAlias(w);
                 if (coloredNodes.contains(w)) {
-                    forbidden.addAll(List.of(w.assigned.getComponents()));
+                    forbidden.add(w.assigned);
                 }
             }
 
@@ -354,11 +354,9 @@ public class GraphColoringRegisterAllocator {
         for (InterferenceGraph.Node partner0 : n.movePartners) {
             InterferenceGraph.Node partner = getAlias(partner0);
             if (!coloredNodes.contains(partner)) continue;
-            for (Register c : partner.assigned.getComponents()) {
-                if (okColors.contains(c) && !usedColors.contains(c)) {
-                    int w = moveWeight(n, partner); // 3 for entry demotes, 2 for call args, 1 default
-                    freq.merge(c, w, Integer::sum);
-                }
+            if (okColors.contains(partner.assigned) && !usedColors.contains(partner.assigned)) {
+                int w = moveWeight(n, partner); // 3 for entry demotes, 2 for call args, 1 default
+                freq.merge(partner.assigned, w, Integer::sum);
             }
         }
 
@@ -374,14 +372,6 @@ public class GraphColoringRegisterAllocator {
 
     private int moveWeight(InterferenceGraph.Node n, InterferenceGraph.Node partner) {
         return 1; // TODO: implement move weights
-    }
-
-
-    int spillHarm(Register c) {
-        return coloredNodes.stream()
-                .filter(v -> Set.of(v.assigned.getComponents()).contains(c))
-                .mapToInt(v -> spillCost.getOrDefault(v.vr, 0))
-                .sum();
     }
 
     private void assignColors() {
