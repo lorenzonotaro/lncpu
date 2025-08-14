@@ -23,6 +23,7 @@ public class StageOneIROptimizer {
 
     private static final List<IRPass> PASSES = List.of(
             new ConstantFoldingPass(),
+            new CopyPropagationAndMoveForwardingPass(),
             new LocalDeadCodeEliminationPass(),
             new TrivialGotoEliminationPass(),
             new DeadMoveEliminationPass()

@@ -204,7 +204,7 @@ public abstract class IRInstruction {
                 .toList();
     }
 
-    protected abstract Collection<IROperand> getReadOperands();
+    public abstract Collection<IROperand> getReadOperands();
 
     protected abstract Collection<IROperand> getWriteOperands();
 

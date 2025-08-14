@@ -1,6 +1,29 @@
 
-extern int mod(int a, int m);
+extern void puts(char far* str);
 
-int test(int i){
-    return mod(i, 3) + mod(i, 4);
+extern void putc(char c);
+
+extern void puti(int n);
+
+int mod(int a, int m){
+    do{
+        a = a - m;
+    }while(a >= m);
+    return a;
+}
+
+
+void fizzbuzz(int i) {
+    puti(i);
+
+    putc(' ');
+
+    if(mod(i, 3) == 0){
+        puts("Fizz");
+    }
+    if(mod(i, 5) == 0){
+        puts("Buzz");
+    }
+
+    putc('\n');
 }
