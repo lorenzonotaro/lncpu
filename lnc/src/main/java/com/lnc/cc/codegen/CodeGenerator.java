@@ -119,7 +119,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             case NE -> {
                 instrf(TokenType.JZ, falseTargetStr);
 
-                enqueueCondJumpTargets(false, falseTarget, trueTarget);
+                enqueueCondJumpTargets(preserveBranchOrdering, falseTarget, trueTarget);
 
             }
             case LT -> {
@@ -138,13 +138,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 instrf(TokenType.JC, falseTargetStr);
                 instrf(TokenType.JZ, falseTargetStr);
 
-                enqueueCondJumpTargets(false, falseTarget, trueTarget);
+                enqueueCondJumpTargets(preserveBranchOrdering, falseTarget, trueTarget);
 
             }
             case GE -> {
                 instrf(TokenType.JC, falseTargetStr);
 
-                enqueueCondJumpTargets(false, falseTarget, trueTarget);
+                enqueueCondJumpTargets(preserveBranchOrdering, falseTarget, trueTarget);
             }
         }
 
