@@ -38,7 +38,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         currentUnit.enterLoop(new LoopInfo(header, next));
 
-        branchIfTrue(whileStatement.condition, body, next);
+        branchIfTrue(whileStatement.condition, body, next, null);
 
         currentUnit.setCurrentBlock(body);
 
@@ -67,7 +67,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         visitStatement(doStmt.body);
 
         currentUnit.continueTo(header);
-        branchIfTrue(doStmt.condition, body, exit);
+        branchIfTrue(doStmt.condition, body, exit, null);
         currentUnit.exitLoop();
 
         // 4) continue in exit
@@ -128,7 +128,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         // 4) Emit the test (fall into body if true, else to exit)
         if (forStmt.condition != null) {
             // branchIfFalse(cond, falseTarget, trueTarget)
-            branchIfTrue(forStmt.condition, body, exit);
+            branchIfTrue(forStmt.condition, body, exit, null);
         } else {
             // no condition means “always true”
             emit(new Goto(body));
@@ -189,7 +189,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         //    branchIfFalse(cond, falseTarget, trueTarget)
         if (ifStmt.condition != null) {
             IRBlock falseTarget = elseBlk != null ? elseBlk : exitBlk;
-            branchIfTrue(ifStmt.condition, thenBlk, falseTarget);
+            branchIfTrue(ifStmt.condition, thenBlk, falseTarget, exitBlk);
         } else {
             // “if (true)” → always go to thenBlk
             emit(new Goto(thenBlk));
@@ -215,7 +215,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
 
     private void branchIfTrue(Expression condExpr,
-                               IRBlock takenIfTrue, IRBlock takenIfFalse) {
+                               IRBlock takenIfTrue, IRBlock takenIfFalse, IRBlock continueTo) {
         IROperand left, right;
         CondJump.Cond originalCond;
 
@@ -235,7 +235,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 left,
                 right,
                 /* true→ */ takenIfTrue,
-                /* false→*/ takenIfFalse
+                /* false→*/ takenIfFalse,
+                continueTo
         ));
     }
 

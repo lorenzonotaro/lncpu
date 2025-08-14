@@ -101,6 +101,11 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
         IRBlock trueTarget = condJump.getTarget();
         IRBlock falseTarget = condJump.getFalseTarget();
+        IRBlock continueTo = condJump.getContinueTo();
+
+        if(continueTo != null){
+            enqueue(continueTo);
+        }
 
         instrf(TokenType.CMP, left, right);
 
@@ -109,6 +114,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             case EQ -> {
                 // Z == 1 => true; fallthrough to false
                 instrf(TokenType.JZ, CodeGenUtils.labelRef(trueTarget));
+
                 enqueue(trueTarget);   // push first
                 enqueue(falseTarget);  // so false is visited next (fallthrough)
 

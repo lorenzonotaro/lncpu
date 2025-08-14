@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class CondJump extends AbstractBranchInstr {
+
     @Override
     public void replaceReference(IRBlock oldBlock, IRBlock newBlock) {
         if (target == oldBlock) {
@@ -16,6 +17,9 @@ public class CondJump extends AbstractBranchInstr {
         }
         if (falseTarget == oldBlock) {
             falseTarget = newBlock;
+        }
+        if (continueTo == oldBlock) {
+            continueTo = newBlock;
         }
     }
 
@@ -40,6 +44,14 @@ public class CondJump extends AbstractBranchInstr {
             throw new IllegalArgumentException("Right operand cannot be null");
         }
         this.right = right;
+    }
+
+    public IRBlock getContinueTo() {
+        return continueTo;
+    }
+
+    public void setContinueTo(IRBlock continueTo) {
+        this.continueTo = continueTo;
     }
 
 
@@ -72,17 +84,19 @@ public class CondJump extends AbstractBranchInstr {
     private IROperand    left;
     private IROperand right;    // what to compare
     private IRBlock      falseTarget;    // else
+    private IRBlock continueTo;
 
     public IRBlock getFalseTarget() {
         return falseTarget;
     }
 
-    public CondJump(Cond cond, IROperand left, IROperand right, IRBlock target, IRBlock falseTarget) {
+    public CondJump(Cond cond, IROperand left, IROperand right, IRBlock target, IRBlock falseTarget, IRBlock continueTo) {
         super(target);
         this.cond = cond;
         this.left = left;
         this.right = right;
         this.falseTarget = falseTarget;
+        this.continueTo = continueTo;
     }
 
     @Override
