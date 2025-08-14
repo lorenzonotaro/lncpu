@@ -27,16 +27,16 @@ public record LivenessInfo(
             Set<VirtualRegister> defSet = new LinkedHashSet<>();
 
             for (IRInstruction inst = B.getFirst(); inst != null; inst = inst.getNext()) {
-                // collect defs first
-                for (IROperand op : inst.getWrites()) {
-                    if (op instanceof VirtualRegister vr) {
-                        defSet.add(vr);
-                    }
-                }
-                // then uses, but skip those already in defSet
+                // first account for uses before the current instruction's defs
                 for (IROperand op : inst.getReads()) {
                     if (op instanceof VirtualRegister vr && !defSet.contains(vr)) {
                         useSet.add(vr);
+                    }
+                }
+                // then record defs produced by this instruction
+                for (IROperand op : inst.getWrites()) {
+                    if (op instanceof VirtualRegister vr) {
+                        defSet.add(vr);
                     }
                 }
             }
