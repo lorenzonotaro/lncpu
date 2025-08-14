@@ -157,6 +157,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             enqueue(second);
             enqueue(first);
         }else{
+            instrf(TokenType.GOTO, CodeGenUtils.labelRef(first));
             enqueue(first);
             enqueue(second);
         }
