@@ -368,8 +368,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public void visit(IRUnit unit) {
-        unitLabel();
-
         // visit the function body
         super.visit(unit);
 
@@ -385,12 +383,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     private void label(String lexeme) {
         currentOutput.addLabel(lexeme);
     }
-
-
-    private void unitLabel() {
-        currentOutput.addUnitLabel();
-    }
-
 
     private void instrf(TokenType opcode, Argument... args) {
         currentOutput.append(CodeGenUtils.instr(opcode, args));

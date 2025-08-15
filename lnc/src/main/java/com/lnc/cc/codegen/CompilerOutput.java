@@ -51,7 +51,7 @@ public final class CompilerOutput {
 
     public void addUnitLabel() {
         var label = Objects.requireNonNull(unit).getFunctionDeclaration().name.lexeme;
-        labels.add(new LabelInfo(Token.__internal(TokenType.IDENTIFIER, label), label));
+        code.get(0).getLabels().add(0, new LabelInfo(Token.__internal(TokenType.IDENTIFIER, label), label));
     }
 
     public LinkedList<CodeElement> code() {

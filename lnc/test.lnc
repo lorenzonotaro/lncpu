@@ -6,9 +6,9 @@ extern void putc(char c);
 extern void printhex(int n);
 
 int mod(int a, int m){
-    do{
+    while(a >= m){
         a = a - m;
-    }while(a >= m);
+    }
     return a;
 }
 
@@ -29,7 +29,5 @@ void fizzbuzz(int i) {
 }
 
 void main(){
-    for(int i = 0; i < 16; ++i){
-        fizzbuzz(i);
-    }
+    fizzbuzz(3);
 }

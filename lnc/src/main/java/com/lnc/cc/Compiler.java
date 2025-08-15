@@ -129,6 +129,7 @@ public class Compiler {
             }
             if(output.unit() != null){
                 asmOptimizer.stackFramePreservation(output);
+                output.addUnitLabel();
             }
         }
 

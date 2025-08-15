@@ -1,9 +1,7 @@
 package com.lnc.cc.codegen;
 
-import com.lnc.assembler.parser.CodeElement;
-import com.lnc.assembler.parser.EncodedData;
-import com.lnc.assembler.parser.Instruction;
-import com.lnc.assembler.parser.RegisterId;
+import com.lnc.assembler.common.LabelInfo;
+import com.lnc.assembler.parser.*;
 import com.lnc.assembler.parser.argument.*;
 import com.lnc.assembler.parser.argument.Register;
 import com.lnc.cc.ir.CallingConvention;
@@ -20,6 +18,7 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
 
     private final IRUnit.FrameInfo frameInfo;
     private final int stackParamsSize;
+    private final String funName;
 
     public StackFramePreservationPass(IRUnit unit) {
         super();
@@ -31,6 +30,7 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
         RegisterClass registerClass = CallingConvention.returnRegisterFor(unit.getFunctionType().returnType);
         this.returnRegisters = registerClass == null ? Set.of() : registerClass.getRegisters().stream().map(Enum::toString).collect(Collectors.toSet());
         this.frameInfo = unit.getFrameInfo();
+        this.funName = unit.getFunctionDeclaration().name.lexeme;
     }
 
     @Override
@@ -85,9 +85,6 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
         }
 
         if(!list.isEmpty()){
-            var labels = firstInstr.getLabels();
-            firstInstr.clearLabels();
-            list.get(0).setLabels(labels);
             iterator.addSequenceBeforeCurrent(list);
         }
 
