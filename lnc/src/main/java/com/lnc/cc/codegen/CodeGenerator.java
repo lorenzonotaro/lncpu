@@ -60,7 +60,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     private void outputConstSection() {
-        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNC_CONST", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
+        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNCCONST", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
 
         for(var constSymbol : ir.symbolTable().getConstants().values()){
             label(constSymbol.getAsmName());
