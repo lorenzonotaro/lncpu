@@ -349,9 +349,11 @@ public class GraphColoringRegisterAllocator {
                 w = getAlias(w);
                 if (coloredNodes.contains(w)) {
                     forbidden.add(w.assigned);
+                    for (var color : graph.getPhysicalNode(w.assigned).adj){
+                        forbidden.addAll(List.of(color.phys.getComponents()));
+                    }
                 }
             }
-
             var okColors = n.allowedColors().stream().filter(c -> !forbidden.contains(c)).collect(Collectors.toCollection(LinkedHashSet::new));
 
             if (!okColors.isEmpty()) {
@@ -477,14 +479,23 @@ public class GraphColoringRegisterAllocator {
                 for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
                     for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
                         // after defs
-                        for (VirtualRegister vr : inst.getWrites()) {
-                            if (spills.contains(ig.getNode(vr))) {
-                                Move move = new Move(vr, new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
-                                spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
-                                inst.insertAfter(move);
+                        boolean isRegParamDemotion = inst instanceof Move mv && mv.isRegParamDemotion();
+                        if(isRegParamDemotion) {
+                            for(InterferenceGraph.Node vr : spills) {
+                                inst.replaceOperand(vr.vr, new StackFrameOperand(vr.vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
+                                spillStores.add(new AbstractMap.SimpleEntry<>(vr.vr, (Move) inst));
+                            }
+                        }else{
+                            for (VirtualRegister vr : inst.getWrites()) {
+                                if (spills.contains(ig.getNode(vr))) {
+                                    Move move = new Move(vr, new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
+                                    spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
+                                    inst.insertAfter(move);
+                                }
                             }
                         }
                         // before uses
+
                         for (VirtualRegister vr : inst.getReads()) {
                             if (spills.contains(ig.getNode(vr))) {
                                 // allocate a temp for the loaded value

@@ -6,6 +6,7 @@ public class AsmLevelOptimizer {
     private final List<AbstractAsmLevelLinearPass> passes = List.of(
             new RedundantGotoEliminationPass(),
             new RedundantRegisterMoveEliminationPass(),
+            new TwoWayMoveEliminationPass(),
             new CommuteAndEliminateMovePass(),
             new UselessLabelPass(),
             new RedundantCmpPass()

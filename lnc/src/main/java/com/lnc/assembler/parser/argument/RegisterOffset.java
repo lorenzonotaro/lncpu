@@ -53,7 +53,7 @@ public class RegisterOffset extends Argument{
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof RegisterOffset other)) return false;
-        return register.equals(other.register) && offset.equals(other.offset) && operator.equals(other.operator);
+        return register.equals(other.register) && offset.equals(other.offset) && Token.equivalent(operator, other.operator);
     }
 
     @Override

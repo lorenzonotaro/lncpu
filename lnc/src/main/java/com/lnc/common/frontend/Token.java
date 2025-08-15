@@ -2,6 +2,8 @@ package com.lnc.common.frontend;
 
 import com.lnc.common.IntUtils;
 
+import java.util.Objects;
+
 public class Token {
 
     public Location location;
@@ -26,6 +28,12 @@ public class Token {
 
     public Token(Token token, Token macroSub){
         this(macroSub, token.type, token.lexeme, token.literal, token.location);
+    }
+
+    public static boolean equivalent(Token a, Token b) {
+        return a.type == b.type &&
+               a.lexeme.equals(b.lexeme) &&
+               (Objects.equals(a.literal, b.literal));
     }
 
     @Override

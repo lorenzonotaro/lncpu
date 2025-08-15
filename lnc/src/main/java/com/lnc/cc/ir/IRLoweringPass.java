@@ -231,7 +231,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         List<IRInstruction> instrs = new ArrayList<>();
 
         for(var entry : unit.getLocalMappingInfo().originalRegParamMappings().entrySet()){
-            instrs.add(new Move(entry.getValue(), unit.getLocalMappingInfo().mappings().get(entry.getKey())));
+            instrs.add(new Move(entry.getValue(), unit.getLocalMappingInfo().mappings().get(entry.getKey()), true));
         }
 
         if(!instrs.isEmpty())

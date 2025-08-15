@@ -154,7 +154,7 @@ public class InterferenceGraph {
         var loopWeights = new LinkedHashMap<VirtualRegister, Integer>();
 
         for (VirtualRegister vr : unit.getVrManager().getAllRegisters())
-            ranges.put(vr, new LiveRange(Integer.MAX_VALUE, Integer.MIN_VALUE));
+            ranges.put(vr, new LiveRange());
 
         // 2) number instructions in forward RPO
         List<IRBlock> rpo = unit.computeReversePostOrderAndCFG();
@@ -165,48 +165,62 @@ public class InterferenceGraph {
             }
         }
 
-        // Set parameter defs at index 0
-        for(var param : unit.getFunctionType().getParameterMapping()){
-            if(!param.onStack()){
-                var vrParam = unit.getLocalMappingInfo().originalRegParamMappings().get(param.name());
-                ranges.get(vrParam).start = 0;
+        // Heuristic weights based on loop depth; also record param defs at entry
+        IRBlock presumedEntry = rpo.isEmpty() ? null : rpo.get(0);
+        if (presumedEntry != null) {
+            for (var param : unit.getFunctionType().getParameterMapping()) {
+                if (!param.onStack()) {
+                    var vrParam = unit.getLocalMappingInfo().originalRegParamMappings().get(param.name());
+                    if (vrParam != null) {
+                        ranges.get(vrParam).addPoint(presumedEntry, 0);
+                    }
+                }
             }
         }
 
         // 3) backward scan per block, seeded with liveOut
         for (IRBlock B : rpo) {
             var blockLoopWeight = B.getLoopDepth();
-            Set<VirtualRegister> live = new HashSet<>(li.liveOut().get(B));
+            Set<VirtualRegister> live = new LinkedHashSet<>(li.liveOut().get(B));
             for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
                 int i = inst.getIndex();
 
-                // kill defs *and* record def position
-                for (VirtualRegister d : inst.getWrites()) {
-                    live.remove(d);
-                    LiveRange lr = ranges.get(d);
-                    lr.start = Math.min(lr.start, i);
-                    lr.end   = Math.max(lr.end,   i);
-                    defs.put(d, defs.getOrDefault(d, 0) + 1);
+                // Compute liveBefore = (live - defs) ∪ uses
+                Set<VirtualRegister> defsHere = new LinkedHashSet<>(inst.getWrites());
+                Set<VirtualRegister> usesHere = new LinkedHashSet<>(inst.getReads());
 
+                // update counts and weights
+                for (VirtualRegister d : defsHere) {
+                    defs.put(d, defs.getOrDefault(d, 0) + 1);
                     loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), (int) Math.pow(10, blockLoopWeight)));
                 }
-
-                // gen uses *and* record use position
-                for (VirtualRegister u : inst.getReads()) {
-                    live.add(u);
-                    LiveRange lr = ranges.get(u);
-                    lr.start = Math.min(lr.start, i);
-                    lr.end   = Math.max(lr.end,   i);
-
+                for (VirtualRegister u : usesHere) {
                     uses.put(u, uses.getOrDefault(u, 0) + 1);
                     loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), (int) Math.pow(10, blockLoopWeight)));
                 }
 
-                // extend all still‐live
-                for (VirtualRegister v : live) {
+                Set<VirtualRegister> liveBefore = new LinkedHashSet<>(live);
+                liveBefore.removeAll(defsHere);
+                liveBefore.addAll(usesHere);
+
+                // Mark liveness at this program point
+                for (VirtualRegister v : liveBefore) {
                     LiveRange lr = ranges.get(v);
-                    lr.end = Math.max(lr.end, i);
+                    if (lr != null) lr.addPoint(B, i);
                 }
+
+                // Also mark direct defs/uses points for better visualization
+                for (VirtualRegister d : defsHere) {
+                    LiveRange lr = ranges.get(d);
+                    if (lr != null) lr.addPoint(B, i);
+                }
+                for (VirtualRegister u : usesHere) {
+                    LiveRange lr = ranges.get(u);
+                    if (lr != null) lr.addPoint(B, i);
+                }
+
+                // Prepare for previous instruction
+                live = liveBefore;
             }
         }
 
@@ -229,7 +243,7 @@ public class InterferenceGraph {
         // 0) compute liveness info
         LivenessInfo livenessInfo = LivenessInfo.computeBlockLiveness(unit);
 
-        // 1) compute live ranges
+        // 1) compute live ranges and weights/counters (for debugging/heuristics)
         VrInfo vrInfo = computeVrInfo(unit, livenessInfo);
 
         Map<VirtualRegister, LiveRange> liveRanges = vrInfo.liveRanges();
@@ -242,60 +256,72 @@ public class InterferenceGraph {
         graph.setUses(uses);
         graph.setDefs(defs);
 
+        // 2) Build interference edges in a control-flow aware manner:
+        //    For each block, scan instructions backward. For each def, add edges to all currently live vregs.
+        //    Special-case moves: do not connect dest with src, but add a preference instead.
         var liveOut = livenessInfo.liveOut();
-        var liveIn = livenessInfo.liveIn();
+        List<IRBlock> order = unit.computeReversePostOrderAndCFG();
 
+        for (IRBlock B : order) {
+            Set<VirtualRegister> live = new LinkedHashSet<>(liveOut.get(B));
 
-        // 2) add edges for each pair of live ranges that overlap
-        for(var a : liveRanges.keySet()){
-            for(var b : liveRanges.keySet()){
-                if(a == b) continue; // skip self-loops
-                LiveRange la = liveRanges.get(a), lb = liveRanges.get(b);
-                if(la.intersects(lb)) {
-                    graph.addEdge(a, b); // add interference edge
+            for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
+                // Collect defs/uses
+                Set<VirtualRegister> defsHere = new LinkedHashSet<>(inst.getWrites());
+                Set<VirtualRegister> usesHere = new LinkedHashSet<>(inst.getReads());
+
+                // Handle move preferences and compute "work" live set for interference
+                Set<VirtualRegister> work = new LinkedHashSet<>(live);
+                if (inst instanceof Move mv) {
+                    IROperand s = mv.getSource(), d = mv.getDest();
+                    if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd) {
+                        graph.addPreference(vs, vd);
+                        work.remove(vs); // do not create interference dest<->src for moves
+                    }
                 }
-            }
-        }
 
-        for (IRBlock B : unit.computeReversePostOrderAndCFG()) {
-            for (IRInstruction inst = B.getFirst(); inst != null; inst = inst.getNext()) {
+                // Add interference for defs against current live (or live minus src for moves)
+                for (VirtualRegister d : defsHere) {
+                    for (VirtualRegister v : work) {
+                        graph.addEdge(d, v);
+                    }
+                }
 
-                // Call clobber registers
+                // Call-site clobbers: any vreg live across the call cannot take those phys colors
                 if (inst instanceof Call call) {
-                    // which phys regs get clobbered?
                     var ret = call.getReturnTarget();
-
-                    if(ret != null){
-                        // anyone live across the call cannot take those colors
-                        for (VirtualRegister vr : liveOut.get(B)) {
-                            for (Register phys : ret.getRegisterClass().getRegisters()) {
-                                graph.addEdge(vr, phys);
-                            }
+                    if (ret != null) {
+                        for (VirtualRegister vr : live) {
+                            graph.addEdge(vr, ret);
                         }
                     }
-                }else if(inst instanceof Bin bin){
+                }
+
+                // Keep and extend copy/coalesce preferences as in the prior logic
+                if (inst instanceof Bin bin) {
                     VirtualRegister dest = (VirtualRegister) bin.getDest();
                     VirtualRegister rhs = bin.getRight().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getRight() : null;
                     VirtualRegister lhs = bin.getLeft().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) bin.getLeft() : null;
                     if (lhs != null)
-                        graph.addPreference(dest, lhs);   // dotted line, not interference
+                        graph.addPreference(dest, lhs);
                     if (rhs != null) {
-                        if(bin.getOperator().isCommutative()){
+                        if (bin.getOperator().isCommutative()) {
                             graph.addPreference(dest, rhs);
-                        }else{
-                            graph.addEdge(dest, rhs); // interference edge
+                        } else {
+                            // Non-commutative two-address style often requires dest ≠ rhs
+                            graph.addEdge(dest, rhs);
                         }
                     }
-                }else if (inst instanceof Move mv) {
-                    IROperand s = mv.getSource(), d = mv.getDest();
-                    if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd)
-                        graph.addPreference(vs, vd);
-                }else if(inst instanceof Unary un){
+                } else if (inst instanceof Unary un) {
                     VirtualRegister dest = (VirtualRegister) un.getTarget();
                     VirtualRegister src = un.getOperand().type == IROperand.Type.VIRTUAL_REGISTER ? (VirtualRegister) un.getOperand() : null;
                     if (src != null)
-                        graph.addPreference(dest, src);   // dotted line, not interference
+                        graph.addPreference(dest, src);
                 }
+
+                // Standard liveness update for backward scan
+                live.removeAll(defsHere);
+                live.addAll(usesHere);
             }
         }
 

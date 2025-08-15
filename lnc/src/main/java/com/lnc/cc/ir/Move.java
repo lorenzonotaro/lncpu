@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Move extends IRInstruction {
+    private final boolean isRegParamDemotion;
     private IROperand source;
     private IROperand dest;
 
@@ -13,6 +14,14 @@ public class Move extends IRInstruction {
         super();
         this.source = source;
         this.dest = dest;
+        this.isRegParamDemotion = false;
+    }
+
+    public Move(IROperand source, IROperand dest, boolean isRegParamDemotion) {
+        super();
+        this.source = source;
+        this.dest = dest;
+        this.isRegParamDemotion = isRegParamDemotion;
     }
 
 
@@ -59,5 +68,9 @@ public class Move extends IRInstruction {
 
     public void setDest(IROperand dest) {
         this.dest = dest;
+    }
+
+    public boolean isRegParamDemotion() {
+        return isRegParamDemotion;
     }
 }
