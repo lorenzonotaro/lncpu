@@ -148,6 +148,10 @@ public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> 
         context.enqueue(block);
     }
 
+    protected final void enqueueLast(IRBlock block) {
+        context.enqueueLast(block);
+    }
+
     public IRInstruction getCurrentInstruction() {
         return currentInstruction;
     }

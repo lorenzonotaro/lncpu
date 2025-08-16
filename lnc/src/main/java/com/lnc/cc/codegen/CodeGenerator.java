@@ -103,10 +103,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         IRBlock falseTarget = condJump.getFalseTarget();
         IRBlock continueTo = condJump.getContinueTo();
 
-        if(continueTo != null){
-            enqueue(continueTo);
-        }
-
         instrf(TokenType.CMP, left, right);
 
         // Emit minimal conditional jumps and schedule targets using LIFO (push in reverse order)
@@ -162,6 +158,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
                 instrf(TokenType.GOTO, CodeGenUtils.labelRef(trueTarget));
             }
+        }
+
+        if(continueTo != null){
+            enqueueLast(continueTo);
         }
 
         return null;

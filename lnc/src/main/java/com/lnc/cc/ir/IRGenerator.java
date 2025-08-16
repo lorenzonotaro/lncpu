@@ -189,7 +189,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         //    branchIfFalse(cond, falseTarget, trueTarget)
         if (ifStmt.condition != null) {
             IRBlock falseTarget = elseBlk != null ? elseBlk : exitBlk;
-            branchIfTrue(ifStmt.condition, thenBlk, falseTarget, exitBlk);
+            branchIfTrue(ifStmt.condition, thenBlk, falseTarget, falseTarget == exitBlk ? null : exitBlk);
         } else {
             // “if (true)” → always go to thenBlk
             emit(new Goto(thenBlk));
