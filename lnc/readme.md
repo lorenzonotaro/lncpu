@@ -250,7 +250,7 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
  - [ ] Absolute arrays
  - [x] Structs (data page only)
  - [ ] Unions
- - [ ] Reentrant functions (see below)
+ - [x] Reentrant functions
 
 
 ### Calling convention
