@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.lnc.assembler.Assembler;
+import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.cc.Compiler;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.common.Logger;
@@ -20,11 +21,12 @@ import com.lnc.common.frontend.Line;
 public class LNC {
 
     public static final String PROGRAM_NAME = "lnc";
-    public static final String PROGRAM_VERSION = "2.5.0";
+    public static final String PROGRAM_VERSION = "2.6.0";
     private static final String DEFAULT_LINKER_CFG_FILENAME = "linker.cfg";
 
     public static ProgramSettings settings = new ProgramSettings(LNC.class.getClassLoader().getResourceAsStream("default-settings.json"));
     public static String[] includeDirs;
+    private static LinkTarget[] requestedOutputs;
 
     public static void main(String[] args){
         Logger.setProgramState("init");
@@ -51,28 +53,9 @@ public class LNC {
 
         try {
 
-            List<String> includeDirsList = new ArrayList<>();
+            parseIncludeDirs();
 
-            String[] fromCmdLine = settings.get("-I", String.class).split(";");
-
-            for (String dir : fromCmdLine) {
-                if (!dir.isEmpty()) {
-                    includeDirsList.add(dir);
-                }
-            }
-
-
-            // current jar directory
-            var codeSource = LNC.class.getProtectionDomain().getCodeSource();
-            URL url;
-            if (codeSource != null && (url = codeSource.getLocation()) != null) {
-                try {
-                    String path = Path.of(url.toURI()).getParent().resolve("lib").toString();
-                    includeDirsList.add(path);
-                } catch (URISyntaxException ex) {}
-            }
-
-            LNC.includeDirs = includeDirsList.toArray(new String[0]);
+            parseRequestedOutputs();
 
             boolean noLncFiles = settings.getLncFiles().isEmpty();
             if(settings.getLnasmFiles().isEmpty() && noLncFiles){
@@ -96,7 +79,7 @@ public class LNC {
                 }
             }
 
-            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output);
+            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output, requestedOutputs);
 
             if(!assembler.assemble())
                 System.exit(1);
@@ -111,6 +94,48 @@ public class LNC {
             return 1;
         }
         return 0;
+    }
+
+    private static void parseRequestedOutputs() {
+        String[] reqOutputs = settings.get("-oD", String.class).split(",");
+        List<LinkTarget> targets = new ArrayList<>();
+        for (String out : reqOutputs) {
+            String trim = out.trim();
+            if (!trim.isEmpty()) {
+                try {
+                    targets.add(LinkTarget.valueOf(trim.toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    Logger.error("unknown output target '%s'".formatted(out));
+                    throw e;
+                }
+            }
+        }
+        LNC.requestedOutputs = targets.toArray(new LinkTarget[0]);
+    }
+
+    private static void parseIncludeDirs() {
+        List<String> includeDirsList = new ArrayList<>();
+
+        String[] fromCmdLine = settings.get("-I", String.class).split(";");
+
+        for (String dir : fromCmdLine) {
+            if (!dir.isEmpty()) {
+                includeDirsList.add(dir);
+            }
+        }
+
+
+        // current jar directory
+        var codeSource = LNC.class.getProtectionDomain().getCodeSource();
+        URL url;
+        if (codeSource != null && (url = codeSource.getLocation()) != null) {
+            try {
+                String path = Path.of(url.toURI()).getParent().resolve("lib").toString();
+                includeDirsList.add(path);
+            } catch (URISyntaxException ex) {}
+        }
+
+        LNC.includeDirs = includeDirsList.toArray(new String[0]);
     }
 
     private static String outputsToString(List<CompilerOutput> outputs) {

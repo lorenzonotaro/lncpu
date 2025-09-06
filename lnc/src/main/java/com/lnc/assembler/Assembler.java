@@ -5,14 +5,11 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.lnc.LNC;
 import com.lnc.assembler.common.SectionInfo;
-import com.lnc.assembler.linker.BinaryLinker;
-import com.lnc.assembler.linker.Disassembler;
-import com.lnc.assembler.linker.LinkTarget;
-import com.lnc.assembler.linker.LinkerConfig;
-import com.lnc.assembler.linker.LinkerConfigParser;
+import com.lnc.assembler.linker.*;
 import com.lnc.assembler.parser.LnasmParseResult;
 import com.lnc.assembler.parser.LnasmParsedBlock;
 import com.lnc.assembler.parser.LnasmParser;
@@ -29,18 +26,17 @@ import com.lnc.common.io.ByteArrayChannel;
 public class Assembler {
     private final List<Path> sourceFiles;
     private final String linkerConfig;
-    private final Map<String, byte[]> outputs;
+    private final Map<LinkTarget, byte[]> outputs;
     private final List<CompilerOutput> compilerOutputs;
+    private final LinkTarget[] requestedOutputs;
+    private BinaryLinker linker;
 
-    public Assembler(List<Path> sourceFiles, String linkerConfig) {
-        this(sourceFiles, linkerConfig, null);
-    }
-
-    public Assembler(List<Path> sourceFiles, String linkerConfig, List<CompilerOutput> compilerOutputs) {
+    public Assembler(List<Path> sourceFiles, String linkerConfig, List<CompilerOutput> compilerOutputs, LinkTarget[] requestedOutputs) {
         this.sourceFiles = sourceFiles;
         this.linkerConfig = linkerConfig;
 
         this.compilerOutputs = compilerOutputs;
+        this.requestedOutputs = requestedOutputs;
 
         this.outputs = new HashMap<>();
     }
@@ -73,19 +69,19 @@ public class Assembler {
                 false
         ));
 
-        if(!linkerConfigLexer.parse(linkerConfig, null))
+        if (!linkerConfigLexer.parse(linkerConfig, null))
             return false;
 
         LinkerConfigParser linkerconfigParser = new LinkerConfigParser(linkerConfigLexer.getResult().toArray(Token[]::new));
-        if(!linkerconfigParser.parse())
+        if (!linkerconfigParser.parse())
             return false;
 
         LinkerConfig linkerConfig = linkerconfigParser.getResult();
 
-        if(this.compilerOutputs != null){
-            try{
+        if (this.compilerOutputs != null) {
+            try {
                 linkerConfig = LinkerConfig.join(linkerConfig, new LinkerConfig(compilerOutputs.stream().map(CompilerOutput::sectionInfo).toArray(SectionInfo[]::new)));
-            }catch(IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 Logger.error("unable to merge the provided linker config with the compiler-generated one: %s.".formatted(e.getMessage()));
                 return false;
             }
@@ -93,47 +89,89 @@ public class Assembler {
 
         Logger.setProgramState("preprocessor");
         Preprocessor preprocessor = new Preprocessor(lines, asmLexerConfig, linkerConfig);
-        if(!preprocessor.preprocess())
+        if (!preprocessor.preprocess())
             return false;
         List<Token[]> preprocessedLines = preprocessor.getLines();
 
         Logger.setProgramState("parser");
         LnasmParser parser = new LnasmParser(preprocessedLines);
-        if(!parser.parse())
+        if (!parser.parse())
             return false;
 
         LnasmParseResult parseResult = parser.getResult();
 
-        if(compilerOutputs != null){
+        if (compilerOutputs != null) {
             parseResult.join(compilerOutputs.stream().map(LnasmParsedBlock::fromCompilerOutput).toList());
         }
 
         Logger.setProgramState("linker");
 
-        BinaryLinker linker = new BinaryLinker(linkerConfig);
+        this.linker = new BinaryLinker(linkerConfig);
 
-        if(!linker.link(parseResult))
+        if (!linker.link(parseResult))
             return false;
 
         var linkResult = linker.getResult();
-        var binaryResult = linkResult.getOrDefault(LinkTarget.ROM, new ByteArrayChannel(0, false)).toByteArray();
-        var binOutputFile = "";
-        var immediateOutputFile = "";
-        if(!"".equals(binOutputFile = LNC.settings.get("-oB", String.class))){
-            this.outputs.put(binOutputFile, binaryResult);
-        }
 
-        if(!"".equals(immediateOutputFile = LNC.settings.get("-oI", String.class))){
-            Logger.setProgramState("disassembler");
-            Disassembler disassembler = new Disassembler(linker.createReverseSymbolTable(), linker.createSectionDescriptors(LinkTarget.ROM));
-            if(disassembler.disassemble(binaryResult)){
-                this.outputs.put(immediateOutputFile, disassembler.getOutput());
-            }else{
-                return false;
-            }
+        for (var target : this.requestedOutputs) {
+            this.outputs.put(target, linkResult.getOrDefault(target, new ByteArrayChannel(0, true)).toByteArray());
         }
 
         return true;
+    }
+
+    public void writeOutputFiles() {
+        // binary outputs
+        String binaryOutputFile;
+        if (!"".equals(binaryOutputFile = LNC.settings.get("-oB", String.class))) {
+            for (var entry : this.outputs.entrySet()) {
+                try {
+                    LinkTarget linkTarget = entry.getKey();
+                    String filename = appendTargetToFilename(linkTarget, binaryOutputFile);
+                    Files.write(Path.of(filename), entry.getValue());
+                } catch (Exception e) {
+                    Logger.error("unable to write output file (" + e.getMessage() + ")");
+                }
+            }
+        }
+        String immediateOutputFile;
+
+        if (!"".equals(immediateOutputFile = LNC.settings.get("-oI", String.class))) {
+            Logger.setProgramState("disassembler");
+            Map<Integer, Set<String>> reverseSymbolTable = linker.createReverseSymbolTable();
+            for (var entry : this.outputs.entrySet()) {
+                try {
+                    LinkTarget linkTarget = entry.getKey();
+                    List<SectionBuilder.Descriptor> sectionDescriptors = linker.createSectionDescriptors(linkTarget);
+                    Disassembler disassembler = new Disassembler(reverseSymbolTable, sectionDescriptors);
+
+                    if (!disassembler.disassemble(entry.getValue())) {
+                        Logger.error("unable to disassemble the binary for output: " + immediateOutputFile + ", device target: " + linkTarget.name());
+                        return;
+                    }
+
+                    String filename = appendTargetToFilename(linkTarget, immediateOutputFile);
+                    Files.writeString(Path.of(filename), new String(disassembler.getOutput()));
+                } catch (Exception e) {
+                    Logger.error("unable to write output file (" + e.getMessage() + ")");
+                }
+            }
+        }
+    }
+
+    private static String appendTargetToFilename(LinkTarget linkTarget, String outputFileName) {
+        String filename;
+        if (linkTarget == LinkTarget.ROM) {
+            filename = outputFileName;
+        } else {
+            int dotIndex = outputFileName.lastIndexOf('.');
+            if (dotIndex != -1) {
+                filename = outputFileName.substring(0, dotIndex) + "_" + linkTarget.name() + outputFileName.substring(dotIndex);
+            } else {
+                filename = outputFileName + "_" + linkTarget.name();
+            }
+        }
+        return filename;
     }
 
     private List<List<Token>> parseSourceFiles(LineByLineLexer lexer, List<Path> sourceFiles) {
@@ -149,20 +187,5 @@ public class Assembler {
             }
         }
         return success ? lexer.getResult() : null;
-    }
-
-
-    public Map<String, byte[]> getOutputs() {
-        return outputs;
-    }
-
-    public void writeOutputFiles() {
-        for (var entry : this.outputs.entrySet()) {
-            try {
-                Files.write(Path.of(entry.getKey()), entry.getValue());
-            } catch (Exception e) {
-                Logger.error("unable to write output file (" + e.getMessage() + ")");
-            }
-        }
     }
 }
