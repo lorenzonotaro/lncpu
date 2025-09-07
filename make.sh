@@ -2,7 +2,6 @@ cd "$(dirname "$0")"
 
 # config variables
 build_lnc=true
-build_lncpuemu=true
 build_eeprom_serial_loader=true
 make_eeproms=true
 
@@ -14,8 +13,6 @@ for arg in "$@"; do
         build_eeprom_serial_loader=false
     elif [ "$arg" == "--no-eeproms" ]; then
         make_eeproms=false
-    elif [ "$arg" == "--no-lncpuemu" ] || [ "$arg" == "--no-emu" ]; then
-        build_lncpuemu=false
     else
         echo "Unknown argument: $arg"
         echo "Usage: make.sh [--no-lnc] [--no-eeprom-serial-loader|--no-esl] [--no-eeproms] [--no-lncpuemu]"
@@ -121,37 +118,6 @@ if [ $build_lnc = true ] ; then
 
     python3 gen_language_docs.py
 
-fi
-
-# === make lncpuemu ===
-if [ $build_lncpuemu = true ] ; then
-
-    cd lncpu-emu
-
-    # only build lncpuemu if on windows or MinGW
-    if [[ "$OSTYPE" == "msys" && "$OSTYPE" == "cygwin" && "$OSTYPE" == "win32" ]]; then
-        
-        echo "Building lncpu-emu..."
-
-        cd lncpu-emu
-        cmake .
-
-        if [ $? -ne 0 ]; then
-            echo "Error: lncpuemu build failed"
-            exit 1
-        fi
-
-        cp target/lncpuemu.jar ../output/
-
-        # generate run cmd/bash for lncpuemu
-        echo "java -jar %~dp0\lncpuemu.jar %*" > "../output/lncpuemu.bat"
-        echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lncpuemu.jar\" \"\$@\"" > "../output/lncpuemu"
-
-        cd ..
-
-    else
-        echo "Skipping lncpu-emu build: not on Windows or MinGW."
-    fi
 fi
 
 echo "Done."
