@@ -13,7 +13,7 @@ int validate_args(const struct emu_cmdline_params * params) {
 }
 
 void cmdline_init(struct emu_cmdline_params *params) {
-    params->pause = false;
+    params->pause_on_start = false;
     params->linker_config_file = NULL;
     params->emu_tty_section = NULL;
     params->rom_file = NULL;
@@ -30,7 +30,7 @@ int parse_args(struct emu_cmdline_params *params, int argc, const char **argv) {
     struct argparse_option options[] = {
         OPT_HELP(),
         OPT_GROUP("Debugger options"),
-        OPT_BOOLEAN('p', "pause", &params->pause, "pause before start", NULL, 0, 0),
+        OPT_BOOLEAN('p', "pause", &params->pause_on_start, "pause before start", NULL, 0, 0),
         OPT_GROUP("Emulator options"),
         OPT_STRING('l', "linker-config", &params->linker_config_file, "linker config file", NULL, 0, 0),
         OPT_STRING('t', "emu-tty", &params->emu_tty_section, "section for emulating tty (requires section config)",

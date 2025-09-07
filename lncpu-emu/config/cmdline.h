@@ -9,7 +9,7 @@
 
 struct emu_cmdline_params {
     /* Debugger options */
-    int pause; /* Pause before start. */
+    int pause_on_start; /* Pause before start. */
 
     /* Emulator options */
     const char *linker_config_file; /* Linker config file. */

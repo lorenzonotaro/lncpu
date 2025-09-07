@@ -128,23 +128,30 @@ if [ $build_lncpuemu = true ] ; then
 
     cd lncpu-emu
 
-    echo "Building lncpu-emu..."
+    # only build lncpuemu if on windows or MinGW
+    if [[ "$OSTYPE" == "msys" && "$OSTYPE" == "cygwin" && "$OSTYPE" == "win32" ]]; then
+        
+        echo "Building lncpu-emu..."
 
-    mvn package
+        cd lncpu-emu
+        cmake .
 
-    if [ $? -ne 0 ]; then
-        echo "Error: lncpuemu build failed"
-        exit 1
+        if [ $? -ne 0 ]; then
+            echo "Error: lncpuemu build failed"
+            exit 1
+        fi
+
+        cp target/lncpuemu.jar ../output/
+
+        # generate run cmd/bash for lncpuemu
+        echo "java -jar %~dp0\lncpuemu.jar %*" > "../output/lncpuemu.bat"
+        echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lncpuemu.jar\" \"\$@\"" > "../output/lncpuemu"
+
+        cd ..
+
+    else
+        echo "Skipping lncpu-emu build: not on Windows or MinGW."
     fi
-
-    cp target/lncpuemu.jar ../output/
-
-    # generate run cmd/bash for lncpuemu
-    echo "java -jar %~dp0\lncpuemu.jar %*" > "../output/lncpuemu.bat"
-    echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lncpuemu.jar\" \"\$@\"" > "../output/lncpuemu"
-
-    cd ..
-
 fi
 
 echo "Done."

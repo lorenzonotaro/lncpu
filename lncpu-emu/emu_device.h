@@ -4,6 +4,7 @@
 
 #ifndef LNCPU_EMU_EMU_DEVICE_H
 #define LNCPU_EMU_EMU_DEVICE_H
+#include <stdbool.h>
 #include <stdint.h>
 
 
