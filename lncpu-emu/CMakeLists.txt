@@ -23,4 +23,7 @@ add_executable(lncpu_emu main.c
         emu.c
         emu.h
         vm.h
-        vm.c)
+        vm.c
+        emu_device.h
+        emu_device.c
+        opcodes.h)

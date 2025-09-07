@@ -43,6 +43,7 @@ typedef struct {
 
 void linker_config_init(LinkerConfig *cfg);
 void linker_config_free(LinkerConfig *cfg);
+const SectionInfo *linker_config_get_section(LinkerConfig *lc, const char *name);
 bool linker_config_push(LinkerConfig *cfg, SectionInfo si);
 
 #endif //LNCPU_EMU_LINKER_CONFIG_H

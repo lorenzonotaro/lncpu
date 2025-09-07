@@ -1,0 +1,251 @@
+_BRK_	Reserved opcode (hardware interrupt). Do not use.
+INT	Software interrupt. Pushes CS:PC and FLAGS, then calls the interrupt vector
+MOV_CST_RA	Moves a constant to RA
+MOV_CST_RB	Moves a constant to RB
+MOV_CST_RC	Moves a constant to RC
+MOV_CST_RD	Moves a constant to RD
+MOV_CST_SP	Moves a constant to SP
+MOV_CST_SS	Moves a constant to SS
+MOV_CST_DS	Moves a constant to DS
+MOV_CST_BP	Moves a constant to BP
+MOV_SS_RD	Moves SS to RD
+MOV_SP_RD	Moves SP to RD
+MOV_SP_BP	Moves SP to BP
+MOV_BP_SP	Moves BP to SP
+MOV_DS_RD	Moves DS to RD
+MOV_RA_RB	Moves RA to RB
+MOV_RA_RC	Moves RA to RC
+MOV_RA_RD	Moves RA to RD
+MOV_RB_RA	Moves RB to RA
+MOV_RB_RC	Moves RB to RC
+MOV_RB_RD	Moves RB to RD
+MOV_RC_RA	Moves RC to RA
+MOV_RC_RB	Moves RC to RB
+MOV_RC_RD	Moves RC to RD
+MOV_RD_RA	Moves RD to RA
+MOV_RD_RB	Moves RD to RB
+MOV_RD_RC	Moves RD to RC
+MOV_RD_SS	Moves RD to SS
+MOV_RD_SP	Moves RD to SP
+MOV_RD_DS	Moves RD to DS
+MOV_IBPOFFSET_RA	Copies a from a location in the address space (stack frame offset addressing mode) to RA
+MOV_IBPOFFSET_RB	Copies a from a location in the address space (stack frame offset addressing mode) to RB
+MOV_IBPOFFSET_RC	Copies a from a location in the address space (stack frame offset addressing mode) to RC
+MOV_IBPOFFSET_RD	Copies a from a location in the address space (stack frame offset addressing mode) to RD
+MOV_RA_IBPOFFSET	Copies RA to a location in the address space (stack frame offset addressing mode)
+MOV_RB_IBPOFFSET	Copies RB to a location in the address space (stack frame offset addressing mode)
+MOV_RC_IBPOFFSET	Copies RC to a location in the address space (stack frame offset addressing mode)
+MOV_RD_IBPOFFSET	Copies RD to a location in the address space (stack frame offset addressing mode)
+MOV_CST_IBPOFFSET	Copies a constant to a location in the address space (stack frame offset addressing mode)
+MOV_RA_DATAP	Copies RA to a location in the address space (data page addressing mode)
+MOV_RB_DATAP	Copies RB to a location in the address space (data page addressing mode)
+MOV_RC_DATAP	Copies RC to a location in the address space (data page addressing mode)
+MOV_RD_DATAP	Copies RD to a location in the address space (data page addressing mode)
+MOV_DATAP_RA	Copies from location in the address space (data page addressing mode) to RA
+MOV_DATAP_RB	Copies from location in the address space (data page addressing mode) to RB
+MOV_DATAP_RC	Copies from location in the address space (data page addressing mode) to RC
+MOV_DATAP_RD	Copies from location in the address space (data page addressing mode) to RD
+MOV_CST_DATAP	Copies a constant to a location in the address space (data page addressing mode)
+MOV_RA_IRCRD	Copies RA to a location in the address space (full indirect addressing mode)
+MOV_RB_IRCRD	Copies RB to a location in the address space (full indirect addressing mode)
+MOV_RC_IRCRD	Copies RC to a location in the address space (full indirect addressing mode)
+MOV_RD_IRCRD	Copies RD to a location in the address space (full indirect addressing mode)
+MOV_IRCRD_RA	Copies from location in the address space (full indirect addressing mode) to RA
+MOV_IRCRD_RB	Copies from location in the address space (full indirect addressing mode) to RB
+MOV_IRCRD_RC	Copies from location in the address space (full indirect addressing mode) to RC
+MOV_IRCRD_RD	Copies from location in the address space (full indirect addressing mode) to RD
+MOV_CST_IRCRD	Copies a constant to a location in the address space (full indirect addressing mode)
+MOV_RA_ABS	Copies RA to a location in the address space (absolute addressing mode)
+MOV_RB_ABS	Copies RB to a location in the address space (absolute addressing mode)
+MOV_RC_ABS	Copies RC to a location in the address space (absolute addressing mode)
+MOV_RD_ABS	Copies RD to a location in the address space (absolute addressing mode)
+MOV_ABS_RA	Copies from location in the address space (absolute addressing mode) to RA
+MOV_ABS_RB	Copies from location in the address space (absolute addressing mode) to RB
+MOV_ABS_RC	Copies from location in the address space (absolute addressing mode) to RC
+MOV_ABS_RD	Copies from location in the address space (absolute addressing mode) to RD
+MOV_CST_ABS	Copies a constant to a location in the address space (absolute addressing mode)
+MOV_DATAP_DATAP	Copies a location in the address space (data page addressing mode) to another location in the address space (data page addressing mode)
+MOV_IRD_RA	Copies from a location in the address space (short indirect addressing mode) to RA
+MOV_IRD_RB	Copies from a location in the address space (short indirect addressing mode) to RB
+MOV_IRD_RC	Copies from a location in the address space (short indirect addressing mode) to RC
+MOV_IRD_RD	Copies from a location in the address space (short indirect addressing mode) to RD
+MOV_RA_IRD	Copies RA to a location in the address space (short indirect addressing mode)
+MOV_RB_IRD	Copies RB to a location in the address space (short indirect addressing mode)
+MOV_RC_IRD	Copies RC to a location in the address space (short indirect addressing mode)
+MOV_RD_IRD	Copies RD to a location in the address space (short indirect addressing mode)
+MOV_CST_IRD	Copies a constant to a location in the address space (short indirect addressing mode)
+PUSH_RA	Pushes RA onto the stack
+PUSH_RB	Pushes RB onto the stack
+PUSH_RC	Pushes RC onto the stack
+PUSH_RD	Pushes RD onto the stack
+PUSH_DATAP	Pushes a location in the address space (data page addressing mode) onto the stack
+PUSH_IRD	Pushes a location in the address space (short indirect addressing mode) onto the stack
+PUSH_IRCRD	Pushes a location in the address space (full indirect addressing mode) onto the stack
+PUSH_ABS	Pushes a location in the address space (absolute addressing mode) onto the stack
+PUSH_CST	Pushes a constant onto the stack
+PUSH_BP	Pushes the value of BP onto the stack
+POP_RA	Pops from the stack into RA
+POP_RB	Pops from the stack into RB
+POP_RC	Pops from the stack into RC
+POP_RD	Pops from the stack into RD
+POP_DATAP	Pops from the stack into a location in the address space (data page addressing mode)
+POP_IRD	Pops from the stack into a location in the address space (short indirect addressing mode)
+POP_IRCRD	Pops from the stack into a location in the address space (full indirect addressing mode)
+POP_ABS	Pops from the stack into a location in the address space (absolute addressing mode)
+POP_BP	Pops from the stack into BP
+ADD_RA_RA	Adds RA to RA, stores the result back in RA, then updates the FLAGS accordingly
+ADD_RA_RB	Adds RB to RA, stores the result back in RA, then updates the FLAGS accordingly
+ADD_RA_RC	Adds RC to RA, stores the result back in RA, then updates the FLAGS accordingly
+ADD_RA_RD	Adds RD to RA, stores the result back in RA, then updates the FLAGS accordingly
+ADD_RB_RA	Adds RA to RB, stores the result back in RB, then updates the FLAGS accordingly
+ADD_RB_RB	Adds RB to RB, stores the result back in RB, then updates the FLAGS accordingly
+ADD_RB_RC	Adds RC to RB, stores the result back in RB, then updates the FLAGS accordingly
+ADD_RB_RD	Adds RD to RB, stores the result back in RB, then updates the FLAGS accordingly
+ADD_RC_RA	Adds RA to RC, stores the result back in RC, then updates the FLAGS accordingly
+ADD_RC_RB	Adds RB to RC, stores the result back in RC, then updates the FLAGS accordingly
+ADD_RC_RC	Adds RC to RC, stores the result back in RC, then updates the FLAGS accordingly
+ADD_RC_RD	Adds RD to RC, stores the result back in RC, then updates the FLAGS accordingly
+ADD_RD_RA	Adds RA to RD, stores the result back in RD, then updates the FLAGS accordingly
+ADD_RD_RB	Adds RB to RD, stores the result back in RD, then updates the FLAGS accordingly
+ADD_RD_RC	Adds RC to RD, stores the result back in RD, then updates the FLAGS accordingly
+ADD_RD_RD	Adds RD to RD, stores the result back in RD, then updates the FLAGS accordingly
+ADD_RA_CST	Adds a constant to RA, stores the result back in RA, then updates the FLAGS accordingly
+ADD_RB_CST	Adds a constant to RB, stores the result back in RB, then updates the FLAGS accordingly
+ADD_RC_CST	Adds a constant to RC, stores the result back in RC, then updates the FLAGS accordingly
+ADD_RD_CST	Adds a constant to RD, stores the result back in RD, then updates the FLAGS accordingly
+ADD_SP_CST	Adds a constant to SP, stores the result back in SP, then updates the FLAGS accordingly
+ADD_BP_CST	Adds a constant to BP, stores the result back in BP, then updates the FLAGS accordingly
+SUB_RA_RA	Subtracts RA from RA, stores the result back in RA, then updates the FLAGS accordingly
+SUB_RA_RB	Subtracts RB from RA, stores the result back in RA, then updates the FLAGS accordingly
+SUB_RA_RC	Subtracts RC from RA, stores the result back in RA, then updates the FLAGS accordingly
+SUB_RA_RD	Subtracts RD from RA, stores the result back in RA, then updates the FLAGS accordingly
+SUB_RB_RA	Subtracts RA from RB, stores the result back in RB, then updates the FLAGS accordingly
+SUB_RB_RB	Subtracts RB from RB, stores the result back in RB, then updates the FLAGS accordingly
+SUB_RB_RC	Subtracts RC from RB, stores the result back in RB, then updates the FLAGS accordingly
+SUB_RB_RD	Subtracts RD from RB, stores the result back in RB, then updates the FLAGS accordingly
+SUB_RC_RA	Subtracts RA from RC, stores the result back in RC, then updates the FLAGS accordingly
+SUB_RC_RB	Subtracts RB from RC, stores the result back in RC, then updates the FLAGS accordingly
+SUB_RC_RC	Subtracts RC from RC, stores the result back in RC, then updates the FLAGS accordingly
+SUB_RC_RD	Subtracts RD from RC, stores the result back in RC, then updates the FLAGS accordingly
+SUB_RD_RA	Subtracts RA from RD, stores the result back in RD, then updates the FLAGS accordingly
+SUB_RD_RB	Subtracts RB from RD, stores the result back in RD, then updates the FLAGS accordingly
+SUB_RD_RC	Subtracts RC from RD, stores the result back in RD, then updates the FLAGS accordingly
+SUB_RD_RD	Subtracts RD from RD, stores the result back in RD, then updates the FLAGS accordingly
+SUB_RA_CST	Subtracts a constant from RA, stores the result back in RA, then updates the FLAGS accordingly
+SUB_RB_CST	Subtracts a constant from RB, stores the result back in RB, then updates the FLAGS accordingly
+SUB_RC_CST	Subtracts a constant from RC, stores the result back in RC, then updates the FLAGS accordingly
+SUB_RD_CST	Subtracts a constant from RD, stores the result back in RD, then updates the FLAGS accordingly
+SUB_SP_CST	Subtracts a constant from SP, stores the result back in SP, then updates the FLAGS accordingly
+SUB_BP_CST	Subtracts a constant from BP, stores the result back in BP, then updates the FLAGS accordingly
+CMP_RA_RA	Compares RA to RA, then updates the FLAGS accordingly
+CMP_RA_RB	Compares RA to RB, then updates the FLAGS accordingly
+CMP_RA_RC	Compares RA to RC, then updates the FLAGS accordingly
+CMP_RA_RD	Compares RA to RD, then updates the FLAGS accordingly
+CMP_RB_RA	Compares RB to RA, then updates the FLAGS accordingly
+CMP_RB_RB	Compares RB to RB, then updates the FLAGS accordingly
+CMP_RB_RC	Compares RB to RC, then updates the FLAGS accordingly
+CMP_RB_RD	Compares RB to RD, then updates the FLAGS accordingly
+CMP_RC_RA	Compares RC to RA, then updates the FLAGS accordingly
+CMP_RC_RB	Compares RC to RB, then updates the FLAGS accordingly
+CMP_RC_RC	Compares RC to RC, then updates the FLAGS accordingly
+CMP_RC_RD	Compares RC to RD, then updates the FLAGS accordingly
+CMP_RD_RA	Compares RD to RA, then updates the FLAGS accordingly
+CMP_RD_RB	Compares RD to RB, then updates the FLAGS accordingly
+CMP_RD_RC	Compares RD to RC, then updates the FLAGS accordingly
+CMP_RD_RD	Compares RD to RD, then updates the FLAGS accordingly
+CMP_RA_CST	Compares RA to a constant, then updates the FLAGS accordingly
+CMP_RB_CST	Compares RB to a constant, then updates the FLAGS accordingly
+CMP_RC_CST	Compares RC to a constant, then updates the FLAGS accordingly
+CMP_RD_CST	Compares RD to a constant, then updates the FLAGS accordingly
+OR_RA_RA	Performs a bitwise OR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly
+OR_RA_RB	Performs a bitwise OR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly
+OR_RA_RC	Performs a bitwise OR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly
+OR_RA_RD	Performs a bitwise OR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly
+OR_RB_RA	Performs a bitwise OR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly
+OR_RB_RB	Performs a bitwise OR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly
+OR_RB_RC	Performs a bitwise OR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly
+OR_RB_RD	Performs a bitwise OR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly
+OR_RC_RA	Performs a bitwise OR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly
+OR_RC_RB	Performs a bitwise OR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly
+OR_RC_RC	Performs a bitwise OR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly
+OR_RC_RD	Performs a bitwise OR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly
+OR_RD_RA	Performs a bitwise OR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly
+OR_RD_RB	Performs a bitwise OR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly
+OR_RD_RC	Performs a bitwise OR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly
+OR_RD_RD	Performs a bitwise OR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly
+OR_RA_CST	Performs a bitwise OR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly
+OR_RB_CST	Performs a bitwise OR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly
+OR_RC_CST	Performs a bitwise OR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly
+OR_RD_CST	Performs a bitwise OR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly
+AND_RA_RA	Performs a bitwise AND of RA and RA, stores the result back in RA, then updates the FLAGS accordingly
+AND_RA_RB	Performs a bitwise AND of RA and RB, stores the result back in RA, then updates the FLAGS accordingly
+AND_RA_RC	Performs a bitwise AND of RA and RC, stores the result back in RA, then updates the FLAGS accordingly
+AND_RA_RD	Performs a bitwise AND of RA and RD, stores the result back in RA, then updates the FLAGS accordingly
+AND_RB_RA	Performs a bitwise AND of RB and RA, stores the result back in RB, then updates the FLAGS accordingly
+AND_RB_RB	Performs a bitwise AND of RB and RB, stores the result back in RB, then updates the FLAGS accordingly
+AND_RB_RC	Performs a bitwise AND of RB and RC, stores the result back in RB, then updates the FLAGS accordingly
+AND_RB_RD	Performs a bitwise AND of RB and RD, stores the result back in RB, then updates the FLAGS accordingly
+AND_RC_RA	Performs a bitwise AND of RC and RA, stores the result back in RC, then updates the FLAGS accordingly
+AND_RC_RB	Performs a bitwise AND of RC and RB, stores the result back in RC, then updates the FLAGS accordingly
+AND_RC_RC	Performs a bitwise AND of RC and RC, stores the result back in RC, then updates the FLAGS accordingly
+AND_RC_RD	Performs a bitwise AND of RC and RD, stores the result back in RC, then updates the FLAGS accordingly
+AND_RD_RA	Performs a bitwise AND of RD and RA, stores the result back in RD, then updates the FLAGS accordingly
+AND_RD_RB	Performs a bitwise AND of RD and RB, stores the result back in RD, then updates the FLAGS accordingly
+AND_RD_RC	Performs a bitwise AND of RD and RC, stores the result back in RD, then updates the FLAGS accordingly
+AND_RD_RD	Performs a bitwise AND of RD and RD, stores the result back in RD, then updates the FLAGS accordingly
+AND_RA_CST	Performs a bitwise AND of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly
+AND_RB_CST	Performs a bitwise AND of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly
+AND_RC_CST	Performs a bitwise AND of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly
+AND_RD_CST	Performs a bitwise AND of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly
+XOR_RA_RA	Performs a bitwise XOR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly
+XOR_RA_RB	Performs a bitwise XOR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly
+XOR_RA_RC	Performs a bitwise XOR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly
+XOR_RA_RD	Performs a bitwise XOR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly
+XOR_RB_RA	Performs a bitwise XOR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly
+XOR_RB_RB	Performs a bitwise XOR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly
+XOR_RB_RC	Performs a bitwise XOR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly
+XOR_RB_RD	Performs a bitwise XOR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly
+XOR_RC_RA	Performs a bitwise XOR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly
+XOR_RC_RB	Performs a bitwise XOR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly
+XOR_RC_RC	Performs a bitwise XOR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly
+XOR_RC_RD	Performs a bitwise XOR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly
+XOR_RD_RA	Performs a bitwise XOR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly
+XOR_RD_RB	Performs a bitwise XOR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly
+XOR_RD_RC	Performs a bitwise XOR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly
+XOR_RD_RD	Performs a bitwise XOR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly
+XOR_RA_CST	Performs a bitwise XOR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly
+XOR_RB_CST	Performs a bitwise XOR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly
+XOR_RC_CST	Performs a bitwise XOR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly
+XOR_RD_CST	Performs a bitwise XOR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly
+NOT_RA	Performs a bitwise NOT of RA, stores the result back in RA, then updates the FLAGS accordingly
+NOT_RB	Performs a bitwise NOT of RB, stores the result back in RB, then updates the FLAGS accordingly
+NOT_RC	Performs a bitwise NOT of RC, stores the result back in RC, then updates the FLAGS accordingly
+NOT_RD	Performs a bitwise NOT of RD, stores the result back in RD, then updates the FLAGS accordingly
+INC_RA	Increments RA by 1, then updates the FLAGS accordingly
+INC_RB	Increments RB by 1, then updates the FLAGS accordingly
+INC_RC	Increments RC by 1, then updates the FLAGS accordingly
+INC_RD	Increments RD by 1, then updates the FLAGS accordingly
+DEC_RA	Decrements RA by 1, then updates the FLAGS accordingly
+DEC_RB	Decrements RB by 1, then updates the FLAGS accordingly
+DEC_RC	Decrements RC by 1, then updates the FLAGS accordingly
+DEC_RD	Decrements RD by 1, then updates the FLAGS accordingly
+SHL_RA	Performs a left bitwise shift of RA by 1 bit
+SHR_RA	Performs a right bitwise shift of RA by 1 bit
+JC_CST	Jumps to the given short address (same code segment) if the carry flag is set
+JN_CST	Jumps to the given short address (same code segment) if the negative flag is set
+JZ_CST	Jumps to the given short address (same code segment) if the zero flag is set
+GOTO_CST	Jumps to the given short address (same code segment)
+LJC_DCST	Jumps to the given long address if the carry flag is set
+LJN_DCST	Jumps to the given long address if the negative flag is set
+LJZ_DCST	Jumps to the given long address if the zero flag is set
+LGOTO_DCST	Jumps to the given long address
+LGOTO_RCRD	Jumps to the long address specified by RC:RD
+LCALL_DCST	Calls the given long address
+LCALL_RCRD	Calls the long address specified by RC:RD
+RET	Returns from a call
+RET_CST	Returns from a call and decrements the stack pointer by a constant
+IRET	Returns from an interrupt
+CID	Clears the interrupt disable flag
+SID	Sets the interrupt disable flag
+CLC	Clears the carry flag
+SEC	Sets the carry flag

@@ -24,6 +24,13 @@ void linker_config_free(LinkerConfig *cfg) {
     cfg->count = cfg->cap = 0;
 }
 
+const SectionInfo * linker_config_get_section(LinkerConfig *lc, const char *name) {
+    for (size_t i=0; i<lc->count; ++i) {
+        if (strcmp(lc->sections[i].name, name) == 0) return &lc->sections[i];
+    }
+    return NULL;
+}
+
 bool linker_config_push(LinkerConfig *cfg, SectionInfo si) {
     if (cfg->count == cfg->cap) {
         size_t ncap = cfg->cap ? cfg->cap*2 : 8;
