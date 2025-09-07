@@ -67,9 +67,12 @@ void memdump(struct lncpu_vm * vm, uint16_t start, uint16_t end) {
 }
 
 void pause(struct emulator *emu) {
-    emu->status = EMU_STATUS_PAUSED;
 
-    printf("==== LNCPU paused at 0x%04x ====\n\n", emu->vm.cspc);
+    if (emu->status != EMU_STATUS_TERMINATED) {
+        printf("==== LNCPU paused at 0x%04x ====\n\n", emu->vm.cspc);
+    }
+
+    emu->status = EMU_STATUS_PAUSED;
 
     bool loop = true;
     do {
@@ -161,12 +164,12 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
         }
     }
 
+    emu.status = EMU_STATUS_TERMINATED;
+
     if (vm->halted){
         printf("LNCPU has halted. Type 'c' or 'continue' to exit. \n");
-    }else {
-        printf("Emulator terminated. Type 'c' or 'continue' to exit. \n");
+        pause(&emu);
     }
-    pause(&emu);
     vm_destroy(vm);
 
     return 0;
