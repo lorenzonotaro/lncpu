@@ -16,12 +16,13 @@ static bool init_emu_devices(struct lncpu_vm *vm, const struct emu_cmdline_param
     if (cmdline_params->linker_config_file) {
         LinkerConfig lc;
         FILE *f = fopen(cmdline_params->linker_config_file, "r");
-        char *cfg_contents = NULL;
         if (f) {
             fseek(f, 0, SEEK_END);
             const size_t size = ftell(f);
+            char *cfg_contents = malloc(size + 1);
+
             fseek(f, 0, SEEK_SET);
-            fread(cfg_contents, 1, size, f);
+            fread(cfg_contents, 1, size, f);;
             fclose(f);
 
             char *err = NULL;

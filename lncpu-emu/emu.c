@@ -3,12 +3,18 @@
 //
 
 #include <ctype.h>
+#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #include "vm.h"
 #include "config/cmdline.h"
+
+typedef struct {
+    int saved_fd;   // duplicate of original stdin fd
+} StdioGuard;
 
 enum emu_status {
     EMU_STATUS_RUNNING = 0x0,
@@ -138,6 +144,20 @@ void pause(struct emulator *emu) {
             printf("Unknown command. Type 'h' or 'help' for a list of commands.\n");
         }
     }while (loop);
+
+    fflush(stdin);
+}
+
+static void stdio_quarantine_begin(StdioGuard *g) {
+    g->saved_fd = _dup(_fileno(stdin));        // save current stdin
+    FILE *fp = NULL;
+    freopen_s(&fp, "NUL", "r", stdin);         // detach stdio input
+    setvbuf(stdin, NULL, _IONBF, 0);
+}
+
+static void stdio_quarantine_end(StdioGuard *g) {
+    _dup2(g->saved_fd, _fileno(stdin));        // restore stdin
+    _close(g->saved_fd);
 }
 
 int run_emu(struct emu_cmdline_params *cmdline_params) {
@@ -156,8 +176,19 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
         pause(&emu);
     }
 
+    StdioGuard guard = {};
+
     while (!vm->halted && emu.status != EMU_STATUS_TERMINATED) {
+
+        for (int i = 0; i < vm->emu_device_count; i++) {
+            if (vm->emu_devices[i].step) {
+                vm->emu_devices[i].step(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
+            }
+        }
+
         vm_step(vm);
+
+        Sleep(0);
 
         if (emu.status == EMU_STATUS_PAUSED || emu.status == EMU_STATUS_STEPPING) {
             pause(&emu);

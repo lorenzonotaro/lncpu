@@ -29,7 +29,13 @@ struct emu_device {
     bool irq_req;
 };
 
-/* EMU TTY */
+/* EMU TTY
+ * Behavior:
+ * 0x0: avail on read, reset buffer on write
+ * 0x1: get next char on read, ignored on write
+ * 0x2: write character
+ * IRQ when data is available to read
+ */
 #define EMU_TTY_BUFFER_SIZE 256
 void emu_tty_init(struct lncpu_vm * vm, struct emu_device *device);
 void emu_tty_step(struct lncpu_vm * vm, struct emu_device *device, void * dev_data);
@@ -37,5 +43,6 @@ uint8_t emu_tty_addr_read(struct lncpu_vm * vm, struct emu_device *device, void 
 void emu_tty_addr_write(struct lncpu_vm * vm, struct emu_device *device, void * dev_data, uint16_t addr, uint8_t value);
 void emu_tty_destroy(struct lncpu_vm * vm, struct emu_device *device, void * dev_data);
 
+void diag();
 
 #endif //LNCPU_EMU_EMU_DEVICE_H

@@ -5,6 +5,8 @@
 #ifndef LNCPU_EMU_CMDLINE_H
 #define LNCPU_EMU_CMDLINE_H
 
+#include <stdbool.h>
+
 #include "argparse.h"
 
 struct emu_cmdline_params {
@@ -28,6 +30,6 @@ struct emu_cmdline_params {
 
 void cmdline_init(struct emu_cmdline_params *params);
 
-int parse_args(struct emu_cmdline_params *params, int argc, const char **argv);
+bool parse_args(struct emu_cmdline_params *params, int argc, const char **argv);
 
 #endif //LNCPU_EMU_CMDLINE_H

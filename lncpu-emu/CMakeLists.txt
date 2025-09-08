@@ -27,3 +27,5 @@ add_executable(lncpu_emu main.c
         emu_device.h
         emu_device.c
         opcodes.h)
+
+target_compile_options(lncpu_emu PRIVATE -lconio)

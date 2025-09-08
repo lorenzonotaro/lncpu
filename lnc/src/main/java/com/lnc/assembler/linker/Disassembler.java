@@ -40,7 +40,7 @@ public class Disassembler{
                 while(currentAddress < descriptor.start() + descriptor.length()){
                     String labels = reverseLookupLabels.getOrDefault(currentAddress, "");
 
-                    byte opcode = output[currentAddress - descriptor.start()];
+                    byte opcode = output[currentAddress];
 
                     String opCodeImmediate;
                     int instructionLength;
@@ -57,7 +57,7 @@ public class Disassembler{
                     StringBuilder params = new StringBuilder();
 
                     for (int i = 1; i < instructionLength; i++) {
-                        params.append("%02x ".formatted(output[currentAddress - descriptor.start() + i]));
+                        params.append("%02x ".formatted(output[currentAddress + i]));
                     }
 
                     sb.append(("\t%" + longestLabelLength + "s %06x:\t%-20s %16s\n").formatted(labels, currentAddress, instructionDesc, params));

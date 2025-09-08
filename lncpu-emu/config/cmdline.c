@@ -4,12 +4,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-int validate_args(const struct emu_cmdline_params * params) {
+bool validate_args(const struct emu_cmdline_params * params) {
     if (!params->linker_config_file && params->emu_tty_section) {
-        fprintf(stderr, "emu-tty requires linker-config\n");
-        return 1;
+        fprintf(stderr, "Error: emu-tty requires linker-config.\n");
+        return false;
     }
-    return 0;
+    return true;
 }
 
 void cmdline_init(struct emu_cmdline_params *params) {
@@ -26,7 +26,7 @@ void cmdline_init(struct emu_cmdline_params *params) {
     params->d5_file = NULL;
 }
 
-int parse_args(struct emu_cmdline_params *params, int argc, const char **argv) {
+bool parse_args(struct emu_cmdline_params *params, int argc, const char **argv) {
     struct argparse_option options[] = {
         OPT_HELP(),
         OPT_GROUP("Debugger options"),
