@@ -26,6 +26,8 @@ add_executable(lncpu_emu main.c
         vm.c
         emu_device.h
         emu_device.c
-        opcodes.h)
+        opcodes.h
+        signal_handler.h
+        signal_handler.c)
 
 target_compile_options(lncpu_emu PRIVATE -lconio)

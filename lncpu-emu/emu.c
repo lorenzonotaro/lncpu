@@ -2,6 +2,8 @@
 // Created by loryn on 9/6/2025.
 //
 
+#include "emu.h"
+
 #include <ctype.h>
 #include <io.h>
 #include <stdio.h>
@@ -12,21 +14,15 @@
 #include "vm.h"
 #include "config/cmdline.h"
 
-typedef struct {
-    int saved_fd;   // duplicate of original stdin fd
-} StdioGuard;
+static struct emulator *emulator;
 
-enum emu_status {
-    EMU_STATUS_RUNNING = 0x0,
-    EMU_STATUS_PAUSED = 0x1,
-    EMU_STATUS_STEPPING = 0x2,
-    EMU_STATUS_TERMINATED = 0x3,
-};
+static void set_emu(struct emulator *emu) {
+    emulator = emu;
+}
 
-struct emulator {
-    struct lncpu_vm vm;
-    enum emu_status status;
-};
+struct emulator *get_emu(void) {
+    return emulator;
+}
 
 char line_buffer[1024];
 
@@ -152,6 +148,8 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
         .status = EMU_STATUS_RUNNING
     };
 
+    set_emu(&emu);
+
     struct lncpu_vm *vm = &emu.vm;
 
     if (!vm_init(vm, cmdline_params)) {
@@ -175,9 +173,7 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
             }
         }
     }
-
-    StdioGuard guard = {};
-
+    
     while (!vm->halted && emu.status != EMU_STATUS_TERMINATED) {
 
         for (int i = 0; i < vm->emu_device_count; i++) {
@@ -212,5 +208,7 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
     }
     vm_destroy(vm);
 
+    set_emu(NULL);
+    
     return 0;
 }

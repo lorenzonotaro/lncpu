@@ -49,6 +49,4 @@ uint8_t emu_tty_addr_read(struct lncpu_vm * vm, struct emu_device *device, void 
 void emu_tty_addr_write(struct lncpu_vm * vm, struct emu_device *device, void * dev_data, uint16_t addr, uint8_t value);
 void emu_tty_destroy(struct lncpu_vm * vm, struct emu_device *device, void * dev_data);
 
-void diag();
-
 #endif //LNCPU_EMU_EMU_DEVICE_H
