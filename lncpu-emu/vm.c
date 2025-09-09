@@ -47,6 +47,8 @@ static bool init_emu_devices(struct lncpu_vm *vm, const struct emu_cmdline_param
             vm->emu_devices[0].end = section->start + 2;
             vm->emu_devices[0].init = emu_tty_init;
             vm->emu_devices[0].step = emu_tty_step;
+            vm->emu_devices[0].pause = emu_tty_pause;
+            vm->emu_devices[0].resume = emu_tty_resume;
             vm->emu_devices[0].addr_read = emu_tty_addr_read;
             vm->emu_devices[0].addr_write = emu_tty_addr_write;
             vm->emu_devices[0].destroy = emu_tty_destroy;
@@ -64,7 +66,7 @@ static bool init_emu_devices(struct lncpu_vm *vm, const struct emu_cmdline_param
 }
 
 bool try_load_device(LinkTarget lt, const char * file, uint8_t * addr_space) {
-    FILE *f = fopen(file, "r");
+    FILE *f = fopen(file, "rb");
 
     if (!f) {
         fprintf(stderr, "error opening file: %s\n", file);
@@ -83,7 +85,15 @@ bool try_load_device(LinkTarget lt, const char * file, uint8_t * addr_space) {
 
     const LinkTargetInfo *target_info = link_target_info(lt);
     // load into address space
-    fread(addr_space + target_info->start, 1, size, f);
+    int read = fread(addr_space + target_info->start, 1, size, f);
+
+    if (read != size) {
+        fprintf(stderr, "error reading file: %d, %d\n", read, ferror(f));
+        fclose(f);
+        return false;
+    }
+
+    fclose(f);
 
     return true;
 }
@@ -246,6 +256,7 @@ void vm_step(struct lncpu_vm *vm) {
             push(vm, vm->cspc & 0xFF);
             push(vm, vm->flags);
             vm->cspc = 0x1F00;
+            vm->flags |= FLAGS_I;
             break;
         case OP_MOV_CST_RA:
             vm->ra = fetch_byte(vm);

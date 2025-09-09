@@ -15,6 +15,8 @@
 struct emu_tty_data {
     uint8_t wptr, rptr;
     uint8_t buffer[EMU_TTY_BUFFER_SIZE];
+    DWORD orig_mode;
+    DWORD direct_mode;
     HANDLE g_conin;
 };
 
@@ -22,13 +24,17 @@ void emu_tty_init(struct lncpu_vm *vm, struct emu_device *device) {
     device->data = malloc(sizeof(struct emu_tty_data));
     struct emu_tty_data *data = device->data;
     data->wptr = 0;
+    data->rptr = 0;
     device->irq_req = false;
 
     data->g_conin = CreateFileW(L"CONIN$", GENERIC_READ|GENERIC_WRITE,
                       FILE_SHARE_READ|FILE_SHARE_WRITE, NULL,
                       OPEN_EXISTING, 0, NULL);
-    DWORD m=0; GetConsoleMode(data->g_conin, &m);
+    DWORD m=0;
+    GetConsoleMode(data->g_conin, &m);
+    data->orig_mode = m;
     m &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+    data->direct_mode = m;
     SetConsoleMode(data->g_conin, m);
 }
 
@@ -38,18 +44,28 @@ int tty_try_char(HANDLE handle) { // -1 if none
         ReadConsoleInputW(handle, &rec, 1, &n);
         if (rec.EventType == KEY_EVENT && rec.Event.KeyEvent.bKeyDown) {
             WCHAR w = rec.Event.KeyEvent.uChar.UnicodeChar;
+            if (w == '\r') w = '\n';
             if (w) return (unsigned char)w;
         }
     }
     return -1;
 }
 
+void emu_tty_pause(struct lncpu_vm *vm, struct emu_device *device, void *dev_data) {
+    struct emu_tty_data *data = device->data;
+    SetConsoleMode(data->g_conin, data->orig_mode);
+}
+
+void emu_tty_resume(struct lncpu_vm *vm, struct emu_device *device, void *dev_data) {
+    struct emu_tty_data *data = device->data;
+    SetConsoleMode(data->g_conin, data->direct_mode);
+}
+
 void emu_tty_step(struct lncpu_vm *vm, struct emu_device *device, void *dev_data) {
     int c;
     if ((c = tty_try_char(((struct emu_tty_data *)dev_data)->g_conin)) != -1) {
-        printf("%c", c);
         struct emu_tty_data *data = device->data;
-        data->buffer[data->rptr++] = c;
+        data->buffer[data->wptr++] = c;
         device->irq_req = true;
     }
 }
@@ -83,7 +99,13 @@ void emu_tty_addr_write(struct lncpu_vm *vm, struct emu_device *device, void *de
     }
     else if (addr - device->start == 2) {
         // write char
-        putch(value);
+        if (value == '\b') {
+            putch('\b');
+            putch(' ');
+            putch('\b');
+        }else {
+            putch(value);
+        }
     }
 }
 

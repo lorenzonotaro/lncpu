@@ -145,19 +145,6 @@ void pause(struct emulator *emu) {
         }
     }while (loop);
 
-    fflush(stdin);
-}
-
-static void stdio_quarantine_begin(StdioGuard *g) {
-    g->saved_fd = _dup(_fileno(stdin));        // save current stdin
-    FILE *fp = NULL;
-    freopen_s(&fp, "NUL", "r", stdin);         // detach stdio input
-    setvbuf(stdin, NULL, _IONBF, 0);
-}
-
-static void stdio_quarantine_end(StdioGuard *g) {
-    _dup2(g->saved_fd, _fileno(stdin));        // restore stdin
-    _close(g->saved_fd);
 }
 
 int run_emu(struct emu_cmdline_params *cmdline_params) {
@@ -173,7 +160,20 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
     }
 
     if (cmdline_params->pause_on_start) {
+
+        for (int i = 0; i < vm->emu_device_count; i++) {
+            if (vm->emu_devices[i].pause) {
+                vm->emu_devices[i].pause(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
+            }
+        }
+
         pause(&emu);
+
+        for (int i = 0; i < vm->emu_device_count; i++) {
+            if (vm->emu_devices[i].resume) {
+                vm->emu_devices[i].resume(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
+            }
+        }
     }
 
     StdioGuard guard = {};
@@ -188,10 +188,19 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
 
         vm_step(vm);
 
-        Sleep(0);
-
         if (emu.status == EMU_STATUS_PAUSED || emu.status == EMU_STATUS_STEPPING) {
+            for (int i = 0; i < vm->emu_device_count; i++) {
+                if (vm->emu_devices[i].pause) {
+                    vm->emu_devices[i].pause(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
+                }
+            }
             pause(&emu);
+
+            for (int i = 0; i < vm->emu_device_count; i++) {
+                if (vm->emu_devices[i].resume) {
+                    vm->emu_devices[i].resume(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
+                }
+            }
         }
     }
 

@@ -29,7 +29,6 @@ void diag(void) {
 }
 
 int main(int argc, const char **argv) {
-    setvbuf(stdin, NULL, _IONBF, 0);
     //diag();
     struct emu_cmdline_params cmdline_params;
 
