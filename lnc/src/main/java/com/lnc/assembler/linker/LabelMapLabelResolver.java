@@ -81,4 +81,16 @@ public class LabelMapLabelResolver implements ILabelResolver {
 
         return reverseSymbolTable;
     }
+
+    public Map<String, LabelMapEntry> getEntriesFor(Set<String> exportedLabels) {
+        var map = new HashMap<String, LabelMapEntry>();
+        for(var label : exportedLabels){
+            var entry = globalLabelMap.get(label);
+            if(entry == null){
+                throw new RuntimeException("cannot export unresolved label '%s'".formatted(label));
+            }
+            map.put(label, entry);
+        }
+        return map;
+    }
 }

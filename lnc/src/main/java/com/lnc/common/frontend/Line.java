@@ -1,8 +1,9 @@
 package com.lnc.common.frontend;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 
-public class Line {
+public class Line implements Serializable {
     public int lineNumber;
     public String code;
     public String filename;

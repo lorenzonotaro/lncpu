@@ -18,23 +18,32 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
     private final LinkInfo linkInfo;
 
     private Map<String, SectionBuilder> sectionBuilders;
+    private final List<String> externalSymTablesFiles;
 
     public BinaryLinker(LinkerConfig config) {
+        this(config, Collections.emptyList());
+    }
+
+    public BinaryLinker(LinkerConfig config, List<String> externalSymTablesFiles){
         super(config);
+        this.externalSymTablesFiles = externalSymTablesFiles;
         linkInfo = new LinkInfo();
     }
 
     @Override
     public boolean link(LnasmParseResult parseResult) {
         try{
-            var labelLocator = validateSectionsAndCreateLabelMap(parseResult.blocks());
+
+            Map<String, LabelMapEntry> externalSymbols = loadExternalSymbols();
+
+            var labelLocator = validateSectionsAndCreateLabelMap(parseResult.blocks(), externalSymbols);
 
             this.sectionBuilders = makeSectionBuilders(parseResult, labelLocator);
 
             if(!validateAddressSpace(sectionBuilders))
                 return false;
 
-            this.labelResolver = makeLabelResolver(sectionBuilders);
+            this.labelResolver = makeLabelResolver(sectionBuilders, externalSymbols);
 
             this.outputs = link(sectionBuilders, labelResolver);
 
@@ -45,6 +54,22 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
             e.log();
         }
         return false;
+    }
+
+    private Map<String, LabelMapEntry> loadExternalSymbols() {
+        Map<String, LabelMapEntry> externalSymbols = null;
+        if (externalSymTablesFiles != null && !externalSymTablesFiles.isEmpty()){
+            externalSymbols = new HashMap<>();
+            for(String externalSymTableFile : externalSymTablesFiles){
+                var extSymTable = ExternalSymbolTableIO.read(externalSymTableFile);
+                for(var entry : extSymTable.entrySet()){
+                    if(externalSymbols.putIfAbsent(entry.getKey(), entry.getValue()) != null){
+                        throw new LinkException("duplicate external label '%s' in external symbol table '%s'".formatted(entry.getKey(), externalSymTableFile));
+                    }
+                }
+            }
+        }
+        return externalSymbols;
     }
 
     @Override
@@ -108,7 +133,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
 
         return success;
     }
-    private LabelMapLabelResolver makeLabelResolver(Map<String, SectionBuilder> sectionBuilders) {
+    private LabelMapLabelResolver makeLabelResolver(Map<String, SectionBuilder> sectionBuilders, Map<String, LabelMapEntry> externalSymbols) {
         // build global label map
         Map<String, LabelMapEntry> globalLabelMap = new HashMap<>();
 
@@ -120,6 +145,17 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
                     throw new CompileException(
                             "duplicate label '%s' (first defined at %s)".formatted(previous.labelInfo().name(), previous.labelInfo().token().formatLocation()),
                             labelEntry.getValue().labelInfo().token());
+                }
+            }
+        }
+        // load external symbol tables
+        if(externalSymbols != null){
+            for (var entry : externalSymbols.entrySet()) {
+                LabelMapEntry previous;
+                if((previous = globalLabelMap.putIfAbsent(entry.getKey(), entry.getValue())) != null) {
+                    throw new CompileException(
+                            "duplicate external label '%s' (first defined at %s)".formatted(previous.labelInfo().name(), previous.labelInfo().token().formatLocation()),
+                            entry.getValue().labelInfo().token());
                 }
             }
         }
@@ -147,7 +183,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         return sectionBuilders;
     }
 
-    private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(List<LnasmParsedBlock> blocks) {
+    private LinkerLabelSectionLocator validateSectionsAndCreateLabelMap(List<LnasmParsedBlock> blocks, Map<String, LabelMapEntry> externalSymbols) {
         LinkerLabelSectionLocator locator = new LinkerLabelSectionLocator(getConfig());
         for (LnasmParsedBlock block : blocks) {
             var sectionInfo = getConfig().getSectionInfo(block.sectionName);
@@ -161,6 +197,16 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
                 }
             }
         }
+
+        if(externalSymbols != null){
+            for (var entry : externalSymbols.entrySet()) {
+                if(locator.putIfAbsent(entry.getKey(), new LabelSectionInfo(entry.getValue().labelInfo(), entry.getValue().sectionInfo())) != null){
+                    throw new CompileException("duplicate external label '%s'".formatted(entry.getKey()), entry.getValue().labelInfo().token());
+                }
+            }
+        }
+
+
         return locator;
     }
 
@@ -179,4 +225,7 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
                 .sorted(Comparator.comparingInt(SectionBuilder.Descriptor::start)).toList();
     }
 
+    public LabelMapLabelResolver getLabelResolver() {
+        return labelResolver;
+    }
 }

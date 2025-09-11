@@ -2,7 +2,9 @@ package com.lnc.assembler.common;
 
 import com.lnc.assembler.linker.LinkTarget;
 
-public class SectionInfo {
+import java.io.Serializable;
+
+public class SectionInfo implements Serializable {
     private final LinkMode mode;
     private final String name;
     private final int start;
@@ -102,5 +104,32 @@ public class SectionInfo {
 
     public LinkTarget getTarget() {
         return target;
+    }
+
+    public String serialize(){
+        return "%s,%s,%s,%s,%s,%s,%s".formatted(
+                name,
+                start == -1 ? "null" : String.format("0x%04X", start),
+                target == null ? "null" : target.toString(),
+                mode == null ? "null" : mode.name().toLowerCase(),
+                multiWriteAllowed,
+                dataPage,
+                virtual
+        );
+    }
+    public SectionInfo deserialize(String line){
+        var parts = line.split(",");
+        if(parts.length != 7)
+            throw new IllegalArgumentException("invalid section info format");
+
+        String name = parts[0].trim();
+        int start = parts[1].trim().equals("null") ? -1 : Integer.parseInt(parts[1].trim().substring(2), 16);
+        LinkTarget target = parts[2].trim().equals("null") ? null : LinkTarget.valueOf(parts[2].trim());
+        LinkMode mode = parts[3].trim().equals("null") ? null : LinkMode.valueOf(parts[3].trim().toUpperCase());
+        boolean multiWriteAllowed = Boolean.parseBoolean(parts[4].trim());
+        boolean dataPage = Boolean.parseBoolean(parts[5].trim());
+        boolean virtual = Boolean.parseBoolean(parts[6].trim());
+
+        return new SectionInfo(name, start, target, mode, multiWriteAllowed, dataPage, virtual);
     }
 }

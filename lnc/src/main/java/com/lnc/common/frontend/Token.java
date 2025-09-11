@@ -2,9 +2,10 @@ package com.lnc.common.frontend;
 
 import com.lnc.common.IntUtils;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Token {
+public class Token implements Serializable {
 
     public Location location;
     public Token macroSub;

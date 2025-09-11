@@ -13,6 +13,7 @@ public enum TokenType {
     DIR_SECTION,
     DIR_DATA,
     DIR_RES,
+    DIR_EXPORT,
 
     L_PAREN,
     R_PAREN,
@@ -156,6 +157,7 @@ public enum TokenType {
     STATIC("static"),
     EXTERN("extern"),
     CONST("const"),
+    EXPORT("export"),
     NEAR("near"),
     FAR("far");
 
@@ -268,6 +270,7 @@ public enum TokenType {
             TokenType.STATIC,
             TokenType.EXTERN,
             TokenType.CONST,
+            TokenType.EXPORT,
             TokenType.NEAR,
             TokenType.FAR
     };

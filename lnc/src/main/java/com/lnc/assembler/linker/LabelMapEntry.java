@@ -1,6 +1,9 @@
 package com.lnc.assembler.linker;
 
 import com.lnc.assembler.common.LabelInfo;
+import com.lnc.assembler.common.SectionInfo;
 
-public record LabelMapEntry(LabelInfo labelInfo, com.lnc.assembler.common.SectionInfo sectionInfo, int address) {
+import java.io.Serializable;
+
+public record LabelMapEntry(LabelInfo labelInfo, SectionInfo sectionInfo, int address) implements Serializable {
 }

@@ -8,20 +8,20 @@ import com.lnc.cc.ir.IRUnit;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.*;
 
 public final class CompilerOutput {
     private final LinkedList<CodeElement> code;
     private final SectionInfo sectionInfo;
     private final IRUnit unit;
+    private final Set<String> exportedLabels;
     private ArrayList<LabelInfo> labels;
 
     public CompilerOutput(SectionInfo sectionInfo) {
         this.sectionInfo = sectionInfo;
         this.code = new LinkedList<>();
         this.labels = new ArrayList<>();
+        this.exportedLabels = new HashSet<>();
         this.unit = null; // No IRUnit associated with this output
     }
 
@@ -29,6 +29,7 @@ public final class CompilerOutput {
         this.sectionInfo = sectionInfo;
         this.code = new LinkedList<>();
         this.labels = new ArrayList<>();
+        this.exportedLabels = new HashSet<>();
         this.unit = unit;
     }
 
@@ -92,7 +93,18 @@ public final class CompilerOutput {
             sb.append("\t").append(element).append("\n");
         }
 
+        for (String label : exportedLabels) {
+            sb.append(".export ").append(label).append("\n");
+        }
+
         return sb.toString();
     }
 
+    public void exportLabel(String label) {
+        exportedLabels.add(label);
+    }
+
+    public Set<String> exportedLabels() {
+        return exportedLabels;
+    }
 }

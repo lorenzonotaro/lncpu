@@ -33,6 +33,8 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
     private final List<LnasmParsedBlock> blocks = new ArrayList<>();
 
+    private final Set<String> exportedLabels = new HashSet<>();
+
     @Override
     protected void parseLine() {
         if (!section()) {
@@ -103,6 +105,20 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
                 throw error(t, "value must be positive");
             }
             return EncodedData.of(new byte[value]);
+        } else if (match(TokenType.DIR_EXPORT)){
+            Token label = consume("expected identifier", TokenType.IDENTIFIER), exportAs;
+            if(match(TokenType.IDENTIFIER) && previous().lexeme.equalsIgnoreCase("as")){
+                exportAs = previous();
+            }else{
+                exportAs = label;
+            }
+
+            String exportName = exportAs.lexeme;
+            if(exportedLabels.contains(exportName)) {
+                throw error(exportAs, "label already exported");
+            }
+
+            return null; // exports are handled in the linker, no need to add anything to the instruction list
         }
         return instruction();
     }
@@ -247,7 +263,7 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
     @Override
     public LnasmParseResult getResult() {
-        return new LnasmParseResult(blocks);
+        return new LnasmParseResult(blocks, exportedLabels);
     }
 
     private static void intToBytes(ByteArrayOutputStream baos, Token token) {

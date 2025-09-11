@@ -2,6 +2,8 @@ package com.lnc.assembler.linker;
 
 import com.lnc.assembler.parser.LnasmParseResult;
 
+import java.util.Set;
+
 public abstract class AbstractLinker<T> {
 
     private final LinkerConfig config;

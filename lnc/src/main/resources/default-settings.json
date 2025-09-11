@@ -19,6 +19,11 @@
     "value": ""
   },
 
+  "-oS": {
+    "help": "Output symbol table. This parameter must be followed by the output filename. ",
+    "value": ""
+  },
+
   "-oD": {
     "help": "A comma separated list of the devices to output (options: ROM, RAM, D0 through D5). A separate output file for each output mode will be generated (Ex. if -oB=a.out a-D0.out will be generated for device D0). Default: ROM. ",
     "value": "ROM"
@@ -40,6 +45,11 @@
 
   "-I": {
     "help": "Set the include path (directories separated by ';'). ",
+    "value": ""
+  },
+
+  "-S": {
+    "help": "Load the given symbol table file(s) (separated by ';'). ",
     "value": ""
   },
 

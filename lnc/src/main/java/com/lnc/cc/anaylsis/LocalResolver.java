@@ -91,7 +91,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){
-            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), new TypeQualifier(functionDeclaration.isForwardDeclaration(), false, true)));
+            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), new TypeQualifier(functionDeclaration.isForwardDeclaration(), false, true, functionDeclaration.declarator.typeQualifier().isExport())));
         }
 
         super.visitStatement(statement);

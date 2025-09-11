@@ -30,6 +30,7 @@ public class Assembler {
     private final List<CompilerOutput> compilerOutputs;
     private final LinkTarget[] requestedOutputs;
     private BinaryLinker linker;
+    private Set<String> exportedLabels;
 
     public Assembler(List<Path> sourceFiles, String linkerConfig, List<CompilerOutput> compilerOutputs, LinkTarget[] requestedOutputs) {
         this.sourceFiles = sourceFiles;
@@ -101,12 +102,21 @@ public class Assembler {
         LnasmParseResult parseResult = parser.getResult();
 
         if (compilerOutputs != null) {
-            parseResult.join(compilerOutputs.stream().map(LnasmParsedBlock::fromCompilerOutput).toList());
+            parseResult.join(compilerOutputs.stream().map(LnasmParsedBlock::fromCompilerOutput).toList(), compilerOutputs.stream().flatMap(c -> c.exportedLabels().stream()).toList());
         }
+
+        this.exportedLabels = parseResult.exportedLabels();
 
         Logger.setProgramState("linker");
 
-        this.linker = new BinaryLinker(linkerConfig);
+        String symTables = LNC.settings.get("-S", String.class);
+
+        if(symTables.isEmpty()){
+            this.linker = new BinaryLinker(linkerConfig);
+        }else{
+            this.linker = new BinaryLinker(linkerConfig, List.of(symTables.split(";")));
+        }
+
 
         if (!linker.link(parseResult))
             return false;
@@ -187,5 +197,13 @@ public class Assembler {
             }
         }
         return success ? lexer.getResult() : null;
+    }
+
+    public void writeSymTable(String symOut) {
+        try {
+            ExternalSymbolTableIO.write(symOut, linker.getLabelResolver().getEntriesFor(this.exportedLabels));
+        } catch (Exception e) {
+            Logger.error("unable to write symbol table to file %s: %s".formatted(symOut, e.getMessage()));
+        }
     }
 }

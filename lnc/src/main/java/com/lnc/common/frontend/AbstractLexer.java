@@ -293,6 +293,8 @@ public abstract class AbstractLexer<T>
             return token(TokenType.DIR_DATA);
         if (stringEquals("res", ident))
             return token(TokenType.DIR_RES);
+        if (stringEquals("export", ident))
+            return token(TokenType.DIR_EXPORT);
 
         throw error("invalid directive", ident);
     }

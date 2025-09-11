@@ -1,6 +1,8 @@
 package com.lnc.common.frontend;
 
-public class Location extends Line{
+import java.io.Serializable;
+
+public class Location extends Line implements Serializable {
 
     public int colNumber;
 

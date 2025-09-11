@@ -3,7 +3,9 @@ package com.lnc.assembler.common;
 import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.common.frontend.Token;
 
-public record LabelInfo(Token token, String name) {
+import java.io.Serializable;
+
+public record LabelInfo(Token token, String name) implements Serializable {
 
     /**
      * Extracts the sub-label name from the token's lexeme, or returns the entire lexeme if no sub-label separator is found.

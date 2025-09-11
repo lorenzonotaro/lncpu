@@ -368,6 +368,11 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public void visit(IRUnit unit) {
+
+        if(unit.getFunctionDeclaration().declarator.typeQualifier().isExport()){
+            currentOutput.exportLabel(unit.getFunctionDeclaration().name.lexeme);
+        }
+
         // visit the function body
         super.visit(unit);
 
