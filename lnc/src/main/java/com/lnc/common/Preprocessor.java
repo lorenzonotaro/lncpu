@@ -165,7 +165,7 @@ public class Preprocessor {
                     consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if(macroToken.type.equals(TokenType.MACRO_ENDIF)){
-                throw new CompileException("unexpected %endif", macroToken);
+                throw new CompileException("unexpected " + macro("endif"), macroToken);
             }else if(macroToken.type.equals(TokenType.MACRO_ERROR)){
                 if(line.size() == 2 && line.get(1).type == TokenType.STRING){
                     throw new CompileException(line.get(1).literal.toString(), macroToken);
@@ -219,14 +219,14 @@ public class Preprocessor {
             if (lexer.parse(content, path)) {
                 return lexer.getResult();
             } else {
-                throw new CompileException("%include failed for file '" + path.getFileName() + "'", macroToken);
+                throw new CompileException(macro("include") + " failed for file '" + path.getFileName() + "'", macroToken);
             }
         } else {
             FullSourceLexer lexer = new FullSourceLexer(macroToken, macroIncludeConfig);
             if (lexer.parse(content, path)) {
                 return groupByLine(lexer.getResult());
             } else {
-                throw new CompileException("%include failed for file '" + path.getFileName() + "'", macroToken);
+                throw new CompileException(macro("include") + " failed for file '" + path.getFileName() + "'", macroToken);
             }
         }
     }
@@ -257,7 +257,7 @@ public class Preprocessor {
         if(!closed){
             iterator.add(Collections.emptyList());
             iterator.previous();
-            throw new CompileException("missing %endif", openingLine.get(0));
+            throw new CompileException("missing " + macro("endif"), openingLine.get(0));
         }
 
         if(keep){
@@ -267,6 +267,10 @@ public class Preprocessor {
                 iterator.previous();
             }
         }
+    }
+
+    private String macro(String endif) {
+        return macroIncludeConfig.preprocessorConfig().preprocessorChar + endif;
     }
 
     private void addLines(LinkedList<List<Token>> lines, ListIterator<List<Token>> iterator) {
