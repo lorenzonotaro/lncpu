@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -18,24 +19,53 @@ import com.lnc.assembler.linker.LinkerConfig;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.LexerConfig;
 import com.lnc.common.frontend.LineByLineLexer;
+import com.lnc.common.frontend.FullSourceLexer;
 import com.lnc.common.frontend.Location;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
 public class Preprocessor {
 
+    private enum Mode { LINE_BASED, FULL_SOURCE }
+
     boolean needsReprocessing = false;
     private final List<List<Token>> lines;
     private final LexerConfig macroIncludeConfig;
     Map<String, List<Token>> defines = new HashMap<>();
     private final LinkerConfig linkerConfig;
+    private final Mode mode;
     
-    public Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig) {
+    private Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig) {
         this.lines = lines;
         this.macroIncludeConfig = macroIncludeConfig;
         this.linkerConfig = linkerConfig;
+        this.mode = Mode.LINE_BASED;
 
         defines.put("__VERSION__", List.of(Token.__internal(TokenType.STRING, LNC.PROGRAM_VERSION)));
+    }
+
+    public static Preprocessor lnasm(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig) {
+        return new Preprocessor(lines, macroIncludeConfig, linkerConfig);
+    }
+
+    public static Preprocessor lnc(List<Token> tokens, LexerConfig macroIncludeConfig) {
+        return new Preprocessor(groupByLine(tokens), macroIncludeConfig, null);
+    }
+
+    private static List<List<Token>> groupByLine(List<Token> tokens) {
+        List<List<Token>> grouped = new ArrayList<>();
+        List<Token> current = null;
+        int currentLine = Integer.MIN_VALUE;
+        for (Token t : tokens) {
+            int ln = t.location.lineNumber;
+            if (current == null || ln != currentLine) {
+                current = new ArrayList<>();
+                grouped.add(current);
+                currentLine = ln;
+            }
+            current.add(t);
+        }
+        return grouped;
     }
 
     public boolean preprocess() {
@@ -85,11 +115,9 @@ public class Preprocessor {
 
                     try {
                         var path = resolvePath(fileName, line.get(1).location, false);
-                        LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig); //TODO: file locations aren't accurate? see immediate mode compilation
-                        if(lexer.parse(Files.readString(path), path)){
-                            iterator.remove();
-                            addLines(new LinkedList<>(lexer.getResult()), iterator);
-                        } else throw new CompileException("%include failed for file '" + fileName + "'", macroToken);
+                        List<List<Token>> inc = lexInclude(path, macroToken);
+                        iterator.remove();
+                        addLines(new LinkedList<>(inc), iterator);
                     } catch (IOException e) {
                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
                     }
@@ -102,11 +130,9 @@ public class Preprocessor {
 
                     try {
                         var path = resolvePath(fileName, line.get(2).location, true);
-                        LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig);
-                        if(lexer.parse(Files.readString(path), path)){
-                            iterator.remove();
-                            addLines(new LinkedList<>(lexer.getResult()), iterator);
-                        } else throw new CompileException("%include failed for file '" + fileName + "'", macroToken);
+                        List<List<Token>> inc = lexInclude(path, macroToken);
+                        iterator.remove();
+                        addLines(new LinkedList<>(inc), iterator);
                     } catch (IOException e) {
                         throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
                     }
@@ -119,7 +145,7 @@ public class Preprocessor {
                     boolean keep = defines.containsKey(macroName);
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
-                }else if(line.size() == 3 && (secondToken = line.get(1)).type == TokenType.IDENTIFIER && secondToken.lexeme.equals("SECTION")){
+                }else if(line.size() == 3 && (secondToken = line.get(1)).type == TokenType.IDENTIFIER && secondToken.lexeme.equals("SECTION") && linkerConfig != null){
                     String sectionName = line.get(2).lexeme;
                     boolean keep = linkerConfig.hasSection(sectionName);
                     iterator.remove();
@@ -132,7 +158,7 @@ public class Preprocessor {
                     boolean keep = !defines.containsKey(macroName);
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
-                }else if(line.size() == 3 && (secondToken = line.get(1)).type == TokenType.IDENTIFIER && secondToken.lexeme.equals("SECTION")){
+                }else if(line.size() == 3 && (secondToken = line.get(1)).type == TokenType.IDENTIFIER && secondToken.lexeme.equals("SECTION") && linkerConfig != null){
                     String sectionName = line.get(2).lexeme;
                     boolean keep = !linkerConfig.hasSection(sectionName);
                     iterator.remove();
@@ -186,6 +212,25 @@ public class Preprocessor {
         throw new IOException("file not found");
     }
 
+    private List<List<Token>> lexInclude(Path path, Token macroToken) throws IOException {
+        String content = Files.readString(path);
+        if (mode == Mode.LINE_BASED) {
+            LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig); //TODO: file locations aren't accurate? see immediate mode compilation
+            if (lexer.parse(content, path)) {
+                return lexer.getResult();
+            } else {
+                throw new CompileException("%include failed for file '" + path.getFileName() + "'", macroToken);
+            }
+        } else {
+            FullSourceLexer lexer = new FullSourceLexer(macroToken, macroIncludeConfig);
+            if (lexer.parse(content, path)) {
+                return groupByLine(lexer.getResult());
+            } else {
+                throw new CompileException("%include failed for file '" + path.getFileName() + "'", macroToken);
+            }
+        }
+    }
+
     private void consumeUntilEndif(List<Token> openingLine, ListIterator<List<Token>> iterator, boolean keep) {
         int ifDepth = 1;
         LinkedList<List<Token>> lines = new LinkedList<>();
@@ -234,5 +279,9 @@ public class Preprocessor {
 
     public List<Token[]> getLines() {
         return lines.stream().map(l -> l.toArray(new Token[0])).collect(Collectors.toList());
+    }
+
+    public List<Token> getTokens() {
+        return lines.stream().flatMap(List::stream).collect(Collectors.toList());
     }
 }

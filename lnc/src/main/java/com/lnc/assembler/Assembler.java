@@ -89,7 +89,7 @@ public class Assembler {
         }
 
         Logger.setProgramState("preprocessor");
-        Preprocessor preprocessor = new Preprocessor(lines, asmLexerConfig, linkerConfig);
+        Preprocessor preprocessor = Preprocessor.lnasm(lines, asmLexerConfig, linkerConfig);
         if (!preprocessor.preprocess())
             return false;
         List<Token[]> preprocessedLines = preprocessor.getLines();

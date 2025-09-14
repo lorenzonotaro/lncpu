@@ -11,6 +11,7 @@ import com.lnc.cc.optimization.StageOneIROptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
+import com.lnc.common.Preprocessor;
 import com.lnc.common.frontend.*;
 
 import java.io.IOException;
@@ -45,7 +46,13 @@ public class Compiler {
         if (sourceTokens == null)
             return false;
 
-        /* TODO: Adapt and add preprocessor */
+        Preprocessor preprocessor = Preprocessor.lnc(sourceTokens, lncLexerConfig);
+
+        if(!preprocessor.preprocess()){
+            return false;
+        }
+
+        sourceTokens = preprocessor.getTokens();
 
         Logger.setProgramState("parser");
         LncParser parser = new LncParser(sourceTokens.toArray(new Token[0]));
