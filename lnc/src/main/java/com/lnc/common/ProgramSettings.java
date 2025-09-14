@@ -86,7 +86,7 @@ public class ProgramSettings {
     public void addSourceFile(String filename){
         if(filename.endsWith(".lnasm")){
             lnasmFiles.add(filename);
-        }else if(filename.endsWith(".lnc")){
+        }else if(filename.endsWith(".lnc") || filename.endsWith(".lnh")){
             lncFiles.add(filename);
         }else{
             throw new IllegalArgumentException("invalid source file type: " + filename);
