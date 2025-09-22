@@ -10,6 +10,9 @@
 		},
 		{
 			"include": "#preprocessor"
+		},
+		{
+			"include": "#anywhere"
 		}
 	],
 	"repository": {
@@ -33,6 +36,24 @@
 				},
 				{
 					"include": "#preprocessor"
+				},
+				{
+					"include": "#anywhere"
+				}
+			]
+		},
+		"anywhere": {
+			"patterns": [
+				{
+					"match": "(\\.export)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"captures": {
+						"1": {
+							"name": "keyword.other.lnasm"
+						},
+						"2": {
+							"name": "entity.name.function.lnasm"
+						}
+					}
 				}
 			]
 		},
@@ -147,15 +168,27 @@
 		"section_code": {
 			"patterns": [
 				{
-					"match": "^\\s*(\\.res)\\s+\\b(\\d+|0x[0-9a-fA-F]+|0b[01]+)\\b",
-					"captures": {
+					"begin": "^\\s*(\\.res)\\s+",
+					"beginCaptures": {
 						"1": {
 							"name": "keyword.other.lnasm"
-						},
-						"2": {
-							"name": "constant.numeric.lnasm"
 						}
-					}
+					},
+					"end": "$",
+					"patterns": [
+						{
+							"include": "#comment"
+						},
+						{
+							"include": "#number"
+						},
+						{
+							"include": "#identifier"
+						},
+						{
+							"include": "#operand"
+						}
+					]
 				},
 				{
 					"begin": "^\\s*(\\.data)",
@@ -168,6 +201,9 @@
 					"patterns": [
 						{
 							"include": "#instruction"
+						},
+						{
+							"include": "#operand"
 						},
 						{
 							"include": "#identifier"
@@ -225,7 +261,7 @@
 			"patterns": [
 				
 			{
-					"match": "\\bRA|RB|RC|RD|SS|SP|DS|BP|(RC:RD)\\b",
+					"match": "\\b(RA|RB|RC|RD|SS|SP|DS|BP|(RC:RD))\\b",
 					"name": "constant.language.lnasm"
 				},
 				{
