@@ -57,7 +57,11 @@ public class Disassembler{
                     StringBuilder params = new StringBuilder();
 
                     for (int i = 1; i < instructionLength; i++) {
-                        params.append("%02x ".formatted(output[currentAddress + i]));
+                        if(currentAddress + i >= output.length){
+                            params.append("XX ");
+                        }else {
+                            params.append("%02x ".formatted(output[currentAddress + i]));
+                        }
                     }
 
                     sb.append(("\t%" + longestLabelLength + "s %06x:\t%-20s %16s\n").formatted(labels, currentAddress, instructionDesc, params));
