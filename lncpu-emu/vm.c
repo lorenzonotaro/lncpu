@@ -343,32 +343,32 @@ void vm_step(struct lncpu_vm *vm) {
             vm->ds = vm->rd;
             break;
         case OP_MOV_IBPOFFSET_RA:
-            vm->ra = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm));
+            vm->ra = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
             break;
         case OP_MOV_IBPOFFSET_RB:
-            vm->rb = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm));
+            vm->rb = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
             break;
         case OP_MOV_IBPOFFSET_RC:
-            vm->rc = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm));
+            vm->rc = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
             break;
         case OP_MOV_IBPOFFSET_RD:
-            vm->rd = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm));
+            vm->rd = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
             break;
         case OP_MOV_RA_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm), vm->ra);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->ra);
             break;
         case OP_MOV_RB_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm), vm->rb);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->rb);
             break;
         case OP_MOV_RC_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm), vm->rc);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->rc);
             break;
         case OP_MOV_RD_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + fetch_byte(vm), vm->rd);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->rd);
             break;
         case OP_MOV_CST_IBPOFFSET:
             temp1 = fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + temp1,  fetch_byte(vm));
+            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) temp1,  fetch_byte(vm));
             break;
         case OP_MOV_RA_DATAP:
             write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->ra);
@@ -668,12 +668,12 @@ void vm_step(struct lncpu_vm *vm) {
             vm->rd = (uint8_t) temp16;
             break;
         case OP_ADD_SP_CST:
-            temp16 = (uint16_t) vm->sp + fetch_byte(vm);
+            temp16 = (uint16_t) vm->sp + (int8_t) fetch_byte(vm);
             set_flags(vm, temp16);
             vm->sp = (uint8_t) temp16;
             break;
         case OP_ADD_BP_CST:
-            temp16 = (uint16_t) vm->bp + fetch_byte(vm);
+            temp16 = (uint16_t) vm->bp + (int8_t) fetch_byte(vm);
             set_flags(vm, temp16);
             vm->bp = (uint8_t) temp16;
             break;

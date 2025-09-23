@@ -37,13 +37,13 @@ void help(void) {
     printf("b, break <address> - Set a breakpoint at the given address\n");
 }
 
-void reg_dump(struct lncpu_vm *vm) {
-    printf("\nRA    RB    RC    RD\n");
-    printf("%02x    %02x    %02x    %02x\n\n" , vm->ra, vm->rb, vm->rc, vm->rd);
-    printf("DS    SS    SP    BP\n");
-    printf("%02x    %02x    %02x    %02x\n\n" , vm->ds, vm->ss, vm->sp, vm->bp);
-    printf("CSPC        FLAGS (INZC)\n");
-    printf("%04x        %02x    (%c%c%c%c)\n\n" , vm->cspc, vm->flags,
+void reg_dump(struct lncpu_vm *vm, FILE *f) {
+    fprintf(f, "\nRA    RB    RC    RD\n");
+    fprintf(f, "%02x    %02x    %02x    %02x\n\n" , vm->ra, vm->rb, vm->rc, vm->rd);
+    fprintf(f, "DS    SS    SP    BP\n");
+    fprintf(f, "%02x    %02x    %02x    %02x\n\n" , vm->ds, vm->ss, vm->sp, vm->bp);
+    fprintf(f,"CSPC        FLAGS (INZC)\n");
+    fprintf(f, "%04x        %02x    (%c%c%c%c)\n\n" , vm->cspc, vm->flags,
            (vm->flags & FLAGS_I) ? 'I' : '-',
            (vm->flags & FLAGS_N) ? 'N' : '-',
            (vm->flags & FLAGS_Z) ? 'Z' : '-',
@@ -66,6 +66,16 @@ void memdump(struct lncpu_vm * vm, uint16_t start, uint16_t end) {
         }
         printf("\n");
     }
+}
+
+void memdump_bin(struct lncpu_vm *vm, const char *filename) {
+    FILE *f = fopen(filename, "wb");
+    if (f == NULL) {
+        fprintf(stderr, "Failed to open file %s\n", filename);
+        return;
+    }
+    fwrite(vm->addr_space, 1, 0x10000, f);
+    fclose(f);
 }
 
 void pause(struct emulator *emu) {
@@ -104,7 +114,7 @@ void pause(struct emulator *emu) {
             emu->status = EMU_STATUS_TERMINATED;
             loop = false;
         } else if (strcmp(ptr, "r") == 0 || strcmp(ptr, "register") == 0) {
-            reg_dump(&emu->vm);
+            reg_dump(&emu->vm, stdout);
         }else if (strlen(ptr) == 4 && isxdigit(ptr[0]) && isxdigit(ptr[1]) && isxdigit(ptr[2]) && isxdigit(ptr[3])) {
             uint16_t start = (uint16_t) strtol(ptr, NULL, 16);
             memdump(&emu->vm, start, start);
@@ -202,13 +212,28 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
 
     emu.status = EMU_STATUS_TERMINATED;
 
-    if (vm->halted){
+    if (vm->halted && !cmdline_params->no_pause_on_halt){
         printf("LNCPU has halted. Type 'c' or 'continue' to exit. \n");
         pause(&emu);
     }
-    vm_destroy(vm);
 
+    if (cmdline_params->dump_status != NULL) {
+        FILE *f = fopen(cmdline_params->dump_status, "w");
+
+        if (!f) {
+            fprintf(stderr, "Failed to open file %s\n", cmdline_params->dump_status);
+
+        }else {
+            reg_dump(vm, f);
+        }
+    }
+
+    if (cmdline_params->dump_address_space != NULL) {
+        memdump_bin(vm, cmdline_params->dump_address_space);
+    }
+
+    vm_destroy(vm);
     set_emu(NULL);
-    
+
     return 0;
 }
