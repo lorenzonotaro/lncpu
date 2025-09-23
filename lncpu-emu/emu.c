@@ -139,18 +139,46 @@ void pause(struct emulator *emu) {
             }
             memdump(&emu->vm, start, end);
         }else if (strcmp(ptr, "b") == 0 || strcmp(ptr, "break") == 0) {
-            char *addr_str = strtok(NULL, " ");
+            char *next_str = strtok(NULL, " ");
+            size_t size = strlen(next_str);
             char *end_ptr;
-            if (addr_str) {
-                uint16_t addr = (uint16_t) strtol(addr_str, &end_ptr, 16);
-                if (end_ptr == addr_str || *end_ptr != '\0') {
-                    printf("Invalid address\n");
-                    continue;
+            if (next_str) {
+                if ((size == 1 && next_str[0] == 'r') || (size == 6 && strcmp(next_str, "remove") == 0)) {
+                    char *addr_str = strtok(NULL, " ");
+                    if (!addr_str) {
+                        printf("Usage: b r <address> or b remove <address>\n");
+                        continue;
+                    }
+                    uint16_t addr = (uint16_t) strtol(addr_str, &end_ptr, 16);
+                    if (end_ptr == addr_str || *end_ptr != '\0') {
+                        printf("Invalid address\n");
+                        continue;
+                    }
+                    struct bp *bp, *tmp;
+                    bool found = false;
+                    LL_FOREACH_SAFE(emu->bp_list, bp, tmp) {
+                        if (bp->addr == addr) {
+                            LL_DELETE(emu->bp_list, bp);
+                            free(bp);
+                            found = true;
+                            printf("Breakpoint removed at 0x%04x\n", addr);
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        printf("No breakpoint found at 0x%04x\n", addr);
+                    }
+                }else{
+                    uint16_t addr = (uint16_t) strtol(next_str, &end_ptr, 16);
+                    if (end_ptr == next_str || *end_ptr != '\0') {
+                        printf("Invalid address\n");
+                        continue;
+                    }
+                    struct bp *bp = malloc(sizeof(struct bp));
+                    bp->addr = addr;
+                    LL_APPEND(emu->bp_list, bp);
+                    printf("Breakpoint set at 0x%04x\n", addr);
                 }
-                struct bp *bp = malloc(sizeof(struct bp));
-                bp->addr = addr;
-                LL_APPEND(emu->bp_list, bp);
-                printf("Breakpoint set at 0x%04x\n", addr);
             } else {
                 printf("Usage: b <address>\n");
             }
