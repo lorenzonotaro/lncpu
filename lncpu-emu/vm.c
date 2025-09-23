@@ -542,6 +542,9 @@ void vm_step(struct lncpu_vm *vm) {
         case OP_PUSH_BP:
             push(vm, vm->bp);
             break;
+        case OP_PUSH_DS:
+            push(vm, vm->ds);
+            break;
         case OP_POP_RA:
             pop(vm, &vm->ra);
             break;
@@ -574,6 +577,9 @@ void vm_step(struct lncpu_vm *vm) {
             break;
         case OP_POP_BP:
             pop(vm, &vm->bp);
+            break;
+        case OP_POP_DS:
+            pop(vm, &vm->ds);
             break;
         case OP_ADD_RA_RA:
             temp16 = (uint16_t) vm->ra + vm->ra;

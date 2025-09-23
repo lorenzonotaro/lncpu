@@ -1618,6 +1618,21 @@
         "flags_modified": "-"
     },
     {
+        "name": "push_ds",
+        "description": "Pushes the value of DS onto the stack",
+        "microcode": [
+            {
+                "NOT_DS_OUT": 0,
+                "NOT_DEVICE_IN": 0,
+                "ADDR_SEL": "ss:sp"
+            },
+            {
+                "SP_MODE_SEL": "inc"
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
         "name": "pop_ra",
         "description": "Pops from the stack into RA",
         "microcode": [
@@ -1780,6 +1795,19 @@
                 "NOT_DEVICE_OUT": 0,
                 "ADDR_SEL": "ss:sp",
                 "NOT_BP_IN": 0
+            }
+        ],
+        "flags_modified": "-"
+    },
+    {
+        "name": "pop_ds",
+        "description": "Pops from the stack into DS",
+        "microcode": [
+            {
+                "SP_MODE_SEL": "dec",
+                "NOT_DEVICE_OUT": 0,
+                "ADDR_SEL": "ss:sp",
+                "NOT_DS_IN": 0
             }
         ],
         "flags_modified": "-"

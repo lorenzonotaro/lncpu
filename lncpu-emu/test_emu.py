@@ -328,6 +328,12 @@ def run_one_test(test_dir: Path) -> TestResult:
     mismatches = evaluate_conditions(conds, regs, aspace)
     if mismatches:
         return TestResult(name=name, status="FAILED", mismatches=mismatches)
+
+    # delete files
+    for f in (test_dir / OUT_BIN, test_dir / STATUS_TXT, test_dir / ASPACE_BIN):
+        if f.exists():
+            f.unlink()
+
     return TestResult(name=name, status="PASSED")
 
 def main() -> int:
