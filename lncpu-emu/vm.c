@@ -221,10 +221,10 @@ int irq_req(struct lncpu_vm * vm) {
     return false;
 }
 
-void set_flags(struct lncpu_vm * vm, uint16_t result) {
+void set_flags(struct lncpu_vm * vm, uint16_t result, const bool set_carry) {
     vm->flags = (vm->flags & FLAGS_I) | // I flag untouched
-        (result > 0xFF ? FLAGS_C : 0) | // result carried over
-            (result == 0 ? FLAGS_Z : 0) | // result zero
+        (set_carry && result > 0xFF ? FLAGS_C : 0) | // result carried over
+            ((result & 0xFF) == 0 ? FLAGS_Z : 0) | // result zero
             (result & 0b10000000 ? FLAGS_N : 0); // result negative (bit 7 set)
 }
 
@@ -343,32 +343,40 @@ void vm_step(struct lncpu_vm *vm) {
             vm->ds = vm->rd;
             break;
         case OP_MOV_IBPOFFSET_RA:
-            vm->ra = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
+            temp1 = vm->bp + fetch_byte(vm);
+            vm->ra = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_IBPOFFSET_RB:
-            vm->rb = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
+            temp1 = vm->bp + fetch_byte(vm);
+            vm->rb = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_IBPOFFSET_RC:
-            vm->rc = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
+            temp1 = vm->bp + fetch_byte(vm);
+            vm->rc = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_IBPOFFSET_RD:
-            vm->rd = read_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm));
+            temp1 = vm->bp + fetch_byte(vm);
+            vm->rd = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_RA_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->ra);
+            temp1 = vm->bp + fetch_byte(vm);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->ra);
             break;
         case OP_MOV_RB_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->rb);
+            temp1 = vm->bp + fetch_byte(vm);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rb);
             break;
         case OP_MOV_RC_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->rc);
+            temp1 = vm->bp + fetch_byte(vm);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rc);
             break;
         case OP_MOV_RD_IBPOFFSET:
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) fetch_byte(vm), vm->rd);
+            temp1 = vm->bp + fetch_byte(vm);
+            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rd);
             break;
         case OP_MOV_CST_IBPOFFSET:
             temp1 = fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | vm->bp) + (int8_t) temp1,  fetch_byte(vm));
+            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1),  fetch_byte(vm));
             break;
         case OP_MOV_RA_DATAP:
             write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->ra);
@@ -476,28 +484,28 @@ void vm_step(struct lncpu_vm *vm) {
             write_byte(vm, (uint16_t) vm->ds << 8 | temp2, read_byte(vm, (uint16_t) vm->ds << 8 | temp1));
             break;
         case OP_MOV_IRD_RA:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->ra);
-            break;
-        case OP_MOV_IRD_RB:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rb);
-            break;
-        case OP_MOV_IRD_RC:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rc);
-            break;
-        case OP_MOV_IRD_RD:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rd);
-            break;
-        case OP_MOV_RA_IRD:
             vm->ra = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
-        case OP_MOV_RB_IRD:
+        case OP_MOV_IRD_RB:
             vm->rb = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
-        case OP_MOV_RC_IRD:
+        case OP_MOV_IRD_RC:
             vm->rc = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
-        case OP_MOV_RD_IRD:
+        case OP_MOV_IRD_RD:
             vm->rd = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
+            break;
+        case OP_MOV_RA_IRD:
+            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->ra);
+            break;
+        case OP_MOV_RB_IRD:
+            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rb);
+            break;
+        case OP_MOV_RC_IRD:
+            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rc);
+            break;
+        case OP_MOV_RD_IRD:
+            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rd);
             break;
         case OP_MOV_CST_IRD:
             write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, fetch_byte(vm));
@@ -569,651 +577,659 @@ void vm_step(struct lncpu_vm *vm) {
             break;
         case OP_ADD_RA_RA:
             temp16 = (uint16_t) vm->ra + vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_ADD_RA_RB:
             temp16 = (uint16_t) vm->ra + vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_ADD_RA_RC:
             temp16 = (uint16_t) vm->ra + vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_ADD_RA_RD:
             temp16 = (uint16_t) vm->ra + vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_ADD_RB_RA:
             temp16 = (uint16_t) vm->rb + vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_ADD_RB_RB:
             temp16 = (uint16_t) vm->rb + vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_ADD_RB_RC:
             temp16 = (uint16_t) vm->rb + vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_ADD_RB_RD:
             temp16 = (uint16_t) vm->rb + vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_ADD_RC_RA:
             temp16 = (uint16_t) vm->rc + vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_ADD_RC_RB:
             temp16 = (uint16_t) vm->rc + vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_ADD_RC_RC:
             temp16 = (uint16_t) vm->rc + vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_ADD_RC_RD:
             temp16 = (uint16_t) vm->rc + vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_ADD_RD_RA:
             temp16 = (uint16_t) vm->rd + vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_ADD_RD_RB:
             temp16 = (uint16_t) vm->rd + vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_ADD_RD_RC:
             temp16 = (uint16_t) vm->rd + vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_ADD_RD_RD:
             temp16 = (uint16_t) vm->rd + vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_ADD_RA_CST:
             temp16 = (uint16_t) vm->ra + fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_ADD_RB_CST:
             temp16 = (uint16_t) vm->rb + fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_ADD_RC_CST:
             temp16 = (uint16_t) vm->rc + fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_ADD_RD_CST:
             temp16 = (uint16_t) vm->rd + fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_ADD_SP_CST:
             temp16 = (uint16_t) vm->sp + (int8_t) fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->sp = (uint8_t) temp16;
             break;
         case OP_ADD_BP_CST:
             temp16 = (uint16_t) vm->bp + (int8_t) fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->bp = (uint8_t) temp16;
             break;
         case OP_SUB_RA_RA:
             temp16 = (uint16_t) vm->ra - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_SUB_RA_RB:
             temp16 = (uint16_t) vm->ra - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_SUB_RA_RC:
             temp16 = (uint16_t) vm->ra - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_SUB_RA_RD:
             temp16 = (uint16_t) vm->ra - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_SUB_RB_RA:
             temp16 = (uint16_t) vm->rb - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_SUB_RB_RB:
             temp16 = (uint16_t) vm->rb - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_SUB_RB_RC:
             temp16 = (uint16_t) vm->rb - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_SUB_RB_RD:
             temp16 = (uint16_t) vm->rb - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_SUB_RC_RA:
             temp16 = (uint16_t) vm->rc - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_SUB_RC_RB:
             temp16 = (uint16_t) vm->rc - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_SUB_RC_RC:
             temp16 = (uint16_t) vm->rc - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_SUB_RC_RD:
             temp16 = (uint16_t) vm->rc - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_SUB_RD_RA:
             temp16 = (uint16_t) vm->rd - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_SUB_RD_RB:
             temp16 = (uint16_t) vm->rd - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_SUB_RD_RC:
             temp16 = (uint16_t) vm->rd - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_SUB_RD_RD:
             temp16 = (uint16_t) vm->rd - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_SUB_RA_CST:
             temp16 = (uint16_t) vm->ra - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_SUB_RB_CST:
             temp16 = (uint16_t) vm->rb - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_SUB_RC_CST:
             temp16 = (uint16_t) vm->rc - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_SUB_RD_CST:
             temp16 = (uint16_t) vm->rd - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_SUB_SP_CST:
             temp16 = (uint16_t) vm->sp - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->sp = (uint8_t) temp16;
             break;
         case OP_SUB_BP_CST:
             temp16 = (uint16_t) vm->bp - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             vm->bp = (uint8_t) temp16;
             break;
         case OP_CMP_RA_RA:
             temp16 = (uint16_t) vm->ra - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RA_RB:
             temp16 = (uint16_t) vm->ra - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RA_RC:
             temp16 = (uint16_t) vm->ra - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RA_RD:
             temp16 = (uint16_t) vm->ra - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RB_RA:
             temp16 = (uint16_t) vm->rb - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RB_RB:
             temp16 = (uint16_t) vm->rb - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RB_RC:
             temp16 = (uint16_t) vm->rb - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RB_RD:
             temp16 = (uint16_t) vm->rb - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RC_RA:
             temp16 = (uint16_t) vm->rc - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RC_RB:
             temp16 = (uint16_t) vm->rc - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RC_RC:
             temp16 = (uint16_t) vm->rc - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RC_RD:
             temp16 = (uint16_t) vm->rc - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RD_RA:
             temp16 = (uint16_t) vm->rd - vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RD_RB:
             temp16 = (uint16_t) vm->rd - vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RD_RC:
             temp16 = (uint16_t) vm->rd - vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RD_RD:
             temp16 = (uint16_t) vm->rd - vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RA_CST:
             temp16 = (uint16_t) vm->ra - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RB_CST:
             temp16 = (uint16_t) vm->rb - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RC_CST:
             temp16 = (uint16_t) vm->rc - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_CMP_RD_CST:
             temp16 = (uint16_t) vm->rd - fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, true);
             break;
         case OP_OR_RA_RA:
             temp16 = (uint16_t) vm->ra | vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_OR_RA_RB:
             temp16 = (uint16_t) vm->ra | vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_OR_RA_RC:
             temp16 = (uint16_t) vm->ra | vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_OR_RA_RD:
             temp16 = (uint16_t) vm->ra | vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_OR_RB_RA:
             temp16 = (uint16_t) vm->rb | vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_OR_RB_RB:
             temp16 = (uint16_t) vm->rb | vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_OR_RB_RC:
             temp16 = (uint16_t) vm->rb | vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_OR_RB_RD:
             temp16 = (uint16_t) vm->rb | vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_OR_RC_RA:
             temp16 = (uint16_t) vm->rc | vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_OR_RC_RB:
             temp16 = (uint16_t) vm->rc | vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_OR_RC_RC:
             temp16 = (uint16_t) vm->rc | vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_OR_RC_RD:
             temp16 = (uint16_t) vm->rc | vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_OR_RD_RA:
             temp16 = (uint16_t) vm->rd | vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_OR_RD_RB:
             temp16 = (uint16_t) vm->rd | vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_OR_RD_RC:
             temp16 = (uint16_t) vm->rd | vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_OR_RD_RD:
             temp16 = (uint16_t) vm->rd | vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_OR_RA_CST:
             temp16 = (uint16_t) vm->ra | fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_OR_RB_CST:
             temp16 = (uint16_t) vm->rb | fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_OR_RC_CST:
             temp16 = (uint16_t) vm->rc | fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_OR_RD_CST:
             temp16 = (uint16_t) vm->rd | fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_AND_RA_RA:
             temp16 = (uint16_t) vm->ra & vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_AND_RA_RB:
             temp16 = (uint16_t) vm->ra & vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_AND_RA_RC:
             temp16 = (uint16_t) vm->ra & vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_AND_RA_RD:
             temp16 = (uint16_t) vm->ra & vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_AND_RB_RA:
             temp16 = (uint16_t) vm->rb & vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_AND_RB_RB:
             temp16 = (uint16_t) vm->rb & vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_AND_RB_RC:
             temp16 = (uint16_t) vm->rb & vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_AND_RB_RD:
             temp16 = (uint16_t) vm->rb & vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_AND_RC_RA:
             temp16 = (uint16_t) vm->rc & vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_AND_RC_RB:
             temp16 = (uint16_t) vm->rc & vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_AND_RC_RC:
             temp16 = (uint16_t) vm->rc & vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_AND_RC_RD:
             temp16 = (uint16_t) vm->rc & vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_AND_RD_RA:
             temp16 = (uint16_t) vm->rd & vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_AND_RD_RB:
             temp16 = (uint16_t) vm->rd & vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_AND_RD_RC:
             temp16 = (uint16_t) vm->rd & vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_AND_RD_RD:
             temp16 = (uint16_t) vm->rd & vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_AND_RA_CST:
             temp16 = (uint16_t) vm->ra & fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_AND_RB_CST:
             temp16 = (uint16_t) vm->rb & fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_AND_RC_CST:
             temp16 = (uint16_t) vm->rc & fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_AND_RD_CST:
             temp16 = (uint16_t) vm->rd & fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_XOR_RA_RA:
             temp16 = (uint16_t) vm->ra ^ vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_XOR_RA_RB:
             temp16 = (uint16_t) vm->ra ^ vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_XOR_RA_RC:
             temp16 = (uint16_t) vm->ra ^ vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_XOR_RA_RD:
             temp16 = (uint16_t) vm->ra ^ vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_XOR_RB_RA:
             temp16 = (uint16_t) vm->rb ^ vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_XOR_RB_RB:
             temp16 = (uint16_t) vm->rb ^ vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_XOR_RB_RC:
             temp16 = (uint16_t) vm->rb ^ vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_XOR_RB_RD:
             temp16 = (uint16_t) vm->rb ^ vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_XOR_RC_RA:
             temp16 = (uint16_t) vm->rc ^ vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_XOR_RC_RB:
             temp16 = (uint16_t) vm->rc ^ vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_XOR_RC_RC:
             temp16 = (uint16_t) vm->rc ^ vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_XOR_RC_RD:
             temp16 = (uint16_t) vm->rc ^ vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_XOR_RD_RA:
             temp16 = (uint16_t) vm->rd ^ vm->ra;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_XOR_RD_RB:
             temp16 = (uint16_t) vm->rd ^ vm->rb;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_XOR_RD_RC:
             temp16 = (uint16_t) vm->rd ^ vm->rc;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_XOR_RD_RD:
             temp16 = (uint16_t) vm->rd ^ vm->rd;
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_XOR_RA_CST:
             temp16 = (uint16_t) vm->ra ^ fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->ra = (uint8_t) temp16;
             break;
         case OP_XOR_RB_CST:
             temp16 = (uint16_t) vm->rb ^ fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rb = (uint8_t) temp16;
             break;
         case OP_XOR_RC_CST:
             temp16 = (uint16_t) vm->rc ^ fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rc = (uint8_t) temp16;
             break;
         case OP_XOR_RD_CST:
             temp16 = (uint16_t) vm->rd ^ fetch_byte(vm);
-            set_flags(vm, temp16);
+            set_flags(vm, temp16, false);
             vm->rd = (uint8_t) temp16;
             break;
         case OP_NOT_RA:
             vm->ra = ~vm->ra;
-            set_flags(vm, vm->ra);
+            set_flags(vm, vm->ra, false);
             break;
         case OP_NOT_RB:
             vm->rb = ~vm->rb;
-            set_flags(vm, vm->rb);
+            set_flags(vm, vm->rb, false);
             break;
         case OP_NOT_RC:
             vm->rc = ~vm->rc;
-            set_flags(vm, vm->rc);
+            set_flags(vm, vm->rc, false);
             break;
         case OP_NOT_RD:
             vm->rd = ~vm->rd;
-            set_flags(vm, vm->rd);
+            set_flags(vm, vm->rd, false);
             break;
         case OP_INC_RA:
-            vm->ra++;
-            set_flags(vm, vm->ra);
+            temp1 = (uint16_t) vm->ra + 1;
+            set_flags(vm, temp1, true);
+            vm->ra = temp1;
             break;
         case OP_INC_RB:
-            vm->rb++;
-            set_flags(vm, vm->rb);
+            temp1 = (uint16_t) vm->rb + 1;
+            set_flags(vm, temp1, true);
+            vm->rb = temp1;
             break;
         case OP_INC_RC:
-            vm->rc++;
-            set_flags(vm, vm->rc);
+            temp1 = (uint16_t) vm->rc + 1;
+            set_flags(vm, temp1, true);
+            vm->rc = temp1;
             break;
         case OP_INC_RD:
-            vm->rd++;
-            set_flags(vm, vm->rd);
+            temp1 = (uint16_t) vm->rd + 1;
+            set_flags(vm, temp1, true);
+            vm->rd = temp1;
             break;
         case OP_DEC_RA:
-            vm->ra--;
-            set_flags(vm, vm->ra);
+            temp1 = (uint16_t) vm->ra - 1;
+            set_flags(vm, temp1, true);
+            vm->ra = temp1;
             break;
         case OP_DEC_RB:
-            vm->rb--;
-            set_flags(vm, vm->rb);
+            temp1 = (uint16_t) vm->rb - 1;
+            set_flags(vm, temp1, true);
+            vm->rb = temp1;
             break;
         case OP_DEC_RC:
-            vm->rc--;
-            set_flags(vm, vm->rc);
+            temp1 = (uint16_t) vm->rc - 1;
+            set_flags(vm, temp1, true);
+            vm->rc = temp1;
             break;
         case OP_DEC_RD:
-            vm->rd--;
-            set_flags(vm, vm->rd);
+            temp1 = (uint16_t) vm->rd - 1;
+            set_flags(vm, temp1, true);
+            vm->rd = temp1;
             break;
         case OP_SHL_RA:
             vm->ra <<= 1;
@@ -1295,8 +1311,10 @@ void vm_step(struct lncpu_vm *vm) {
         case OP_RET_CST:
             pop(vm, &temp2);
             pop(vm, &temp1);
-            vm->cspc = ((uint16_t) temp1 << 8) | temp2;
-            vm->sp -= fetch_byte(vm);
+            temp1 = ((uint16_t) temp1 << 8) | temp2; // temp1 = return cspc
+            temp2 = fetch_byte(vm); // temp 2: stack places to discard
+            vm->sp -= temp2;
+            vm->cspc = temp1;
             break;
         case OP_IRET:
             pop(vm, &vm->flags);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="4.0.2dev" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v4.0.2dev(https://github.com/logisim-evolution/).
+<project source="4.0.3dev" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v4.0.3dev(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#Devices.circ" name="12"/>
-  <lib desc="file#C8BComponents.circ" name="13"/>
+  <lib desc="file#C8BComponents.circ" name="12"/>
+  <lib desc="file#Devices.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1621,9 +1621,9 @@ end TCL_Generic;
     <comp lib="10" loc="(730,210)" name="Switch">
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="12" loc="(1030,1790)" name="TTYAdapter"/>
-    <comp lib="12" loc="(2220,1850)" name="RGBScreenAdapter"/>
-    <comp lib="12" loc="(2830,1870)" name="JoystickAdapter"/>
+    <comp lib="13" loc="(1030,1790)" name="TTYAdapter"/>
+    <comp lib="13" loc="(2220,1850)" name="RGBScreenAdapter"/>
+    <comp lib="13" loc="(2830,1870)" name="JoystickAdapter"/>
     <comp lib="4" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
@@ -1926,7 +1926,7 @@ end TCL_Generic;
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RB"/>
     </comp>
-    <comp lib="8" loc="(274,655)" name="Text">
+    <comp lib="8" loc="(270,655)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="CS_PC"/>
     </comp>
@@ -2675,8 +2675,8 @@ end TCL_Generic;
     <comp lib="1" loc="(310,370)" name="NOR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -3269,6 +3269,10 @@ end TCL_Generic;
       <a name="facing" val="south"/>
       <a name="size" val="30"/>
     </comp>
+    <comp lib="1" loc="(670,480)" name="AND Gate">
+      <a name="facing" val="south"/>
+      <a name="size" val="30"/>
+    </comp>
     <comp lib="1" loc="(710,280)" name="Controlled Buffer">
       <a name="control" val="left"/>
       <a name="facing" val="south"/>
@@ -3373,7 +3377,7 @@ end TCL_Generic;
     <wire from="(600,750)" to="(600,760)"/>
     <wire from="(600,750)" to="(610,750)"/>
     <wire from="(600,800)" to="(600,810)"/>
-    <wire from="(600,800)" to="(660,800)"/>
+    <wire from="(600,800)" to="(670,800)"/>
     <wire from="(610,630)" to="(610,650)"/>
     <wire from="(610,650)" to="(620,650)"/>
     <wire from="(610,700)" to="(610,710)"/>
@@ -3395,11 +3399,14 @@ end TCL_Generic;
     <wire from="(650,650)" to="(650,660)"/>
     <wire from="(660,220)" to="(660,290)"/>
     <wire from="(660,220)" to="(670,220)"/>
-    <wire from="(660,340)" to="(660,800)"/>
+    <wire from="(660,340)" to="(660,450)"/>
     <wire from="(670,170)" to="(670,220)"/>
     <wire from="(670,170)" to="(720,170)"/>
     <wire from="(670,220)" to="(670,230)"/>
     <wire from="(670,270)" to="(670,300)"/>
+    <wire from="(670,480)" to="(670,800)"/>
+    <wire from="(680,430)" to="(680,450)"/>
+    <wire from="(680,430)" to="(730,430)"/>
     <wire from="(690,250)" to="(710,250)"/>
     <wire from="(710,250)" to="(710,260)"/>
     <wire from="(710,280)" to="(710,360)"/>
@@ -3408,6 +3415,7 @@ end TCL_Generic;
     <wire from="(720,270)" to="(730,270)"/>
     <wire from="(720,550)" to="(750,550)"/>
     <wire from="(730,230)" to="(730,270)"/>
+    <wire from="(730,270)" to="(730,430)"/>
     <wire from="(740,160)" to="(740,200)"/>
     <wire from="(760,590)" to="(760,830)"/>
     <wire from="(760,590)" to="(770,590)"/>
