@@ -1306,15 +1306,15 @@ void vm_step(struct lncpu_vm *vm) {
         case OP_RET:
             pop(vm, &temp2);
             pop(vm, &temp1);
-            vm->cspc = ((uint16_t) temp1 << 8) | temp2;
+            vm->cspc = ((uint16_t) temp1 << 8) | (uint16_t) temp2;
             break;
         case OP_RET_CST:
             pop(vm, &temp2);
             pop(vm, &temp1);
-            temp1 = ((uint16_t) temp1 << 8) | temp2; // temp1 = return cspc
+            temp16 = ((uint16_t) temp1 << 8) | temp2; // temp1 = return cspc
             temp2 = fetch_byte(vm); // temp 2: stack places to discard
             vm->sp -= temp2;
-            vm->cspc = temp1;
+            vm->cspc = temp16;
             break;
         case OP_IRET:
             pop(vm, &vm->flags);

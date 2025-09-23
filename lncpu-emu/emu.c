@@ -11,6 +11,7 @@
 #include <string.h>
 #include <windows.h>
 
+#include "utlist.h"
 #include "vm.h"
 #include "config/cmdline.h"
 
@@ -24,12 +25,13 @@ struct emulator *get_emu(void) {
     return emulator;
 }
 
-char line_buffer[1024];
 
+char line_buffer[1024];
 void help(void) {
     printf("Commands:\n");
     printf("c, continue - Continue execution\n");
     printf("s, step - Step one instruction\n");
+    printf("o, stepover - Step over call instruction (not implemented) \n"),
     printf("r, register" " - Print the current register values\n");
     printf("XXXX (hex), XXXX-XXXX (hex) - Print memory dump from address XXXX to XXXX\n");
     printf("h, help - Print this help message\n");
@@ -108,7 +110,10 @@ void pause(struct emulator *emu) {
         } else if (strcmp(ptr, "s") == 0 || strcmp(ptr, "step") == 0) {
             emu->status = EMU_STATUS_STEPPING;
             loop = false;
-        } else if (strcmp(ptr, "h") == 0 || strcmp(ptr, "help") == 0) {
+        } else if (strcmp(ptr, "o") == 0 || strcmp(ptr, "stepover") == 0) {
+            printf("Stepping over is not yet implemented. Stepping.");
+            emu->status = EMU_STATUS_STEPPING;
+        }else if (strcmp(ptr, "h") == 0 || strcmp(ptr, "help") == 0) {
             help();
         } else if (strcmp(ptr, "q") == 0 || strcmp(ptr, "quit") == 0) {
             emu->status = EMU_STATUS_TERMINATED;
@@ -142,7 +147,10 @@ void pause(struct emulator *emu) {
                     printf("Invalid address\n");
                     continue;
                 }
-                printf("Breakpoint set at 0x%04x (not implemented)\n", addr);
+                struct bp *bp = malloc(sizeof(struct bp));
+                bp->addr = addr;
+                LL_APPEND(emu->bp_list, bp);
+                printf("Breakpoint set at 0x%04x\n", addr);
             } else {
                 printf("Usage: b <address>\n");
             }
@@ -153,9 +161,20 @@ void pause(struct emulator *emu) {
 
 }
 
-int run_emu(struct emu_cmdline_params *cmdline_params) {
+bool bp_hit(const struct emulator *emu) {
+    struct bp *bp;
+    LL_FOREACH(emu->bp_list, bp) {
+        if (bp->addr == emu->vm.cspc) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int run_emu(const struct emu_cmdline_params *cmdline_params) {
     struct emulator emu = {
-        .status = EMU_STATUS_RUNNING
+        .status = EMU_STATUS_RUNNING,
+        .bp_list = NULL
     };
 
     set_emu(&emu);
@@ -194,7 +213,7 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
 
         vm_step(vm);
 
-        if (emu.status == EMU_STATUS_PAUSED || emu.status == EMU_STATUS_STEPPING) {
+        if (emu.status == EMU_STATUS_PAUSED || emu.status == EMU_STATUS_STEPPING || bp_hit(&emu)) {
             for (int i = 0; i < vm->emu_device_count; i++) {
                 if (vm->emu_devices[i].pause) {
                     vm->emu_devices[i].pause(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
@@ -230,6 +249,14 @@ int run_emu(struct emu_cmdline_params *cmdline_params) {
 
     if (cmdline_params->dump_address_space != NULL) {
         memdump_bin(vm, cmdline_params->dump_address_space);
+    }
+
+    // delete breakpoints
+    struct bp *bp = emu.bp_list;
+    while (bp != NULL) {
+        struct bp *next = bp->next;
+        free(bp);
+        bp = next;
     }
 
     vm_destroy(vm);
