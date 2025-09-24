@@ -17,11 +17,11 @@ static const LinkTargetInfo TBL[] = {
     [LT_D3]      = { 0xa000, 0xbfff, false },
     [LT_D4]      = { 0xc000, 0xdfff, false },
     [LT_D5]      = { 0xe000, 0xffff, false },
-    [LT_VIRTUAL] = { 0x0000, 0xffff, false },
+    [LT_INVALID] = { 0, 0, false }
 };
 
-const LinkTargetInfo* link_target_info(LinkTarget t) {
-    return &TBL[t];
+const LinkTargetInfo* link_target_info(const LinkTarget t) {
+    return t == LT_INVALID ? NULL : &TBL[t];
 }
 
 bool link_target_contains(LinkTarget t, int address) {
@@ -39,9 +39,8 @@ static LinkTarget from_name_cs(const char *s, size_t n) {
     if (IS("D3"))  return LT_D3;
     if (IS("D4"))  return LT_D4;
     if (IS("D5"))  return LT_D5;
-    if (IS("__VIRTUAL__")) return LT_VIRTUAL;
     #undef IS
-    return LT_VIRTUAL; /* fallback */
+    return LT_INVALID; /* fallback */
 }
 
 static LinkTarget from_name_ci(const char *s, size_t n) {
@@ -54,9 +53,8 @@ static LinkTarget from_name_ci(const char *s, size_t n) {
     if (IS("D3"))  return LT_D3;
     if (IS("D4"))  return LT_D4;
     if (IS("D5"))  return LT_D5;
-    if (IS("__VIRTUAL__")) return LT_VIRTUAL;
     #undef IS
-    return LT_VIRTUAL;
+    return LT_INVALID;
 }
 
 LinkTarget link_target_from_name(const char *s, size_t len, bool case_sensitive) {
@@ -64,8 +62,8 @@ LinkTarget link_target_from_name(const char *s, size_t len, bool case_sensitive)
 }
 
 LinkTarget link_target_from_address(int address) {
-    for (int t=LT_ROM; t<=LT_VIRTUAL; ++t) {
+    for (int t=LT_ROM; t<LT_INVALID; ++t) {
         if (link_target_contains((LinkTarget)t, address)) return (LinkTarget)t;
     }
-    return LT_VIRTUAL;
+    return LT_INVALID;
 }

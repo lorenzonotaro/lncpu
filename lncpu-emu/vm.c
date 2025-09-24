@@ -13,54 +13,31 @@
 #include "linker_config/linker_config_parser.h"
 
 static bool init_emu_devices(struct lncpu_vm *vm, const struct emu_cmdline_params * cmdline_params) {
-    if (cmdline_params->linker_config_file) {
-        LinkerConfig lc;
-        FILE *f = fopen(cmdline_params->linker_config_file, "r");
-        if (f) {
-            fseek(f, 0, SEEK_END);
-            const size_t size = ftell(f);
-            char *cfg_contents = malloc(size + 1);
+    if (cmdline_params->emu_tty_device) {
+        LinkTarget lt = link_target_from_name(cmdline_params->emu_tty_device, 2, false);
 
-            fseek(f, 0, SEEK_SET);
-            fread(cfg_contents, 1, size, f);;
-            fclose(f);
-
-            char *err = NULL;
-            if (!parse_linker_config_from_source(cfg_contents, size, cmdline_params->linker_config_file, &lc, &err)) {
-                fprintf(stderr, "error parsing linker config: %s\n", err);
-                return false;
-            }
-        }else {
-            fprintf(stderr, "error opening linker config file: %s\n", cmdline_params->linker_config_file);
+        if (lt == LT_INVALID) {
+            fprintf(stderr, "Invalid emu-tty device: %s\n", cmdline_params->emu_tty_device);
             return false;
         }
 
-        if (cmdline_params->emu_tty_section) {
+        const LinkTargetInfo *lt_info = link_target_info(lt);
 
-            const SectionInfo *section = linker_config_get_section(&lc, cmdline_params->emu_tty_section);
+        vm->emu_devices[0].start = lt_info->start;
+        vm->emu_devices[0].end = lt_info->end;
+        vm->emu_devices[0].init = emu_tty_init;
+        vm->emu_devices[0].step = emu_tty_step;
+        vm->emu_devices[0].pause = emu_tty_pause;
+        vm->emu_devices[0].resume = emu_tty_resume;
+        vm->emu_devices[0].addr_read = emu_tty_addr_read;
+        vm->emu_devices[0].addr_write = emu_tty_addr_write;
+        vm->emu_devices[0].destroy = emu_tty_destroy;
 
-            if (!section) {
-                fprintf(stderr, "emu-tty section not found: %s\n", cmdline_params->emu_tty_section);
-                return false;
-            }
-            vm->emu_devices[0].start = section->start;
-            vm->emu_devices[0].end = section->start + 2;
-            vm->emu_devices[0].init = emu_tty_init;
-            vm->emu_devices[0].step = emu_tty_step;
-            vm->emu_devices[0].pause = emu_tty_pause;
-            vm->emu_devices[0].resume = emu_tty_resume;
-            vm->emu_devices[0].addr_read = emu_tty_addr_read;
-            vm->emu_devices[0].addr_write = emu_tty_addr_write;
-            vm->emu_devices[0].destroy = emu_tty_destroy;
+        // initialize the emulated device
+        vm->emu_devices[0].init(vm, &vm->emu_devices[0]);
 
-            // initialize the emulated device
-            vm->emu_devices[0].init(vm, &vm->emu_devices[0]);
-
-            vm->emu_device_count++;
-        }
+        vm->emu_device_count++;
     }
-
-
 
     return true;
 }
@@ -148,7 +125,7 @@ bool emu_device_intercept_read(struct lncpu_vm *vm, uint16_t addr, uint8_t *valu
     return false;
 }
 
-uint8_t read_byte(struct lncpu_vm *vm, uint16_t addr) {
+uint8_t vm_read_byte(struct lncpu_vm *vm, uint16_t addr) {
     uint8_t value;
     if (!emu_device_intercept_read(vm, addr, &value)) {
         value = vm->addr_space[addr];
@@ -157,7 +134,7 @@ uint8_t read_byte(struct lncpu_vm *vm, uint16_t addr) {
 }
 
 uint8_t fetch_byte(struct lncpu_vm *vm) {
-    return read_byte(vm, vm->cspc++);
+    return vm_read_byte(vm, vm->cspc++);
 }
 
 bool emu_device_intercept_write(struct lncpu_vm *vm, uint16_t addr, uint8_t value) {
@@ -173,7 +150,7 @@ bool emu_device_intercept_write(struct lncpu_vm *vm, uint16_t addr, uint8_t valu
     return false;
 }
 
-void write_byte(struct lncpu_vm *vm, uint16_t addr, uint8_t value) {
+void vm_write_byte(struct lncpu_vm *vm, uint16_t addr, uint8_t value) {
     if (!emu_device_intercept_write(vm, addr, value)) {
         vm->addr_space[addr] = value;
     }
@@ -202,14 +179,14 @@ bool vm_init(struct lncpu_vm *vm, const struct emu_cmdline_params *cmdline_param
 
 void push(struct lncpu_vm *vm, uint8_t value) {
     uint16_t addr = ((uint16_t)vm->ss << 8) | vm->sp;
-    write_byte(vm, addr, value);
+    vm_write_byte(vm, addr, value);
     vm->sp = (uint8_t)(vm->sp + 1);
 }
 
 void pop(struct lncpu_vm *vm, uint8_t *dest) {
     vm->sp = (uint8_t)(vm->sp - 1);
     uint16_t addr = ((uint16_t)vm->ss << 8) | vm->sp;
-    *dest = read_byte(vm, addr);
+    *dest = vm_read_byte(vm, addr);
 }
 
 int irq_req(struct lncpu_vm * vm) {
@@ -344,171 +321,171 @@ void vm_step(struct lncpu_vm *vm) {
             break;
         case OP_MOV_IBPOFFSET_RA:
             temp1 = vm->bp + fetch_byte(vm);
-            vm->ra = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
+            vm->ra = vm_read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_IBPOFFSET_RB:
             temp1 = vm->bp + fetch_byte(vm);
-            vm->rb = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
+            vm->rb = vm_read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_IBPOFFSET_RC:
             temp1 = vm->bp + fetch_byte(vm);
-            vm->rc = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
+            vm->rc = vm_read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_IBPOFFSET_RD:
             temp1 = vm->bp + fetch_byte(vm);
-            vm->rd = read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
+            vm->rd = vm_read_byte(vm, ((uint16_t) vm->ss << 8 | temp1));
             break;
         case OP_MOV_RA_IBPOFFSET:
             temp1 = vm->bp + fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->ra);
+            vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->ra);
             break;
         case OP_MOV_RB_IBPOFFSET:
             temp1 = vm->bp + fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rb);
+            vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rb);
             break;
         case OP_MOV_RC_IBPOFFSET:
             temp1 = vm->bp + fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rc);
+            vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rc);
             break;
         case OP_MOV_RD_IBPOFFSET:
             temp1 = vm->bp + fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rd);
+            vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rd);
             break;
         case OP_MOV_CST_IBPOFFSET:
             temp1 = fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ss << 8 | temp1),  fetch_byte(vm));
+            vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1),  fetch_byte(vm));
             break;
         case OP_MOV_RA_DATAP:
-            write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->ra);
+            vm_write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->ra);
             break;
         case OP_MOV_RB_DATAP:
-            write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->rb);
+            vm_write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->rb);
             break;
         case OP_MOV_RC_DATAP:
-            write_byte(vm, (uint16_t) vm->ds << 8 | fetch_byte(vm), vm->rc);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | fetch_byte(vm), vm->rc);
             break;
         case OP_MOV_RD_DATAP:
-            write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->rd);
+            vm_write_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm), vm->rd);
             break;
         case OP_MOV_DATAP_RA:
-            vm->ra = read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
+            vm->ra = vm_read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
             break;
         case OP_MOV_DATAP_RB:
-            vm->rb = read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
+            vm->rb = vm_read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
             break;
         case OP_MOV_DATAP_RC:
-            vm->rc = read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
+            vm->rc = vm_read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
             break;
         case OP_MOV_DATAP_RD:
-            vm->rd = read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
+            vm->rd = vm_read_byte(vm, ((uint16_t) vm->ds) << 8 | fetch_byte(vm));
             break;
         case OP_MOV_CST_DATAP:
             temp1 = fetch_byte(vm);
-            write_byte(vm, ((uint16_t) vm->ds << 8) + temp1, fetch_byte(vm));
+            vm_write_byte(vm, ((uint16_t) vm->ds << 8) + temp1, fetch_byte(vm));
             break;
         case OP_MOV_RA_IRCRD:
-            write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->ra);
+            vm_write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->ra);
             break;
         case OP_MOV_RB_IRCRD:
-            write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->rb);
+            vm_write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->rb);
             break;
         case OP_MOV_RC_IRCRD:
-            write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->rc);
+            vm_write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->rc);
             break;
         case OP_MOV_RD_IRCRD:
-            write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->rd);
+            vm_write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, vm->rd);
             break;
         case OP_MOV_IRCRD_RA:
-            vm->ra = read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
+            vm->ra = vm_read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
             break;
         case OP_MOV_IRCRD_RB:
-            vm->rb = read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
+            vm->rb = vm_read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
             break;
         case OP_MOV_IRCRD_RC:
-            vm->rc = read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
+            vm->rc = vm_read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
             break;
         case OP_MOV_IRCRD_RD:
-            vm->rd = read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
+            vm->rd = vm_read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd);
             break;
         case OP_MOV_CST_IRCRD:
-            write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, fetch_byte(vm));
+            vm_write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, fetch_byte(vm));
             break;
         case OP_MOV_RA_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->ra);
+            vm_write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->ra);
             break;
         case OP_MOV_RB_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->rb);
+            vm_write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->rb);
             break;
         case OP_MOV_RC_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->rc);
+            vm_write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->rc);
             break;
         case OP_MOV_RD_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->rd);
+            vm_write_byte(vm, (uint16_t) temp1 << 8 | temp2, vm->rd);
             break;
         case OP_MOV_ABS_RA:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            vm->ra = read_byte(vm, (uint16_t) temp1 << 8 | temp2);
+            vm->ra = vm_read_byte(vm, (uint16_t) temp1 << 8 | temp2);
             break;
         case OP_MOV_ABS_RB:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            vm->rb = read_byte(vm, (uint16_t) temp1 << 8 | temp2);
+            vm->rb = vm_read_byte(vm, (uint16_t) temp1 << 8 | temp2);
             break;
         case OP_MOV_ABS_RC:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            vm->rc = read_byte(vm, (uint16_t) temp1 << 8 | temp2);
+            vm->rc = vm_read_byte(vm, (uint16_t) temp1 << 8 | temp2);
             break;
         case OP_MOV_ABS_RD:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            vm->rd = read_byte(vm, (uint16_t) temp1 << 8 | temp2);
+            vm->rd = vm_read_byte(vm, (uint16_t) temp1 << 8 | temp2);
             break;
         case OP_MOV_CST_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            write_byte(vm, (uint16_t) temp1 << 8 | temp2, fetch_byte(vm));
+            vm_write_byte(vm, (uint16_t) temp1 << 8 | temp2, fetch_byte(vm));
             break;
         case OP_MOV_DATAP_DATAP:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            write_byte(vm, (uint16_t) vm->ds << 8 | temp2, read_byte(vm, (uint16_t) vm->ds << 8 | temp1));
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | temp2, vm_read_byte(vm, (uint16_t) vm->ds << 8 | temp1));
             break;
         case OP_MOV_IRD_RA:
-            vm->ra = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
+            vm->ra = vm_read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
         case OP_MOV_IRD_RB:
-            vm->rb = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
+            vm->rb = vm_read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
         case OP_MOV_IRD_RC:
-            vm->rc = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
+            vm->rc = vm_read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
         case OP_MOV_IRD_RD:
-            vm->rd = read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
+            vm->rd = vm_read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd);
             break;
         case OP_MOV_RA_IRD:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->ra);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->ra);
             break;
         case OP_MOV_RB_IRD:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rb);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rb);
             break;
         case OP_MOV_RC_IRD:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rc);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rc);
             break;
         case OP_MOV_RD_IRD:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rd);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, vm->rd);
             break;
         case OP_MOV_CST_IRD:
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, fetch_byte(vm));
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, fetch_byte(vm));
             break;
         case OP_PUSH_RA:
             push(vm, vm->ra);
@@ -523,18 +500,18 @@ void vm_step(struct lncpu_vm *vm) {
             push(vm, vm->rd);
             break;
         case OP_PUSH_DATAP:
-            push(vm, read_byte(vm, (uint16_t) vm->ds << 8 | fetch_byte(vm)));
+            push(vm, vm_read_byte(vm, (uint16_t) vm->ds << 8 | fetch_byte(vm)));
             break;
         case OP_PUSH_IRD:
-            push(vm, read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd));
+            push(vm, vm_read_byte(vm, (uint16_t) vm->ds << 8 | vm->rd));
             break;
         case OP_PUSH_IRCRD:
-            push(vm, read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd));
+            push(vm, vm_read_byte(vm, (uint16_t) vm->rc << 8 | vm->rd));
             break;
         case OP_PUSH_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
-            push(vm, read_byte(vm, (uint16_t) temp1 << 8 | temp2));
+            push(vm, vm_read_byte(vm, (uint16_t) temp1 << 8 | temp2));
             break;
         case OP_PUSH_CST:
             push(vm, fetch_byte(vm));
@@ -559,21 +536,21 @@ void vm_step(struct lncpu_vm *vm) {
             break;
         case OP_POP_DATAP:
             pop(vm, &temp1);
-            write_byte(vm, (uint16_t) vm->ds << 8 | fetch_byte(vm), temp1);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | fetch_byte(vm), temp1);
             break;
         case OP_POP_IRD:
             pop(vm, &temp1);
-            write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, temp1);
+            vm_write_byte(vm, (uint16_t) vm->ds << 8 | vm->rd, temp1);
             break;
         case OP_POP_IRCRD:
             pop(vm, &temp1);
-            write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, temp1);
+            vm_write_byte(vm, (uint16_t) vm->rc << 8 | vm->rd, temp1);
             break;
         case OP_POP_ABS:
             temp1 = fetch_byte(vm);
             temp2 = fetch_byte(vm);
             pop(vm, &temp3);
-            write_byte(vm, (uint16_t) temp1 << 8 | temp2, temp3);
+            vm_write_byte(vm, (uint16_t) temp1 << 8 | temp2, temp3);
             break;
         case OP_POP_BP:
             pop(vm, &vm->bp);

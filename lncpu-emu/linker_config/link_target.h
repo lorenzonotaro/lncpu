@@ -11,7 +11,7 @@ typedef enum {
     LT_ROM = 0,
     LT_RAM,
     LT_D0, LT_D1, LT_D2, LT_D3, LT_D4, LT_D5,
-    LT_VIRTUAL /* __VIRTUAL__ */
+    LT_INVALID,
 } LinkTarget;
 
 typedef struct {

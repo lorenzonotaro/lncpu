@@ -38,4 +38,8 @@ void vm_step(struct lncpu_vm *vm);
 
 void vm_destroy(struct lncpu_vm *vm);
 
+uint8_t vm_read_byte(struct lncpu_vm *vm, uint16_t addr);
+
+void vm_write_byte(struct lncpu_vm *vm, uint16_t addr, uint8_t value);
+
 #endif //LNCPU_EMU_VM_H

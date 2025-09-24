@@ -57,8 +57,8 @@ end TCL_Generic;
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <lib desc="file#C8BComponents.circ" name="12"/>
-  <lib desc="file#Devices.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="file#C8BComponents.circ" name="13"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -1621,9 +1621,9 @@ end TCL_Generic;
     <comp lib="10" loc="(730,210)" name="Switch">
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="13" loc="(1030,1790)" name="TTYAdapter"/>
-    <comp lib="13" loc="(2220,1850)" name="RGBScreenAdapter"/>
-    <comp lib="13" loc="(2830,1870)" name="JoystickAdapter"/>
+    <comp lib="12" loc="(1030,1790)" name="TTYAdapter"/>
+    <comp lib="12" loc="(2220,1850)" name="RGBScreenAdapter"/>
+    <comp lib="12" loc="(2830,1870)" name="JoystickAdapter"/>
     <comp lib="4" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
@@ -2675,8 +2675,8 @@ end TCL_Generic;
     <comp lib="1" loc="(310,370)" name="NOR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="12" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
-    <comp lib="12" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(600,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
+    <comp lib="13" loc="(930,50)" name="L_4_bit_bidir_univ_shift_register_sn74194"/>
     <wire from="(1120,150)" to="(1120,200)"/>
     <wire from="(1120,150)" to="(1170,150)"/>
     <wire from="(1120,200)" to="(1120,210)"/>
@@ -3791,7 +3791,67 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-ee fd 248*0 4 42 1 ee fa
+fc 9 21 8 0 a 20 f4
+10 0 1 4e 4f 50 51 d0
+9f 0 ef 1e 33 e7 e6 ed
+1b f0 10 e5 f0 10 5c 5b
+5a 59 f8 4e 50 51 9f 0
+ef 34 33 e7 e6 ed 31 f0
+26 e5 f0 26 5c 5b 59 f8
+4e 4f 50 51 57 e 77 4
+21 f8 25 0 21 f7 25 1
+9f 0 ef 6f 37 e6 ed 52
+f0 53 e5 27 2 26 3 23
+0 22 1 33 e6 ed 61 f0
+62 e5 27 0 26 1 23 2
+22 3 e7 ef 6f f0 4c 8d
+4 61 5c 5b 5a 59 f9 2
+4e 4f 50 51 57 e 77 5
+24 2 27 3 26 4 21 f8
+25 0 21 f7 25 1 9f 0
+ef be 23 3 22 4 37 e6
+ed 9c f0 9d e5 27 3 26
+4 23 0 22 1 36 cc ef
+ab f0 c3 e6 ed b0 f0 b1
+e5 27 0 26 1 20 2 e7
+24 2 ef be f0 92 8d 5
+fd f0 c8 8d 5 fe f0 c8
+61 5c 5b 5a 59 f9 2 3889*0
+f6 11 0 f6 11 16 1 249*0
+43 20 0 1 43 20 1 0
+6 1e 7 0 56 3f 56 f0
+4 10 f6 0 38 f8 4e 4f
+50 51 43 20 0 2 6 1e
+7 15 56 23 56 0 4 4
+f6 0 38 43 23 8 1f 43
+23 9 f0 43 23 a 0 6
+1e 7 10 56 23 56 10 4
+4 f6 0 38 43 23 18 3f
+43 23 19 f0 43 23 1a 20
+43 20 1 2 4 40 5 20
+f6 11 64 43 20 0 0 5c
+5b 5a 59 f8 4e 4f 50 51
+58 57 e 77 1 12 26 0
+6c e9 7 f0 4 4 56 1e
+56 0 f6 0 78 ed af a
+23 3f 20 1 4*eb 4e 73 8
+51 13 4b e6 59 49 e6 21
+0 4a 13 5a 76 5 36 eb
+eb eb 56 23 4f 6 1d 13
+4 8 f6 0 38 3f 20 1
+e3 3b 20 1 8d 1 61 62
+5c 5b 5a 59 f8 2888*0 52 4f
+4d 2d 38 4b 0 0 52 41
+4d 2d 38 4b 50*0 54 54 59
+2d 45 59*0 41 53 4d 2d 33
+31 0 0 41 53 4d 2d 31
+35 0 0 41 53 4d 2d 37
+107*0 4c 4e 44 49 1 1 1
+20 7*0 a5 53 52 41 4d 0
+53 52 4f 4d 0 4c 4e 2d
+42 49 4f 53 20 76 30 2e
+31 458*0 4c 4e 44 49 1 0
+2 20 7*0 a5
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
@@ -4716,57 +4776,57 @@ d8 15*f8 d8 15*f8 d8 15*f8 d8 d8
 14*f8 d8 15*f8 d8 15*f8 d8 15*f8 d8
 14*f8 d8 f8 f8 d8 15*f8 d8 16*f8
 d8 11*f8 d8 d8 f8 f8 d8 11*f8
-d8 d8 15*f8 d8 14*f8 d8 15*f8 d8
-15*f8 d8 15*f8 d8 15*f8 d8 f8 d8
-15*f8 d8 16*f8 d8 13*f8 d8 d8 d8
-12*f8 d8 15*f8 d9 15*f8 d9 15*f8 d9
+d8 d8 15*f8 d8 15*f8 d8 14*f8 d8
+15*f8 d8 15*f8 d8 15*f8 d8 15*f8 d8
+f8 d8 15*f8 d8 16*f8 d8 13*f8 d8
+d8 d8 12*f8 d8 15*f8 d8 15*f8 d9
 15*f8 d9 15*f8 d9 15*f8 d9 15*f8 d9
 15*f8 d9 15*f8 d9 15*f8 d9 15*f8 d9
 15*f8 d9 15*f8 d9 15*f8 d9 15*f8 d9
-15*f8 d9 15*f8 d8 d9 14*f8 d8 d9
-14*f8 d8 d9 14*f8 d8 d9 14*f8 d8
-d9 14*f8 d8 d9 14*f8 da 15*f8 da
+15*f8 d9 15*f8 d9 15*f8 d9 15*f8 d8
+d9 14*f8 d8 d9 14*f8 d8 d9 14*f8
+d8 d9 14*f8 d8 d9 14*f8 d8 d9
+14*f8 da 15*f8 da 15*f8 da 15*f8 da
 15*f8 da 15*f8 da 15*f8 da 15*f8 da
 15*f8 da 15*f8 da 15*f8 da 15*f8 da
 15*f8 da 15*f8 da 15*f8 da 15*f8 da
-15*f8 da 15*f8 da 15*f8 d8 da 14*f8
-d8 da 14*f8 d8 da 14*f8 d8 da
-14*f8 d8 da 14*f8 d8 da 14*f8 da
-15*f8 da 15*f8 da 15*f8 da 15*f8 da
-15*f8 da 15*f8 da 15*f8 da 15*f8 da
-15*f8 da 15*f8 da 15*f8 da 15*f8 da
-15*f8 da 15*f8 da 15*f8 da 15*f8 d8
+15*f8 d8 da 14*f8 d8 da 14*f8 d8
 da 14*f8 d8 da 14*f8 d8 da 14*f8
-d8 da 14*f8 db 15*f8 db 15*f8 db
+d8 da 14*f8 da 15*f8 da 15*f8 da
+15*f8 da 15*f8 da 15*f8 da 15*f8 da
+15*f8 da 15*f8 da 15*f8 da 15*f8 da
+15*f8 da 15*f8 da 15*f8 da 15*f8 da
+15*f8 da 15*f8 d8 da 14*f8 d8 da
+14*f8 d8 da 14*f8 d8 da 14*f8 db
 15*f8 db 15*f8 db 15*f8 db 15*f8 db
 15*f8 db 15*f8 db 15*f8 db 15*f8 db
 15*f8 db 15*f8 db 15*f8 db 15*f8 db
-15*f8 db 15*f8 d8 db 14*f8 d8 db
-14*f8 d8 db 14*f8 d8 db 14*f8 dc
+15*f8 db 15*f8 db 15*f8 db 15*f8 d8
+db 14*f8 d8 db 14*f8 d8 db 14*f8
+d8 db 14*f8 dc 15*f8 dc 15*f8 dc
 15*f8 dc 15*f8 dc 15*f8 dc 15*f8 dc
 15*f8 dc 15*f8 dc 15*f8 dc 15*f8 dc
 15*f8 dc 15*f8 dc 15*f8 dc 15*f8 dc
-15*f8 dc 15*f8 dc 15*f8 dc 15*f8 d8
-dc 14*f8 d8 dc 14*f8 d8 dc 14*f8
-d8 dc 14*f8 dd 15*f8 dd 15*f8 dd
+15*f8 dc 15*f8 d8 dc 14*f8 d8 dc
+14*f8 d8 dc 14*f8 d8 dc 14*f8 dd
 15*f8 dd 15*f8 dd 15*f8 dd 15*f8 dd
 15*f8 dd 15*f8 dd 15*f8 dd 15*f8 dd
 15*f8 dd 15*f8 dd 15*f8 dd 15*f8 dd
-15*f8 dd 15*f8 d8 dd 14*f8 d8 dd
-14*f8 d8 dd 14*f8 d8 dd 14*f8 de
-15*f8 de 15*f8 de 15*f8 de 15*f8 d9
-15*f8 d9 15*f8 d9 15*f8 d9 15*f8 da
-15*f8 da 15*f8 da 15*f8 da 15*f8 d8
-15*f8 d8 15*f8 d8 e8 d8 13*f8 d8
+15*f8 dd 15*f8 dd 15*f8 dd 15*f8 d8
+dd 14*f8 d8 dd 14*f8 d8 dd 14*f8
+d8 dd 14*f8 de 15*f8 de 15*f8 de
+15*f8 de 15*f8 d9 15*f8 d9 15*f8 d9
+15*f8 d9 15*f8 da 15*f8 da 15*f8 da
+15*f8 da 15*f8 d8 15*f8 d8 15*f8 d8
 e8 d8 13*f8 d8 e8 d8 13*f8 d8
-e8 d8 13*f8 d8 d8 e0 d8 12*f8
-d8 d8 e0 d8 12*f8 d8 d8 e0
-d8 12*f8 d8 d8 e0 d8 14*f8 e0
-d8 12*f8 d8 d8 b8 78 e0 d8
-12*f8 b8 78 e0 d8 12*f8 e0 d8
-14*f8 d8 fa e0 d8 13*f8 e0 d8
-11*f8 d8 15*f8 d8 15*f8 d8 15*f8 d8
-4159*f8
+e8 d8 13*f8 d8 e8 d8 13*f8 d8
+d8 e0 d8 12*f8 d8 d8 e0 d8
+12*f8 d8 d8 e0 d8 12*f8 d8 d8
+e0 d8 14*f8 e0 d8 12*f8 d8 d8
+b8 78 e0 d8 12*f8 b8 78 e0
+d8 12*f8 e0 d8 14*f8 d8 fa e0
+d8 13*f8 e0 d8 11*f8 d8 15*f8 d8
+15*f8 d8 15*f8 d8 4127*f8
 </a>
       <a name="label" val="EEPROM3"/>
       <a name="labelvisible" val="true"/>
@@ -4797,9 +4857,15 @@ c2 83 14*c3 83 15*c3 83 15*c3 82
 15*c3 83 15*c3 83 16*c3 83 14*c3 83
 15*c3 83 15*c3 83 15*c3 83 17*c3 83
 15*c3 83 16*c3 83 15*c3 83 12*c3 83
-14*c3 c1 83 14*c3 83 15*c3 83 15*c3
-83 15*c3 83 17*c3 83 15*c3 83 16*c3
-83 15*c3 83 12*c3 82 15*c3 83 15*c3
+14*c3 c1 83 15*c3 83 14*c3 83 15*c3
+83 15*c3 83 15*c3 83 17*c3 83 15*c3
+83 16*c3 83 15*c3 83 12*c3 82 15*c3
+83 15*c3 83 15*c3 83 15*c3 83 15*c3
+83 15*c3 83 15*c3 83 15*c3 83 15*c3
+83 15*c3 83 15*c3 83 15*c3 83 15*c3
+83 15*c3 83 15*c3 83 15*c3 83 15*c3
+83 16*c3 83 15*c3 83 15*c3 83 15*c3
+83 15*c3 83 15*c3 82 14*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
@@ -4810,37 +4876,31 @@ c2 83 14*c3 83 15*c3 83 15*c3 82
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 16*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 82 14*c3 83 15*c3
+83 14*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 16*c3 83 15*c3
-83 15*c3 83 15*c3 83 14*c3 83 15*c3
+83 16*c3 83 15*c3 83 15*c3 83 15*c3
+83 14*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 16*c3 83 15*c3
-83 15*c3 83 15*c3 83 14*c3 83 15*c3
+83 16*c3 83 15*c3 83 15*c3 83 15*c3
+83 14*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 16*c3 83 15*c3
-83 15*c3 83 15*c3 83 14*c3 83 15*c3
+83 16*c3 83 15*c3 83 15*c3 83 15*c3
+83 14*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
 83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 16*c3 83 15*c3
-83 15*c3 83 15*c3 83 14*c3 83 15*c3
-83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 15*c3 83 15*c3 83 15*c3 83 15*c3
-83 16*c3 cb 83 14*c3 e3 83 14*c3
-d3 83 14*c3 c7 83 15*c3 cb 83
+83 15*c3 83 15*c3 83 16*c3 cb 83
 14*c3 e3 83 14*c3 d3 83 14*c3 c7
-83 14*c3 c7 83 16*c3 c7 83 14*c3
-c7 83 12*c3 c7 83 16*c3 c7 83
-13*c3 c7 83 11*c3 83 15*c3 83 15*c3
-83 15*c3 83 4159*c3
+83 15*c3 cb 83 14*c3 e3 83 14*c3
+d3 83 14*c3 c7 83 14*c3 c7 83
+16*c3 c7 83 14*c3 c7 83 12*c3 c7
+83 16*c3 c7 83 13*c3 c7 83 11*c3
+83 15*c3 83 15*c3 83 15*c3 83 4127*c3
 </a>
       <a name="label" val="EEPROM4"/>
     </comp>
@@ -4882,58 +4942,58 @@ c7 83 12*c3 c7 83 16*c3 c7 83
 38 14*3c 30 3d 3e 38 13*3c 3d
 3e 38 15*3c 3e 38 11*3c 30 30
 3c 3e 38 11*3c 32 38 14*3c 3e
-38 14*3c 3a 15*3c 3a 15*3c 3a 15*3c
-3a 15*3c 30 3e 39 14*3c 3e 39
-13*3c 3e 3c 3c 38 12*3c 3e 30
-30 38 12*3c 3a 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c 30 f8 14*3c
+38 14*3c 3e 38 14*3c 3a 15*3c 3a
+15*3c 3a 15*3c 3a 15*3c 30 3e 39
+14*3c 3e 39 13*3c 3e 3c 3c 38
+12*3c 3e 30 30 38 12*3c 3a 15*3c
+3a 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c 30 f8 14*3c 30 f8 14*3c
 30 f8 14*3c 30 f8 14*3c 30 f8
-14*3c 30 f8 14*3c 30 f8 14*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c 30
+14*3c 30 f8 14*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c 30 f8 14*3c 30
 f8 14*3c 30 f8 14*3c 30 f8 14*3c
-30 f8 14*3c 30 f8 14*3c 30 f8
-14*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c 30 f8 14*3c 30 f8 14*3c 30
-f8 14*3c 30 f8 14*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c 30 f8 14*3c
-30 f8 14*3c 30 f8 14*3c 30 f8
-14*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c 30 f8 14*3c 30 f8 14*3c 30
-f8 14*3c 30 f8 14*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c 30 f8 14*3c
-30 f8 14*3c 30 f8 14*3c 30 f8
-14*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c f8 15*3c f8 15*3c f8 15*3c f8
-15*3c 38 15*3c 38 15*3c 30 3c 38
-13*3c 30 3c 38 13*3c 30 3c 38
-13*3c 30 3c 38 13*3c 30 30 3c
-38 12*3c 30 30 3c 38 12*3c 30
+30 f8 14*3c 30 f8 14*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c 30 f8
+14*3c 30 f8 14*3c 30 f8 14*3c 30
+f8 14*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c 30 f8 14*3c 30 f8 14*3c
+30 f8 14*3c 30 f8 14*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c 30 f8
+14*3c 30 f8 14*3c 30 f8 14*3c 30
+f8 14*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c 30 f8 14*3c 30 f8 14*3c
+30 f8 14*3c 30 f8 14*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c f8 15*3c
+f8 15*3c f8 15*3c f8 15*3c 38 15*3c
+38 15*3c 30 3c 38 13*3c 30 3c
+38 13*3c 30 3c 38 13*3c 30 3c
+38 13*3c 30 30 3c 38 12*3c 30
 30 3c 38 12*3c 30 30 3c 38
-15*3c 38 12*3c 30 30 3e 3e 3c
-38 12*3c 3e 3e 3c 38 10*3c 3e
-3e 3c 38 12*3c 3e 3e 30 3c
-3c 38 10*3c be 3e 3e 3c 38
-11*3c 38 15*3c 78 15*3c b8 15*3c f8
-4159*3c
+12*3c 30 30 3c 38 15*3c 38 12*3c
+30 30 3e 3e 3c 38 12*3c 3e
+3e 3c 38 10*3c 3e 3e 3c 38
+12*3c 3e 3e 30 3c 3c 38 10*3c
+be 3e 3e 3c 38 11*3c 38 15*3c
+78 15*3c b8 15*3c f8 4127*3c
 </a>
       <a name="label" val="EEPROM5"/>
       <a name="labelvisible" val="true"/>
@@ -4944,8 +5004,8 @@ f8 14*3c 30 f8 14*3c f8 15*3c f8
       <a name="contents">addr/data: 13 8
 32*1e 1a 1e 1e 1e 1c 1f 14*1e
 1c 1f 106*1e 16 95*1e e 239*1e 16
-3487*1e 1f 15*1e 1f 15*1e 1f 15*1e 1f
-4159*1e
+911*1e e 159*1e 16 2447*1e 1f 15*1e 1f
+15*1e 1f 15*1e 1f 4127*1e
 </a>
       <a name="label" val="EEPROM6"/>
     </comp>
@@ -4975,21 +5035,21 @@ f4 fc 10*7c 7f 63*7c fc 15*7c 5c
 fc 14*7c 74 fc 15*7c 6c 74 fc
 13*7c 6c 74 fc 14*7c 6c 74 fc
 13*7c 6c 74 fc 11*7c 74 fc 14*7c
-74 fc 14*7c 6f 15*7c 6c 15*7c 6c
-15*7c 6c 16*7c 6c 74 14*7c 6c 74
-13*7c 6c 7c 7c 74 12*7c 6c 7c
-7c 74 12*7c 6c 15*7c 7f 15*7c 7f
-15*7c 7f 15*7c 7f 208*7c 7f 63*7c fc
-30*7c 7f 15*7c 7f 15*7c 7f 15*7c 7f
-208*7c 7f 63*7c fc 350*7c 7f 15*7c 7f
-15*7c 7f 15*7c 7f 208*7c 7f 62*7c 7f
-15*7c 7f 15*7c 7f 15*7c 7f 208*7c 7f
-62*7c 7f 15*7c 7f 15*7c 7f 15*7c 7f
-208*7c 7f 62*7c 7f 63*7c 7f 63*7c 7f
-63*7c 7e 15*7c 7d 161*7c 74 f4 fc
-13*7c 74 f4 fc 11*7c 6c 6c 14*7c
-6c 6c 7c fc 12*7c 6c 6c 6c
-4221*7c
+74 fc 14*7c 74 fc 14*7c 6f 15*7c
+6c 15*7c 6c 15*7c 6c 16*7c 6c 74
+14*7c 6c 74 13*7c 6c 7c 7c 74
+12*7c 6c 7c 7c 74 12*7c 6c 15*7c
+6c 15*7c 7f 15*7c 7f 15*7c 7f 15*7c
+7f 208*7c 7f 63*7c fc 30*7c 7f 15*7c
+7f 15*7c 7f 15*7c 7f 208*7c 7f 63*7c
+fc 350*7c 7f 15*7c 7f 15*7c 7f 15*7c
+7f 208*7c 7f 62*7c 7f 15*7c 7f 15*7c
+7f 15*7c 7f 208*7c 7f 62*7c 7f 15*7c
+7f 15*7c 7f 15*7c 7f 208*7c 7f 62*7c
+7f 63*7c 7f 63*7c 7f 63*7c 7e 15*7c
+7d 161*7c 74 f4 fc 13*7c 74 f4
+fc 11*7c 6c 6c 14*7c 6c 6c 7c
+fc 12*7c 6c 6c 6c 4189*7c
 </a>
       <a name="label" val="EEPROM0"/>
       <a name="labelvisible" val="true"/>
@@ -5026,18 +5086,22 @@ a 6 14*e 6 e 6 13*e c6
 3e 14*e c6 15*e c6 4e 14*e c6
 8e 14*e c6 ce 14*e c6 31*e 4e
 15*e 8e 15*e ce 15*e 6 15*e c6
-15*e 8a c6 14*e a 6 46*e f
+15*e 8a c6 14*e a 6 62*e f
 15*e 1f 15*e 2f 15*e 3f 15*e 6
 f 14*e c6 f 14*e f 8a c6
-13*e f a 6 13*e f 79*e 1e
-15*e 1e 15*e 1e 15*e 1e 15*e 2e
-15*e 2e 15*e 2e 15*e 2e 15*e 3e
-15*e 3e 15*e 3e 15*e 3e 32*e 1e
-15*e 2e 15*e 3e 15*e f 94*e 1e
-15*e 1e 15*e 1e 15*e 1e 15*e 2e
-15*e 2e 15*e 2e 15*e 2e 15*e 3e
-15*e 3e 15*e 3e 15*e 3e 32*e 1e
-15*e 2e 15*e 3e 15*e f 414*e 1e
+13*e f a 6 13*e f 15*e f
+79*e 1e 15*e 1e 15*e 1e 15*e 1e
+15*e 2e 15*e 2e 15*e 2e 15*e 2e
+15*e 3e 15*e 3e 15*e 3e 15*e 3e
+32*e 1e 15*e 2e 15*e 3e 15*e f
+94*e 1e 15*e 1e 15*e 1e 15*e 1e
+15*e 2e 15*e 2e 15*e 2e 15*e 2e
+15*e 3e 15*e 3e 15*e 3e 15*e 3e
+32*e 1e 15*e 2e 15*e 3e 15*e f
+414*e 1e 15*e 1e 15*e 1e 15*e 1e
+15*e 2e 15*e 2e 15*e 2e 15*e 2e
+15*e 3e 15*e 3e 15*e 3e 15*e 3e
+32*e 1e 15*e 2e 15*e 3e 78*e 1e
 15*e 1e 15*e 1e 15*e 1e 15*e 2e
 15*e 2e 15*e 2e 15*e 2e 15*e 3e
 15*e 3e 15*e 3e 15*e 3e 32*e 1e
@@ -5045,18 +5109,14 @@ f 14*e c6 f 14*e f 8a c6
 15*e 1e 15*e 1e 15*e 2e 15*e 2e
 15*e 2e 15*e 2e 15*e 3e 15*e 3e
 15*e 3e 15*e 3e 32*e 1e 15*e 2e
-15*e 3e 78*e 1e 15*e 1e 15*e 1e
-15*e 1e 15*e 2e 15*e 2e 15*e 2e
-15*e 2e 15*e 3e 15*e 3e 15*e 3e
-15*e 3e 32*e 1e 15*e 2e 15*e 3e
-30*e 1e 15*e 2e 15*e 3e 31*e 1e
-15*e 2e 15*e 3e 31*e 1e 15*e 2e
-15*e 3e 47*e 6 15*e 6 15*e 6
-15*e 6 15*e a 6 14*e a 6
-14*e a 6 14*e a 6 14*e 8a
-c6 14*e a 6 14*e 8a c6 14*e
-7 b 14*e 7 b e f 12*e
-f 7 b 4221*e
+15*e 3e 30*e 1e 15*e 2e 15*e 3e
+31*e 1e 15*e 2e 15*e 3e 31*e 1e
+15*e 2e 15*e 3e 47*e 6 15*e 6
+15*e 6 15*e 6 15*e a 6 14*e
+a 6 14*e a 6 14*e a 6
+14*e 8a c6 14*e a 6 14*e 8a
+c6 14*e 7 b 14*e 7 b e
+f 12*e f 7 b 4189*e
 </a>
       <a name="label" val="EEPROM1"/>
       <a name="labelvisible" val="true"/>
@@ -5069,9 +5129,9 @@ f 7 b 4221*e
 16*3 d3 15*3 d3 15*3 d3 15*3 d3
 15*3 d3 446*3 2 3 1 221*3 2
 1 14*3 2 1 15*3 2 1 14*3
-2 1 109*3 2 1 14*3 2 1
+2 1 125*3 2 1 14*3 2 1
 13*3 2 3 3 1 12*3 2 3
-3 1 44*3 23 15*3 43 15*3 63
+3 1 60*3 23 15*3 43 15*3 63
 15*3 7 15*3 27 15*3 47 15*3 67
 15*3 b 15*3 2b 15*3 4b 15*3 6b
 15*3 f 15*3 2f 15*3 4f 15*3 6f
@@ -5107,7 +5167,7 @@ f 7 b 4221*e
 2 8f 30*3 7 15*3 b 15*3 f
 15*3 e3 15*3 e7 15*3 eb 15*3 ef
 15*3 e3 15*3 e7 15*3 eb 15*3 ef
-241*3 2 97 4236*3
+241*3 2 97 4204*3
 </a>
       <a name="label" val="EEPROM2"/>
     </comp>

@@ -60,7 +60,7 @@ void memdump(struct lncpu_vm * vm, uint16_t start, uint16_t end) {
         printf("%04x: ", i);
         for (int j = 0; j < 16; j++) {
             if (i >= start && i <= end) {
-                printf("%02x ", vm->addr_space[i]);
+                printf("%02x ", vm_read_byte(vm, i));
             } else {
                 printf("   ");
             }
@@ -261,6 +261,13 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
 
     if (vm->halted && !cmdline_params->no_pause_on_halt){
         printf("LNCPU has halted. Type 'c' or 'continue' to exit. \n");
+
+        for (int i = 0; i < vm->emu_device_count; i++) {
+            if (vm->emu_devices[i].pause) {
+                vm->emu_devices[i].pause(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
+            }
+        }
+
         pause(&emu);
     }
 

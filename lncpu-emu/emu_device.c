@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <windows.h>
 
+#define EMU_TTY_SIGNATURE "LNDI\x01\x08\x00\x20\x00\x00\x00\x00\x00\x00\x00\xA5"
+
 struct emu_tty_data {
     uint8_t wptr, rptr;
     uint8_t buffer[EMU_TTY_BUFFER_SIZE];
@@ -84,6 +86,9 @@ uint8_t emu_tty_addr_read(struct lncpu_vm *vm, struct emu_device *device, void *
             device->irq_req = false;
         }
         return d;
+    }else if (addr - device->start >= 0x1ff0 && addr - device->start <= 0x1fff) {
+        // signature
+        return EMU_TTY_SIGNATURE[addr - device->start - 0x1ff0];
     }
     return 0;
 }

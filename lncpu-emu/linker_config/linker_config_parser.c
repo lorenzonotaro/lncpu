@@ -135,7 +135,7 @@ static bool parse_entry(LCx *S, LinkerConfig *out_cfg) {
     si.name  = dup_slice(name->lexeme, name->len);
     si.loc_name = name->loc;
     si.mode  = LM_UNSPEC;
-    si.target = LT_VIRTUAL; /* default if not provided; you can change to ROM if you prefer */
+    si.target = LT_ROM; /* default if not provided; you can change to ROM if you prefer */
 
     if (!parse_props(S, &si)) { free(si.name); return false; }
 

@@ -17,8 +17,7 @@ struct emu_cmdline_params {
     const char *dump_address_space; /* Dump address space on exit. */
 
     /* Emulator options */
-    const char *linker_config_file; /* Linker config file. */
-    const char *emu_tty_section; /* Section for emulating tty. */
+    const char *emu_tty_device; /* Device (D0-D5) for emulating tty. */
 
     /* Data options */
     const char *rom_file;
