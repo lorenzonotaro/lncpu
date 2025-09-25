@@ -3,9 +3,14 @@
   "displayName": "lnasm",
   "description": "LNASM assembly",
   "version": "0.0.1",
+  "publisher": "Lorenzo Notaro",
   "engines": {
     "vscode": "^1.96.0"
   },
+  "activationEvents": [
+    "workspaceContains:**/*.lnasm",
+    "workspaceContains:**/*.s"
+  ],
   "categories": [
     "Programming Languages"
   ],
@@ -20,6 +25,31 @@
       "language": "lnasm",
       "scopeName": "source.lnasm",
       "path": "./syntaxes/lnasm.tmLanguage.json"
-    }]
+    }],
+    "configuration": {
+      "type": "object",
+      "title": "LNASM Basics",
+      "lnasmBasics.indexGlobs": {
+        "lnasm.path": {
+          "type": "array",
+          "default": ["**/*.lnasm", "**/*.s"],
+          "description": "Globs to index for symbols (labels, sublabels, %define, .section)."
+        }
+      }
+    }
+  },
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vscode-languageclient": "^7.0.0",
+    "@types/vscode": "^1.96.0",
+    "vsce": "^2.10.0"
   }
 }

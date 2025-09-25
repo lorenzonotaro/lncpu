@@ -3,19 +3,26 @@
 	"name": "LNASM",
 	"patterns": [
 		{
-			"include": "#section"
-		},
-		{
-			"include": "#comment"
-		},
-		{
-			"include": "#preprocessor"
-		},
-		{
-			"include": "#anywhere"
+			"include": "#root"
 		}
 	],
 	"repository": {
+		"root": {
+			"patterns": [
+				{
+					"include": "#section"
+				},
+				{
+					"include": "#comment"
+				},
+				{
+					"include": "#preprocessor"
+				},
+				{
+					"include": "#anywhere"
+				}
+			]
+		},
 		"section": {
 			"begin": "(\\.section)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
 			"beginCaptures": {
@@ -119,7 +126,7 @@
 					},
 					"patterns": [
 						{
-							"include": "$self"
+							"include": "#root"
 						}
 					]
 				},
@@ -144,7 +151,7 @@
 					},
 					"patterns": [
 						{
-							"include": "$self"
+							"include": "#root"
 						}
 					]
 				},
