@@ -3,24 +3,22 @@
 	"name": "LNASM",
 	"patterns": [
 		{
-			"include": "#root"
+			"include": "#section"
+		},
+		{
+			"include": "#comment"
+		},
+		{
+			"include": "#preprocessor"
+		},
+		{
+			"include": "#anywhere"
 		}
 	],
 	"repository": {
 		"root": {
 			"patterns": [
-				{
-					"include": "#section"
-				},
-				{
-					"include": "#comment"
-				},
-				{
-					"include": "#preprocessor"
-				},
-				{
-					"include": "#anywhere"
-				}
+
 			]
 		},
 		"section": {
@@ -106,32 +104,7 @@
 					]
 				},
 				{
-					"begin": "^\\s*(%ifdef)\\s*(SECTION)?\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
-					"beginCaptures": {
-						"1": {
-							"name": "keyword.other.preprocessor.lnasm"
-						},
-						"2": {
-							"name": "keyword.other.preprocessor.lnasm"
-						},
-						"3": {
-							"name": "entity.name.preprocessor.lnasm"
-						}
-					},
-					"end": "^\\s*(%endif)",
-					"endCaptures": {
-						"1": {
-							"name": "keyword.other.preprocessor.lnasm"
-						}
-					},
-					"patterns": [
-						{
-							"include": "#root"
-						}
-					]
-				},
-				{
-					"begin": "^\\s*(%if[n]?def)\\s*(SECTION)?\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"begin": "^\\s*(%if[n]?def)\\s*(SECTION)?\\s*([A-Za-z_]+[A-Za-z_0-9]*)\\s*\\n",
 					"beginCaptures": {
 						"1": {
 							"name": "keyword.other.preprocessor.lnasm"
@@ -151,7 +124,10 @@
 					},
 					"patterns": [
 						{
-							"include": "#root"
+							"include": "$base"
+						},
+						{
+							"include": "#section_code"
 						}
 					]
 				},

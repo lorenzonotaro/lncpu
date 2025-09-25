@@ -427,53 +427,21 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-
-  context.subscriptions.push(
-  vscode.languages.registerOnTypeFormattingEditProvider(
-    { language: 'lnasm' },
+  vscode.languages.setLanguageConfiguration('lnasm', {
+  onEnterRules: [
     {
-      provideOnTypeFormattingEdits(doc, position, ch, _options, _token) {
-        try {
-          // Only handle newline
-          if (ch !== '\n') return [];
-
-          const curLine = position.line;         // the new line we just entered
-          const prevLine = curLine - 1;
-          const nextLine = curLine + 1 <= doc.lineCount - 1 ? curLine + 1 : -1;
-
-          if (prevLine < 0 || nextLine < 0) return [];
-
-          const prevText = doc.lineAt(prevLine).text;
-          const nextText = doc.lineAt(nextLine).text;
-
-          const isComment = (s: string) => /^\s*;/.test(s);
-
-          // Condition: we left a comment line AND the following line is also a comment
-          if (!isComment(prevText) || !isComment(nextText)) {
-            return [];
-          }
-
-          // Find current line’s indentation (VS Code already inserted it)
-          const curText = doc.lineAt(curLine).text;
-          const indentMatch = curText.match(/^(\s*)/);
-          const indentLen = indentMatch ? indentMatch[1].length : 0;
-
-          // If we already have a semicolon at the right spot, skip
-          if (curText.slice(indentLen).startsWith(';')) {
-            return [];
-          }
-
-          // Insert "; " after indentation
-          const insertPos = new vscode.Position(curLine, indentLen);
-          return [vscode.TextEdit.insert(insertPos, '; ')];
-        } catch {
-          return [];
-        }
+      // If the previous line is a comment and the next line is a comment,
+      // insert a "; " on the line we just created (after indentation).
+      // We also handle single-line continuation when only prev is a comment.
+      beforeText: /^\s*;/,
+      afterText: /\s*^\s*;/,
+      action: {
+        indentAction: vscode.IndentAction.None,
+        appendText: '; '
       }
-    },
-    '\n' // trigger char
-  )
-  );
+    }
+  ]
+});
 }
 
 export function deactivate() {}
