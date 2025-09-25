@@ -1,0 +1,60 @@
+%ifndef BIOS_TTYE_F
+%define BIOS_TTYE_F
+
+.section BIOS_TTYE
+
+; lnc compliant
+; ttye_putc: (RA = char)
+; lnc signature: void ttye_putc(char c);
+ttye_putc:
+    push    RC
+    push    RD
+
+    mov     [PSTDTXT_DD_START_PAGE], RC  ; load start page of standard text device in RC
+    mov     2, RD                        ; write to address to of the TTYE to output a char
+
+    mov     RA, [RC:RD]                  ; write RA to the output device
+
+    pop     RD
+    pop     RC
+    ret
+
+; lnc compliant
+; ttye_puts: (RC:RD = string)
+; lnc signature: void ttye_puts(const char* str);
+ttye_puts:
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+_loop:
+    mov     [RC:RD], RA      ; load next char from string
+    cmp     RA, 0            ; null terminator?
+    jz      _end_loop
+
+    push    RC
+    push    RD
+
+    mov     [PSTDTXT_DD_START_PAGE], RC  ; load start page of standard text device in RC
+    mov     2, RD                        ; write to address to of the TTYE to output a char
+
+    mov     RA, [RC:RD]                  ; write RA to the output device
+    
+    pop     RD
+    pop     RC
+
+    inc     RD
+    jc      _carryrc
+    goto    _loop
+_carryrc:
+    inc     RC
+    goto    _loop
+_end_loop:
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
+
+
+%endif

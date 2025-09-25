@@ -1,0 +1,398 @@
+%include "ddi"
+%include "ttye"
+
+%ifndef BIOS_IO_F
+%define BIOS_IO_F
+
+.section BIOS_IO
+io_init:
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+    lcall    find_stdtxt
+    cmp      RC, 0
+    jz       _no_txtdev
+
+    add      RD, 10         ; point to device start page
+    mov      [RC:RD], RA    ; load device start page in RA
+    mov      RA, [PSTDTXT_DD_START_PAGE]  ; store start page of standard text device
+
+    sub      RD, 2          ; point to device descriptor pointer
+    mov      [RC:RD], RA    ; get device descriptor pointer (high byte)
+    inc      RD
+    mov      [RC:RD], RB    ; get device descriptor pointer (low byte)
+
+    mov      RA, RC         ; load device descriptor pointer in RC:RD
+    mov      RB, RD
+
+    mov      RC, [PSTDTXT_DD]       ; store pointer to standard text device descriptor
+    mov      RD, [PSTDTXT_DD + 1]
+
+    add      RD, 5          ; point to device type field
+    mov      [RC:RD], RA    ; load device type in RA
+
+    mov      RA, [PSTDTXT_DD_TYPE]
+
+    goto     _init_io_buf
+_no_txtdev:
+    mov     0, [PSTDTXT_DD_TYPE]
+    mov     0, [PSTDTXT_DD]
+    mov     0, [PSTDTXT_DD + 1]
+    mov     0, [PSTDTXT_DD_START_PAGE]
+_init_io_buf:
+    mov         0x0,        [BUFWPT]        ; store 0 in both the buffer write and read pointers
+    mov         0x0,        [BUFRPT]
+_ret:
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
+
+; finds a suitable text device and returns the pointer to the device table entry in RC:RD, or 0:0 if none found.
+find_stdtxt:
+    push   RA
+    push   RB
+    mov    2, RA                    ; device index (we skip RAM and ROM as they are not text devices)
+    mov    [ddi_num_devices], RB    ; get number of devices
+_find_loop:
+    cmp    RA, RB
+    jz     _not_found      ; no suitable device found
+    lcall  ddi_get_device
+    cmp    RC, 0
+    jz     _not_found      ; index out of range
+    lcall  is_txt_device   ; check if device is a text device
+    jc     _ret            ; found a text device, return with RC:RD pointing to its device table entry
+_next:
+    inc    RA
+    goto   _find_loop
+_not_found:
+    xor    RC, RC          ; no text device found, return 0:0
+    xor    RD, RD
+_ret:
+    pop    RB
+    pop    RA
+    ret
+
+; lnc non-compliant
+; checks if the device in RC:RD is a text device, returns C=1 if true, C=0 otherwise.
+is_txt_device:
+    push   RA
+    push   RB
+    push   RC
+    push   RD
+
+    add    RD, 8          ; point to device descriptor pointer
+
+    mov    [RC:RD], RA    ; get device descriptor pointer (high byte)
+    inc    RD
+    mov    [RC:RD], RB    ; get device descriptor pointer (low byte)
+
+    cmp    RA, 0
+    jz     _not_txt       ; null pointer, not a text device
+
+    mov    RA, RC         ; load device descriptor pointer in RA:RB
+    mov    RB, RD
+
+    add    RD, 5          ; point to device type field
+    mov    [RC:RD], RA    ; load device type in RA
+
+    ; compare with all possible text device types (for now, just TTYE)
+
+    cmp    RA, DEV_TYPE_TTYE ; compare with text device type
+    jz     _is_txt
+
+_not_txt:
+    clc
+    goto   _ret
+_is_txt:
+    sec
+_ret:
+    pop    RD
+    pop    RC
+    pop    RB
+    pop    RA
+    ret
+
+; lnc non-compliant
+; Returns C=1 if a text device is available and set up, C=0 otherwise.
+is_stdtxt_avail:
+    push RA
+
+    mov  [PSTDTXT_DD_TYPE], RA
+    cmp  RA, 0
+    jz   _not_avail
+    sec
+    goto _ret
+_not_avail:
+    clc
+_ret:
+    pop RA
+    ret
+
+; lnc compliant
+; putc: (RA = char)
+; lnc signature: void putc(char c);
+putc:
+    push    RB
+    mov     [PSTDTXT_DD_TYPE], RB
+    cmp     RB, 0
+    jz      _ret    ; no text device available, just return
+
+    cmp     RB, DEV_TYPE_TTYE
+    jz      _ttye
+
+    goto    _ret    ; unknown text device type, just return
+_ttye:
+    lcall   ttye_putc
+_ret:
+    pop     RB
+    ret
+
+; lnc compliant
+; puts: (RC:RD = string)
+; lnc signature: void puts(const char *str);
+puts:
+    push    RB
+
+    mov     [RC:RD], RB
+    cmp     RB, 0
+    jz      _ret    ; null string, just return
+
+    mov     [PSTDTXT_DD_TYPE], RB
+    cmp     RB, 0
+    jz      _ret    ; no text device available, just return
+
+    cmp     RB, DEV_TYPE_TTYE
+    jz      _ttye
+    goto    _ret    ; unknown text device type, just return
+_ttye:
+    lcall   ttye_puts
+
+_ret:
+    pop     RB
+    ret
+
+; lnc compliant
+; wrtinbuf: (RA = char)
+; lnc signature: void wrtinbuf(char c);
+; writes a character to the input buffer, if there's space.
+wrtinbuf:
+    push    RC
+    push    RD
+
+    mov     (BIOS_TEXT_INBUF >> 8)::byte, RC
+    mov     [BUFWPT], RD
+
+    mov     RA,      [RC:RD]   ; write char to buffer
+
+    inc     RD                 ; increment and update write pointer
+    mov     RD,      [BUFWPT]
+
+    pop     RD
+    pop     RC
+    ret
+
+
+.section IO_UTILS
+
+; lnc non-compliant
+; formats and prints the given string (RC:RD) to stdtxt with the given arguments, passed on stack (reverse order, big endian).
+; Supported formats: %s, %x, %%
+printf:
+    push    BP
+    push    RA
+    push    RB
+    sub     SP, 6       ; make SP temporarily point to the first argument
+    mov     SP, BP      ; set stack frame to access stack parameters
+    add     SP, 6       ; restore SP
+_loop:
+    mov     [RC:RD], RA
+    cmp     RA, 0
+    jz      _ret        ; null string, just return
+    cmp     RA, '%'
+    jz      _format
+    lcall   putc
+    inc     RD
+    goto    _loop
+_format:
+    inc     RD
+    mov     [RC:RD], RA
+    cmp     RA, 0
+    jz      _ret        ; null string, just return
+    cmp     RA, 's'
+    jz      _str
+    cmp     RA, 'x'
+    jz      _hex
+    cmp     RA, '%'
+    jz      _pct
+_unk:
+    ; unknown format, just print it as is
+    mov     '%', RA
+    lcall   putc
+    goto    _loop    
+_pct:
+    lcall   putc
+    inc     RD
+    goto    _loop
+_str:
+    push    RC
+    push    RD
+    mov     [BP - 1], RC   ; get next argument (string pointer, high byte)
+    mov     [BP - 0], RD   ; get next argument (string pointer, low byte)
+    lcall   puts
+
+    mov     SP, RD
+    mov     BP, SP
+    sub     SP, 2           ; remove argument from stack (BP can't be used for ALU operations, so we use SP)
+    mov     SP, BP
+    mov     RD, SP
+
+    pop     RD
+    pop     RC
+    inc     RD
+    goto    _loop
+_hex:
+    mov     [BP - 0], RA   ; get next argument (value to format)
+    shr     RA
+    shr     RA
+    shr     RA
+    shr     RA              ; move the 4 most-significant bits into the 4 least-significant bits
+    lcall   format_hex
+    mov     RB, RA
+    lcall   putc
+
+    mov     [BP - 0], RA   ; get next argument (value to format)
+    lcall   format_hex
+    mov     RB, RA
+    lcall   putc
+
+    ; remove 1 argument from stack (BP can't be used for ALU operations, so we use SP)
+    push    RD
+    mov     SP, RD
+    mov     BP, SP
+    sub     SP, 1
+    mov     SP, BP
+    mov     RD, SP
+    pop     RD
+    inc     RD
+
+    goto    _loop
+_ret:
+    pop     RB
+    pop     RA
+    pop     BP
+    ret
+
+; lnc compliant
+; Converts the digit stored in the 4 least-significant bits of RA into a ASCII character and returns it in RB
+format_hex:
+    mov     RA, RB                      ; copy RA to RB       
+    and     RB,             0x0F        ; set the 4 most-significant bits to 0
+    cmp     RB,             0x0A        ; is the value less than 0x0A?
+    jn      _digit                      ; -> it's a digit
+    sub     RB,             0x0A        ; if it's a letter, subtract 0x0A and add the ASCII value for the letter 'A'
+    add     RB,             'A'
+    ret
+_digit:
+    add     RB,             '0'         ; add the ASCII value for '0' to get the right digit
+    ret
+
+
+; lnc non-compliant
+; chavail: (no params) returns C=1 if a character is available in the input buffer, C=0 otherwise.
+chavail:
+    push    RA
+    push    RB
+
+    mov     [BUFWPT], RA
+    mov     [BUFRPT], RB
+
+    cmp     RA, RB
+    jz      _not_avail
+    sec
+    ret
+_not_avail:
+    clc
+    ret
+
+
+; lnc compliant
+; get (no params): returns the next available character fron the input buffer in RB. Warning: this function will block until a character is available.
+; lnc signature: char get(void);
+getc:
+    lcall   chavail
+    jc      _char_avail
+    goto    getc                      ; block until a character is available
+_char_avail:
+    push    RC
+    push    RD
+
+    mov     (BIOS_TEXT_INBUF >> 8)::byte, RC
+    mov     [BUFRPT], RD
+
+    mov     [RC:RD], RB                 ; read char from buffer
+
+    inc     RD                          ; increment and update read pointer
+    mov     RD, [BUFRPT]
+
+    pop     RD
+    pop     RC
+    ret
+
+; lnc compliant
+; reads a string from the input buffer and stores in the pointer passed in RC:RD, until the character passed in RA is found or RB characters have been read.
+; The terminator is not stored in the buffer, but a null terminator is added at the end.
+; lnc signature: void gets(char far* destbf, char terminator, unsigned int maxlen);
+gets:
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+_loop:
+    cmp     RB, 0         ; maxlen reached?
+    jz      _ret
+
+    push    RB            ; save maxlen counter
+    lcall   getc          ; get next char from input buffer
+    cmp     RB, RC        ; is it the terminator?
+    jz      _ret          ; yes, end here
+    mov     RB, [RC:RD]   ; no, store it in the destination buffer
+    pop     RB            ; restore maxlen counter
+    inc     RD
+    jc      _carryrc
+    goto    _loop
+_carryrc:
+    inc     RC
+    goto    _loop
+
+_ret:
+    mov     0, [RC:RD]   ; null-terminate the string
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
+
+.section BIOS_DPAGE
+
+PSTDTXT_DD_TYPE: ; type of standard text device
+    .res 1
+
+PSTDTXT_DD_START_PAGE: ; start page of standard text device
+    .res 1
+
+PSTDTXT_DD: ; pointer to standard text device descriptor
+    .res 2
+
+BUFWPT: ; write pointer into input buffer
+    .res 1
+
+BUFRPT: ; read pointer into input buffer
+    .res 1
+
+.section BIOS_TEXT_INBUF
+    .res 256 ; input buffer for text input
+
+%endif

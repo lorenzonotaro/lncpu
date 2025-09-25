@@ -1,0 +1,52 @@
+%include "opts"
+%include "ddi"
+%include "io"
+%include "bios_utils"
+
+%ifndef BIOS_MAIN_F
+%define BIOS_MAIN_F
+
+.section BIOS_MAIN
+; Entry point for the BIOS
+bios_main:
+    ; main BIOS code starts here
+    lcall   ddi_init                ; initialize DDI
+    lcall   ddi_device_discovery    ; discover devices
+
+    ; initialize I/O subsystem
+    lcall   io_init
+
+%ifdef HALT_ON_NO_STDTXT
+    lcall   is_stdtxt_avail
+    jc      _halt_no_txtdev
+    hlt
+_txtdev_avail:
+%endif
+
+    mov     (BIOS_WELCOME >> 8)::byte, RC
+    mov     (BIOS_WELCOME & 0xFF)::byte, RD
+    lcall   puts                ; print BIOS welcome message
+
+    push    25 ; age
+    push    (PRINTF_TEST_NAME >> 8)::byte
+    push    (PRINTF_TEST_NAME & 0xFF)::byte
+
+    mov     (PRINTF_TEST_FMT >> 8)::byte, RC
+    mov     (PRINTF_TEST_FMT & 0xFF)::byte, RD
+    lcall   printf              ; test printf
+
+    ; at this point, all devices have been discovered and initialized.
+    ; we can now enable hardware interrupts.
+    cid
+
+    hlt
+
+
+.section BIOS_CONST
+BIOS_WELCOME:
+    .data "Started LN-BIOS v0.1\n" 0x00
+PRINTF_TEST_FMT:
+    .data "Hi, I am %s, I am 0x%x years old.\n" 0
+PRINTF_TEST_NAME:
+    .data "Lorenzo" 0x0
+%endif

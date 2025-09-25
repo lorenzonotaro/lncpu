@@ -1,0 +1,362 @@
+; Device Discovery Interface (DDI) for LN-BIOS
+%include "mem"
+
+%ifndef DDI_F
+%define DDI_F
+
+; ==== DEVICE TYPE IDENTIFIERS ====
+
+; 00-07: MEMORY DEVICES
+
+; ID for a read only memory device, 8KB
+%define DEV_TYPE_ROM8K 0x00
+
+; ID for a random access RW memory device, 8KB
+%define DEV_TYPE_RAM8K 0x01
+
+; 08-0F: I/O DEVICES
+
+; ID for a serial TTY device, emulated
+%define DEV_TYPE_TTYE 0x08
+
+; 10-13: ADDRESS SPACE MANAGERS / SPLITTERS
+
+; ID for a 31x256 address space manager (ASM) or splitter device
+%define DEV_TYPE_ASM31 0x10
+
+; ID for a 15x512 address space manager (ASM) or splitter device
+%define DEV_TYPE_ASM15 0x11
+
+; ID for a 7x1024 address space manager (ASM) or splitter device
+%define DEV_TYPE_ASM7 0x12
+
+
+; ==== DEVICE FLAGS ====
+; Bit 0: Writable (1) / Read-only (0)
+; Bit 1: Non-executable (1) / Executable (0)
+; Bit 2: Bootable (1) / Non-bootable (0)
+; Bit 3: Boot mode LNFS (1) / Boot mode static jump (0)
+; Bit 4: Has control page (1) / No control page (0)
+; Bits 5-7: Reserved (must be 0)
+
+%define DEV_FLAG_WRITABLE        0b00000001
+%define DEV_FLAG_EXECUTABLE      0b00000010
+%define DEV_FLAG_BOOTABLE        0b00000100
+%define DEV_FLAG_BOOTMODE_LNFS   0b00001000
+%define DEV_FLAG_HAS_CPAGE       0b00010000
+
+%define DEV_CTRL_BYTE 0xA5  ; must be 0xA5
+
+%define DDI_STATUS_VALID 0x00
+%define DDI_STATUS_INVALID 0x01
+%define DDI_STATUS_BUILDING 0x02
+
+
+.section BIOS_DDI
+
+; **lnc compliant**
+; Initializes the DDI subsystem. Must be called before any other DDI function.
+; All registers unchanged.
+ddi_init:
+    ; initialize DDI data structures
+    mov     1, [ddi_status]       ; set status to 'invalid/unknown'
+    mov     0, [ddi_num_devices]  ; no devices found yet
+
+    ; copy RAM SIGNATURE TO RAM area
+    mov     (RAM_SIGNATURE >> 8)::byte, RC
+    mov     (RAM_SIGNATURE & 0xFF)::byte, RD
+    push    0x3f            ; destination address in RAM
+    push    0xf0      
+    mov     16, RA          ; length
+    lcall   memcpy
+    ret
+
+; **lnc compliant**
+; 
+; Discovers devices in the system and populates the ddi_device_table.
+; Sets ```ddi_num_devices``` and ```ddi_status``` accordingly.
+ddi_device_discovery:
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+    ; discover devices and populate ddi_device_table
+    ; set ddi_num_devices and ddi_status accordingly
+    mov     2, [ddi_status]       ; set status to 'building'
+
+    ; Hardcode system RAM and ROM devices.
+    
+    ; Device 0: ROM
+    mov     (ROM_DEVICE_NAME >> 8)::byte, RC     ; copy ROM device name to name table using memcpy
+    mov     (ROM_DEVICE_NAME & 0xFF)::byte, RD
+    push    (ddi_device_table >> 8)::byte        ; destination address in ddi_device_table
+    push    (ddi_device_table & 0xFF)::byte
+    mov     4, RA                                ; length
+    lcall   memcpy
+
+    mov     (ROM_SIGNATURE >> 8)::byte, [ddi_device_table + 8]    ; device descriptor pointer
+    mov     (ROM_SIGNATURE & 0xFF)::byte, [ddi_device_table + 9]
+    mov     0x00, [ddi_device_table + 10]        ; start page
+    mov     0, [ddi_device_table + 11]           ; device index
+    mov     0, [ddi_device_table + 12]           ; device sub-index
+
+    ; Device 1: RAM
+    mov     (RAM_DEVICE_NAME >> 8)::byte, RC      ; copy RAM device name to name table using memcpy
+    mov     (RAM_DEVICE_NAME & 0xFF)::byte, RD
+    push    (ddi_device_table >> 8)::byte
+    push    (ddi_device_table & 0xFF)::byte + 16  ; next device entry
+    mov     4, RA                                 ; length
+    lcall   memcpy
+
+    mov     0x3f, [ddi_device_table + 24]        ; device descriptor pointer
+    mov     0xf0, [ddi_device_table + 25]
+    mov     0x20, [ddi_device_table + 26]       ; start page
+    mov     1, [ddi_device_table + 27]        ; device index
+    mov     0, [ddi_device_table + 28]        ; device sub-index
+
+    mov     2, [ddi_num_devices]  ; we have 2 devices
+
+    mov     0x40,   RA            ; go to D0
+    mov     0x20,   RB            ; each device is 32 pages (8KB)
+    mov     2,      RC            ; device index
+    mov     0,      RD            ; device sub-index
+_loop_inspect:                    
+    lcall   inspect_device        ; inspect device starting at page RA with length RB, index RC, sub-index RD
+    inc     RC                    ; next device index
+    add     RA, 0x20              ; next device start page
+    cmp     RA, 0x0
+    jz      _done
+    goto    _loop_inspect
+_done:
+    mov     0, [ddi_status]       ; set status to 'valid'
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
+
+.export ddi_device_discovery
+
+; **lnc compliant**
+;
+; Inspect a device starting at the page passed in RA, with length in RB (pages), with device index in RC and subindex in RD.
+; If a valid device is found, add it to the ddi_device_table and increment ddi_num_devices.
+; 
+; All registers unchanged.
+; 
+; LNC signature: void inspect_device(unsigned int start_page, unsigned int length_pages, unsigned int device_idx, unsigned int device_subidx);
+inspect_device:
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+    push    DS                    
+    push    BP                    
+    mov     SP, BP                ; allocate 1 bytes of locals: [BP+0]=saved start page
+    add     SP, 3
+
+    mov     RC, [BP+1]            ; save device index in [BP+1]
+    mov     RD, [BP+2]            ; save device sub-index in [BP+2]
+
+    mov     RA, RC                ; copy start_page to RC, also save it to [BP+0]
+    mov     RC, [BP+0]
+    
+    add     RC, RB                ; add length_pages - 1 to get end_page
+    dec     RC                    
+    mov     0xF0, RD              ; go to last 16 bytes of the last page. Now RC:RD points to the last 16 bytes of the device
+
+    mov     4,    RA              ; length to read
+    push    (DDI_MAGIC_BYTES >> 8)::byte
+    push    (DDI_MAGIC_BYTES & 0xFF)::byte
+
+    lcall   memcmp               ; compare last 4 bytes with 'LNDI': memcmp returns C set if different
+    jc      _ret                  ; not equal, return
+    ; valid device found
+    mov     (ddi_device_table >> 8)::byte, DS   ; ensure DS points to ddi_device_table
+
+    mov     [ddi_num_devices], RA ; get current number of devices
+    shl     RA                    ; multiply by 16 (size of each device entry)
+    shl     RA
+    shl     RA                    
+    shl     RA
+
+    push    RA                    ; save offset to new device entry    
+
+    add     RA, 8                  ; point to device_descriptor pointer in the device entry
+
+    push    RD                     ; push low byte of device descriptor pointer
+    mov     RA, RD                 ; [RD] now points to device_descriptor pointer in ddi_device_table
+    mov     RC, [RD]               ; move high byte of device descriptor pointer
+    inc     RD
+    pop     RA                     ; pop low byte of device descriptor pointer
+    mov     RA, [RD]               ; move low byte of device descriptor pointer
+    inc     RD
+
+    mov     [BP+0], RB             ; load start page into RB
+    mov     RB, [RD]               ; move start page
+    inc     RD
+    
+    mov     [BP+1], RB             ; load device index into RB
+    mov     RB, [RD]               ; move device index
+    inc     RD
+
+    mov     [BP+2], RB             ; load device sub-index into RB
+    mov     RB, [RD]               ; move device sub-index
+    inc     RD
+
+    mov     RA, RD                 ; make RC:RD point back to the device descriptor
+    pop     RB                     ; pop offset to device entry, but into RB
+
+    add     RD, 5                  ; make RC:RD point to device type in the device descriptor
+    mov     [RC:RD], RA            ; store device type in RA
+    shl     RA                     ; multiply by 8 to get the type index in the device type name table
+    shl     RA
+    shl     RA
+
+    push    (ddi_device_table >> 8)::byte  ; push offset to device name in ddi_device_table, high and low
+    push    RB
+    mov     (BIOS_DDI_DNAMES >> 8)::byte, RC ; point to device type name table
+    mov     RA, RD
+    mov     8, RA                   ; length to copy
+    lcall   memcpy                  ; copy device name to ddi_device_table
+
+    ; lastly, increment ddi_num_devices
+    mov    [ddi_num_devices], RA
+    inc    RA
+    mov    RA, [ddi_num_devices]
+    
+    
+_ret:
+    sub     SP, 3               ; free 3 bytes of locals
+    pop     BP                  ; restore BP and DS
+    pop     DS  
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
+
+; lnc compliant
+;
+; Returns the pointer to the entry for the given device in the device table in RC:RD, or 0:0 if index is out of range.
+;
+; LNC signature: ```struct device* ddi_get_device(unsigned int index);```
+ddi_get_device:
+    push RA
+    push RB
+    mov  [ddi_num_devices], RB
+    cmp  RA, RB
+    jc   _valid_index
+    jz   _valid_index
+    goto _not_found
+_valid_index:
+    shl RA
+    shl RA
+    shl RA
+    shl RA                     ; multiply index by 16 (size of each device entry)
+    mov (ddi_device_table >> 8)::byte, RC
+    mov (ddi_device_table & 0xFF)::byte, RD
+    add RD, RA
+    goto _ret
+_not_found:
+    xor RC, RC
+    xor RD, RD
+_ret:
+    pop RB
+    pop RA
+    ret
+
+.section BIOS_DPAGE
+; Status of the DDI device table
+ddi_status:
+    .res 1                      ; status code: 0 = valid, 1 = invalid/unkown, 2 = building
+
+; Number of devices found through device discovery
+ddi_num_devices:
+    .res 1                      ; number of devices found
+
+.section BIOS_DTABLE
+; 16 16-byte device structs, each with the format
+;```
+;   byte 0-7: null-terminated device name (max 8 bytes including null)
+;   byte 8-9: long pointer to device descriptor
+;   byte 10:   device start page (0-255)
+;   byte 11:   device index (0-255)
+;   byte 12:   device sub-index (0-255)
+;   byte 13-15: reserved.
+; ```
+; lnc struct:
+; ```C
+;   struct device {
+;       char name[8];
+;       struct device_descriptor *descriptor;
+;       unsigned int start_page;
+;       unsigned int device_idx;
+;       unsigned int device_subidx;
+;       unsigned int reserved[3];
+;   };
+;```
+; device descriptor format (16 bytes):
+;
+;   byte 0-1: magic bytes 'LNDI'
+;   byte 2:   device type (see DEV_TYPE_*)
+;   byte 3:   device flags (see DEV_FLAG_*)
+;   byte 4:   device size in 256-byte pages (e.g. 0x20 = 8KB)
+;   byte 5-6: boot target start page (0 if not bootable)
+;   byte 7-8: control page pointer (0:0 if no control page)
+;   byte 9-14: reserved (must be 0)
+;   byte 15: control byte (must be 0xA5)
+;
+; lnc struct:
+; ```C
+;   struct device_descriptor {
+;       char magic[4];
+;       unsigned int type;
+;       unsigned int flags;   
+;       unsigned int size_pages;
+;       unsigned int boot_start;
+;       unsigned int control_page;
+;       unsigned int reserved[6];
+;       unsigned int control_byte;
+;   };
+;```
+ddi_device_table:
+    .res 256                     
+                                 
+
+.section BIOS_CONST
+; 4 bytes: 'LNDI' magic bytes for device descriptors
+DDI_MAGIC_BYTES:
+
+; RAM device signature to be placed at 0x3ff0 (last 16 bytes of 8KB RAM)
+RAM_SIGNATURE:
+    .data 'LNDI' 0x1            ; 'LNDI' signature and version 1
+    .data DEV_TYPE_RAM8K        ; RAM device type
+    .data DEV_FLAG_WRITABLE     ; device flags
+    .data 0x20                  ; 8KB size (in 256-byte pages)
+    .data 0x0 0x0               ; boot target start (none)
+    .data 0x0 0x0               ; no control page
+    .data 0x0 0x0 0x0           ; reserved
+    .data 0xA5                  ; control byte (must be 0xA5)
+
+; RAM device name
+RAM_DEVICE_NAME:
+    .data "SRAM" 0x00
+
+; ROM device name
+ROM_DEVICE_NAME:
+    .data "SROM" 0x00
+
+.section BIOS_DDI_DNAMES
+.data "ROM-8K" 0 0
+.data "RAM-8K" 0 0
+
+.res 48 ; 8 * 6
+.data "TTY-E" 0 0 0
+.res 56 ; 8 * 7
+
+.data "ASM-31" 0 0
+.data "ASM-15" 0 0
+.data "ASM-7" 0 0 0
+
+%endif

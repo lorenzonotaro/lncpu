@@ -1,0 +1,20 @@
+%include "sign"
+%include "main"
+
+%ifndef STARTUP_LNASM_F
+%define STARTUP_LNASM_F
+
+.section STARTUP
+    sid                             ; disable hardware interrupts. 
+                                    ; they will stay disabled until we have run device discovery
+
+    
+    mov     (BIOS_STACK >> 8)::byte, SS ; setup stack and dpage for BIOS
+    mov     0,  SP
+
+    mov     (BIOS_DPAGE >> 8)::byte, DS
+    
+    lgoto   bios_main               ; jump to main BIOS code
+    hlt                             ; should never return here
+
+%endif

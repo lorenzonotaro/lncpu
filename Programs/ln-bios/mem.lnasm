@@ -1,0 +1,258 @@
+%ifndef MEMUTILS_F
+%define MEMUTILS_F
+
+.section MEMUTILS
+; lnc compliant
+;
+; ```memzero(RA = length, RC:RD = dest)```
+;
+; zeroes a block of memory starting at RC:RD, length of RA.
+;
+; Returns nothing.
+;
+; lnc signature: ```void memzero(void far *dest, unsigned int length);```
+memzero:
+    push        RA      ; save RA, RB, RC, RD
+    push        RB
+    push        RC
+    push        RD
+    xor         RB,     RB ; clear RB (used as zero value)
+_while:
+    cmp         RA,    0; while RA > 0
+    jz          _end_while
+    mov         RB,    [RC:RD]
+    dec         RA
+    inc         RD
+    jc          _carryrc
+    goto        _while
+_carryrc:
+    inc         RC
+    goto        _while
+_end_while:
+    pop         RD      ; restore RD, RC, RB, RA
+    pop         RC
+    pop         RB
+    pop         RA
+    ret
+
+.export memzero
+
+; lnc compliant
+;
+; fills a block of memory starting at RC:RD, length of RA, with the value in RB.
+; ``` memfill(RA = length, RB = value, RC:RD = dest)```
+;
+; Returns nothing.
+;
+; lnc signature: ```void memfill(void far *dest, unsigned int value, unsigned int length);```
+memfill:
+    push        RA      ; save RA, RB, RC, RD
+    push        RC
+    push        RD
+_while:
+    cmp         RA,    0; while RA > 0
+    jz          _end_while
+    mov         RB,    [RC:RD]
+    dec         RA
+    inc         RD
+    jc          _carryrc
+    goto        _while
+_carryrc:
+    inc         RC
+    goto        _while
+_end_while:
+    pop         RD      ; restore RD, RC, RB, RA
+    pop         RC
+    pop         RA
+    ret
+.export memfill
+
+; lnc compliant
+;
+; ```memcpy(RA = length, RC:RD = src, dest long pointer passed on stack)```
+;
+; Copies `length` bytes from `src` to `dest`.
+;
+; The `dest` pointer is passed on the stack by the caller (2 bytes).
+; Returns nothing.
+; 
+; lnc signature: ```void memcpy(void far *src, void far *dest, unsigned int length);```
+memcpy:
+    ; ---- Prologue ----
+    push        RA          ; save caller regs
+    push        RB
+    push        RC
+    push        RD
+    push        BP
+    mov         SP, BP
+    add         SP, 0x04    ; locals: [BP+0]=dst_lo, [BP+1]=dst_hi, [BP+2]=src_lo tmp, [BP+3]=src_hi tmp
+
+    ; Load destination pointer from caller's stack frame into locals
+    ; Caller placed dest at [BP-9]:[BP-8] (hi:lo) per your note.
+    mov         [BP - 8], RB    ; RB = dest_lo
+    mov         RB, [BP + 0]    ; locals.dst_lo = RB
+    mov         [BP - 9], RB    ; RB = dest_hi
+    mov         RB, [BP + 1]    ; locals.dst_hi = RB
+
+    ; Fast exit if RA == 0
+    cmp         RA, 0x00
+    jz          _done
+
+_loop:
+    ; --- read byte from *src (RC:RD) into RB ---
+    mov         [RC:RD], RB
+
+    ; src++
+    inc         RD
+    jc          _src_hi_carry
+    goto        _src_ok
+_src_hi_carry:
+    inc         RC
+_src_ok:
+
+    ; Save updated src into locals (so we can reuse RC:RD for dst)
+    mov         RD, [BP + 2]    ; locals.src_lo = RD
+    mov         RC, [BP + 3]    ; locals.src_hi = RC
+
+    ; Load dst pointer into RC:RD
+    mov         [BP + 0], RD    ; RD = locals.dst_lo
+    mov         [BP + 1], RC    ; RC = locals.dst_hi
+
+    ; --- write byte RB -> *dst (RC:RD) ---
+    mov         RB, [RC:RD]
+
+    ; dst++
+    inc         RD
+    jc          _dst_hi_carry
+    goto        _dst_ok
+_dst_hi_carry:
+    inc         RC
+_dst_ok:
+
+    ; Save updated dst back to locals
+    mov         RD, [BP + 0]    ; locals.dst_lo = RD
+    mov         RC, [BP + 1]    ; locals.dst_hi = RC
+
+    ; Restore updated src back into RC:RD for next iter
+    mov         [BP + 2], RD    ; RD = locals.src_lo
+    mov         [BP + 3], RC    ; RC = locals.src_hi
+
+    ; count--
+    dec         RA
+    jz          _done
+    goto        _loop
+
+_done:
+    ; ---- Epilogue ----
+    sub         SP, 0x04        ; release locals
+    pop         BP
+    pop         RD
+    pop         RC
+    pop         RB
+    pop         RA
+    ret         0x02            ; discard the 2-byte dest pointer passed on stack
+
+.export memcpy
+
+; lnc non-compliant
+;
+; ```memcmp(RA = length, RC:RD = buf1, buf2 long pointer passed on stack)```
+;
+; Returns boolean via C flag: SET = not equal, clc = equal. 
+memcmp:
+    ; ---- Prologue ----
+    push        RA
+    push        RB
+    push        RC
+    push        RD
+    push        BP
+    mov         SP, BP
+    add         SP, 0x05        ; locals: [BP+0]=dst_lo, [BP+1]=dst_hi, [BP+2]=count, [BP+3]=src_lo, [BP+4]=src_hi
+
+    ; Save inputs to locals
+    mov         RA, [BP + 2]    ; store count
+    mov         RD, [BP + 3]    ; store src_lo
+    mov         RC, [BP + 4]    ; store src_hi
+
+    ; Load buf2 pointer (stack-passed) into locals: [BP-8]=lo, [BP-7]=hi
+    mov         [BP - 8], RB
+    mov         RB, [BP + 0]
+    mov         [BP - 9], RB
+    mov         RB, [BP + 1]
+
+    ; Fast path: length==0 => equal (true)
+    cmp         RA, 0x00
+    jz          _equal_return   ; zero-length -> equal
+
+_loop:
+    ; Load current src pointer RC:RD from locals
+    mov         [BP + 3], RD
+    mov         [BP + 4], RC
+
+    ; RB <- *src
+    mov         [RC:RD], RB
+
+    ; src++
+    inc         RD
+    jc          _src_carry
+    goto        _src_ok
+_src_carry:
+    inc         RC
+_src_ok:
+    ; Save updated src back to locals
+    mov         RD, [BP + 3]
+    mov         RC, [BP + 4]
+
+    ; Load current dst pointer RC:RD from locals
+    mov         [BP + 0], RD
+    mov         [BP + 1], RC
+
+    ; RA <- *dst
+    mov         [RC:RD], RA
+
+    ; Compare: (RA == RB) ? continue : return false
+    xor         RA, RB          ; Z=1 iff equal
+    jz          _bytes_equal
+
+    ; Mismatch -> false
+    goto        _unequal_return
+
+_bytes_equal:
+    ; dst++
+    inc         RD
+    jc          _dst_carry
+    goto        _dst_ok
+_dst_carry:
+    inc         RC
+_dst_ok:
+    ; Save updated dst back to locals
+    mov         RD, [BP + 0]
+    mov         RC, [BP + 1]
+
+    ; count--
+    mov         [BP + 2], RA    ; RA = count
+    dec         RA              ; Z set if reached zero
+    mov         RA, [BP + 2]    ; store updated count
+    jz          _equal_return
+    goto        _loop
+
+_equal_return:
+    sub         SP, 0x05
+    clc                         ; return true (equal)
+    goto        _done
+_unequal_return:
+    sub         SP, 0x05
+    sec                         ; return false (not equal)
+    goto        _done
+_done:
+    ; ---- Epilogue ----
+    pop         BP
+    pop         RD
+    pop         RC
+    pop         RB
+    pop         RA
+    ret         0x02            ; discard 2-byte stack arg (buf2)
+
+.export memcmp
+
+%endif

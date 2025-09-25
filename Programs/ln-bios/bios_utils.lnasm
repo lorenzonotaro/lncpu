@@ -1,0 +1,67 @@
+%include "io"
+
+%ifndef BIOS_UTILS_F
+%define BIOS_UTILS_F
+
+.section BIOS_UTILS
+
+log_prefix_ok: 
+    push RC
+    push RD
+
+    mov (OK_PREFIX >> 8)::byte, RC
+    mov (OK_PREFIX & 0xFF)::byte, RD
+    lcall puts
+
+    pop RD
+    pop RC
+    ret
+
+log_prefix_err:
+    push RC
+    push RD
+
+    mov (ERR_PREFIX >> 8)::byte, RC
+    mov (ERR_PREFIX & 0xFF)::byte, RD
+    lcall puts
+
+    pop RD
+    pop RC
+    ret
+
+log_prefix_warn:
+    push RC
+    push RD
+
+    mov (WARN_PREFIX >> 8)::byte, RC
+    mov (WARN_PREFIX & 0xFF)::byte, RD
+    lcall puts
+
+    pop RD
+    pop RC
+    ret
+
+log_prefix_info:
+    push RC
+    push RD
+
+    mov (INFO_PREFIX >> 8)::byte, RC
+    mov (INFO_PREFIX & 0xFF)::byte, RD
+    lcall puts
+
+    pop RD
+    pop RC
+    ret
+
+
+.section BIOS_CONST
+OK_PREFIX:
+    .data "[ OK ] " 0
+ERR_PREFIX:
+    .data "[ERR ] " 0
+WARN_PREFIX:
+    .data "[WARN] " 0
+INFO_PREFIX:
+    .data "[INFO] " 0 
+
+%endif

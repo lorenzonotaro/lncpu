@@ -1,0 +1,12 @@
+; Compile time options for LN-BIOS
+
+%ifndef BIOS_OPTS_F
+%define BIOS_OPTS_F
+
+; If defined, the BIOS will halt if no standard text device is found during device discovery.
+;%define HALT_ON_NO_STDTXT
+
+; If defined, the BIOS will automatically boot the first bootable device found after device discovery.
+;%define AUTOBOOT
+
+%endif
