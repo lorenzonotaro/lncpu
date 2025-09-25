@@ -29,6 +29,22 @@ class LnasnIndex {
     }
   }
 
+  getAllSymbols(): SymDef[] {
+    const out: SymDef[] = [];
+    for (const [, defs] of this.symbols) out.push(...defs);
+    return out;
+  }
+
+  searchSymbols(query: string): SymDef[] {
+    const q = query.trim().toLowerCase();
+    if (!q) return this.getAllSymbols();
+    return this.getAllSymbols().filter(s => {
+      // name match, or "topLabel.name" match for sublabels
+      const full = s.topLabel ? `${s.topLabel}.${s.name}` : s.name;
+      return full.toLowerCase().includes(q);
+    });
+  }
+
   indexDocument(doc: vscode.TextDocument) {
     if (doc.languageId !== 'lnasm' && !doc.fileName.match(/\.(lnasm|s)$/i)) return;
     const key = doc.uri.toString();
@@ -189,7 +205,15 @@ class LnasnIndex {
   if (lines.length === 0) return undefined;
   return lines.join('\n');
 }
+}
 
+function toVscodeKind(k: SymKind): vscode.SymbolKind {
+  switch (k) {
+    case 'label':    return vscode.SymbolKind.Function;
+    case 'sublabel': return vscode.SymbolKind.Namespace;
+    case 'macro':    return vscode.SymbolKind.Constant;
+    case 'section':  return vscode.SymbolKind.Module;
+  }
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -245,6 +269,25 @@ export function activate(context: vscode.ExtensionContext) {
         md.isTrusted = false;
         md.supportHtml = false;
         return new vscode.Hover(md, doc.getWordRangeAtPosition(pos, /[A-Za-z_][A-Za-z0-9_]*/));
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.languages.registerWorkspaceSymbolProvider({
+      provideWorkspaceSymbols(query: string, _token: vscode.CancellationToken) {
+        const matches = idx.searchSymbols(query);
+        // Return as WorkspaceSymbol for modern API
+        return matches.map(m => new vscode.SymbolInformation(
+          m.topLabel ? `${m.topLabel}.{m.name}` : m.name,
+          toVscodeKind(m.kind),
+          '', // containerName is optional, empty for now
+          new vscode.Location(m.uri, m.range)
+        ));
+      },
+      resolveWorkspaceSymbol(sym: vscode.SymbolInformation, _token: vscode.CancellationToken) {
+        // Nothing extra to resolve for now
+        return sym;
       }
     })
   );

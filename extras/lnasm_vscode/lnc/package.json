@@ -35,8 +35,32 @@
           "default": ["**/*.lnasm", "**/*.s"],
           "description": "Globs to index for symbols (labels, sublabels, %define, .section)."
         }
+      },
+      "properties": {
+        "lnasmBasics.instrTsvPath": {
+          "type": "string",
+          "default": "docs/opcode.tsv",
+          "description": "Path (relative to workspace or absolute) to the instruction-set TSV with columns: Opcode\tName\tData length\tClock cycles\tDescription\tFlags modified."
+        }
       }
+    },
+    "commands": [
+      {
+        "command": "lnasm.peekDefinition",
+        "title": "lnasm: Peek Definition",
+        "category": "lnasm"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "lnasm.peekDefinition",
+          "when": "editorLangId == lnasm",
+          "group": "navigation@1"
+        }
+      ]
     }
+
   },
   "main": "./out/extension.js",
   "scripts": {
