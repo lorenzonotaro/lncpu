@@ -11,6 +11,105 @@ interface SymDef {
   topLabel?: string;            // for sublabels: the nearest enclosing top-level label
 }
 
+interface InstrDoc {
+  opcode: string;
+  name: string;
+  dataLength: string;
+  clockCycles: string;
+  description: string;
+  flagsModified: string;
+  columns: string[];   // raw row, for "all-columns" table rendering
+}
+
+class InstrIndex {
+  private byKey = new Map<string, InstrDoc>(); // still useful for exact lookups
+  private rows: InstrDoc[] = [];               // full table for prefix searches
+  private headers: string[] = [];              // TSV headers as-is
+  private lastUri: vscode.Uri | null = null;
+
+  constructor(private ctx: vscode.ExtensionContext) {}
+
+  async loadFromConfig() {
+    const cfg = vscode.workspace.getConfiguration('lnasmBasics');
+    const p = cfg.get<string>('instrTsvPath');
+    if (!p) return;
+
+    const uri = this.resolvePathFromExtension(p);
+    this.lastUri = uri;
+    await this.loadFromUri(uri);
+  }
+
+  dispose() {}
+
+  private resolvePathFromExtension(p: string): vscode.Uri {
+    const path = require('path');
+    if (path.isAbsolute(p)) return vscode.Uri.file(p);
+    if (/^[a-z]+:\/\//i.test(p)) return vscode.Uri.parse(p);
+    return vscode.Uri.joinPath(this.ctx.extensionUri, p);
+  }
+
+  private async loadFromUri(uri: vscode.Uri) {
+    try {
+      const data = await vscode.workspace.fs.readFile(uri);
+      const text = new TextDecoder('utf-8').decode(data);
+      this.ingestTsv(text);
+    } catch (e) {
+      console.warn('[lnasmBasics] Could not load instruction TSV at', uri.toString(), e);
+      this.byKey.clear();
+      this.rows = [];
+      this.headers = [];
+    }
+  }
+
+  private ingestTsv(text: string) {
+    this.byKey.clear();
+    this.rows = [];
+    this.headers = [];
+
+    const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+    if (lines.length === 0) return;
+
+    const firstCols = lines[0].split('\t').map(s => s.trim());
+    const looksHeader = firstCols.length >= 6 &&
+      /opcode/i.test(firstCols[0]) && /name/i.test(firstCols[1]);
+
+    let start = 0;
+    if (looksHeader) {
+      this.headers = firstCols;
+      start = 1;
+    } else {
+      // default headers if none provided
+      this.headers = ["Opcode", "Name", "Data length", "Clock cycles", "Description", "Flags modified"];
+    }
+
+    for (let i = start; i < lines.length; i++) {
+      const cols = lines[i].split('\t').map(s => s.trim());
+      if (cols.length < 6) continue;
+      const [opcode, name, dataLen, clocks, desc, flags] = cols;
+      const rec: InstrDoc = {
+        opcode, name, dataLength: dataLen, clockCycles: clocks,
+        description: desc, flagsModified: flags, columns: cols
+      };
+      if (opcode) this.byKey.set(opcode.toUpperCase(), rec);
+      if (name)   this.byKey.set(name.toUpperCase(), rec);
+      this.rows.push(rec);
+    }
+  }
+
+  /** Return all rows whose Name column starts with the given mnemonic (case-insensitive). */
+  findByMnemonicPrefix(mnemonic: string | undefined): InstrDoc[] {
+    if (!mnemonic) return [];
+    const m = mnemonic.toUpperCase();
+    return this.rows.filter(r => r.name.toUpperCase().startsWith(m));
+  }
+
+  getHeaders(): string[] {
+    return this.headers.length ? this.headers : ["Opcode", "Name", "Data length", "Clock cycles", "Description", "Flags modified"];
+  }
+}
+
+
+
 class LnasnIndex {
   private symbols = new Map<string, SymDef[]>(); // key -> list of definitions
   private docVersions = new Map<string, number>();
@@ -132,6 +231,7 @@ class LnasnIndex {
     arr.push(def);
     this.symbols.set(key, arr);
   }
+  
 
   private makeKey(def: Pick<SymDef, 'name' | 'kind' | 'topLabel'>): string {
     if (def.kind === 'sublabel') {
@@ -207,6 +307,11 @@ class LnasnIndex {
 }
 }
 
+function escapeCell(s: string): string {
+  // Escape pipes to avoid breaking the table; keep it minimal
+  return (s ?? '').replace(/\|/g, '\\|');
+}
+
 function toVscodeKind(k: SymKind): vscode.SymbolKind {
   switch (k) {
     case 'label':    return vscode.SymbolKind.Function;
@@ -218,11 +323,15 @@ function toVscodeKind(k: SymKind): vscode.SymbolKind {
 
 export function activate(context: vscode.ExtensionContext) {
   const idx = new LnasnIndex(context);
+  const instr = new InstrIndex(context);
 
   const config = vscode.workspace.getConfiguration('lnasmBasics');
   const globs = config.get<string[]>('indexGlobs', ["**/*.lnasm", "**/*.s"]);
 
   idx.buildWorkspace(globs);
+  instr.loadFromConfig();
+
+  context.subscriptions.push({ dispose: () => instr.dispose() });
 
   // Re-index on open/change
   context.subscriptions.push(
@@ -256,6 +365,33 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
   vscode.languages.registerHoverProvider({ language: 'lnasm' }, {
     async provideHover(doc, pos) {
+        const wordRange = doc.getWordRangeAtPosition(pos, /[A-Za-z_][A-Za-z0-9_]*/);
+        const word = wordRange ? doc.getText(wordRange) : undefined;
+
+        // 1) Instruction hover (TSV)
+        const matches = instr.findByMnemonicPrefix(word);
+        if (matches.length > 0) {
+          const headers = instr.getHeaders();
+          const md = new vscode.MarkdownString();
+          md.isTrusted = false;
+          md.supportHtml = false;
+
+          // Table header
+          md.appendMarkdown(
+            `| ${headers.map(h => escapeCell(h)).join(' | ')} |\n` +
+            `| ${headers.map(() => '---').join(' | ')} |\n`
+          );
+
+          // Rows
+          for (const rec of matches) {
+            // pad/truncate to headers length to avoid misaligned rows
+            const row = rec.columns.slice(0, headers.length);
+            while (row.length < headers.length) row.push('');
+            md.appendMarkdown(`| ${row.map(escapeCell).join(' | ')} |\n`);
+          }
+
+          return new vscode.Hover(md, wordRange ?? undefined);
+        }
         const defs = idx.resolveAt(doc, pos);
         if (defs.length === 0) return undefined;
 
@@ -290,6 +426,53 @@ export function activate(context: vscode.ExtensionContext) {
         return sym;
       }
     })
+  );
+
+  context.subscriptions.push(
+  vscode.languages.registerOnTypeFormattingEditProvider(
+    { language: 'lnasm' },
+    {
+      provideOnTypeFormattingEdits(doc, position, ch, _options, _token) {
+        try {
+          // Only handle newline
+          if (ch !== '\n') return [];
+
+          const curLine = position.line;         // the new line we just entered
+          const prevLine = curLine - 1;
+          const nextLine = curLine + 1 <= doc.lineCount - 1 ? curLine + 1 : -1;
+
+          if (prevLine < 0 || nextLine < 0) return [];
+
+          const prevText = doc.lineAt(prevLine).text;
+          const nextText = doc.lineAt(nextLine).text;
+
+          const isComment = (s: string) => /^\s*;/.test(s);
+
+          // Condition: we left a comment line AND the following line is also a comment
+          if (!isComment(prevText) || !isComment(nextText)) {
+            return [];
+          }
+
+          // Find current line’s indentation (VS Code already inserted it)
+          const curText = doc.lineAt(curLine).text;
+          const indentMatch = curText.match(/^(\s*)/);
+          const indentLen = indentMatch ? indentMatch[1].length : 0;
+
+          // If we already have a semicolon at the right spot, skip
+          if (curText.slice(indentLen).startsWith(';')) {
+            return [];
+          }
+
+          // Insert "; " after indentation
+          const insertPos = new vscode.Position(curLine, indentLen);
+          return [vscode.TextEdit.insert(insertPos, '; ')];
+        } catch {
+          return [];
+        }
+      }
+    },
+    '\n' // trigger char
+  )
   );
 }
 

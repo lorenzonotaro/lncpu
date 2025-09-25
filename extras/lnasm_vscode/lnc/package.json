@@ -39,8 +39,8 @@
       "properties": {
         "lnasmBasics.instrTsvPath": {
           "type": "string",
-          "default": "docs/opcode.tsv",
-          "description": "Path (relative to workspace or absolute) to the instruction-set TSV with columns: Opcode\tName\tData length\tClock cycles\tDescription\tFlags modified."
+          "default": "docs/opcodes.tsv",
+          "description": "Path to the instruction-set TSV, resolved relative to the EXTENSION ROOT (context.extensionUri)."
         }
       }
     },
@@ -74,6 +74,7 @@
     "typescript": "^5.4.0",
     "vscode-languageclient": "^7.0.0",
     "@types/vscode": "^1.96.0",
+    "@types/node": "^18.0.0",
     "vsce": "^2.10.0"
   }
 }
