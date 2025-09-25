@@ -79,3 +79,7 @@ fp-info-cache
 *.ses
 lnc/linker.cfg
 lnc/test.lnasm
+
+# Node modules
+node_modules/
+lnasm_vscode/lnc/out
