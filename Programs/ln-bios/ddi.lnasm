@@ -42,7 +42,7 @@
 %define DEV_FLAG_WRITABLE        0b00000001
 %define DEV_FLAG_EXECUTABLE      0b00000010
 %define DEV_FLAG_BOOTABLE        0b00000100
-%define DEV_FLAG_BOOTMODE_LNFS   0b00001000
+%define DEV_FLAG_LNFS            0b00001000
 %define DEV_FLAG_HAS_CPAGE       0b00010000
 
 %define DEV_CTRL_BYTE 0xA5  ; must be 0xA5
@@ -150,7 +150,6 @@ inspect_device:
     push    RB
     push    RC
     push    RD
-    push    DS                    
     push    BP                    
     mov     SP, BP                ; allocate 1 bytes of locals: [BP+0]=saved start page
     add     SP, 3
@@ -172,7 +171,8 @@ inspect_device:
     lcall   memcmp               ; compare last 4 bytes with 'LNDI': memcmp returns C set if different
     jc      _ret                  ; not equal, return
     ; valid device found
-    mov     (ddi_device_table >> 8)::byte, DS   ; ensure DS points to ddi_device_table
+    push    DS                    ; save DS
+    mov     (ddi_device_table >> 8)::byte, DS   ; make DS temporarily point to ddi_device_table
 
     mov     [ddi_num_devices], RA ; get current number of devices
     shl     RA                    ; multiply by 16 (size of each device entry)
@@ -221,6 +221,7 @@ inspect_device:
     lcall   memcpy                  ; copy device name to ddi_device_table
 
     ; lastly, increment ddi_num_devices
+    pop    DS                       ; restore DS to point to data page
     mov    [ddi_num_devices], RA
     inc    RA
     mov    RA, [ddi_num_devices]
@@ -229,7 +230,6 @@ inspect_device:
 _ret:
     sub     SP, 3               ; free 3 bytes of locals
     pop     BP                  ; restore BP and DS
-    pop     DS  
     pop     RD
     pop     RC
     pop     RB
@@ -298,25 +298,26 @@ ddi_num_devices:
 ;```
 ; device descriptor format (16 bytes):
 ;
-;   byte 0-1: magic bytes 'LNDI'
-;   byte 2:   device type (see DEV_TYPE_*)
-;   byte 3:   device flags (see DEV_FLAG_*)
-;   byte 4:   device size in 256-byte pages (e.g. 0x20 = 8KB)
-;   byte 5-6: boot target start page (0 if not bootable)
-;   byte 7-8: control page pointer (0:0 if no control page)
-;   byte 9-14: reserved (must be 0)
+;   byte 0-4: magic bytes 'LNDI + version (0x01)
+;   byte 5:   device type (see DEV_TYPE_*)
+;   byte 6:   device flags (see DEV_FLAG_*)
+;   byte 7:   device size in 256-byte pages (e.g. 0x20 = 8KB)
+;   byte 8-9: boot target start page (0 if not bootable)
+;   byte 10-11: control page pointer (0:0 if no control page)
+;   byte 12-14: reserved (must be 0)
 ;   byte 15: control byte (must be 0xA5)
 ;
 ; lnc struct:
 ; ```C
 ;   struct device_descriptor {
 ;       char magic[4];
+;       unsigned int version;
 ;       unsigned int type;
 ;       unsigned int flags;   
 ;       unsigned int size_pages;
-;       unsigned int boot_start;
-;       unsigned int control_page;
-;       unsigned int reserved[6];
+;       void far * boot_start;
+;       void far *control_page;
+;       unsigned int reserved[3];
 ;       unsigned int control_byte;
 ;   };
 ;```
@@ -348,15 +349,15 @@ ROM_DEVICE_NAME:
     .data "SROM" 0x00
 
 .section BIOS_DDI_DNAMES
-.data "ROM-8K" 0 0
-.data "RAM-8K" 0 0
+.data "ROM-8K " 0
+.data "RAM-8K " 0
 
 .res 48 ; 8 * 6
-.data "TTY-E" 0 0 0
+.data "TTY-E  " 0
 .res 56 ; 8 * 7
 
-.data "ASM-31" 0 0
-.data "ASM-15" 0 0
-.data "ASM-7" 0 0 0
+.data "ASM-31 " 0
+.data "ASM-15 " 0
+.data "ASM-7  " 0
 
 %endif

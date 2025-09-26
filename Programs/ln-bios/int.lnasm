@@ -1,0 +1,7 @@
+%ifndef BIOS_INT_F
+%define BIOS_INT_F
+
+; Interrupt handling routines for BIOS
+.section BIOS_INT
+
+%endif

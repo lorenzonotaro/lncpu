@@ -3,6 +3,23 @@
 %ifndef BIOS_UTILS_F
 %define BIOS_UTILS_F
 
+; BIOS STATUS CODES
+
+; Code indicating BIOS is initializing
+%define BIOS_STATUS_INITIALIZING 0x00
+
+; Code indicating BIOS is done with initialization
+%define BIOS_STATUS_READY        0x01
+
+; Code indicating that BIOS has transferred control to the OS
+%define BIOS_STATUS_IN_OS        0x02
+
+; Code indicating BIOS has not found a standard text output device (and was compiled with HALT_ON_NO_STDTXT)
+%define BIOS_STATUS_CRIT_NO_STDTXT 0x80
+
+; Code indicating BIOS is in an unspecified critical error state
+%define BIOS_STATUS_CRIT_UNSPEC  0xFF
+
 .section BIOS_UTILS
 
 log_prefix_ok: 
@@ -53,6 +70,10 @@ log_prefix_info:
     pop RC
     ret
 
+
+.section BIOS_DPAGE
+bios_status:
+    .res 1
 
 .section BIOS_CONST
 OK_PREFIX:

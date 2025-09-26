@@ -9,6 +9,9 @@
 .section BIOS_MAIN
 ; Entry point for the BIOS
 bios_main:
+
+    mov     BIOS_STATUS_INITIALIZING, [bios_status] ; set BIOS status to initializing
+
     ; main BIOS code starts here
     lcall   ddi_init                ; initialize DDI
     lcall   ddi_device_discovery    ; discover devices
@@ -18,35 +21,163 @@ bios_main:
 
 %ifdef HALT_ON_NO_STDTXT
     lcall   is_stdtxt_avail
-    jc      _halt_no_txtdev
+    jc      _txtdev_avail
+    ; if we reach here, no stdtxt device is available
+    mov     BIOS_STATUS_CRIT_NO_STDTXT, [bios_status] ; set BIOS status to critical error: no stdtxt
     hlt
 _txtdev_avail:
 %endif
+
+    mov     BIOS_STATUS_READY, [bios_status] ; set BIOS status to ready
+
+    ; at this point, all devices have been discovered and initialized.
+    ; we can now enable hardware interrupts.
+    cid                        ; clear interrupt disable flag
+
+    lcall   log_prefix_ok
 
     mov     (BIOS_WELCOME >> 8)::byte, RC
     mov     (BIOS_WELCOME & 0xFF)::byte, RD
     lcall   puts                ; print BIOS welcome message
 
-    push    25 ; age
-    push    (PRINTF_TEST_NAME >> 8)::byte
-    push    (PRINTF_TEST_NAME & 0xFF)::byte
-
-    mov     (PRINTF_TEST_FMT >> 8)::byte, RC
-    mov     (PRINTF_TEST_FMT & 0xFF)::byte, RD
-    lcall   printf              ; test printf
-
-    ; at this point, all devices have been discovered and initialized.
-    ; we can now enable hardware interrupts.
-    cid
+    lcall   print_io_devices  ; print discovered I/O devices
 
     hlt
 
+print_io_devices:
+    ; prints the list of discovered I/O devices
+    ; assumes that the DDI has already been initialized and devices discovered
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+    push    BP
+    mov     SP, BP
+    add     SP, 1              ; make space on stack for 1 local
+
+    lcall   log_prefix_info
+
+    mov     (DEVICE_LIST_INTRO >> 8)::byte, RC
+    mov     (DEVICE_LIST_INTRO & 0xFF)::byte, RD
+    lcall   puts                ; print device list intro
+
+    mov     0, [BP + 0]        ; device index
+_next_device:
+    mov     [ddi_num_devices], RB
+    mov     [BP + 0], RA      ; load device index
+    cmp     RA, RB
+    jz      _end_devices
+
+    lcall   ddi_get_device      ; get device info into RC:RD
+
+    add     RD, 12              ; point RD to device subindex
+    mov     [RC:RD], RA         ; device subindex, low
+    push    RA
+
+    dec     RD                  ; point RD to device index
+    mov     [RC:RD], RA         ; device index, low
+    push    RA
+
+    sub     RD, 3               ; point RD to device descriptor pointer
+
+    mov     [RC:RD], RA         ; device descriptor, low
+    inc     RD
+    mov     [RC:RD], RB         ; device descriptor, high
+
+    mov     RA, RC             ; move device descriptor pointer to RC:RD
+    mov     RB, RD             
+
+    add     RD, 5               ; point RD to device type
+    mov     [RC:RD], RA         ; store device type to RA
+    shl     RA                  ; multiply by 8 to get index in the device names table
+    shl     RA
+    shl     RA
+
+    push    (BIOS_DDI_DNAMES >> 8)::byte ; push pointer to device type name
+    push    RA
+
+    inc     RD               ; point RD to device flags
+    mov     [RC:RD], RA      ; store device flags to RA
+
+    mov     (DEVICE_ENTRY_FMT >> 8)::byte, RC
+    mov     (DEVICE_ENTRY_FMT & 0xFF)::byte, RD
+    lcall   printf             ; print device info
+    sub     SP, 2              ; clean up stack (2 pushed values)
+
+    ; print device flags manually
+    mov     RA, RB             ; Copy device flags to RB
+    and     RA, DEV_FLAG_WRITABLE
+    jz      _flag_writable_no
+    mov     'W', RA
+    goto    _chk_flags_exec
+_flag_writable_no:
+    mov     '-', RA
+_chk_flags_exec:
+    lcall   putc
+    mov     RB, RA
+    and     RA, DEV_FLAG_EXECUTABLE
+    jz      _flag_executable_no
+    mov     'X', RA
+    goto    _chk_flags_bootable
+_flag_executable_no:
+    mov     '-', RA
+_chk_flags_bootable:
+    lcall   putc
+    mov     RB, RA
+    and     RA, DEV_FLAG_BOOTABLE
+    jz      _flag_bootable_no
+    mov     'B', RA
+    goto    _chk_flags_lnfs
+_flag_bootable_no:
+    mov     '-', RA
+_chk_flags_lnfs:
+    lcall   putc
+    mov     RB, RA
+    and     RA, DEV_FLAG_LNFS
+    jz      _flag_lnfs_no
+    mov     'F', RA
+    goto    _print_flags_cpage
+_flag_lnfs_no:
+    mov     '-', RA
+_print_flags_cpage:
+    lcall   putc
+    mov     RB, RA
+    and     RA, DEV_FLAG_HAS_CPAGE
+    jz      _flag_cpage_no
+    mov     'C', RA
+    goto    _end_flags
+_flag_cpage_no:
+    mov     '-', RA
+_end_flags:
+    lcall   putc
+
+    mov     '\n', RA
+    lcall   putc
+
+    pop     RD
+    pop     RC
+
+    mov     [BP + 0], RA      ; load device index
+    inc     RA
+    mov     RA, [BP + 0]      ; increment device index
+    goto    _next_device
+_end_devices:
+    mov     BP, SP
+    pop     BP
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+    ret
 
 .section BIOS_CONST
 BIOS_WELCOME:
-    .data "Started LN-BIOS v0.1\n" 0x00
-PRINTF_TEST_FMT:
-    .data "Hi, I am %s, I am 0x%x years old.\n" 0
-PRINTF_TEST_NAME:
-    .data "Lorenzo" 0x0
+    .data "Started LN-BIOS v0.2\n" 0x00
+
+DEVICE_LIST_INTRO:
+    .data "Discovered I/O devices:\n Type  |  ID   | Flags \n" 0x00
+
+DEVICE_ENTRY_FMT:
+    .data "%s| %x.%x | " 0x00 ; flags are printed manually
+
 %endif
