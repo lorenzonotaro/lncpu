@@ -26,6 +26,9 @@ struct bp {
 struct emulator {
     struct lncpu_vm vm;
     enum emu_status status;
+    uint16_t step_over_target_addr;
+    uint16_t step_over_target_sssp;
+
     struct bp *bp_list;
 };
 

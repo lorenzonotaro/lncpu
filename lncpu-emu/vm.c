@@ -156,6 +156,15 @@ void vm_write_byte(struct lncpu_vm *vm, uint16_t addr, uint8_t value) {
     }
 }
 
+uint8_t vm_next_call_instr_length(struct lncpu_vm *vm) {
+    uint8_t instr = vm_read_byte(vm, vm->cspc);
+    if (instr == OP_LCALL_DCST)
+        return 3;
+    if (instr == OP_LCALL_RCRD)
+        return 1;
+    return 0;
+}
+
 bool vm_init(struct lncpu_vm *vm, const struct emu_cmdline_params *cmdline_params) {
     vm->ra = 0;
     vm->rb = 0;
@@ -352,7 +361,7 @@ void vm_step(struct lncpu_vm *vm) {
             vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1), vm->rd);
             break;
         case OP_MOV_CST_IBPOFFSET:
-            temp1 = fetch_byte(vm);
+            temp1 = vm->bp + fetch_byte(vm);
             vm_write_byte(vm, ((uint16_t) vm->ss << 8 | temp1),  fetch_byte(vm));
             break;
         case OP_MOV_RA_DATAP:

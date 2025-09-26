@@ -111,8 +111,15 @@ void pause(struct emulator *emu) {
             emu->status = EMU_STATUS_STEPPING;
             loop = false;
         } else if (strcmp(ptr, "o") == 0 || strcmp(ptr, "stepover") == 0) {
-            printf("Stepping over is not yet implemented. Stepping.");
-            emu->status = EMU_STATUS_STEPPING;
+            uint16_t next_call_instr_length = vm_next_call_instr_length(&emu->vm);
+            if (next_call_instr_length == 0) {
+                emu->status = EMU_STATUS_STEPPING;
+            }else {
+                emu->status = EMU_STATUS_STEPPING_OVER;
+                emu->step_over_target_sssp = ((uint16_t) (emu->vm.ss << 8) | emu->vm.sp);
+                emu->step_over_target_addr = emu->vm.cspc + next_call_instr_length;
+            }
+            loop = false;
         }else if (strcmp(ptr, "h") == 0 || strcmp(ptr, "help") == 0) {
             help();
         } else if (strcmp(ptr, "q") == 0 || strcmp(ptr, "quit") == 0) {
@@ -199,15 +206,28 @@ bool bp_hit(const struct emulator *emu) {
     return false;
 }
 
+void check_step_over(struct emulator *emu) {
+    if (emu->status == EMU_STATUS_STEPPING_OVER && emu->vm.cspc == emu->step_over_target_addr && emu->step_over_target_sssp == ((uint16_t) (emu->vm.ss << 8) | emu->vm.sp)) {
+        emu->status = EMU_STATUS_PAUSED;
+    }
+}
+
 int run_emu(const struct emu_cmdline_params *cmdline_params) {
-    struct emulator emu = {
-        .status = EMU_STATUS_RUNNING,
-        .bp_list = NULL
-    };
+    struct emulator *emu = malloc(sizeof(struct emulator));
 
-    set_emu(&emu);
+    if (!emu) {
+        fprintf(stderr, "Failed to allocate memory for emulator. Exiting.\n");
+        return 1;
+    }
 
-    struct lncpu_vm *vm = &emu.vm;
+    emu->status = EMU_STATUS_RUNNING;
+    emu->bp_list = NULL;
+    emu->step_over_target_addr = 0;
+    emu->step_over_target_sssp = 0;
+
+    set_emu(emu);
+
+    struct lncpu_vm *vm = &emu->vm;
 
     if (!vm_init(vm, cmdline_params)) {
         fprintf(stderr, "Vm init failed. Exiting.\n");
@@ -222,7 +242,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
             }
         }
 
-        pause(&emu);
+        pause(emu);
 
         for (int i = 0; i < vm->emu_device_count; i++) {
             if (vm->emu_devices[i].resume) {
@@ -231,7 +251,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
         }
     }
     
-    while (!vm->halted && emu.status != EMU_STATUS_TERMINATED) {
+    while (!vm->halted && emu->status != EMU_STATUS_TERMINATED) {
 
         for (int i = 0; i < vm->emu_device_count; i++) {
             if (vm->emu_devices[i].step) {
@@ -241,13 +261,15 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
 
         vm_step(vm);
 
-        if (emu.status == EMU_STATUS_PAUSED || emu.status == EMU_STATUS_STEPPING || bp_hit(&emu)) {
+        check_step_over(emu);
+
+        if (emu->status == EMU_STATUS_PAUSED || emu->status == EMU_STATUS_STEPPING || bp_hit(emu)) {
             for (int i = 0; i < vm->emu_device_count; i++) {
                 if (vm->emu_devices[i].pause) {
                     vm->emu_devices[i].pause(vm, &vm->emu_devices[i], vm->emu_devices[i].data);
                 }
             }
-            pause(&emu);
+            pause(emu);
 
             for (int i = 0; i < vm->emu_device_count; i++) {
                 if (vm->emu_devices[i].resume) {
@@ -257,7 +279,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
         }
     }
 
-    emu.status = EMU_STATUS_TERMINATED;
+    emu->status = EMU_STATUS_TERMINATED;
 
     if (vm->halted && !cmdline_params->no_pause_on_halt){
         printf("LNCPU has halted. Type 'c' or 'continue' to exit. \n");
@@ -268,7 +290,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
             }
         }
 
-        pause(&emu);
+        pause(emu);
     }
 
     if (cmdline_params->dump_status != NULL) {
@@ -287,7 +309,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
     }
 
     // delete breakpoints
-    struct bp *bp = emu.bp_list;
+    struct bp *bp = emu->bp_list;
     while (bp != NULL) {
         struct bp *next = bp->next;
         free(bp);
@@ -295,6 +317,9 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
     }
 
     vm_destroy(vm);
+
+    free(emu);
+
     set_emu(NULL);
 
     return 0;

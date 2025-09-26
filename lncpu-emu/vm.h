@@ -42,4 +42,9 @@ uint8_t vm_read_byte(struct lncpu_vm *vm, uint16_t addr);
 
 void vm_write_byte(struct lncpu_vm *vm, uint16_t addr, uint8_t value);
 
+/**
+ * @return the length of the next call instruction if it is a call instruction, otherwise 0
+ */
+uint8_t vm_next_call_instr_length(struct lncpu_vm *vm);
+
 #endif //LNCPU_EMU_VM_H
