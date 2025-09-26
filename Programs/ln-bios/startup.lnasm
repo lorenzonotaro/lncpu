@@ -12,7 +12,12 @@
     mov     (BIOS_STACK >> 8)::byte, SS ; setup stack and dpage for BIOS
     mov     0,  SP
 
-    mov     (BIOS_DPAGE >> 8)::byte, DS
+    ; Setup data segment for BIOS. This is just a safeguard: BIOS code deliberately
+    ; does not use data page addressing. This is because once an OS is loaded,
+    ; exposed functions (IO, DDI, etc...) would require constant context switching of DS
+    ; in order to access BIOS variables. The added BIOS overhead of using absolute
+    ; addressing is well worth it considering the removed overhead on the OS side.
+    mov     (BIOS_DATA >> 8)::byte, DS 
     
     lgoto   bios_main               ; jump to main BIOS code
     hlt                             ; should never return here

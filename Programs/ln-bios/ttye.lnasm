@@ -10,7 +10,7 @@ ttye_putc:
     push    RC
     push    RD
 
-    mov     [PSTDTXT_DD_START_PAGE], RC  ; load start page of standard text device in RC
+    mov     [STDTXT_DD_START_PAGE], RC  ; load start page of standard text device in RC
     mov     2, RD                        ; write to address to of the TTYE to output a char
 
     mov     RA, [RC:RD]                  ; write RA to the output device
@@ -35,7 +35,7 @@ _loop:
     push    RC
     push    RD
 
-    mov     [PSTDTXT_DD_START_PAGE], RC  ; load start page of standard text device in RC
+    mov     [STDTXT_DD_START_PAGE], RC  ; load start page of standard text device in RC
     mov     2, RD                        ; write to address to of the TTYE to output a char
 
     mov     RA, [RC:RD]                  ; write RA to the output device

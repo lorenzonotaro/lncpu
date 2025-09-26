@@ -17,9 +17,16 @@ io_init:
 
     add      RD, 10         ; point to device start page
     mov      [RC:RD], RA    ; load device start page in RA
-    mov      RA, [PSTDTXT_DD_START_PAGE]  ; store start page of standard text device
+    mov      RA, [STDTXT_DD_START_PAGE]  ; store start page of standard text device
 
-    sub      RD, 2          ; point to device descriptor pointer
+    inc      RD             ; point to device index
+    mov      [RC:RD], RA    ; load device index in RA
+    mov      RA, [STDTXT_INDEX]          ; store index of standard text device
+    inc      RD             ; point to device subindex
+    mov      [RC:RD], RA    ; load device subindex in RA
+    mov      RA, [STDTXT_SUBINDEX]       ; store subindex of standard text device
+
+    sub      RD, 4          ; point to device descriptor pointer
     mov      [RC:RD], RA    ; get device descriptor pointer (high byte)
     inc      RD
     mov      [RC:RD], RB    ; get device descriptor pointer (low byte)
@@ -33,14 +40,16 @@ io_init:
     add      RD, 5          ; point to device type field
     mov      [RC:RD], RA    ; load device type in RA
 
-    mov      RA, [PSTDTXT_DD_TYPE]
+    mov      RA, [STDTXT_DD_TYPE]
 
     goto     _init_io_buf
 _no_txtdev:
-    mov     0, [PSTDTXT_DD_TYPE]
+    mov     0, [STDTXT_DD_TYPE]
     mov     0, [PSTDTXT_DD]
     mov     0, [PSTDTXT_DD + 1]
-    mov     0, [PSTDTXT_DD_START_PAGE]
+    mov     0, [STDTXT_DD_START_PAGE]
+    mov     0, [STDTXT_INDEX]
+    mov     0, [STDTXT_SUBINDEX]
 _init_io_buf:
     mov         0x0,        [BUFWPT]        ; store 0 in both the buffer write and read pointers
     mov         0x0,        [BUFRPT]
@@ -121,7 +130,7 @@ _ret:
 is_stdtxt_avail:
     push RA
 
-    mov  [PSTDTXT_DD_TYPE], RA
+    mov  [STDTXT_DD_TYPE], RA
     cmp  RA, 0
     jz   _not_avail
     sec
@@ -137,7 +146,7 @@ _ret:
 ; lnc signature: void putc(char c);
 putc:
     push    RB
-    mov     [PSTDTXT_DD_TYPE], RB
+    mov     [STDTXT_DD_TYPE], RB
     cmp     RB, 0
     jz      _ret    ; no text device available, just return
 
@@ -161,7 +170,7 @@ puts:
     cmp     RB, 0
     jz      _ret    ; null string, just return
 
-    mov     [PSTDTXT_DD_TYPE], RB
+    mov     [STDTXT_DD_TYPE], RB
     cmp     RB, 0
     jz      _ret    ; no text device available, just return
 
@@ -376,12 +385,18 @@ _ret:
     pop     RA
     ret
 
-.section BIOS_DPAGE
+.section BIOS_DATA
 
-PSTDTXT_DD_TYPE: ; type of standard text device
+STDTXT_INDEX: ; index of standard text device
     .res 1
 
-PSTDTXT_DD_START_PAGE: ; start page of standard text device
+STDTXT_SUBINDEX: ; subindex of standard text device
+    .res 1
+
+STDTXT_DD_TYPE: ; type of standard text device
+    .res 1
+
+STDTXT_DD_START_PAGE: ; start page of standard text device
     .res 1
 
 PSTDTXT_DD: ; pointer to standard text device descriptor

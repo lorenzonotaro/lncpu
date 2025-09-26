@@ -266,7 +266,7 @@ _ret:
     pop RA
     ret
 
-.section BIOS_DPAGE
+.section BIOS_DATA
 ; Status of the DDI device table
 ddi_status:
     .res 1                      ; status code: 0 = valid, 1 = invalid/unkown, 2 = building

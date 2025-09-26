@@ -71,7 +71,7 @@ log_prefix_info:
     ret
 
 
-.section BIOS_DPAGE
+.section BIOS_DATA
 bios_status:
     .res 1
 

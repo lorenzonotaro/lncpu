@@ -40,7 +40,9 @@ _txtdev_avail:
     mov     (BIOS_WELCOME & 0xFF)::byte, RD
     lcall   puts                ; print BIOS welcome message
 
-    lcall   print_io_devices  ; print discovered I/O devices
+    lcall   print_io_devices    ; print discovered I/O devices
+
+    lcall   print_std_txt       ; prints what device is considered standard text 
 
     hlt
 
@@ -170,6 +172,32 @@ _end_devices:
     pop     RA
     ret
 
+; Prints what device is considered standard text output
+print_std_txt:
+    lcall  is_stdtxt_avail
+    jc     _avail
+    goto   _ret
+    
+_avail:
+    push   RC
+    push   RD
+
+    lcall  log_prefix_info
+
+    push   [STDTXT_SUBINDEX] ; push subindex
+    push   [STDTXT_INDEX]    ; push index
+
+    mov    (STD_TXT_DEV_FMT >> 8)::byte, RC
+    mov    (STD_TXT_DEV_FMT & 0xFF)::byte, RD
+
+    lcall  printf               ; print standard text device info
+    
+    pop    RD
+    pop    RC
+_ret:
+    ret
+
+
 .section BIOS_CONST
 BIOS_WELCOME:
     .data "Started LN-BIOS v0.2\n" 0x00
@@ -179,5 +207,8 @@ DEVICE_LIST_INTRO:
 
 DEVICE_ENTRY_FMT:
     .data "%s| %x.%x | " 0x00 ; flags are printed manually
+
+STD_TXT_DEV_FMT:
+    .data "Standard text output device is ID %x.%x\n" 0x00
 
 %endif
