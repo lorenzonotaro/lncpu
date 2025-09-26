@@ -3,5 +3,5 @@
 
 ; Interrupt handling routines for BIOS
 .section BIOS_INT
-
+    hlt
 %endif

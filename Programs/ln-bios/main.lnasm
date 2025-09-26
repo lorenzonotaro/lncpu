@@ -191,7 +191,8 @@ _avail:
     mov    (STD_TXT_DEV_FMT & 0xFF)::byte, RD
 
     lcall  printf               ; print standard text device info
-    
+    sub    SP, 2               ; clean up stack (2 pushed values)
+
     pop    RD
     pop    RC
 _ret:
