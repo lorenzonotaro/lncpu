@@ -56,5 +56,26 @@ _end_loop:
     pop     RA
     ret
 
+; lnc compliant
+; 
+; ttye_handle_interrupt: (RC:RD = start address of device)
+; 
+; checks if the ttye device has an generated an interrupt and handles it
+;
+; lnc signature: ```void ttye_handle_interrupt(void far *dev);```
+ttye_handle_interrupt:
+    push    RA
+    push    RD
+
+    mov     [RC:RD], RA     ; address 0 of device: check if avail
+    cmp     RA, 0
+    jz      _ret            ; not available, return
+    inc     RD
+    mov     [RC:RD], RA     ; address 1 of device: get data
+    lcall   wrtinbuf
+_ret:
+    pop     RD
+    pop     RA
+    ret
 
 %endif

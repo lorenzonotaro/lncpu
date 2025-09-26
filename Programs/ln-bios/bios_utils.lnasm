@@ -17,6 +17,9 @@
 ; Code indicating BIOS has not found a standard text output device (and was compiled with HALT_ON_NO_STDTXT)
 %define BIOS_STATUS_CRIT_NO_STDTXT 0x80
 
+; Code indicating that an interrupt was received but no device could handle it
+%define BIOS_STATUS_CRIT_INT_NO_DEV 0x81
+
 ; Code indicating BIOS is in an unspecified critical error state
 %define BIOS_STATUS_CRIT_UNSPEC  0xFF
 
@@ -70,6 +73,18 @@ log_prefix_info:
     pop RC
     ret
 
+log_prefix_crit:
+    push RC
+    push RD
+
+    mov (CRIT_PREFIX >> 8)::byte, RC
+    mov (CRIT_PREFIX & 0xFF)::byte, RD
+    lcall puts
+
+    pop RD
+    pop RC
+    ret
+
 
 .section BIOS_DATA
 bios_status:
@@ -84,5 +99,7 @@ WARN_PREFIX:
     .data "[WARN] " 0
 INFO_PREFIX:
     .data "[INFO] " 0 
+CRIT_PREFIX:
+    .data "[CRIT] " 0
 
 %endif

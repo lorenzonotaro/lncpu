@@ -1,9 +1,10 @@
 %include "ddi"
-%include "int"
-%include "ttye"
+%include "drivers/ttye"
 
 %ifndef BIOS_IO_F
 %define BIOS_IO_F
+
+%define STDTXT_OPTS_ECHO 0x01 ; echo input characters to output device
 
 .section BIOS_IO
 io_init:
@@ -41,6 +42,8 @@ io_init:
     mov      [RC:RD], RA    ; load device type in RA
 
     mov      RA, [STDTXT_DD_TYPE]
+
+    mov      0, [STDTXT_OPTS] ; clear options
 
     goto     _init_io_buf
 _no_txtdev:
@@ -185,9 +188,12 @@ _ret:
     ret
 
 ; lnc compliant
+; 
 ; wrtinbuf: (RA = char)
-; lnc signature: void wrtinbuf(char c);
+;
 ; writes a character to the input buffer, if there's space.
+;
+; lnc signature: ```void wrtinbuf(char c);```
 wrtinbuf:
     push    RC
     push    RD
@@ -200,10 +206,25 @@ wrtinbuf:
     inc     RD                 ; increment and update write pointer
     mov     RD,      [BUFWPT]
 
+    mov     [STDTXT_OPTS], RC
+    and     RC, STDTXT_OPTS_ECHO ; check if echo option is set
+    jz      _no_echo
+    lcall   putc            ; echo character to output device
+_no_echo:
     pop     RD
     pop     RC
     ret
 
+; lnc compliant
+;
+; stdtxt_set_opts: (RA = options)
+;
+; sets options for the standard text device
+;
+; lnc signature: ```void stdtxt_set_opts(char options);```
+stdtxt_set_opts:
+    mov     RA, [STDTXT_OPTS]
+    ret
 
 .section IO_UTILS
 
@@ -401,6 +422,9 @@ STDTXT_DD_START_PAGE: ; start page of standard text device
 
 PSTDTXT_DD: ; pointer to standard text device descriptor
     .res 2
+
+STDTXT_OPTS: ; options for standard text device
+    .res 1
 
 BUFWPT: ; write pointer into input buffer
     .res 1

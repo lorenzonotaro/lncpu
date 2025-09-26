@@ -1,7 +1,93 @@
+%include "bios_utils"
+%include "ddi"
+%include "io"
+%include "drivers/ttye"
 %ifndef BIOS_INT_F
 %define BIOS_INT_F
 
-; Interrupt handling routines for BIOS
+; Interrupt handling routine for BIOS
 .section BIOS_INT
-    hlt
+bios_int_handler:
+    push RA
+    push RB
+    push RC
+    push RD
+    push BP
+    mov  SP, BP
+    add  SP, 1        ; make space on stack for 2 local (found or not)
+    ; we run through all devices and call the associated interrupt handler
+    mov 0x2, RA        ; start from device 2 (skip ROM and RAM)
+    mov [ddi_num_devices], RB
+
+    cmp RB, 2          ; if there are no devices, we're in a critical state:
+    jz _crit_no_dev    ; no devices means no interrupt handlers, so we can't handle interrupts
+_int_loop:
+    cmp RA, RB
+    jz _ret           ; if we reached the number of devices, return
+
+    push RA
+    push RB
+    
+    lcall ddi_get_device ; get the pointer to the device entry in RC:RD
+    
+    add RD, 10           ; point RD to the start page of the device
+    mov [RC:RD], RB
+
+    push RB              ; save start page on stack
+
+    sub RD, 2            ; point to the device descriptor
+
+    mov [RC:RD], RA      ; load device descriptor low
+    inc RD
+    mov [RC:RD], RB      ; load device descriptor high
+
+    mov RA, RC           ; move device descriptor pointer to RC:RD
+    mov RB, RD
+
+    add RD, 5            ; point to device type
+
+    mov [RC:RD], RA      ; load device type to RA
+
+    pop RC               ; get start page on RC
+    xor RD, RD           ; clear RD
+
+    cmp RA, DEV_TYPE_TTYE
+    jz _ttye
+
+    goto _next
+
+_ttye:
+    lcall ttye_handle_interrupt
+    ; goto _found ; uncomment this when we have more than one interrupt-capable device
+_found:
+    mov 1, [BP + 0]      ; mark as found
+_next:
+    pop  RB
+    pop  RA
+    inc RA
+    goto _int_loop
+_ret:
+    sub  SP, 1              ; clean up stack (1 local variable)
+    pop  BP
+    pop  RD
+    pop  RC
+    pop  RB
+    pop  RA
+    iret
+_crit_no_dev:
+    lcall log_prefix_crit
+
+    mov BIOS_STATUS_CRIT_INT_NO_DEV, [bios_status]
+    mov (CRIT_NO_DEV_MSG >> 8)::byte, RC
+    mov (CRIT_NO_DEV_MSG & 0xFF)::byte, RD
+    lcall puts
+
+    hlt ; halt the system. We can't continue
+
+
+.section BIOS_CONST
+
+CRIT_NO_DEV_MSG:
+.data "interrupt received but no device to handle it. Check your setup." 0
+
 %endif

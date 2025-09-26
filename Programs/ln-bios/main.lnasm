@@ -2,6 +2,7 @@
 %include "ddi"
 %include "io"
 %include "bios_utils"
+%include "boot"
 
 %ifndef BIOS_MAIN_F
 %define BIOS_MAIN_F
@@ -18,6 +19,11 @@ bios_main:
 
     ; initialize I/O subsystem
     lcall   io_init
+
+    ; set stdtxt options
+    xor     RA, RA              ; clear RA
+    or      RA, STDTXT_OPTS_ECHO ; enable echo option
+    lcall   stdtxt_set_opts
 
 %ifdef HALT_ON_NO_STDTXT
     lcall   is_stdtxt_avail
@@ -44,6 +50,7 @@ _txtdev_avail:
 
     lcall   print_std_txt       ; prints what device is considered standard text 
 
+    lgoto    boot_seq            ; jump to boot sequence
     hlt
 
 print_io_devices:

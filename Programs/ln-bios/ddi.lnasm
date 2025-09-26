@@ -302,7 +302,7 @@ ddi_num_devices:
 ;   byte 5:   device type (see DEV_TYPE_*)
 ;   byte 6:   device flags (see DEV_FLAG_*)
 ;   byte 7:   device size in 256-byte pages (e.g. 0x20 = 8KB)
-;   byte 8-9: boot target start page (0 if not bootable)
+;   byte 8-9: boot target start (0:0 if not bootable)
 ;   byte 10-11: control page pointer (0:0 if no control page)
 ;   byte 12-14: reserved (must be 0)
 ;   byte 15: control byte (must be 0xA5)
