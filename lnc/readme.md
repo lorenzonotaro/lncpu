@@ -24,7 +24,7 @@ Run with `--help` to show a list of available options.
 
 ## The `lnasm` language
 
-![lnasm](lnc-demo.png)
+![lnasm](lnasm-demo.png)
 
 `lnasm` is a simple assembly language for the `lncpu`. It is a line-based language, with each line representing a single instruction or directive.
 
@@ -299,4 +299,5 @@ The same goes the other way around:
     mov     15,             RA
     lcall   doublei
     ; at this point RB will contain 30
+
 ```
