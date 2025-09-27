@@ -17,9 +17,14 @@ Overview of the repository:
 
 ## Prequisites
 
-- [Maven](https://maven.apache.org/) is required for building both `lnc` and `eeprom-serial-loader`.
+- [Maven](https://maven.apache.org/) and [JDK 16+](https://www.oracle.com/java/technologies/javase/jdk16-archive-downloads.html) are required for building both `lnc` and `eeprom-serial-loader`.
 - [Python 3.x](https://www.python.org/downloads/) is required to generate the EEPROMs for the control unit.
 - [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) and [Digital](https://github.com/hneemann/Digital) are used to simulate the design.
+
+**Note**: I suggest using [my fork of Logisim-evolution (logisim-lncpu branch)](https://github.com/lorenzonotaro/logisim-evolution) to open the Logisim project. It includes useful features like:
+- testing environment for the lncpu
+- easy loading of all CU EEPROMs at once
+- a neat LNCPU debugger
 
 ## Building
 
@@ -27,6 +32,14 @@ If you're on Linux, `make.sh` will build everything for you, including lnc, eepr
 
     ./make.sh [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
 
+If you're on Windows, use `make.bat` instead. Usage
 
+    ./make.bat [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
 
-**Note**: I suggest using [my fork of Logisim-evolution](https://github.com/lorenzonotaro/logisim-evolution) to open the Logisim project. It fixes some performance issues and adds Probe breakpoints, useful for debugging the lncpu.
+These scripts will create an `output` folder containing:
+- `lnc.jar`: the assembler and C compiler along with `lnc.bat`/`lnc.sh` scripts for easy usage
+- `eeprom-serial-loader.jar`: the EEPROM editing and loading utility along with `eeprom-serial-loader.bat`/`eeprom-serial-loader.sh` scripts for easy usage
+- `eeproms`: a folder containing all the generated control unit EEPROMs (if you have my fork of Logisim, you may open the Logisim project, then go to Simulate -> Debug LNCPU -> Load CU EEPROMS and select this folder to load them all at once).
+- a `lib` folder containing libraries for lnc/lnasm
+
+It is recommended to add the `output` folder to your PATH environment variable for easy usage of `lnc` and `eeprom-serial-loader` from any location and allow the Logisim debugger to compile and load programs directly.

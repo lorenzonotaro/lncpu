@@ -25,6 +25,13 @@
 
 .section BIOS_UTILS
 
+; lnc compliant
+; 
+; Prints a log prefix indicating a successful operation.
+;
+; log_prefix_ok: ()
+;
+; lnc signature: ```void log_prefix_ok(); ```
 log_prefix_ok: 
     push RC
     push RD
@@ -37,6 +44,13 @@ log_prefix_ok:
     pop RC
     ret
 
+; lnc compliant
+;
+; Prints a log prefix indicating an error.
+;
+; log_prefix_err: ()
+;
+; lnc signature: ```void log_prefix_err(); ```
 log_prefix_err:
     push RC
     push RD
@@ -49,6 +63,13 @@ log_prefix_err:
     pop RC
     ret
 
+; lnc compliant
+;
+; Prints a log prefix indicating a warning.
+;
+; log_prefix_warn: ()
+;
+; lnc signature: ```void log_prefix_warn(); ```
 log_prefix_warn:
     push RC
     push RD
@@ -61,6 +82,13 @@ log_prefix_warn:
     pop RC
     ret
 
+; lnc compliant
+;
+; Prints a log prefix indicating an informational message.
+;
+; log_prefix_info: ()
+;
+; lnc signature: ```void log_prefix_info(); ```
 log_prefix_info:
     push RC
     push RD
@@ -73,6 +101,13 @@ log_prefix_info:
     pop RC
     ret
 
+; lnc compliant
+;
+; Prints a log prefix indicating a critical error.
+;
+; log_prefix_crit: ()
+;
+; lnc signature: ```void log_prefix_crit(); ```
 log_prefix_crit:
     push RC
     push RD

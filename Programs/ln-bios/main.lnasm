@@ -50,7 +50,7 @@ _txtdev_avail:
 
     lcall   print_std_txt       ; prints what device is considered standard text 
 
-    lgoto    boot_seq            ; jump to boot sequence
+    lgoto    boot_seq           ; jump to boot sequence
     hlt
 
 print_io_devices:
