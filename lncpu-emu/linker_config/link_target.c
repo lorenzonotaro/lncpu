@@ -6,7 +6,10 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include <strings.h> /* strcasecmp */
+
+#if defined(_WIN32) || defined(_WIN64)
+    #define strncasecmp(x,y,z) _strnicmp(x,y,z)
+#endif
 
 static const LinkTargetInfo TBL[] = {
     [LT_ROM]     = { 0x0000, 0x1fff, true  },

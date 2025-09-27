@@ -13,13 +13,18 @@ Overview of the repository:
 
 * [`eeprom-serial-loader`](eeprom-serial-loader) is a utility program for editing binary data and loading it to/from EEPROMS.
 
+* [lncpu-emu](lncpu-emu) is a simple emulator for the lncpu written in C.
+
 * [`programs`](programs) contains some sample programs you can assemble and run on the lncpu as well as Notmon, a utility program strongly inspired in its functionality (and name) by Wozmon, made by Steve Wozniak for his Apple I.
+
+* [`extras`](extras) contains some additional tools, such as a VsCode extension for lnasm.
 
 ## Prequisites
 
 - [Maven](https://maven.apache.org/) and [JDK 16+](https://www.oracle.com/java/technologies/javase/jdk16-archive-downloads.html) are required for building both `lnc` and `eeprom-serial-loader`.
 - [Python 3.x](https://www.python.org/downloads/) is required to generate the EEPROMs for the control unit.
 - [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) and [Digital](https://github.com/hneemann/Digital) are used to simulate the design.
+- Any C compiler and [CMake](https://cmake.org/) to build the emulator (e.g. `gcc`).
 
 **Note**: I suggest using [my fork of Logisim-evolution (logisim-lncpu branch)](https://github.com/lorenzonotaro/logisim-evolution) to open the Logisim project. It includes useful features like:
 - testing environment for the lncpu
@@ -28,11 +33,11 @@ Overview of the repository:
 
 ## Building
 
-If you're on Linux, `make.sh` will build everything for you, including lnc, eeprom-serial-loader and the control unit EEPROMs. Usage
+If you're on Linux, `make.sh` will build everything for you, including lnc, eeprom-serial-loader and the control unit EEPROMs. Usage:
 
     ./make.sh [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
 
-If you're on Windows, use `make.bat` instead. Usage
+If you're on Windows, use `make.bat` instead. Usage:
 
     ./make.bat [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
 

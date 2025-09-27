@@ -5,6 +5,7 @@ REM config variables
 set build_lnc=true
 set build_eeprom_serial_loader=true
 set make_eeproms=true
+set make_emu=true
 
 REM parse command line arguments
 :parse_args
@@ -29,6 +30,12 @@ if "%~1"=="--no-eeproms" (
     shift
     goto parse_args
 )
+if "%~1"=="--no-lncpuemu" (
+    set make_emu=false
+    shift
+    goto parse_args
+)
+
 echo Unknown argument: %~1
 echo Usage: make.bat [--no-lnc] [--no-eeprom-serial-loader^|--no-esl] [--no-eeproms] [--no-lncpuemu]
 exit /b 1
@@ -133,6 +140,60 @@ if "%build_lnc%"=="true" (
     python gen_language_docs.py
 
     cd ..
+)
+
+REM === make lncpu-emu ===
+
+if "%make_emu%"=="true" (
+
+    cd lncpu-emu
+
+    echo Building lncpu-emu...
+
+    REM If build exists, delete it and recreate it
+
+    if exist build rmdir /s /q build
+    mkdir build
+
+    cd build
+
+    REM try with MinGW
+    cmake .. -G "MinGW Makefiles"
+
+    if errorlevel 1 (
+        echo CMake configuration with MinGW failed, trying with default generator...
+        
+        cd ..
+        rmdir /s /q build
+        mkdir build
+
+        cd build
+
+        cmake ..
+    )
+
+    if errorlevel 1 (
+        echo Error: CMake configuration failed
+        exit /b 1
+    )
+
+    cmake --build . --config Release
+
+    if errorlevel 1 (
+        echo Error: lncpu-emu build failed
+        exit /b 1
+    )
+
+    if exist Release\lncpu_emu.exe (
+        copy Release\lncpu_emu.exe ..\..\output\lncpu_emu.exe
+    ) else (
+        if exist Release\lncpu-emu (
+            copy Release\lncpu-emu ..\..\output\lncpu_emu
+        ) else (
+            echo Error: lncpu-emu executable not found
+            exit /b 1
+        )
+    )
 )
 
 echo Done.

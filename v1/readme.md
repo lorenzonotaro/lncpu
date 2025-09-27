@@ -46,7 +46,7 @@ The CPU has 4 general-purpose 8-bit registers, named `RA`, `RB`, `RC`, and `RD`.
 Some registers have special purposes:
 * `RA` has left and right shift capabilities, and is used by the `shl` and `shr` instructions.
 * `RC` and `RD` are used in combination with the `ircrd` addressing mode to read and write data from the address space.
-* `RD` is the only register that can be used to read and write dynamic data to and from `SS`, `SP` and BP registers (this is due to the limited number of opcodes available with a 1-byte instruction).
+* `RD` is the only register that can be used to read and write dynamic data to and from `SS`, `SP` and `BP` registers (this is due to the limited number of opcodes available with a 1-byte instruction).
 
 # Jump instructions
 The CPU supports several jump instructions that allow the program to change the flow of execution. Each instruction (except `lcall`) is available in two variants, a short and a long variant. The short variant uses a 1-byte immediate value as the target address and loads it into `PC` (without touching `CS`), while the long variant uses a 2-byte absolute address as the target address and loads it into `CS:PC`. 
@@ -96,12 +96,12 @@ The address space is divided as follows:
 |--------|---------------|-------------|
 | ROM    | 0x0000 - 0x1FFF | Read-only memory, points to the extractable chip that can be loaded with a program. |
 | RAM    | 0x2000 - 0x3FFF | Read-write memory, used for data storage. |
-| D1     | 0x4000 - 0x5FFF | Device 1, can be used for any purpose. |
-| D2     | 0x6000 - 0x7FFF | Device 2, can be used for any purpose. |
-| D3     | 0x8000 - 0x9FFF | Device 3, can be used for any purpose. |
-| D4     | 0xA000 - 0xBFFF | Device 4, can be used for any purpose. |
-| D5     | 0xC000 - 0xDFFF | Device 5, can be used for any purpose. |
-| D6     | 0xE000 - 0xFFFF | Device 6, can be used for any purpose. |
+| D0     | 0x4000 - 0x5FFF | Device 1, can be used for any purpose. |
+| D1     | 0x6000 - 0x7FFF | Device 2, can be used for any purpose. |
+| D2     | 0x8000 - 0x9FFF | Device 3, can be used for any purpose. |
+| D3     | 0xA000 - 0xBFFF | Device 4, can be used for any purpose. |
+| D4     | 0xC000 - 0xDFFF | Device 5, can be used for any purpose. |
+| D5     | 0xE000 - 0xFFFF | Device 6, can be used for any purpose. |
 
 # Stack
 
@@ -109,16 +109,16 @@ The implementation includes a basic stack setup:
 
 * the 8-bit `SS` register contains the page that will contain the stack (i.e. the top 8-bits of the current stack pointer).
 
-* the 8-bit `SP` register points to the next available stack position in the stack page.
+* the 8-bit `SP` register points to the **next available stack position** in the stack page.
 
-The entire stack top is pointed to by `SS:SP`. The stack **grows upwards**: `push` operations move a value into `[SS:SP]` and increment the stack by 1; `pop` operations read the value from `[SS:SP]` and decrement the stack by 1.
+The top of the stack is pointed to by `SS:SP`. The stack **grows upwards**: `push` operations move a value into `[SS:SP]` and increment the stack by 1; `pop` operations read the value from `[SS:SP]` and decrement the stack by 1.
 
 Calls and interrupts will push the current `CS:PC` onto the stack, so that it can be restored later. It is the programmer's responsibility to load `SS` and `SP` with correct values before using stack manipulation instructions and/or calls, and to ensure that the stack does not overflow, as the implementation does not include any stack overflow checks.
 
 To function properly, the stack obviously needs to be located in a location in the address space that is writable and readable by the CPU (usually in memory, but it can also be in any device that supports reading and writing). See the [Address space](#address-space) section for more information.
 
 The `BP` register points to the base of the current stack frame. It is not updated along with SP, so it can be used to access local variables in the current stack frame. It is the programmer's responsibility to ensure that `BP` is set correctly before using it.
-It is used by some instructions to access local variables in the current stack frame, with an addressing mode known as `ibpoffset` (base pointer offset, e.g. `[BP+1]` or `[BP-1]` to access the first local variable in the current stack frame).
+It is used by some instructions to access local variables in the current stack frame, with an addressing mode known as `ibpoffset` (base pointer offset, e.g. `[BP+1]` to access the first local variable in the current stack frame).
 
 # Data segment
 The data segment is a 256-byte segment that is used to store frequently used data by some instructions that use `dpage` addressing mode and that require one less clock cycle. 
@@ -139,9 +139,9 @@ Interrupts can be disabled with the `sid` (set interrupt disable) instruction, w
 The CPU supports several addressing modes, which determine how the operands of an instruction are accessed. The addressing modes are:
 | Addressing mode | Name | Description |
 |-----------------|------|-------------|
-| `immediate`     | Immediate | The operand is a constant value, specified in the instruction. |
-| `abs`        | Absolute | The operand is a 2-byte address of a location in the address space. |
-| `dpage`      | Data page | The operand is a 1-byte offset from the data segment, which is specified in the `DS` register. |
-| `ibpoffset`  | Stack frame | The operand is a 1-byte offset from the base pointer, which is specified in the `BP` register. |
+| `immediate`     | Immediate | The operand is a constant value, specified as an operand to the instruction. |
+| `abs`        | Absolute | The operand is a 2-byte address of a location in the address space, provided as an operand to the instruction. |
+| `dpage`      | Data page | The operand is a 1-byte offset (specified as an operand to the instruction) from the data segment, which is specified in the `DS` register. |
+| `ibpoffset`  | Stack frame | The operand is a 1-byte offset (specified as an operand to the instruction) from the stack base pointer, which is specified in the `BP` register. |
 | `ird`        | Data page indirect | Requires no operands, the location is in the data page at the address specified by the contents of the `RD` register. |
 | `ircrd` | Full indirect | Requires no operands, the location is specified by the contents of the RC and RD registers.

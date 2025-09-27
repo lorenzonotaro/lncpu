@@ -9,6 +9,7 @@ immediate.txt
 *immediate.txt
 
 .idea
+.venv
 
 # Log file
 *.log
@@ -82,4 +83,9 @@ lnc/test.lnasm
 
 # Node modules
 node_modules/
-lnasm_vscode/lnc/out
+extras/lnasm_vscode/lnc/out/*
+package-lock.json
+
+# lncpu-emu
+lncpu-emu/build
+lncpu-emu/cmake-build-debug

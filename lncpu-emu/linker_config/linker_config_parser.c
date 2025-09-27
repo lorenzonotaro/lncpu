@@ -6,6 +6,10 @@
 
 #include "lexer.h"
 
+#if defined(_WIN32) || defined(_WIN64)
+    #define strncasecmp(x,y,z) _strnicmp(x,y,z)
+#endif
+
 typedef struct {
     Parser p;
     char  *err; /* owned if set */

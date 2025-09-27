@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+    #define strncasecmp(x,y,z) _strnicmp(x,y,z)
+#endif
+
 static Location make_loc(const Lexer *lx, size_t start_idx) {
     Location loc = { lx->file, lx->line, 1 };
     loc.column = (start_idx >= lx->line_start_idx) ? (start_idx - lx->line_start_idx + 1) : 1;

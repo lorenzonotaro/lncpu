@@ -4,6 +4,7 @@ cd "$(dirname "$0")"
 build_lnc=true
 build_eeprom_serial_loader=true
 make_eeproms=true
+make_emu=true
 
 for arg in "$@"; do
 
@@ -13,6 +14,8 @@ for arg in "$@"; do
         build_eeprom_serial_loader=false
     elif [ "$arg" == "--no-eeproms" ]; then
         make_eeproms=false
+    elif [ "$arg" == "--no-lncpuemu" ]; then
+        make_emu=false
     else
         echo "Unknown argument: $arg"
         echo "Usage: make.sh [--no-lnc] [--no-eeprom-serial-loader|--no-esl] [--no-eeproms] [--no-lncpuemu]"
@@ -117,6 +120,42 @@ if [ $build_lnc = true ] ; then
     echo "Generating lnasm instruction set documentation..."
 
     python3 gen_language_docs.py
+
+fi
+
+# === make lncpu-emu ===
+if [ $make_emu = true ] ; then
+
+    cd lncpu-emu
+
+    #if build dir does not exists, create it
+    mkdir -p build
+    cd build
+
+    cmake ..
+
+    echo "Building lncpu-emu..."
+
+    cmake --build . --config Release
+
+    if [ $? -ne 0 ]; then
+        echo "Error: lncpu-emu build failed"
+        exit 1
+    fi
+
+    # copy the executable to output
+    if [ -f Release/lncpu-emu.exe ]; then
+        cp Release/lncpu-emu.exe ../../output/lncpu-emu.exe
+    elif [ -f lncpu-emu.exe ]; then
+        cp lncpu-emu.exe ../../output/lncpu-emu.exe
+    elif [ -f Release/lncpu-emu ]; then
+        cp Release/lncpu-emu ../../output/lncpu-emu
+    elif [ -f lncpu-emu ]; then
+        cp lncpu-emu ../../output/lncpu-emu
+    else
+        echo "Error: lncpu-emu executable not found"
+        exit 1
+    fi
 
 fi
 

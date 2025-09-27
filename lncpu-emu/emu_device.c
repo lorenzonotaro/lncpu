@@ -5,7 +5,6 @@
 #include <conio.h>
 #include "emu_device.h"
 
-#include <bemapiset.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
