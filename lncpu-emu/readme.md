@@ -7,7 +7,7 @@ A simple emulator for the LNCPU written in C.
 ---
 ## Building
 
-Building LNCPU-EMU requires a C compiler (MinGW gcc recommended) and CMake. To build the emulator, follow these steps:
+Building LNCPU-EMU requires a C compiler (Visual Studio, MinGW-gcc, etc.) and CMake. To build the emulator, follow these steps:
 1. Move into the directory:
 
     `cd lncpu-emu`

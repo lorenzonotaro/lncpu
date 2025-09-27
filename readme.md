@@ -44,6 +44,7 @@ If you're on Windows, use `make.bat` instead. Usage:
 These scripts will create an `output` folder containing:
 - `lnc.jar`: the assembler and C compiler along with `lnc.bat`/`lnc.sh` scripts for easy usage
 - `eeprom-serial-loader.jar`: the EEPROM editing and loading utility along with `eeprom-serial-loader.bat`/`eeprom-serial-loader.sh` scripts for easy usage
+- `lncpu-emu.exe`: the LNCPU emulator executable
 - `eeproms`: a folder containing all the generated control unit EEPROMs (if you have my fork of Logisim, you may open the Logisim project, then go to Simulate -> Debug LNCPU -> Load CU EEPROMS and select this folder to load them all at once).
 - a `lib` folder containing libraries for lnc/lnasm
 
