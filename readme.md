@@ -19,11 +19,27 @@ Overview of the repository:
 
 * [`extras`](extras) contains some additional tools, such as a VsCode extension for lnasm.
 
-## Prequisites
+## Current state of the project
+
+* **Physical implementation**: work in progress. The Logisim simulation is basically done and tested. Some adjustments to the architecture may still be made, but the main design is complete. The KiCad project is under construction, and it might be necessary to properly simulate the design with actual hardware simulation software (e.g. an HDL simulation) before implementing it physically.
+
+* **Assembler and C compiler**: the assembler is basically complete and stable. The C compiler is still a work in progress, but it is already usable for small-medium sized programs. Arrays and structs are yet to be implemented. The register allocator is very basic and can be improved and general optimization passes in the various stages would be very beneficial for an inefficient architecture like this one.
+
+* **EEPROM editor and loader**: the utility is basically complete and stable. Some improvements can be made to the UI, but it is already usable. More loaders other than the AT28C64 can be added.
+
+* **Emulator**: The emulator is also basically done, but it is very basic and can be improved a lot. It is currently Windows-only because of the use of `<conio.h>` for keyboard input, but porting it to Linux or MacOS should be easy.
+
+* **Programs**: A simple BIOS for the lncpu is under development. Notmon is basically complete and stable, but more features can be added.
+
+* **Extras**: The VsCode extension has syntax highlighting and basic symbol support for lnasm files. More features can be added, such as code snippets and integration with lnc.
+
+## Building
+
+### Prerequisites
 
 - [Maven](https://maven.apache.org/) and [JDK 16+](https://www.oracle.com/java/technologies/javase/jdk16-archive-downloads.html) are required for building both `lnc` and `eeprom-serial-loader`.
 - [Python 3.x](https://www.python.org/downloads/) is required to generate the EEPROMs for the control unit.
-- [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) and [Digital](https://github.com/hneemann/Digital) are used to simulate the design.
+- [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) is used to simulate the design.
 - Any C compiler and [CMake](https://cmake.org/) to build the emulator (e.g. `gcc`).
 
 **Note**: I suggest using [my fork of Logisim-evolution (logisim-lncpu branch)](https://github.com/lorenzonotaro/logisim-evolution) to open the Logisim project. It includes useful features like:
@@ -31,7 +47,6 @@ Overview of the repository:
 - easy loading of all CU EEPROMs at once
 - a neat LNCPU debugger
 
-## Building
 
 If you're on Linux, `make.sh` will build everything for you, including lnc, eeprom-serial-loader and the control unit EEPROMs. Usage:
 

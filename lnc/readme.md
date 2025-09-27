@@ -24,6 +24,8 @@ Run with `--help` to show a list of available options.
 
 ## The `lnasm` language
 
+![lnasm](lnc-demo.png)
+
 `lnasm` is a simple assembly language for the `lncpu`. It is a line-based language, with each line representing a single instruction or directive.
 
 Leading and trailing whitespace in each line is ignored, but each line may contain only one instruction or directive. Instructions and directives are case-insensitive.
@@ -230,6 +232,8 @@ Example:
     ]
 
 ## The lnc language
+
+![lnc](lnc-demo.png)
 
 The lnc is a C-like language that compiles to lnasm.
 The compiler is still very rudimental and produces *very* unoptimal code.
