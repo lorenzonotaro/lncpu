@@ -42,7 +42,7 @@ Overview of the repository:
 - [Logisim-evolution](https://github.com/logisim-evolution/logisim-evolution) is used to simulate the design.
 - Any C compiler and [CMake](https://cmake.org/) to build the emulator (e.g. `gcc`).
 
-**Note**: I suggest using [my fork of Logisim-evolution (logisim-lncpu branch)](https://github.com/lorenzonotaro/logisim-evolution) to open the Logisim project. It includes useful features like:
+**Note**: I suggest using [my fork of Logisim-evolution (logisim-lncpu branch)](https://github.com/lorenzonotaro/logisim-evolution/tree/lncpu-debugger-logisim) to open the Logisim project. It includes useful features like:
 - testing environment for the lncpu
 - easy loading of all CU EEPROMs at once
 - a neat LNCPU debugger
