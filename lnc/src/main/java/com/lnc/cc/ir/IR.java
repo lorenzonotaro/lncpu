@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents an Intermediate Representation (IR) consisting of a collection of IR units
+ * and an associated global flat symbol table. Provides functionalities for accessing
+ * these components and managing the relationship between symbol tables.
+ */
 public class IR {
     private final List<IRUnit> units;
     private final FlatSymbolTable symbolTable;

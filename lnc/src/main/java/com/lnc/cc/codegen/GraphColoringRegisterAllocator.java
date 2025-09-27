@@ -13,6 +13,22 @@ import com.mxgraph.view.mxGraph;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The GraphColoringRegisterAllocator class implements a register allocation algorithm
+ * using graph coloring. This class is responsible for assigning physical machine
+ * registers to variables in a program while optimizing code performance and minimizing
+ * the need for register spilling.
+ *
+ * The allocator operates on an interference graph where nodes represent program variables
+ * or temporaries, and edges represent conflicts between them, indicating that two variables
+ * cannot share the same register.
+ *
+ * Core functionalities:
+ * - Building the interference graph and identifying conflicts.
+ * - Applying the graph coloring technique to allocate registers.
+ * - Performing optimizations such as copy coalescing to minimize unnecessary register moves.
+ * - Handling register spilling by inserting loads and stores when there are insufficient registers.
+ */
 public class GraphColoringRegisterAllocator {
     private final InterferenceGraph graph;
     private final int K;  // total number of physical “colors”

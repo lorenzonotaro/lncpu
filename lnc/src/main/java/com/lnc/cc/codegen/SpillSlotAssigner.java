@@ -6,6 +6,15 @@ import com.lnc.cc.ir.operands.VirtualRegister;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A utility class that assigns memory spill slots to virtual registers based on their lifetimes.
+ *
+ * The primary purpose of this class is to manage and allocate stack memory slots
+ * for virtual registers when they need to be spilled (i.e., when there are not
+ * enough physical registers available). It ensures that spills are efficiently
+ * assigned by reusing memory slots where possible and recording the total number
+ * of slots consumed.
+ */
 public class SpillSlotAssigner {
     private record SpillInfo(int start, int end, VirtualRegister vr, int sizeSlots) {}
 

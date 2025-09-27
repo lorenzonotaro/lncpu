@@ -11,6 +11,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Resolves labels based on a global label map and section builders, implementing the {@link ILabelResolver} interface.
+ * This class is responsible for determining the address, section information, and other metadata about labels
+ * within an assembly or linking context.
+ *
+ * The resolution can involve both global labels and scoped sublabels (determined by their parent label).
+ * Additionally, it handles sections for linkage and symbol table management.
+ *
+ * Key responsibilities include:
+ * - Resolving tokens to label or section information.
+ * - Managing parent label context for proper sublabel resolution.
+ * - Providing mechanisms to generate a reverse symbol table and export label mappings.
+ */
 public class LabelMapLabelResolver implements ILabelResolver {
     private final Map<String, LabelMapEntry> globalLabelMap;
     private final Map<String, SectionBuilder> sectionBuilders;
@@ -22,6 +35,21 @@ public class LabelMapLabelResolver implements ILabelResolver {
         this.sectionBuilders = sectionBuilders;
     }
 
+    /**
+     * Resolves the given label token by determining its corresponding section and address.
+     * This method performs a lookup to check if the label exists in the global label map
+     * or is associated with a section. If the label cannot be resolved, a {@code CompileException}
+     * is thrown. Additionally, it handles special cases where the label corresponds to data page sections.
+     *
+     * @param labelToken The {@code Token} representing the label to be resolved. The token contains
+     *                   the lexeme of the label to locate, alongside additional metadata such as
+     *                   its type and location in the source code.
+     * @return A {@code LabelResolution} object encapsulating the resolved section, address,
+     *         and whether the label refers to a section name. If the label corresponds to a section
+     *         start name, the resolution will indicate so.
+     * @throws CompileException If the label cannot be resolved (e.g., if it's undefined) or if
+     *                          the label references a virtual data page section start.
+     */
     @Override
     public LabelResolution resolve(Token labelToken) {
         LabelMapEntry entry = computeLabel(labelToken.lexeme);

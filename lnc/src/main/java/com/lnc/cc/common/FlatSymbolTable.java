@@ -2,6 +2,12 @@ package com.lnc.cc.common;
 
 import java.util.Map;
 
+/**
+ * Represents a symbol table that organizes symbols in a flat structure without hierarchical nesting.
+ * This design serves as a utility for managing symbol resolution and constant lookup in compiled or interpreted programs.
+ * It provides methods to generate a flat representation of symbols from a scoped symbol hierarchy, resolve symbols,
+ * and handle constant mappings.
+ */
 public class FlatSymbolTable {
     private final Map<String, BaseSymbol> symbols;
 

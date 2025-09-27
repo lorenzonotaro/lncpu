@@ -4,10 +4,13 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
-import com.lnc.assembler.linker.LinkInfo;
 
-import java.io.IOException;
-
+/**
+ * Represents a numerical casting operation that converts a numerical argument
+ * from its current size and type to a specified target size and type.
+ * The source argument must be a numerical type, and the target type
+ * must be either "byte" or "word".
+ */
 public class NumberCast extends NumericalArgument{
 
     private final NumericalArgument source;
@@ -41,8 +44,8 @@ public class NumberCast extends NumericalArgument{
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
-        byte[] sourceEncoded = source.encode(labelResolver, linkInfo, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
+        byte[] sourceEncoded = source.encode(labelResolver, instructionAddress);
         byte[] result = new byte[targetSize];
 
         for (int i = 0; i < targetSize; i++) {
@@ -75,11 +78,11 @@ public class NumberCast extends NumericalArgument{
     }
 
     @Override
-    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+    public int value(ILabelResolver labelResolver, int instructionAddress) {
         if (targetSize == 1) {
-            return source.value(labelResolver, linkInfo, instructionAddress) & 0xFF; // Cast to byte
+            return source.value(labelResolver, instructionAddress) & 0xFF; // Cast to byte
         } else if (targetSize == 2) {
-            return source.value(labelResolver, linkInfo, instructionAddress) & 0xFFFF; // Cast to word
+            return source.value(labelResolver, instructionAddress) & 0xFFFF; // Cast to word
         } else {
             throw new CompileException("invalid cast target size", token);
         }

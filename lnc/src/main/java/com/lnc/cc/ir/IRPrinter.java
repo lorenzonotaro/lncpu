@@ -1,5 +1,11 @@
 package com.lnc.cc.ir;
 
+/**
+ * IRPrinter is a class that extends the GraphicalIRVisitor to traverse
+ * and format intermediate representation (IR) code into a readable string format.
+ * It processes various IR instructions and blocks while maintaining the traversal
+ * order defined in its superclass.
+ */
 public class IRPrinter extends GraphicalIRVisitor {
 
     public IRPrinter() {

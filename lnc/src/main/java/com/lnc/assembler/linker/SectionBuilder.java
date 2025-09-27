@@ -93,12 +93,12 @@ public class SectionBuilder {
         return sectionInfo;
     }
 
-    public void output(ByteArrayChannel sectionTarget, LabelMapLabelResolver labelResolver, LinkInfo linkInfo) throws IOException {
+    public void output(ByteArrayChannel sectionTarget, LabelMapLabelResolver labelResolver) throws IOException {
         for (InstructionEntry instruction : instructions) {
             instruction.instruction.getLabels().stream().filter(l -> !l.name().contains(LnasmParser.SUBLABEL_SEPARATOR)).reduce((f, s) -> s).ifPresent(lastParentLabel -> labelResolver.setCurrentParentLabel(lastParentLabel.name()));
 
             sectionTarget.position(sectionStart + instruction.index - sectionInfo.getTarget().start);
-            byte[] buffer = instruction.instruction.encode(labelResolver, linkInfo, sectionStart + instruction.index);
+            byte[] buffer = instruction.instruction.encode(labelResolver, sectionStart + instruction.index);
             sectionTarget.write(ByteBuffer.wrap(buffer));
         }
     }

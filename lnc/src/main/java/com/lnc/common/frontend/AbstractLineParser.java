@@ -2,6 +2,14 @@ package com.lnc.common.frontend;
 
 import java.util.List;
 
+/**
+ * AbstractLineParser provides a foundational framework for line-based parsing processes.
+ * This class is designed to iterate through a collection of tokenized lines, enabling
+ * subclasses to implement specific parsing logic for each line. It also facilitates
+ * error handling and parsing lifecycle management.
+ *
+ * @param <T> the type of the parsing result produced by subclasses.
+ */
 public abstract class AbstractLineParser<T> extends AbstractParser<T> {
     private final List<Token[]> lines;
     private Token[] currentLine;

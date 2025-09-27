@@ -2,6 +2,14 @@ package com.lnc.common.frontend;
 
 import java.nio.file.Path;
 
+/**
+ * AbstractLexer is an abstract class that provides a base implementation
+ * for lexers capable of tokenizing a given source. This class processes
+ * and categorizes input characters into meaningful tokens to be further utilized in
+ * compilers or interpreters.
+ *
+ * @param <T> The type parameter representing customization for token processing.
+ */
 public abstract class AbstractLexer<T>
 {
     protected String source;

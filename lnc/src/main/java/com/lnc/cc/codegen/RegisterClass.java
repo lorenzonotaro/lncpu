@@ -4,6 +4,12 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * The {@code RegisterClass} class represents a collection of registers,
+ * encapsulating specific groupings of {@link Register} instances for particular use cases.
+ * It defines various predefined static instances for convenience and provides utility methods
+ * for working with these register groups.
+ */
 public class RegisterClass {
 
     public static RegisterClass ANY = new RegisterClass(Set.of(Register.RC, Register.RB, Register.RA, Register.RD));

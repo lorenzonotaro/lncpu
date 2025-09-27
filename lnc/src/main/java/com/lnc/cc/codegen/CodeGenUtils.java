@@ -9,6 +9,12 @@ import com.lnc.cc.ir.IRBlock;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
+/**
+ * Utility class providing methods to generate various components of assembly code,
+ * such as registers, instructions, labels, and arguments. This class simplifies
+ * the creation of intermediate representations and encapsulates common operations
+ * required for code generation.
+ */
 public class CodeGenUtils {
     public static Argument reg(TokenType regId) {
         return new Register(Token.__internal(regId, regId.toString()));

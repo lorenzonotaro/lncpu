@@ -10,6 +10,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The {@code Disassembler} class is responsible for converting binary executable data
+ * into a human-readable disassembled format. It processes binary opcode data and
+ * provides a textual representation of the instructions using reverse mapping information.
+ *
+ * The disassembly process incorporates metadata about sections and labels, ensuring
+ * that proper formatting and contextual representation are preserved.
+ */
 public class Disassembler{
 
     private final Map<Integer, String> reverseLookupLabels;

@@ -12,6 +12,22 @@ import com.lnc.common.frontend.TokenType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The TypeChecker class is responsible for performing semantic verification
+ * of types within an abstract syntax tree (AST) structure. It extends
+ * the ScopedASTVisitor class and works with various nodes in the AST to ensure
+ * type correctness and completeness, resolving types where necessary and
+ * issuing errors or warnings as appropriate.
+ *
+ * This class performs type checking operations such as:
+ * - Verifying type completeness for structs, arrays, and pointer types.
+ * - Enforcing assignment type compatibility.
+ * - Ensuring function call compatibility with parameter and return types.
+ * - Verifying member access operations for structs and pointers.
+ * - Checking subscript operations for array and pointer types.
+ * - Handling unary operations like dereferencing and address-of.
+ * - Validating return statements relative to the current function context.
+ */
 public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     public TypeChecker(AST ast) {

@@ -1,5 +1,12 @@
 package com.lnc.common.frontend;
 
+/**
+ * FullSourceParser is an abstract base class specifically designed for implementing parsers
+ * that operate on an array of tokens. It provides methods and fields to assist in consuming
+ * tokens, handling parser states, and maintaining context while parsing.
+ *
+ * @param <T> the type of the parsing result produced by the subclass.
+ */
 public abstract class FullSourceParser<T> extends AbstractParser<T> {
     protected final Token[] tokens;
     protected int index;

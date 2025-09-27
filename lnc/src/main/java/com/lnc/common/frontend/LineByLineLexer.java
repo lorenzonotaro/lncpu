@@ -4,6 +4,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The LineByLineLexer class extends the AbstractLexer and is responsible for tokenizing
+ * source input line-by-line into a structure that can be used by downstream processes.
+ *
+ * This lexer processes each line of the input individually, handling compilation errors
+ * for individual lines and allowing partial success in the event of errors. It accumulates
+ * the tokens for each input line into a nested list structure.
+ */
 public class LineByLineLexer extends AbstractLexer<List<List<Token>>> {
 
 

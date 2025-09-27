@@ -12,6 +12,15 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Parser for the Lnasm (Low-level NASM-like) language. This class processes
+ * a series of preprocessed tokens representing lines of code and generates
+ * a structured parse result, including sections, labels, and instructions.
+ * It extends {@link AbstractLineParser} with Lnasm-specific parsing logic.
+ *
+ * The parsing is line-oriented and identifies sections, labels, instructions,
+ * directives, and their arguments according to the Lnasm language specification.
+ */
 public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
     public static final String SUBLABEL_INITIATOR = "_";

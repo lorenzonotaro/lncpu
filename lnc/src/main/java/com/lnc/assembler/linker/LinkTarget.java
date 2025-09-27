@@ -1,5 +1,13 @@
 package com.lnc.assembler.linker;
 
+/**
+ * An enumeration representing different memory regions, each defined by its starting
+ * and ending address and its role in the memory architecture.
+ *
+ * This allows logical segmentation of memory blocks and provides utility methods
+ * to evaluate memory addresses against these regions, retrieve related information,
+ * and manipulate memory distribution in defined ranges.
+ */
 public enum LinkTarget {
     ROM(0x0, 0x1fff, true),
     RAM(0x2000, 0x3fff, false),

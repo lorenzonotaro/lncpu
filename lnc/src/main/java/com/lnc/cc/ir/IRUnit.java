@@ -14,6 +14,15 @@ import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
 
+/**
+ * Represents an Intermediate Representation Unit (IR Unit) for a specific {@link FunctionDeclaration}.
+ * It acts as a container for the IR blocks, virtual register management, and loop-related information.
+ * Additionally, it provides facilities for symbol resolution, control flow graph construction, and
+ * function-specific metadata generation.
+ *
+ * The class maintains state related to the intermediate representation of a function, such as
+ * its list of blocks, the starting block, and associated metadata like frame and local mappings.
+ */
 public class IRUnit implements Iterable<IRBlock>{
     private final FunctionDeclaration functionDeclaration;
     private final FunctionType functionType;

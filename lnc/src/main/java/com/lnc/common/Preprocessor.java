@@ -24,6 +24,11 @@ import com.lnc.common.frontend.Location;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
+/**
+ * The Preprocessor class processes source code by handling macros,
+ * tokenizing input, and managing include directives. It supports
+ * both line-based and full-source processing modes.
+ */
 public class Preprocessor {
 
     private enum Mode { LINE_BASED, FULL_SOURCE }

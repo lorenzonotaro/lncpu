@@ -8,6 +8,17 @@ import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.*;
 
+/**
+ * Represents the liveness information of virtual registers within blocks of an intermediate representation (IR).
+ * The liveness information includes two sets for each IR block:
+ * - liveIn: A set of virtual registers that are live at the entry of the block.
+ * - liveOut: A set of virtual registers that are live at the exit of the block.
+ *
+ * This record is useful for analyzing liveness during compiler optimization and register allocation.
+ *
+ * @param liveIn A mapping of each IR block to the set of virtual registers live at its entry.
+ * @param liveOut A mapping of each IR block to the set of virtual registers live at its exit.
+ */
 public record LivenessInfo(
         Map<IRBlock, Set<VirtualRegister>> liveIn,
         Map<IRBlock, Set<VirtualRegister>> liveOut

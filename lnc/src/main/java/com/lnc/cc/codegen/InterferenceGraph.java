@@ -6,6 +6,12 @@ import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.*;
 
+/**
+ * The InterferenceGraph class represents the interference graph in a compiler's register allocator.
+ * It models the relationships between virtual registers (vregs) and physical registers (phys),
+ * identifying interdependencies and constraints. This class includes functionality to manage
+ * nodes, define interferences and preferences, and access live range and usage information.
+ */
 public class InterferenceGraph {
     private final Map<VirtualRegister, Node> vregNodes   = new LinkedHashMap<>();
     private final Map<Register,        Node> physNodes   = new LinkedHashMap<>();

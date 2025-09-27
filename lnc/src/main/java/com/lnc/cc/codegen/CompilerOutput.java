@@ -10,6 +10,15 @@ import com.lnc.common.frontend.TokenType;
 
 import java.util.*;
 
+/**
+ * Represents the compiled output of a specific section within a compilation process.
+ * This class encapsulates various elements of compiled code, associated labels,
+ * and exported symbols, while associating them with a specific section and, optionally,
+ * an intermediate representation unit.
+ *
+ * Instances of this class can be used to organize and process compiled output
+ * structure during later stages of the compilation or linking process.
+ */
 public final class CompilerOutput {
     private final LinkedList<CodeElement> code;
     private final SectionInfo sectionInfo;

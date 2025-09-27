@@ -2,6 +2,11 @@ package com.lnc.assembler.linker;
 
 import java.util.Objects;
 
+/**
+ * MemoryLayoutManager is responsible for managing memory segments, organizing and allocating them
+ * according to specified section requirements. It validates the memory layout, ensures continuity,
+ * and handles different allocation strategies such as fixed, page-aligned, page-fit, and general fits.
+ */
 public class MemoryLayoutManager {
 
 

@@ -3,6 +3,26 @@ package com.lnc.cc.codegen;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
+/**
+ * PostRAOptimizer performs post-register allocation optimizations on an intermediate
+ * representation (IR) unit. This optimization pass operates in reverse post-order
+ * traversal of the control flow graph.
+ *
+ * PostRAOptimizer is typically used after register allocation to perform various cleanup
+ * and optimization tasks that depend on the final allocation decisions.
+ *
+ * The class visits different types of IR instructions, such as Goto, CondJump, Move,
+ * Ret, Bin, Call, Push, and Unary, providing the ability to analyze and potentially
+ * transform the IR at each visited instruction.
+ *
+ * Methods in this class include facilities to determine if a virtual register value
+ * becomes dead at a given point, based on the liveness information computed during
+ * register allocation. It specifically handles evaluating the impact of IR instruction
+ * sequences within basic blocks and at control flow boundaries.
+ *
+ * The run method acts as an entry point for invoking the optimization pass on a given
+ * IR unit with its associated allocation information.
+ */
 public class PostRAOptimizer extends GraphicalIRVisitor {
 
     private final IRUnit unit;

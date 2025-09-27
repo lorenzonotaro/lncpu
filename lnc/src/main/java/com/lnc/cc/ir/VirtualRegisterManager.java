@@ -6,6 +6,11 @@ import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.*;
 
+/**
+ * The VirtualRegisterManager class is responsible for managing a collection of virtual registers.
+ * Virtual registers are dynamically allocated based on the specified type information and are
+ * associated with specific register classes based on their allocation size.
+ */
 public class VirtualRegisterManager {
 
 

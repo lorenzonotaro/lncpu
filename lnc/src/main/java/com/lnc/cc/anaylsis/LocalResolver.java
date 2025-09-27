@@ -7,6 +7,16 @@ import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeQualifier;
 
+/**
+ * The LocalResolver class extends the ScopedASTVisitor and is responsible for
+ * resolving symbols and defining constants or structures within the Abstract Syntax Tree (AST)
+ * during compilation. It primarily focuses on symbol resolution, scope management, and
+ * handling various types of expressions and statements in the AST.
+ *
+ * This class provides specific implementations for visiting different AST node types such as
+ * expressions, statements, declarations, etc., and performs tasks like resolving identifiers,
+ * defining variables, constants, and navigating through nested scopes as necessary.
+ */
 public class LocalResolver extends ScopedASTVisitor<Void> {
 
     public LocalResolver(AST ast){

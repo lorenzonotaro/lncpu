@@ -3,6 +3,13 @@ package com.lnc.cc.ir;
 
 import java.util.*;
 
+/**
+ * Represents a basic block in an Intermediate Representation (IR) program structure.
+ * An `IRBlock` contains a sequence of IR instructions that run as a single block (meaning without jumps in between).
+ * It also contains information about its relationships to other blocks in the control flow graph (predecessors and successors).
+ * It also supports operations for managing and traversing instructions within the block.
+ * This class implements the {@code Iterable<IRInstruction>} interface to allow iteration over its instructions.
+ */
 public class IRBlock implements Iterable<IRInstruction> {
 
     private final IRUnit unit;

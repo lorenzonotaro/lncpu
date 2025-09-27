@@ -10,24 +10,43 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implements a linker for binary output, processing parsed input data into a format usable
+ * by a target binary system. This class extends the {@code AbstractLinker} base, specifically
+ * working with a map of link targets to output {@code ByteArrayChannel}s.
+ *
+ * It manages the linking process by handling symbol resolutions across sections and supporting
+ * external symbol tables. The class ensures that memory layouts for sections are valid, resolves
+ * labels, and produces linked output for target binary systems.
+ */
 public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChannel>>{
     private Map<LinkTarget, ByteArrayChannel> outputs;
 
     private LabelMapLabelResolver labelResolver;
 
-    private final LinkInfo linkInfo;
-
     private Map<String, SectionBuilder> sectionBuilders;
     private final List<String> externalSymTablesFiles;
 
+    /**
+     * Constructs a BinaryLinker instance using the provided linker configuration.
+     *
+     * @param config the configuration object containing information about sections
+     *               and their settings used to set up the linking process.
+     */
     public BinaryLinker(LinkerConfig config) {
         this(config, Collections.emptyList());
     }
 
+    /**
+     * Constructs a BinaryLinker instance that initializes the linker using the provided configuration
+     * and optionally loads external symbol table files.
+     *
+     * @param config                 the configuration for the linker specifying sections and their properties
+     * @param externalSymTablesFiles a list of file paths for external symbol table files to be loaded
+     */
     public BinaryLinker(LinkerConfig config, List<String> externalSymTablesFiles){
         super(config);
         this.externalSymTablesFiles = externalSymTablesFiles;
-        linkInfo = new LinkInfo();
     }
 
     @Override
@@ -77,12 +96,27 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         return outputs;
     }
 
+    /**
+     * Links sections and generates a mapping of LinkTarget to ByteArrayChannel.
+     * This method processes the provided section builders and outputs linked data
+     * into byte channels for each target.
+     *
+     * @param sectionBuilders a map where keys are section names, and values are
+     *                        the corresponding SectionBuilder instances used
+     *                        for assembling the sections.
+     * @param labelResolver   an implementation of LabelMapLabelResolver used for
+     *                        resolving labels during the linking process.
+     * @return a map where the keys are LinkTarget objects representing memory
+     *         regions, and the values are ByteArrayChannel objects containing the
+     *         linked data for the associated targets.
+     * @throws LinkException if an I/O exception occurs during the linking process.
+     */
     private Map<LinkTarget, ByteArrayChannel> link(Map<String, SectionBuilder> sectionBuilders, LabelMapLabelResolver labelResolver) {
         try{
             var result = new HashMap<LinkTarget, ByteArrayChannel>();
             for (var section : sectionBuilders.values()) {
                 var sectionTarget = result.computeIfAbsent(section.getSectionInfo().getTarget(), k -> new ByteArrayChannel(0, false));
-                section.output(sectionTarget, labelResolver, linkInfo);
+                section.output(sectionTarget, labelResolver);
             }
 
             return result;

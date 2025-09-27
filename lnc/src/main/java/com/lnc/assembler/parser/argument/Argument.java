@@ -4,6 +4,17 @@ import com.lnc.assembler.common.*;
 import com.lnc.assembler.linker.ILabelSectionLocator;
 import com.lnc.common.frontend.Token;
 
+/**
+ * Represents an abstract argument used in the encoding or representation
+ * of assembly language components. Each argument is associated with a specific
+ * token and type, and can be extended to represent more concrete argument types.
+ *
+ * The Argument class defines methods for obtaining string representations,
+ * encoding arguments into binary formats, and comparing argument objects for equality.
+ *
+ * Subclasses of Argument are expected to provide implementations for the abstract methods
+ * and may add additional functionality specific to their type.
+ */
 public abstract class Argument implements IEncodeable {
     public final Token token;
     public final Type type;

@@ -4,10 +4,24 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
-import com.lnc.assembler.linker.LinkInfo;
 
-import java.io.IOException;
-
+/**
+ * Represents a binary operation between two arguments, such as addition, subtraction,
+ * multiplication, or division. Each BinaryOp consists of a left operand, a right operand,
+ * and an operator specifying the type of binary operation to perform.
+ *
+ * A BinaryOp enforces that both the left and right arguments are instances of
+ * NumericalArgument. If the arguments do not conform to this constraint, a
+ * CompileException is thrown at instantiation.
+ *
+ * This class provides functionality to calculate the result of the binary operation,
+ * encode its operands into binary format, and determine its size in a specific encoding
+ * context.
+ *
+ * The available operators for binary operations are represented in the nested
+ * Operator enum and include addition (ADD), subtraction (SUB), multiplication (MUL),
+ * division (DIV), bitwise shifts (SHL, SHR), and bitwise operations (AND, OR, XOR).
+ */
 public class BinaryOp extends NumericalArgument{
 
     public final Argument left, right;
@@ -47,10 +61,10 @@ public class BinaryOp extends NumericalArgument{
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
 
-        byte[] leftBytes = left.encode(labelResolver, linkInfo, instructionAddress);
-        byte[] rightBytes = right.encode(labelResolver, linkInfo, instructionAddress);
+        byte[] leftBytes = left.encode(labelResolver, instructionAddress);
+        byte[] rightBytes = right.encode(labelResolver, instructionAddress);
 
         long result = getResult(leftBytes, rightBytes);
 
@@ -113,9 +127,9 @@ public class BinaryOp extends NumericalArgument{
     }
 
     @Override
-    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
-        byte[] leftBytes = left.encode(labelResolver, linkInfo, instructionAddress);
-        byte[] rightBytes = right.encode(labelResolver, linkInfo, instructionAddress);
+    public int value(ILabelResolver labelResolver, int instructionAddress) {
+        byte[] leftBytes = left.encode(labelResolver, instructionAddress);
+        byte[] rightBytes = right.encode(labelResolver, instructionAddress);
 
         return (int) getResult(leftBytes, rightBytes);
     }

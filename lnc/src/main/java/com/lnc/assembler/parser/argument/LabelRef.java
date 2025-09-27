@@ -3,12 +3,25 @@ package com.lnc.assembler.parser.argument;
 import com.lnc.assembler.common.*;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
-import com.lnc.assembler.linker.LinkInfo;
-import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.common.frontend.Token;
 
-import java.io.IOException;
-
+/**
+ * The {@code LabelRef} class represents a reference to a label in an assembly or linking process.
+ * It extends the {@code NumericalArgument} class, providing functionality specific to label-based
+ * arguments. A {@code LabelRef} object encapsulates a label token and its associated operations
+ * for encoding, size calculation, and value resolution.
+ *
+ * This class is primarily used to manage label references in assembly language compilation,
+ * offering methods to:
+ * - Resolve and encode label values into byte arrays.
+ * - Determine the size of the encoded representation.
+ * - Retrieve immediate encodings.
+ * - Compare label references for equality.
+ *
+ * The logic and behavior for these operations depend on the label's resolution, which involves the
+ * associated section and its properties, such as whether it resides on a data page or corresponds
+ * to a section name.
+ */
 public class LabelRef extends NumericalArgument {
     public final Token labelToken;
 
@@ -24,7 +37,7 @@ public class LabelRef extends NumericalArgument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
         LabelResolution resolution = labelResolver.resolve(labelToken);
 
         var targetLabel = resolution.address();
@@ -55,7 +68,7 @@ public class LabelRef extends NumericalArgument {
     }
 
     @Override
-    public int value(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+    public int value(ILabelResolver labelResolver, int instructionAddress) {
         LabelResolution resolution = labelResolver.resolve(labelToken);
         return resolution.address();
     }

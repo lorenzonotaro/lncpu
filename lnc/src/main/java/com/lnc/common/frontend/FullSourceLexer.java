@@ -4,9 +4,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The FullSourceLexer class is responsible for lexically analyzing a source code string and
+ * producing a list of tokens. It extends the AbstractLexer class with a specific focus on
+ * handling the parsing of full source code files and managing tokenized results.
+ */
 public class FullSourceLexer extends AbstractLexer<List<Token>>{
     private final List<Token> tokens;
-    private Line currentLine;
+
     private Path file;
     private int lastLf;
     private int line;

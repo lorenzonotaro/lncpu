@@ -10,6 +10,31 @@ import com.lnc.cc.types.TypeSpecifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that performs the lowering pass on an intermediate representation (IR) of code.
+ * This class transforms high-level IR operations into lower-level constructs, often preparing
+ * the code for assembly generation or subsequent optimizations. Operations are altered to ensure
+ * compatibility with the lncpu's execution environment's constraints such as register usage, calling
+ * conventions, and instruction limitations.
+ *
+ * This class extends {@link GraphicalIRVisitor} to traverse and modify the control flow graph
+ * represented by the IR and implements {@link IIROperandVisitor} to support operand-level
+ * transformations.
+ *
+ * Responsibilities:
+ * - Adjust operand types, ensuring proper usage of virtual registers and immediate values.
+ * - Transform conditional jumps, binary/unary operations, function calls, and return statements.
+ * - Handle the movement of operands into appropriate virtual registers or memory.
+ * - Conform to the calling convention by managing function arguments and return targets.
+ * - Insert auxiliary instructions such as move and push as needed to adhere to constraints.
+ *
+ * Features and Capabilities:
+ * - Utilizes register classes (e.g., general-purpose, return-specific) to organize operand placement.
+ * - Ensures stack-based argument passing where required by the calling convention.
+ * - Resolves operand locations for variables, constants, and other entities in the IR.
+ * - Supports extensibility for unimplemented operations (e.g., struct member or array access).
+ *
+ */
 public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisitor<IROperand> {
     @Override
     public Void visit(Goto aGoto) {

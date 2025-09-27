@@ -6,6 +6,12 @@ import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The ExternalSymbolTableIO class provides static methods for reading and writing
+ * a symbol table represented as a map of {@code String} keys to {@code LabelMapEntry} values.
+ * The symbol table is serialized to and deserialized from files using Java's object
+ * serialization mechanism.
+ */
 public class ExternalSymbolTableIO {
 
     public static void write(String symOut, Map<String, LabelMapEntry> map) {

@@ -9,7 +9,6 @@ import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
 import com.lnc.assembler.common.OpcodeMap;
 import com.lnc.common.frontend.Token;
-import com.lnc.assembler.linker.LinkInfo;
 import com.lnc.assembler.parser.argument.Argument;
 import com.lnc.common.frontend.TokenType;
 
@@ -17,6 +16,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Represents an instruction within a code structure. An instruction consists of an opcode and any associated arguments.
+ * This class is responsible for calculating the size of the instruction, encoding the instruction into machine-readable format,
+ * and providing functionality to determine if the instruction is a short jump.
+ */
 public class Instruction extends CodeElement {
     private final Token opcode;
     private Argument[] arguments;
@@ -54,12 +58,12 @@ public class Instruction extends CodeElement {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
         byte[] result = new byte[size(labelResolver)];
         if(isShortJump() && arguments.length == 1 && arguments[0].type == Argument.Type.LABEL){
             try {
                 result[0] = OpcodeMap.getOpcode(opcode.lexeme + "_cst");
-                byte[] targetBuffer = arguments[0].encode(labelResolver, linkInfo, instructionAddress);
+                byte[] targetBuffer = arguments[0].encode(labelResolver, instructionAddress);
 
                 if((targetBuffer[0] << 8) != (instructionAddress & 0xFF00) && !LNC.settings.get("-Wshort-jump-out-of-range", Boolean.class)){
                     Logger.compileWarning("referenced label in short jump is outside of code segment. Use 'l" + opcode.lexeme.toLowerCase() + "' instead (-Wshort-jump-out-of-range)", arguments[0].token);                }
@@ -77,7 +81,7 @@ public class Instruction extends CodeElement {
                     result[0] = OpcodeMap.getOpcode(immediateInstruction);
                     int offset = 1;
                     for (Argument argument : sortArgumentsForEncoding(arguments, labelResolver)) {
-                        byte[] arg = argument.encode(labelResolver, linkInfo, instructionAddress);
+                        byte[] arg = argument.encode(labelResolver, instructionAddress);
                         for (byte b : arg) {
                             result[offset++] = b;
                         }
@@ -85,23 +89,6 @@ public class Instruction extends CodeElement {
                 } catch (IndexOutOfBoundsException e) {
                     throw new CompileException("failed to encode instruction", opcode);
                 }
-            }
-
-            if(immediateInstruction.startsWith("mov_") && immediateInstruction.endsWith("_ds")){
-                linkInfo.dsSet = true;
-            }else if(immediateInstruction.startsWith("mov_") && immediateInstruction.endsWith("_ss")){
-                linkInfo.ssSet = true;
-            }
-
-            
-            if(immediateInstruction.contains("datap") && !linkInfo.dsSet && !LNC.settings.get("-Wdata-page-access-before-setup", Boolean.class)){
-                Logger.compileWarning("data page addressing mode before setting up DS register", opcode);
-            }
-
-
-            if((immediateInstruction.startsWith("push") || immediateInstruction.startsWith("pop") || immediateInstruction.startsWith("lcall") || immediateInstruction.startsWith("ret") || immediateInstruction.startsWith("iret")) &&
-            !linkInfo.ssSet && !LNC.settings.get("-Wstack-access-before-setup", Boolean.class)){
-                Logger.compileWarning("stack access before setting up SS register", opcode);
             }
 
         }

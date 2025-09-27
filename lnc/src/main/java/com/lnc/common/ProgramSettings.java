@@ -8,6 +8,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.*;
 
+/**
+ * A utility class for managing program settings and options.
+ * This class provides functionalities to load, retrieve, modify, and handle
+ * configuration options from a JSON file, as well as handle associated source files.
+ */
 public class ProgramSettings {
     private static final GsonBuilder gsonBuilder = new GsonBuilder();
 

@@ -5,6 +5,12 @@ import com.lnc.cc.types.TypeQualifier;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
 
+/**
+ * Represents a base class for symbols used in the symbol table of a compiler or interpreter.
+ * Symbols define variables, function parameters, or other named entities with type information, qualifiers,
+ * and other metadata. This class provides common functionality for symbol manipulation and serves as a
+ * foundation for more specific symbol types.
+ */
 public class BaseSymbol{
     private final Token token;
     private final TypeSpecifier typeSpecifier;

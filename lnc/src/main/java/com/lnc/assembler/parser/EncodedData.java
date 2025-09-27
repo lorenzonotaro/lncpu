@@ -2,12 +2,19 @@ package com.lnc.assembler.parser;
 
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
-import com.lnc.assembler.linker.LinkInfo;
 import com.lnc.cc.codegen.CodeElementVisitor;
 import com.lnc.common.ExtendedListIterator;
 
 import java.util.Arrays;
 
+/**
+ * EncodedData represents a specific implementation of CodeElement that holds
+ * raw binary data. This class enables encoding, traversal, and interaction
+ * with data elements in an assembly or similar low-level structure.
+ *
+ * EncodedData is immutable, encapsulating a byte array that cannot be modified
+ * once the object is created.
+ */
 public class EncodedData extends CodeElement{
 
     private final byte[] data;
@@ -22,7 +29,7 @@ public class EncodedData extends CodeElement{
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
         return data;
     }
 

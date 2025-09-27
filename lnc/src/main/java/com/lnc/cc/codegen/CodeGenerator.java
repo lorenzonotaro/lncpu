@@ -17,6 +17,28 @@ import com.lnc.common.frontend.TokenType;
 
 import java.util.*;
 
+/**
+ * The CodeGenerator class is responsible for generating low-level assembly-like code
+ * from an intermediate representation (IR). It extends the GraphicalIRVisitor and implements
+ * the IIROperandVisitor interface to traverse and process different IR constructs.
+ *
+ * This class handles tasks such as:
+ * - Emitting the data and constant sections.
+ * - Visiting and processing IR units.
+ * - Allocating registers using Graph Coloring for optimal code generation.
+ * - Optimizing post-register allocation through PostRAOptimizer.
+ * - Adding support for specific IR operations, such as Goto, Conditional Jumps, Binary and Unary
+ *   operations, and more.
+ *
+ * The generated code is grouped into CompilerOutput objects, which collectively represent
+ * the generated output for the given IR.
+ *
+ * Key features:
+ * - Handles different targets (e.g., Function Units, Data, and Constant sections).
+ * - Emits optimized instructions for conditional and unconditional jumps.
+ * - Supports register allocation and post-allocation optimization.
+ * - Utilizes a LIFO-based approach for target scheduling.
+ */
 public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisitor<Argument>{
     private final IR ir;
 

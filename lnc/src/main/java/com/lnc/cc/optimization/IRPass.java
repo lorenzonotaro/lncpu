@@ -4,6 +4,15 @@ import com.lnc.cc.codegen.LivenessInfo;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
+/**
+ * An abstract base class that serves as the foundation for implementing various
+ * Intermediate Representation (IR) analysis and transformation passes.
+ * Subclasses are expected to provide custom behavior by overriding visit methods
+ * for specific IR instructions or blocks.
+ *
+ * This class ensures a consistent traversal order and provides a mechanism
+ * for tracking changes to the IR during a pass.
+ */
 public abstract class IRPass extends GraphicalIRVisitor{
 
     private boolean changed = false;

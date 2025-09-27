@@ -6,6 +6,12 @@ import com.lnc.common.frontend.TokenType;
 
 import java.util.LinkedList;
 
+/**
+ * Represents a parsed block in a compiled LNASM source. A block consists of a section
+ * name and a series of code elements (instructions) corresponding to that section.
+ * This class provides utilities to construct parsed block instances and interpret
+ * compiler output as a parsed block.
+ */
 public class LnasmParsedBlock {
     public final String sectionName;
     public final LinkedList<CodeElement> instructions;

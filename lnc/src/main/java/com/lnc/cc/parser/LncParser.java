@@ -10,6 +10,17 @@ import com.lnc.common.frontend.TokenType;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+/**
+ * The LncParser class is a specialized parser for interpreting and analyzing
+ * the syntax of LNC programs. This parser extends
+ * the FullSourceParser class and produces an Abstract Syntax Tree (AST)
+ * representation of the parsed program.
+ *
+ * The parser processes tokens to recognize variable declarations, type
+ * specifiers, expressions, and statements. It handles synchronization with
+ * predefined tokens and manages the structure of parsed code blocks and
+ * declarations.
+ */
 public class LncParser extends FullSourceParser<AST> {
 
     private static final TokenType[] SYNC_TOKENS = Stream.of(

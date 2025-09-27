@@ -15,20 +15,6 @@ public class CodeSnippets {
 
     static {
 
-        /*
-            ; setup stack
-            mov     0x21,       SS
-            mov     0x0,        SP
-
-            ; setup data page
-            mov (LNCDATA >> 8)::byte, DS
-
-            ; call main
-            lcall main
-            hlt
-
-        */
-
         var o = new CompilerOutput(START_SECTIONINFO);
         o.addLabel("_START");
 

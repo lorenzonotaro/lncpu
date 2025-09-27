@@ -3,10 +3,19 @@ package com.lnc.assembler.parser.argument;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
-import com.lnc.assembler.linker.LinkInfo;
 
-import java.io.IOException;
-
+/**
+ * Represents a dereference operation applied to an underlying Argument.
+ *
+ * The {@code Dereference} class serves as a specific subclass of {@code Argument},
+ * wrapping another argument (referred to as the "inner" argument) and modifying its
+ * behavior to represent a memory dereference. It retains the properties and behavior
+ * of the wrapped argument but adapts encoding, string representation, and equality
+ * checks to reflect its semantics.
+ *
+ * A dereference operation allows accessing the memory location pointed to
+ * by the inner argument.
+ */
 public class Dereference extends Argument {
 
     public final Argument inner;
@@ -22,8 +31,8 @@ public class Dereference extends Argument {
     }
 
     @Override
-    public byte[] encode(ILabelResolver labelResolver, LinkInfo linkInfo, int instructionAddress) {
-        return inner.encode(labelResolver, linkInfo, instructionAddress);
+    public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
+        return inner.encode(labelResolver, instructionAddress);
     }
 
     @Override

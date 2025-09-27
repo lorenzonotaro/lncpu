@@ -19,6 +19,16 @@ import java.util.Objects;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
+/**
+ * A utility class for visualizing an interference graph within a graphical user interface (GUI).
+ * This class extends {@link JFrame} and provides an interactive way to visually represent
+ * interference relationships between nodes in a graph.
+ *
+ * The visualization includes nodes and connections (edges) where each node represents a variable
+ * or register, and edges represent interference relationships. Nodes are displayed with
+ * specific colors based on their assigned or physical register.
+ *
+ */
 public class InterferenceGraphVisualizer extends JFrame {
     final Object lock = new Object();
 

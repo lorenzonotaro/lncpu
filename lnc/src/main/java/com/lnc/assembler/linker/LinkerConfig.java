@@ -6,6 +6,11 @@ import java.util.Map;
 
 import com.lnc.assembler.common.SectionInfo;
 
+/**
+ * Represents the configuration for linker sections within the application.
+ * The configuration manages sections, ensures unique section names, performs input validation,
+ * and provides utility methods for querying and combining linker configurations.
+ */
 public class LinkerConfig{
 
     private final SectionInfo[] sections;

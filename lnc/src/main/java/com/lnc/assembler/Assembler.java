@@ -23,6 +23,29 @@ import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 import com.lnc.common.io.ByteArrayChannel;
 
+/**
+ * The Assembler class is responsible for assembling source files into binary outputs
+ * and handling various steps of the assembly and linking process.
+ *
+ * It manages tasks such as preprocessing, parsing, symbol resolution, and binary linking,
+ * ultimately generating outputs based on target specifications. The class also supports writing
+ * both binary and human-readable disassembled output files and exporting symbol tables.
+ *
+ * Core functionalities:
+ * - Parsing source files and extracting tokens via the lexer.
+ * - Preprocessing and parsing source into executable blocks.
+ * - Merging compiler-generated configuration with user-defined linker configuration.
+ * - Linking parsed assembly code into binaries targeting specified memory segments.
+ * - Writing binary and immediate output files.
+ * - Exporting symbol tables for external use.
+ *
+ * The class utilizes various components such as lexers, parsers, preprocessors,
+ * and a binary linker to achieve seamless handling of the assembly lifecycle.
+ *
+ * Error Handling:
+ * Failures in reading input files, preprocessing, parsing, or linking are logged through
+ * the Logger class, and the methods return appropriate boolean outcomes to indicate success/failure.
+ */
 public class Assembler {
     private final List<Path> sourceFiles;
     private final String linkerConfig;

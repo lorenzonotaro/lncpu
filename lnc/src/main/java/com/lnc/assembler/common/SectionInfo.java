@@ -4,6 +4,14 @@ import com.lnc.assembler.linker.LinkTarget;
 
 import java.io.Serializable;
 
+/**
+ * Represents a section configuration with defined properties such as name, start address,
+ * mode, target, and various flags indicating specific behaviors.
+ *
+ * This class encapsulates the information and constraints associated with a memory or data
+ * section, ensuring proper initialization and validation of parameters.
+ *
+ */
 public class SectionInfo implements Serializable {
     private final LinkMode mode;
     private final String name;

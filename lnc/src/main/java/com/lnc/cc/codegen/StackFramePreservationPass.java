@@ -13,6 +13,35 @@ import com.lnc.common.frontend.TokenType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The {@code StackFramePreservationPass} class is designed to manage the preservation and
+ * restoration of the stack frame during assembly-level code generation.
+ *
+ * This class ensures that any modifications to the stack or register state across function
+ * calls are tracked, stacked, and correctly restored, adhering to the calling conventions
+ * required by the assembly language backend. It automates the addition of instructions that
+ * save and restore certain registers or stack space to maintain consistency across the
+ * function's execution.
+ *
+ * The pass operates in three key phases:
+ * 1. {@code DiscoveryPass}: Collects information about all modified registers during the
+ *    function's execution, excluding those used for returning values.
+ * 2. Preservation Phase: Generates necessary instructions at the function's entry point to
+ *    save these modified registers and allocate stack space for the function's frame.
+ * 3. {@code RestorationPass}: Adds necessary instructions to restore saved registers and
+ *    stack state at every function return point.
+ *
+ * Key components include:
+ * - Computing the necessary stack allocations based on the calling convention and function
+ *   parameters.
+ * - Generating assembly instructions for saving and restoring registers.
+ * - Adjusting offset values for stack parameter dereferencing to account for the frame's
+ *   preserved state.
+ *
+ * This pass assumes compatibility with the assembly-level linear pass framework and
+ * implements the {@code AbstractAsmLevelLinearPass} base class for traversal and modification
+ * of code elements.
+ */
 public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
     private final Set<String> returnRegisters;
 

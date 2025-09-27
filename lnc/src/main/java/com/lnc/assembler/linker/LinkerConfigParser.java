@@ -7,6 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Parses linker configuration files to produce a {@link LinkerConfig} object.
+ * The parser validates and processes section definitions and their properties
+ * from the provided tokens or lines of input.
+ *
+ * This class extends {@link FullSourceParser} and overrides the parsing mechanism
+ * specific to linker configuration formats. It expects properly formatted input
+ * adhering to the defined grammar.
+ */
 public class LinkerConfigParser extends FullSourceParser<LinkerConfig> {
     private LinkerConfig linkerConfig;
 

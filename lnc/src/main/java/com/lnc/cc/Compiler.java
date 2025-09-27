@@ -19,6 +19,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Represents a compiler instance capable of processing a list of source files
+ * and performing a full compilation pipeline, including tokenization, parsing,
+ * analysis, and code generation.
+ *
+ * This class provides methods to manage the compilation process and access
+ * the resulting compiled outputs.
+ */
 public class Compiler {
     private final List<Path> sourceFiles;
     private List<CompilerOutput> output;

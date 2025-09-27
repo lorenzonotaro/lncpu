@@ -5,6 +5,10 @@ import com.lnc.common.frontend.Token;
 
 import java.io.Serializable;
 
+/**
+ * Represents label-related information for tokens with associated names.
+ * This record class encapsulates a Token and its corresponding label name.
+ */
 public record LabelInfo(Token token, String name) implements Serializable {
 
     /**

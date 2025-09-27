@@ -7,6 +7,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Represents an abstract IR (Intermediate Representation) instruction used in compiler backends
+ * or intermediate representations of programming languages. This class provides support for
+ * linked-list style instruction chaining, read/write operand tracking, and manipulation within
+ * a block of instructions.
+ */
 public abstract class IRInstruction {
 
     private static int UNIQUE_ID_COUNTER = 0;

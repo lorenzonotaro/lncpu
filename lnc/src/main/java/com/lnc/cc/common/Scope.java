@@ -7,6 +7,11 @@ import com.lnc.common.frontend.Token;
 
 import java.util.*;
 
+/**
+ * Represents a hierarchical scope used in a compiler or interpreter for managing symbols, constants,
+ * and structures within a lexical or logical context. Scopes are organized as a tree, where a parent
+ * scope can have multiple child scopes, and each scope maintains its own set of symbols and metadata.
+ */
 public class Scope {
     private final Scope parent;
 

@@ -2,6 +2,13 @@ package com.lnc.common;
 
 import java.util.*;
 
+/**
+ * This class implements the ListIterator interface and provides additional functionalities
+ * to interact with a LinkedList. It wraps around a standard ListIterator and exposes custom
+ * operations such as inserting or removing elements relative to the current position in the list.
+ *
+ * @param <T> The type of elements in the list being iterated over.
+ */
 public class ExtendedListIterator<T> implements ListIterator<T> {
     private final LinkedList<T> list;
     private final ListIterator<T> delegate;

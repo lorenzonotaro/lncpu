@@ -6,6 +6,18 @@ import com.lnc.common.frontend.Token;
 
 import java.util.HashMap;
 
+/**
+ * This class is responsible for locating and resolving section information for labels during the
+ * linking process. It extends {@code HashMap<String, LabelSectionInfo>} to efficiently store
+ * mappings between label names and their associated section information, and it implements
+ * the {@link ILabelSectionLocator} interface to provide label-to-section resolution functionality.
+ *
+ * This class uses a combination of direct mappings and a fallback mechanism through the provided
+ * {@link LinkerConfig} to resolve sections associated with specific labels. If a label cannot
+ * be directly found in the map, the {@link LinkerConfig} is consulted to attempt resolution.
+ *
+ * An unresolved label results in a {@link CompileException} being thrown.
+ */
 public class LinkerLabelSectionLocator extends HashMap<String, LabelSectionInfo> implements ILabelSectionLocator {
     private final LinkerConfig config;
 
