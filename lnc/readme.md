@@ -218,7 +218,7 @@ Use the following properties to define a section:
   * `page_align`: the section is placed at the first available address that is page-aligned (`xx00`). You must specify the target device using the `target` property.
   * `page_fit`: the section is placed at the first available address that fits its size and so that the section does not cross a page boundary. You must specify the target device using the `target` property.
   * `fit`: the section is placed at the first available address that fits its size, regardless of page boundaries. You must specify the target device using the `target` property.
-* `target`: the target device for the section. This property is mandatory for `page_align`, `page_fit` and `fit` sections. One of `ROM`, `RAM`, `D1` through `D6`.
+* `target`: the target device for the section. This property is mandatory for `page_align`, `page_fit` and `fit` sections. One of `ROM`, `RAM`, `D0` through `D5`.
 * `datapage`: if present, indicates that the section represents a data page. All labels in this section will evaluate to a `cst` (byte) value.
 * `virtual`: only applicable to a `datapage`. If present, the section will not be placed in the address space. It may be used as a dynamic data page, whose address is determined at runtime via the `DS` register.
 * `multi`: if present, the section can be referenced multiple times. Each 'block' will be appended to the final binary. This is useful for data pages, as each module can reserve its own space in the data page.
@@ -301,3 +301,4 @@ The same goes the other way around:
     ; at this point RB will contain 30
 
 ```
+
