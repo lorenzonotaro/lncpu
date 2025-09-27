@@ -88,6 +88,11 @@
     "value": true
   },
 
+  "-Wshort-jump-out-of-range": {
+    "help": "Disables short jump out of range compile warning.",
+    "value": false
+  },
+
   "--print-ig": {
     "help": "Prints the interference graph after of the register allocator.",
     "value": false

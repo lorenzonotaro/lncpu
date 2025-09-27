@@ -40,7 +40,9 @@ public class Disassembler{
                 while(currentAddress < descriptor.start() + descriptor.length()){
                     String labels = reverseLookupLabels.getOrDefault(currentAddress, "");
 
-                    byte opcode = output[currentAddress];
+                    int relativeAddress = currentAddress - descriptor.start();
+
+                    byte opcode = output[relativeAddress];
 
                     String opCodeImmediate;
                     int instructionLength;
@@ -57,10 +59,10 @@ public class Disassembler{
                     StringBuilder params = new StringBuilder();
 
                     for (int i = 1; i < instructionLength; i++) {
-                        if(currentAddress + i >= output.length){
+                        if(relativeAddress + i >= output.length){
                             params.append("XX ");
                         }else {
-                            params.append("%02x ".formatted(output[currentAddress + i]));
+                            params.append("%02x ".formatted(output[relativeAddress + i]));
                         }
                     }
 
