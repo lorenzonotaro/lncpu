@@ -30,14 +30,14 @@ if "%~1"=="--no-eeproms" (
     shift
     goto parse_args
 )
-if "%~1"=="--no-lncpuemu" (
+if "%~1"=="--no-emu" (
     set make_emu=false
     shift
     goto parse_args
 )
 
 echo Unknown argument: %~1
-echo Usage: make.bat [--no-lnc] [--no-eeprom-serial-loader^|--no-esl] [--no-eeproms] [--no-lncpuemu]
+echo Usage: make.bat [--no-lnc] [--no-eeprom-serial-loader^|--no-esl] [--no-eeproms] [--no-emu]
 exit /b 1
 
 :args_done

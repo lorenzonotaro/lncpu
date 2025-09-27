@@ -48,7 +48,7 @@ public class Disassembler{
                 while(currentAddress < descriptor.start() + descriptor.length()){
                     String labels = reverseLookupLabels.getOrDefault(currentAddress, "");
 
-                    int relativeAddress = currentAddress - descriptor.start();
+                    int relativeAddress = currentAddress - descriptor.sectionInfo().getTarget().start;
 
                     byte opcode = output[relativeAddress];
 

@@ -418,6 +418,7 @@
       <a name="width" val="13"/>
     </comp>
     <comp lib="3" loc="(750,620)" name="Comparator">
+      <a name="mode" val="unsigned"/>
       <a name="width" val="13"/>
     </comp>
     <comp lib="3" loc="(860,470)" name="Comparator">
