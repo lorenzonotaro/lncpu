@@ -246,9 +246,9 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
  - [x] Continue and break statements 
  - [x] Data page variables and pointers
  - [ ] Absolute variables and pointers
- - [x] Data page arrays
+ - [ ] Data page arrays
  - [ ] Absolute arrays
- - [x] Structs (data page only)
+ - [ ] Structs (data page only)
  - [ ] Unions
  - [x] Reentrant functions
 
