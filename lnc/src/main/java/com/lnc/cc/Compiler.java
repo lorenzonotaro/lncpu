@@ -1,13 +1,13 @@
 package com.lnc.cc;
 
 import com.lnc.LNC;
-import com.lnc.cc.anaylsis.Analyzer;
+import com.lnc.cc.anaylsis.ASTAnalyzer;
 import com.lnc.cc.ast.AST;
-import com.lnc.cc.codegen.AsmLevelOptimizer;
+import com.lnc.cc.optimization.asm.AsmLevelOptimizer;
 import com.lnc.cc.codegen.CodeGenerator;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.cc.ir.*;
-import com.lnc.cc.optimization.StageOneIROptimizer;
+import com.lnc.cc.optimization.ir.StageOneIROptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
@@ -72,7 +72,7 @@ public class Compiler {
 
         AST ast = parser.getResult();
 
-        Analyzer analyzer = new Analyzer(ast);
+        ASTAnalyzer analyzer = new ASTAnalyzer(ast);
 
         if(!analyzer.analyze()){
             return false;

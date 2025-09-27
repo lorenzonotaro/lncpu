@@ -1,9 +1,8 @@
-package com.lnc.cc.codegen;
+package com.lnc.cc.optimization.asm;
 
 import com.lnc.assembler.parser.CodeElement;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.Instruction;
-import com.lnc.cc.optimization.IRPass;
 import com.lnc.common.ExtendedListIterator;
 import com.lnc.common.frontend.TokenType;
 

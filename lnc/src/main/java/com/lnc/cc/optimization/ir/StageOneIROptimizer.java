@@ -1,7 +1,6 @@
-package com.lnc.cc.optimization;
+package com.lnc.cc.optimization.ir;
 
 import com.lnc.LNC;
-import com.lnc.cc.codegen.GraphColoringRegisterAllocator;
 import com.lnc.cc.codegen.LivenessInfo;
 import com.lnc.cc.ir.IRUnit;
 

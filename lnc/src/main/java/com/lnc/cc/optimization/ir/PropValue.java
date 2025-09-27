@@ -1,4 +1,4 @@
-package com.lnc.cc.optimization;
+package com.lnc.cc.optimization.ir;
 
 public sealed interface PropValue {
     record Unknown() implements PropValue {}

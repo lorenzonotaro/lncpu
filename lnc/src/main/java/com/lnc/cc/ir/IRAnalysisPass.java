@@ -1,6 +1,6 @@
 package com.lnc.cc.ir;
 
-import com.lnc.cc.optimization.IRPass;
+import com.lnc.cc.optimization.ir.IRPass;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
 

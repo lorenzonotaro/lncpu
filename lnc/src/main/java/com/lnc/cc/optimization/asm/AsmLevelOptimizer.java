@@ -1,4 +1,6 @@
-package com.lnc.cc.codegen;
+package com.lnc.cc.optimization.asm;
+
+import com.lnc.cc.codegen.CompilerOutput;
 
 import java.util.List;
 

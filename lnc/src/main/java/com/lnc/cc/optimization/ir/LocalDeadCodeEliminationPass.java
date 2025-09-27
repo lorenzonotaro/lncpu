@@ -1,10 +1,16 @@
-package com.lnc.cc.optimization;
+package com.lnc.cc.optimization.ir;
 
 import com.lnc.cc.ir.*;
 
-public class TrivialGotoEliminationPass extends IRPass{
+public class LocalDeadCodeEliminationPass extends IRPass{
     @Override
     public Void visit(Goto aGoto) {
+        // Delete all subsequent instructions in the block
+        if(aGoto.hasNext()){
+            aGoto.setNext(null);
+            aGoto.getParentBlock().setLast(aGoto);
+            markAsChanged();
+        }
         return null;
     }
 
@@ -20,6 +26,12 @@ public class TrivialGotoEliminationPass extends IRPass{
 
     @Override
     public Void visit(Ret ret) {
+        // Remove all subsequent instructions in the block
+        if(ret.hasNext()){
+            ret.setNext(null);
+            ret.getParentBlock().setLast(ret);
+            markAsChanged();
+        }
         return null;
     }
 
@@ -43,16 +55,4 @@ public class TrivialGotoEliminationPass extends IRPass{
         return null;
     }
 
-    @Override
-    protected void visit(IRBlock block) {
-        var first = block.getFirst();
-        var last = block.getLast();
-        // If the block contains only a single Goto instruction, replace the block with its target
-        if (first == last && first instanceof Goto aGoto){
-            block.replaceWith(aGoto.getTarget());
-            markAsChanged();
-        }else{
-            super.visit(block);
-        }
-    }
 }

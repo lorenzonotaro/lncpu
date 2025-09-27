@@ -1,4 +1,4 @@
-package com.lnc.cc.codegen;
+package com.lnc.cc.optimization.asm;
 
 import com.lnc.assembler.parser.CodeElement;
 import com.lnc.assembler.parser.EncodedData;

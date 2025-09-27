@@ -1,4 +1,4 @@
-package com.lnc.cc.optimization;
+package com.lnc.cc.optimization.ir;
 
 import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.IIROperandVisitor;
