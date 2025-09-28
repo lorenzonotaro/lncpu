@@ -4,9 +4,14 @@
 %define BIOS_OPTS_F
 
 ; If defined, the BIOS will halt if no standard text device is found during device discovery.
-;%define HALT_ON_NO_STDTXT
+%define HALT_ON_NO_STDTXT
 
-; If defined, the BIOS will automatically boot the first bootable device found after device discovery.
-;%define AUTOBOOT
+; If defined, the BIOS will automatically boot the first bootable device found after device discovery if more than one device is present.
+; If not defined, the BIOS will prompt the user to select a boot device if more than one device is present.
+;%define BOOT_FIRST_BOOTABLE
+
+; If defined, the BIOS will enter a rescue state if no bootable device is found during the boot process.
+; If not defined, the BIOS will halt if no bootable device is found.
+%define RESCUE_ON_NO_BOOTABLE
 
 %endif
