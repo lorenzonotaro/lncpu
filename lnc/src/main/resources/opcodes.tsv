@@ -162,26 +162,26 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0xa0	cmp_rb_cst	2	2	Compares RB to a constant, then updates the FLAGS accordingly	NZC
 0xa1	cmp_rc_cst	2	2	Compares RC to a constant, then updates the FLAGS accordingly	NZC
 0xa2	cmp_rd_cst	2	2	Compares RD to a constant, then updates the FLAGS accordingly	NZC
-0xa3	or_ra_ra	1	1	Performs a bitwise OR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	-
-0xa4	or_ra_rb	1	1	Performs a bitwise OR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	-
-0xa5	or_ra_rc	1	1	Performs a bitwise OR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	-
-0xa6	or_ra_rd	1	1	Performs a bitwise OR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	-
-0xa7	or_rb_ra	1	1	Performs a bitwise OR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	-
-0xa8	or_rb_rb	1	1	Performs a bitwise OR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	-
-0xa9	or_rb_rc	1	1	Performs a bitwise OR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	-
-0xaa	or_rb_rd	1	1	Performs a bitwise OR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	-
-0xab	or_rc_ra	1	1	Performs a bitwise OR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	-
-0xac	or_rc_rb	1	1	Performs a bitwise OR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	-
-0xad	or_rc_rc	1	1	Performs a bitwise OR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	-
-0xae	or_rc_rd	1	1	Performs a bitwise OR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	-
-0xaf	or_rd_ra	1	1	Performs a bitwise OR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	-
-0xb0	or_rd_rb	1	1	Performs a bitwise OR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	-
-0xb1	or_rd_rc	1	1	Performs a bitwise OR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	-
-0xb2	or_rd_rd	1	1	Performs a bitwise OR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	-
-0xb3	or_ra_cst	2	2	Performs a bitwise OR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	-
-0xb4	or_rb_cst	2	2	Performs a bitwise OR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	-
-0xb5	or_rc_cst	2	2	Performs a bitwise OR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	-
-0xb6	or_rd_cst	2	2	Performs a bitwise OR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	-
+0xa3	or_ra_ra	1	1	Performs a bitwise OR of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa4	or_ra_rb	1	1	Performs a bitwise OR of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa5	or_ra_rc	1	1	Performs a bitwise OR of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa6	or_ra_rd	1	1	Performs a bitwise OR of RA and RD, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xa7	or_rb_ra	1	1	Performs a bitwise OR of RB and RA, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xa8	or_rb_rb	1	1	Performs a bitwise OR of RB and RB, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xa9	or_rb_rc	1	1	Performs a bitwise OR of RB and RC, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xaa	or_rb_rd	1	1	Performs a bitwise OR of RB and RD, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xab	or_rc_ra	1	1	Performs a bitwise OR of RC and RA, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xac	or_rc_rb	1	1	Performs a bitwise OR of RC and RB, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xad	or_rc_rc	1	1	Performs a bitwise OR of RC and RC, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xae	or_rc_rd	1	1	Performs a bitwise OR of RC and RD, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xaf	or_rd_ra	1	1	Performs a bitwise OR of RD and RA, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb0	or_rd_rb	1	1	Performs a bitwise OR of RD and RB, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb1	or_rd_rc	1	1	Performs a bitwise OR of RD and RC, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb2	or_rd_rd	1	1	Performs a bitwise OR of RD and RD, stores the result back in RD, then updates the FLAGS accordingly	NZC
+0xb3	or_ra_cst	2	2	Performs a bitwise OR of RA and a constant, stores the result back in RA, then updates the FLAGS accordingly	NZC
+0xb4	or_rb_cst	2	2	Performs a bitwise OR of RB and a constant, stores the result back in RB, then updates the FLAGS accordingly	NZC
+0xb5	or_rc_cst	2	2	Performs a bitwise OR of RC and a constant, stores the result back in RC, then updates the FLAGS accordingly	NZC
+0xb6	or_rd_cst	2	2	Performs a bitwise OR of RD and a constant, stores the result back in RD, then updates the FLAGS accordingly	NZC
 0xb7	and_ra_ra	1	1	Performs a bitwise AND of RA and RA, stores the result back in RA, then updates the FLAGS accordingly	NZC
 0xb8	and_ra_rb	1	1	Performs a bitwise AND of RA and RB, stores the result back in RA, then updates the FLAGS accordingly	NZC
 0xb9	and_ra_rc	1	1	Performs a bitwise AND of RA and RC, stores the result back in RA, then updates the FLAGS accordingly	NZC
