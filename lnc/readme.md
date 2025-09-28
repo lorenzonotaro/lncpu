@@ -235,7 +235,7 @@ Example:
 
 ![lnc](lnc-demo.png)
 
-The lnc is a C-like language that compiles to lnasm.
+lnc is a C-like language that compiles to lnasm.
 The compiler is still very rudimental and produces *very* unoptimal code.
 
 lnc is (and probably will never be) neither C-standard compliant nor a simple subset of C: some features of the lnc architecture (such as the existence of different memory addressing modes, data page and absolute) require some extra features that C doesn't provide on its own.
@@ -301,4 +301,5 @@ The same goes the other way around:
     ; at this point RB will contain 30
 
 ```
+
 
