@@ -15,7 +15,7 @@ Overview of the repository:
 
 * [`lncpu-emu`](lncpu-emu) is a simple emulator for the lncpu written in C.
 
-* [`Programs`](programs) contains some sample programs you can assemble and run on the lncpu as well as Notmon, a utility program strongly inspired in its functionality (and name) by Wozmon, made by Steve Wozniak for his Apple I.
+* [`Programs`](Programs) contains some sample programs you can assemble and run on the lncpu as well as Notmon, a utility program strongly inspired in its functionality (and name) by Wozmon, made by Steve Wozniak for his Apple I.
 
 * [`extras`](extras) contains some additional tools, such as a VsCode extension for lnasm.
 
@@ -65,3 +65,4 @@ These scripts will create an `output` folder containing:
 
 
 It is recommended to add the `output` folder to your PATH environment variable for easy usage of `lnc` and `eeprom-serial-loader` from any location and allow the Logisim debugger to compile and load programs directly.
+
