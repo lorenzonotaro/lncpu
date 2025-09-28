@@ -5,7 +5,7 @@ LN-BIOS is a simple BIOS for the LNCPU designed to be OS-agnostic.
 It is very lightweight:
 1. It sets up the LNCPU
 2. It runs device discovery and sets up a basic text IO system (`stdtxt`), that it will expose to the loaded OS.
-3. It runs through the devices and looks for a bootable device according to the DDI specification (see below), if found, it transfer control depending on the compile options.
+3. It runs through the devices and looks for a bootable device according to the DDI specification (see below), if found, it transfer control depending on the compile options (**TODO**)
 
 ## Building
 
@@ -48,5 +48,6 @@ Currently supported devices:
 | `0x10`| 31x256-byte ASM |
 | `0x11`| 15x512-byte ASM |
 | `0x12`| 7x1024-byte ASM |
+
 
 When encountering an ASM device, LN-BIOS will recursively scan the address spaces it manages for more devices (**not implemented yet**).
