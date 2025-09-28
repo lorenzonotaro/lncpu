@@ -88,7 +88,7 @@ memcpy:
     add         SP, 0x04    ; locals: [BP+0]=dst_lo, [BP+1]=dst_hi, [BP+2]=src_lo tmp, [BP+3]=src_hi tmp
 
     ; Load destination pointer from caller's stack frame into locals
-    ; Caller placed dest at [BP-9]:[BP-8] (hi:lo) per your note.
+    ; Caller placed dest at [BP-9]:[BP-8] (hi:lo).
     mov         [BP - 8], RB    ; RB = dest_lo
     mov         RB, [BP + 0]    ; locals.dst_lo = RB
     mov         [BP - 9], RB    ; RB = dest_hi
