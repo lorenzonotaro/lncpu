@@ -15,7 +15,7 @@ import com.lnc.assembler.parser.LnasmParsedBlock;
 import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.cc.codegen.CompilerOutput;
 import com.lnc.common.Logger;
-import com.lnc.common.Preprocessor;
+import com.lnc.common.frontend.Preprocessor;
 import com.lnc.common.frontend.FullSourceLexer;
 import com.lnc.common.frontend.LexerConfig;
 import com.lnc.common.frontend.LineByLineLexer;

@@ -1,28 +1,14 @@
-package com.lnc.common;
+package com.lnc.common.frontend;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.lnc.LNC;
 import com.lnc.assembler.linker.LinkerConfig;
-import com.lnc.common.frontend.CompileException;
-import com.lnc.common.frontend.LexerConfig;
-import com.lnc.common.frontend.LineByLineLexer;
-import com.lnc.common.frontend.FullSourceLexer;
-import com.lnc.common.frontend.Location;
-import com.lnc.common.frontend.Token;
-import com.lnc.common.frontend.TokenType;
 
 /**
  * The Preprocessor class processes source code by handling macros,
@@ -169,7 +155,32 @@ public class Preprocessor {
                     iterator.remove();
                     consumeUntilEndif(line, iterator, keep);
                 }else throw new CompileException("invalid macro syntax", macroToken);
-            } else if(macroToken.type.equals(TokenType.MACRO_ENDIF)){
+            } else if(macroToken.type.equals(TokenType.MACRO_IF)){
+                if (line.size() == 4) {
+                    Token left = line.get(1);
+                    Token operator = line.get(2);
+                    Token right = line.get(3);
+                    if(left.type == TokenType.IDENTIFIER && (right.type == TokenType.STRING || right.type == TokenType.INTEGER)){
+                        boolean keep;
+                        List<Token> macroValue = defines.get(left.lexeme);
+                        if(macroValue == null){
+                            keep = false;
+                        }else if(operator.type == TokenType.DOUBLE_EQUALS && macroValue.size() == 1){
+                            keep = Objects.equals(macroValue.get(0).literal, right.literal);
+                        }else if(operator.type == TokenType.NOT_EQUALS && macroValue.size() == 1){
+                            keep = !Objects.equals(macroValue.get(0), right);
+                        }else{
+                            throw new CompileException("invalid macro syntax", macroToken);
+                        }
+                        iterator.remove();
+                        consumeUntilEndif(line, iterator, keep);
+                    }else{
+                        throw new CompileException("invalid macro syntax", macroToken);
+                    }
+                }else{
+                    throw new CompileException("invalid macro syntax", macroToken);
+                }
+            }else if(macroToken.type.equals(TokenType.MACRO_ENDIF)){
                 throw new CompileException("unexpected " + macro("endif"), macroToken);
             }else if(macroToken.type.equals(TokenType.MACRO_ERROR)){
                 if(line.size() == 2 && line.get(1).type == TokenType.STRING){
@@ -251,7 +262,7 @@ public class Preprocessor {
                 closed = true;
                 break;
             }else{
-                if(macroToken.type.equals(TokenType.MACRO_IFDEF) || macroToken.type.equals(TokenType.MACRO_IFNDEF)){
+                if(macroToken.type.equals(TokenType.MACRO_IFDEF) || macroToken.type.equals(TokenType.MACRO_IFNDEF) || macroToken.type.equals(TokenType.MACRO_IF)){
                     ifDepth++;
                 }else if(macroToken.type.equals(TokenType.MACRO_ENDIF)){
                     ifDepth--;

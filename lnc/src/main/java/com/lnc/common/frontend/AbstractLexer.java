@@ -286,6 +286,8 @@ public abstract class AbstractLexer<T>
             return token(TokenType.MACRO_IFNDEF);
         if(stringEquals("endif", ident))
             return token(TokenType.MACRO_ENDIF);
+        if(stringEquals("if", ident))
+            return token(TokenType.MACRO_IF);
         if(stringEquals("error", ident))
             return token(TokenType.MACRO_ERROR);
 

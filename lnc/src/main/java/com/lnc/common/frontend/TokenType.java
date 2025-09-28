@@ -7,7 +7,7 @@ public enum TokenType {
     MACRO_IFDEF,
     MACRO_IFNDEF,
     MACRO_ENDIF,
-
+    MACRO_IF,
     MACRO_ERROR,
 
     DIR_SECTION,

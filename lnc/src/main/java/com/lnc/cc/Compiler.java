@@ -11,7 +11,7 @@ import com.lnc.cc.optimization.ir.StageOneIROptimizer;
 import com.lnc.cc.parser.LncParser;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.Logger;
-import com.lnc.common.Preprocessor;
+import com.lnc.common.frontend.Preprocessor;
 import com.lnc.common.frontend.*;
 
 import java.io.IOException;
