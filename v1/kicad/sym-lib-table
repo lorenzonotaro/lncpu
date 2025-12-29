@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "lncpu")(type "KiCad")(uri "${KIPRJMOD}/lib/lncpu.kicad_sym")(options "")(descr ""))
+)

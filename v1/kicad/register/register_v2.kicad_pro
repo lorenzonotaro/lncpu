@@ -466,7 +466,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "register.kicad_pro",
+    "filename": "register_v2.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -523,7 +523,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "",
+      "netlist": "./",
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
