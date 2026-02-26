@@ -1,0 +1,10 @@
+%ifndef BIOS_BOOT_F
+%define BIOS_BOOT_F
+
+.section BIOS_BOOT
+; The main boot sequence of the BIOS.
+boot_seq:
+    goto    boot_seq
+    hlt
+
+%endif

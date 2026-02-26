@@ -6350,7 +6350,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 168.91 0)
 			(effects
 				(font
@@ -6626,7 +6626,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 452.12 0)
 			(effects
 				(font
@@ -6748,7 +6748,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "lncpu:LNCPU_Type_C_Header"
 			(at 109.22 95.25 0)
 			(effects
 				(font
@@ -6860,7 +6860,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 123.19 0)
 			(effects
 				(font
@@ -6984,7 +6984,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 312.42 0)
 			(effects
 				(font
@@ -7108,7 +7108,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-16_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-16_W7.62mm_LongPads"
 			(at 163.83 80.01 0)
 			(effects
 				(font
@@ -7566,7 +7566,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 405.13 0)
 			(effects
 				(font
@@ -7862,7 +7862,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 215.9 0)
 			(effects
 				(font
@@ -7986,7 +7986,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 358.14 0)
 			(effects
 				(font
@@ -8262,7 +8262,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-20_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-20_W7.62mm_LongPads"
 			(at 163.83 262.89 0)
 			(effects
 				(font

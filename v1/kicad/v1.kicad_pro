@@ -587,6 +587,14 @@
       "version": 1
     },
     "net_format_name": "",
+    "ngspice": {
+      "fix_include_paths": true,
+      "meta": {
+        "version": 0
+      },
+      "model_mode": 4,
+      "workbook_filename": ""
+    },
     "page_layout_descr_file": "",
     "plot_directory": "",
     "space_save_all_events": true,
@@ -611,6 +619,14 @@
     [
       "6cfc3e5a-abc6-45f8-ac18-c0261408729e",
       "PowerSrc"
+    ],
+    [
+      "977b5a63-9990-4c9d-b7b3-95ee0e5aabe5",
+      "AddressDecoder"
+    ],
+    [
+      "b4bdb7a5-20df-4e6d-8a2a-b1ba50be9e06",
+      "DeviceOEPhaseSelector"
     ]
   ],
   "text_variables": {}

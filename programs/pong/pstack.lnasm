@@ -1,0 +1,131 @@
+%ifndef F_PSTACK
+%define F_PSTACK
+
+%ifndef SECTION LIB_PSTACK
+    %error "PSTACK requires a section in ROM named PSTACK"
+%endif
+
+.section LIB_PSTACK
+
+PSTACK_INIT:
+    mov     0,                      [PSTACK_SP]
+    ret
+
+PSTACK_POPRA:
+    push    RC
+    push    RD
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    dec     RD
+    mov     [RC:RD],                RA
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    pop     RC
+    ret
+
+PSTACK_PUSHRA:
+    push    RC
+    push    RD
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    mov     RA,                     [RC:RD]
+    inc     RD
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    pop     RC
+    ret
+
+PSTACK_POPRB:
+    push    RC
+    push    RD
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    dec     RD
+    mov     [RC:RD],                RB
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    pop     RC
+    ret
+
+PSTACK_PUSHRB:
+    push    RC
+    push    RD
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    mov     RB,                     [RC:RD]
+    inc     RD
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    pop     RC
+    ret
+
+PSTACK_POPRC:
+    push    RD
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    dec     RD
+    mov     [RC:RD],                RC
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    ret
+
+PSTACK_PUSHRC:
+    push    RB
+    push    RC
+    push    RD
+    mov     RC,                     RB
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    mov     RB,                     [RC:RD]
+    inc     RD
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    pop     RC
+    pop     RB
+    ret
+
+PSTACK_POPRD:
+    push    RC
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    dec     RD
+    mov     RD,                     [PSTACK_SP]
+    mov     [RC:RD],                RD
+    pop     RC
+    ret
+
+PSTACK_PUSHRD:
+    push    RB
+    push    RC
+    push    RD
+    mov     RD,                     RB
+    mov     (PSTACK >> 8)::byte,    RC
+    mov     [PSTACK_SP],            RD
+    mov     RB,                     [RC:RD]
+    inc     RD
+    mov     RD,                     [PSTACK_SP]
+    pop     RD
+    pop     RC
+    pop     RB
+    ret
+
+
+%ifndef SECTION DPAGE
+    %error "PSTACK requires a data page section named DPAGE (multi)."
+%endif
+
+
+.section DPAGE
+PSTACK_SP:
+    .res 1
+
+
+%ifndef SECTION PSTACK
+    %error "PSTACK requires a section named PSTACK for the parameter stack"
+%endif
+
+.section PSTACK
+PSTACK:
+    .res 0x100
+
+%endif

@@ -1,0 +1,90 @@
+%ifndef F_RGB
+%define F_RGB
+
+%include "pstack.lnasm"
+
+%ifndef SECTION LIB_RGB
+    %error "RGB requires a section in ROM named LIB_RGB"
+%endif
+
+%ifndef SECTION DEV_RGB
+    %error "RGB requires the RGB device to be mapped to a section named DEV_RGB"
+%endif
+
+.section LIB_RGB
+
+; clears the RGB screen
+RGB_CLEAR:
+    mov     0xFF,               [(DEV_RGB + 0x1fff)]
+    ret
+
+
+; Draws a square on the screen, starting at y,x = RC, RD to y, x = RA, RB. The color is popped from the parameter stack.
+RGB_DRAW_RECT:
+
+    push    RA
+    push    RB
+    push    RC
+    push    RD
+
+    push    RA              ; Push RA (end y)
+    push    RC              ; Push RC (start y)
+    push    RB              ; Push RB (end x)
+    push    RB              ; Push RB (end x)
+    push    RA              ; Push RA (end y)
+    push    RA              ; Push RA (end y)
+    lcall   PSTACK_POPRA    ; Pop the color off the stack
+
+    lcall   RGB_DRAW_HLINE  ; Draw the top line
+
+    pop     RB              ; Pop end y into RB
+    lcall   RGB_DRAW_VLINE  ; Draw the left line
+
+    pop     RC              ; Pop end y into RC
+    pop     RB              ; Pop end x into RB
+    lcall   RGB_DRAW_HLINE  ; Draw the bottom line
+
+    pop     RD              ; Pop end x into RD
+    pop     RC              ; Pop start y into RC
+    pop     RB              ; Pop end y into RB
+    lcall   RGB_DRAW_VLINE  ; Draw the right line
+
+    pop     RD
+    pop     RC
+    pop     RB
+    pop     RA
+
+    ret
+
+
+; Draws a horizontal line on the screen, starting at y,x = RC, RD to x = RB and with the color specified by RA. RD must be less than RB.
+RGB_DRAW_HLINE:
+    push    RB
+    push    RD
+_loop:
+    mov     RA,         [RC:RD]
+    inc     RD
+    cmp     RB,         RD
+    jc      _ret
+    goto    _loop
+_ret:
+    pop     RD
+    pop     RB
+    ret
+
+; Draws a vertical line on the screen, starting at y,x = RC, RD to y = RB and with the color specified by RA. RC must be less than RB.
+RGB_DRAW_VLINE:
+    push    RB
+    push    RC
+_loop:
+    mov     RA,         [RC:RD]
+    inc     RC
+    cmp     RB,         RC
+    jc      _ret
+    goto    _loop
+_ret:
+    pop     RC
+    pop     RB
+    ret
+
+%endif

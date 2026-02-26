@@ -1,0 +1,18 @@
+%include "ddi.lnasm"
+
+%ifndef SIGN_LNASM_F
+%define SIGN_LNASM_F
+
+; BIOS signature section
+.section ROM_SIGNATURE
+
+    .data 'LNDI' 0x1            ; 'LNDI' signature and version 1
+    .data DEV_TYPE_ROM8K        ; ROM device type
+    .data DEV_FLAG_EXECUTABLE   ; device flags
+    .data 0x20                  ; 8KB size (in 256-byte pages)
+    .data 0x00 0x00             ; boot target start (none)
+    .data 0x00 0x00             ; no control page
+    .data 0x00 0x00 0x00        ; reserved
+    .data 0xA5                  ; control byte (must be 0xA5)
+
+%endif

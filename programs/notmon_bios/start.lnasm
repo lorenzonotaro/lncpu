@@ -1,0 +1,21 @@
+%include        <bios>
+%include        <notmon>
+
+
+; start of ROM.
+.section START
+        nop                                                     ; with the current design, these nop instructions are necessary to initialize the pipeline.
+        nop
+_start:
+        sid                                                     ; disable interrupts during initialization
+
+        ; setup stack
+        mov             (STACK >> 8)::byte,     SS
+        mov             0,                      SP
+        lcall           IO_INIT_BUFFER
+        cid                                                     ; allow interrupts
+
+        ; setup data page
+        mov             (DPAGE >> 8)::byte,     DS
+
+        lgoto           notmon                                  ; transfer control to notmon
