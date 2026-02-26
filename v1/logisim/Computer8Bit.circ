@@ -34,25 +34,7 @@
   <lib desc="#Memory" name="4"/>
   <lib desc="#I/O" name="5"/>
   <lib desc="#TTL" name="6"/>
-  <lib desc="#TCL" name="7">
-    <tool name="TclGeneric">
-      <a name="content">library ieee;
-use ieee.std_logic_1164.all;
-
-entity TCL_Generic is
-  port(
-    --Insert input ports below
-    horloge_i  : in  std_logic;                    -- input bit example
-    val_i      : in  std_logic_vector(3 downto 0); -- input vector example
-
-	  --Insert output ports below
-    max_o      : out std_logic;                    -- output bit example
-    cpt_o      : out std_logic_Vector(3 downto 0)  -- output vector example
-  );
-end TCL_Generic;
-</a>
-    </tool>
-  </lib>
+  <lib desc="#TCL" name="7"/>
   <lib desc="#Base" name="8"/>
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
@@ -3796,65 +3778,7 @@ end TCL_Generic;
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-0 0 fc 9 21 8 0 f6
-0 3b fb a 20 f4 1 0
-4e 50 51 36 b7 ef 22 3b
-40 2 e6 ed 1f f0 13 e5
-f0 13 5c 5b 59 f8 4e 4e
-4*ec f6 0 83 3b 40 2 59
-f6 0 83 3b 40 2 59 f8
-31 0 0 31 1 0 f8 4f
-2d 0 2e 1 90 ef 58 50
-51 6 3f 16 36 e6 2c 1
-5c 5b fd f0 59 fe 5a f8
-3b 40 2 f8 89 30 ee 7d
-9f 9 ee 82 ef 82 89 11
-ee 7d 9f 5 ee 80 ef 80
-89 20 ee 7d 9f 5 ee 80
-ef 80 4 ff f8 73 a f8
-c7 f 9f a ee 8e 89 a
-73 41 f8 73 30 f8 36 f6
-0 5f 9f ff ef c6 4*eb 11
-e6 36 f6 0 5f 9f ff ef
-c6 67 4f e6 36 f6 0 5f
-9f ff ef c5 4*eb 11 e6 36
-f6 0 5f 9f ff ef c5 67
-e6 fd 59 f8 59 fe f8 56*0
-d0 6 3e da 43 40 2 3e
-43 40 2 20 f6 0 42 ed
-c 32 9f a ef 24 9f 8
-ef 1d e6 f0 c a2 0 ef
-c ea f0 c 1b da a0 1
-ef 48 a0 4 ed f5 4f f6
-0 91 ed f4 29 2 2a 3
-5a 9c ef ac 36 e6 9f 2e
-ef 58 9f 3a ef 6b f0 f5
-36 9f 72 ef 53 9f 52 ef
-53 f0 f5 2f 2 30 3 f5
-a0 9 ef 5e f0 f5 4f f6
-0 91 ed f4 29 4 2a 5
-5a f0 b2 96 ef f9 ed f5
-36 9f 20 ef 77 f0 f5 e6
-36 4f 80 a0 2 ed f4 f6
-0 5f 9f ff ef f4 4*eb 11
-e6 36 e6 f6 0 5f 9f ff
-ef f4 64 50 51 2f 2 30
-3 32 e6 2c 3 ed a7 5c
-5b 5a f0 6b e5 2b 2 f0
-a2 44 2 4 44 3 5 2d
-4 2e 5 2f 2 30 3 4e
-f0 c5 4e 1a c7 7 ef c5
-f0 d9 43 40 2 a 17 f6
-0 26 1a f6 0 26 43 40
-2 3a 43 40 2 20 36 f6
-0 26 43 40 2 20 59 97
-ef e7 f0 ec 9c ef f9 f0
-ec e6 ed f1 f0 bd e5 f0
-bd 5a 43 40 2 3f 43 40
-2 a f0 7426*0 4e 3f 40 0
-9f 0 ef 1a 3f 40 1 3b
-40 2 50 51 6 3f 30 0
-32 e6 2c 0 5c 5b 59 fa
+7 a da 1
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
@@ -5650,19 +5574,19 @@ f 12*e f 7 b 4189*e
       <a name="width" val="16"/>
     </comp>
     <comp lib="8" loc="(310,545)" name="Text">
-      <a name="font" val="Consolas bold 16"/>
+      <a name="font" val="Dialog bold 16"/>
       <a name="text" val="10: SS:SP"/>
     </comp>
     <comp lib="8" loc="(310,565)" name="Text">
-      <a name="font" val="Consolas bold 16"/>
+      <a name="font" val="Dialog bold 16"/>
       <a name="text" val="11: CS:PC"/>
     </comp>
     <comp lib="8" loc="(315,520)" name="Text">
-      <a name="font" val="Consolas bold 16"/>
+      <a name="font" val="Dialog bold 16"/>
       <a name="text" val="01: DS:ABL"/>
     </comp>
     <comp lib="8" loc="(320,505)" name="Text">
-      <a name="font" val="Consolas bold 16"/>
+      <a name="font" val="Dialog bold 16"/>
       <a name="text" val="00: ABH:ABL"/>
     </comp>
     <wire from="(520,450)" to="(520,460)"/>
