@@ -787,7 +787,7 @@
 			(pin passive line
 				(at -5.08 27.94 0)
 				(length 3.81)
-				(name "~{RT_{in}}"
+				(name "~{RB_{out}}"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -805,7 +805,7 @@
 			(pin passive line
 				(at -5.08 25.4 0)
 				(length 3.81)
-				(name "~{RT_{out}}"
+				(name "~{RC_{out}}"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -823,7 +823,7 @@
 			(pin passive line
 				(at -5.08 22.86 0)
 				(length 3.81)
-				(name "~{RB_{out}}"
+				(name "~{RD_{out}}"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -841,7 +841,7 @@
 			(pin passive line
 				(at -5.08 20.32 0)
 				(length 3.81)
-				(name "~{RC_{out}}"
+				(name "~{RT_{in}}"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -859,7 +859,7 @@
 			(pin passive line
 				(at -5.08 17.78 0)
 				(length 3.81)
-				(name "~{RD_{out}}"
+				(name "~{RT_{out}}"
 					(effects
 						(font
 							(size 1.27 1.27)
