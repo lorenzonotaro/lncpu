@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="4.0.2dev" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v4.0.2dev(https://github.com/logisim-evolution/).
+<project source="4.0.3dev" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v4.0.3dev(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -1332,14 +1332,6 @@
       <a name="label" val="NOT_HLT"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
-    <comp lib="0" loc="(860,1230)" name="Tunnel">
-      <a name="label" val="ADDR_SEL0"/>
-      <a name="labelfont" val="SansSerif bold 8"/>
-    </comp>
-    <comp lib="0" loc="(860,1250)" name="Tunnel">
-      <a name="label" val="ADDR_SEL1"/>
-      <a name="labelfont" val="SansSerif bold 8"/>
-    </comp>
     <comp lib="0" loc="(860,1270)" name="Tunnel">
       <a name="label" val="NOT_FETCH"/>
       <a name="labelfont" val="SansSerif bold 8"/>
@@ -1414,10 +1406,6 @@
     </comp>
     <comp lib="0" loc="(860,530)" name="Tunnel">
       <a name="label" val="SP_MODE_SEL0"/>
-      <a name="labelfont" val="SansSerif bold 8"/>
-    </comp>
-    <comp lib="0" loc="(860,550)" name="Tunnel">
-      <a name="label" val="NOT_RB_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(860,570)" name="Tunnel">
@@ -1506,6 +1494,18 @@
     </comp>
     <comp lib="0" loc="(860,990)" name="Tunnel">
       <a name="label" val="NOT_PC_IN"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(880,1230)" name="Tunnel">
+      <a name="label" val="ADDR_SEL0"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(880,1250)" name="Tunnel">
+      <a name="label" val="ADDR_SEL1"/>
+      <a name="labelfont" val="SansSerif bold 8"/>
+    </comp>
+    <comp lib="0" loc="(890,550)" name="Tunnel">
+      <a name="label" val="NOT_RB_IN"/>
       <a name="labelfont" val="SansSerif bold 8"/>
     </comp>
     <comp lib="0" loc="(970,690)" name="Tunnel">
@@ -2496,8 +2496,8 @@
     <wire from="(840,1170)" to="(860,1170)"/>
     <wire from="(840,1190)" to="(860,1190)"/>
     <wire from="(840,1210)" to="(860,1210)"/>
-    <wire from="(840,1230)" to="(860,1230)"/>
-    <wire from="(840,1250)" to="(860,1250)"/>
+    <wire from="(840,1230)" to="(880,1230)"/>
+    <wire from="(840,1250)" to="(880,1250)"/>
     <wire from="(840,1270)" to="(860,1270)"/>
     <wire from="(840,1290)" to="(860,1290)"/>
     <wire from="(840,1310)" to="(860,1310)"/>
@@ -2520,7 +2520,7 @@
     <wire from="(840,490)" to="(860,490)"/>
     <wire from="(840,510)" to="(860,510)"/>
     <wire from="(840,530)" to="(860,530)"/>
-    <wire from="(840,550)" to="(860,550)"/>
+    <wire from="(840,550)" to="(890,550)"/>
     <wire from="(840,570)" to="(860,570)"/>
     <wire from="(840,590)" to="(860,590)"/>
     <wire from="(840,610)" to="(860,610)"/>
