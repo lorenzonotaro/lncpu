@@ -2220,7 +2220,7 @@
 			(symbol "LNCPU_8B_Socket_1_1"
 				(rectangle
 					(start -1.27 11.43)
-					(end 5.08 -11.43)
+					(end 5.08 -15.24)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -2328,23 +2328,15 @@
 						(type none)
 					)
 				)
-				(pin passive line
-					(at -5.08 10.16 0)
-					(length 3.81)
-					(hide yes)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
+				(rectangle
+					(start -1.27 -12.573)
+					(end 0 -12.827)
+					(stroke
+						(width 0.1524)
+						(type default)
 					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
+					(fill
+						(type none)
 					)
 				)
 				(pin passive line
@@ -2357,7 +2349,7 @@
 							)
 						)
 					)
-					(number "10"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2502,6 +2494,24 @@
 						)
 					)
 					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -12.7 0)
+					(length 3.81)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3142,6 +3152,12 @@
 		(uuid "98cd6b88-65b8-472c-a96b-f547975cb71c")
 	)
 	(junction
+		(at 275.59 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9a606e1a-0d23-427e-b2d8-cb56056719cf")
+	)
+	(junction
 		(at 127 106.68)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3652,6 +3668,16 @@
 			(type default)
 		)
 		(uuid "0295fcce-e266-48fc-a265-0185374c2994")
+	)
+	(wire
+		(pts
+			(xy 275.59 22.86) (xy 299.72 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03db1a26-803c-4ce5-b203-29b752902592")
 	)
 	(wire
 		(pts
@@ -4295,6 +4321,16 @@
 	)
 	(wire
 		(pts
+			(xy 276.86 50.8) (xy 276.86 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5dbc1be4-1cb5-4a5f-ac34-e998c675daab")
+	)
+	(wire
+		(pts
 			(xy 36.83 76.2) (xy 62.23 76.2)
 		)
 		(stroke
@@ -4632,6 +4668,16 @@
 			(type default)
 		)
 		(uuid "7aa678ed-bb4f-4daf-b401-981b570915ef")
+	)
+	(wire
+		(pts
+			(xy 276.86 55.88) (xy 299.72 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e503a66-59e0-4cdd-98d8-ddcb3809e84a")
 	)
 	(wire
 		(pts
@@ -5122,6 +5168,16 @@
 			(type default)
 		)
 		(uuid "d764f92e-68f3-45fc-8741-0998c45a7005")
+	)
+	(wire
+		(pts
+			(xy 299.72 55.88) (xy 299.72 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dbe8c411-8066-409f-a36a-2eed89790b15")
 	)
 	(wire
 		(pts
@@ -6927,7 +6983,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "86036667-a45a-4bf9-ade9-ced8d04a7a59")
 		(property "Reference" "J1"
 			(at 288.29 36.8299 0)

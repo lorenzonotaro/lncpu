@@ -1251,7 +1251,7 @@
 			(symbol "LNCPU_8B_Socket_1_1"
 				(rectangle
 					(start -1.27 11.43)
-					(end 5.08 -11.43)
+					(end 5.08 -15.24)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -1359,23 +1359,15 @@
 						(type none)
 					)
 				)
-				(pin passive line
-					(at -5.08 10.16 0)
-					(length 3.81)
-					(hide yes)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
+				(rectangle
+					(start -1.27 -12.573)
+					(end 0 -12.827)
+					(stroke
+						(width 0.1524)
+						(type default)
 					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
+					(fill
+						(type none)
 					)
 				)
 				(pin passive line
@@ -1388,7 +1380,7 @@
 							)
 						)
 					)
-					(number "10"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1540,6 +1532,24 @@
 						)
 					)
 				)
+				(pin passive line
+					(at -5.08 -12.7 0)
+					(length 3.81)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
 			(embedded_fonts no)
 		)
@@ -1614,7 +1624,7 @@
 			(symbol "LNCPU_Type_B_Header_0_1"
 				(rectangle
 					(start 0 0)
-					(end 12.7 -52.07)
+					(end 15.24 -52.07)
 					(stroke
 						(width 0)
 						(type default)
@@ -1646,7 +1656,7 @@
 							)
 						)
 					)
-					(number "4"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1664,7 +1674,7 @@
 							)
 						)
 					)
-					(number "6"
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1682,7 +1692,7 @@
 							)
 						)
 					)
-					(number "8"
+					(number "7"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1700,7 +1710,7 @@
 							)
 						)
 					)
-					(number "10"
+					(number "9"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1718,7 +1728,7 @@
 							)
 						)
 					)
-					(number "12"
+					(number "11"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1736,7 +1746,7 @@
 							)
 						)
 					)
-					(number "14"
+					(number "13"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1754,7 +1764,7 @@
 							)
 						)
 					)
-					(number "16"
+					(number "15"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1772,7 +1782,7 @@
 							)
 						)
 					)
-					(number "18"
+					(number "17"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1790,7 +1800,7 @@
 							)
 						)
 					)
-					(number "3"
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1808,7 +1818,7 @@
 							)
 						)
 					)
-					(number "5"
+					(number "6"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1826,7 +1836,7 @@
 							)
 						)
 					)
-					(number "7"
+					(number "8"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1844,7 +1854,7 @@
 							)
 						)
 					)
-					(number "9"
+					(number "10"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1862,7 +1872,7 @@
 							)
 						)
 					)
-					(number "11"
+					(number "12"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1880,7 +1890,7 @@
 							)
 						)
 					)
-					(number "13"
+					(number "14"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1898,7 +1908,7 @@
 							)
 						)
 					)
-					(number "15"
+					(number "16"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1952,7 +1962,7 @@
 							)
 						)
 					)
-					(number "23"
+					(number "20"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1989,26 +1999,7 @@
 							)
 						)
 					)
-					(number "17"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at -2.54 -48.26 0)
-					(length 2.54)
-					(hide yes)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "20"
+					(number "18"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2028,6 +2019,25 @@
 						)
 					)
 					(number "22"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at -2.54 -48.26 0)
+					(length 2.54)
+					(hide yes)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "23"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2117,6 +2127,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "62073c48-12b3-4695-bab8-ccdaafcc6f72")
+	)
+	(junction
+		(at 128.27 82.55)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "64cad0be-dfa9-4cf5-afc9-d4479fec4ab4")
 	)
 	(junction
 		(at 97.79 153.67)
@@ -3504,6 +3520,16 @@
 	)
 	(wire
 		(pts
+			(xy 137.16 82.55) (xy 137.16 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7ad1d3c5-1e82-474d-adb6-69cc6095770b")
+	)
+	(wire
+		(pts
 			(xy 81.28 44.45) (xy 82.55 44.45)
 		)
 		(stroke
@@ -3711,6 +3737,16 @@
 			(type default)
 		)
 		(uuid "974ae283-81c0-4600-acbf-f7fba660962d")
+	)
+	(wire
+		(pts
+			(xy 137.16 118.11) (xy 140.97 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "98cfe4e7-c7a0-4605-8f7a-fe96762a5302")
 	)
 	(wire
 		(pts
@@ -4171,6 +4207,16 @@
 			(type default)
 		)
 		(uuid "cef311a6-083c-44b5-b7e8-d70bfcba1e32")
+	)
+	(wire
+		(pts
+			(xy 128.27 82.55) (xy 137.16 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cff69742-97ee-4955-afb6-03568a881dbe")
 	)
 	(bus
 		(pts
