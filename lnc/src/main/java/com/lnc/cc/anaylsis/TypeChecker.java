@@ -202,7 +202,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
     @Override
     public TypeSpecifier visit(StringExpression stringExpression) {
-        return new PointerType(new CharType(), PointerType.PointerKind.FAR);
+        return new PointerType(new CharType(), true, StorageLocation.FAR);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             }
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
             TypeSpecifier operandType = unaryExpression.operand.accept(this);
-            PointerType pointerType = new PointerType(operandType, PointerType.PointerKind.NEAR);
+            PointerType pointerType = new PointerType(operandType, true, StorageLocation.NEAR);
             unaryExpression.setTypeSpecifier(pointerType);
             return pointerType;
         }

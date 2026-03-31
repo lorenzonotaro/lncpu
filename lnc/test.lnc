@@ -1,37 +1,6 @@
-
-extern void puts(char far* str);
-
-extern void putc(char c);
-
-extern void printhex(int n);
-
-extern void fizzbuzz(int i);
-
-int mod(int a, int m){
-    while(a >= m){
-        a = a - m;
-    }
-    return a;
-}
-
-
-/*export void fizzbuzz(int i) {
-    printhex(i);
-
-    putc(' ');
-
-    if(mod(i, 3) == 0){
-        puts("Fizz");
-    }
-    if(mod(i, 5) == 0){
-        puts("Buzz");
-    }
-
-    putc('\n');
-}*/
-
 void main(){
+    int far *data = 0x1000;
     for(int i = 0; i < 16; i++){
-        fizzbuzz(i);
+        data[i] = i;
     }
 }

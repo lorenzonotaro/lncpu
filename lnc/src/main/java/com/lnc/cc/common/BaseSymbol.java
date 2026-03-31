@@ -1,7 +1,6 @@
 package com.lnc.cc.common;
 
-import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.types.TypeQualifier;
+import com.lnc.cc.types.StorageQualifier;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.frontend.Token;
 
@@ -14,25 +13,25 @@ import com.lnc.common.frontend.Token;
 public class BaseSymbol{
     private final Token token;
     private final TypeSpecifier typeSpecifier;
-    private final TypeQualifier qualifier;
+    private final StorageQualifier storageQualifier;
     private Scope scope;
     private String flatSymbolName;
     private final boolean isParameter;
     private final int parameterIndex;
 
-    protected BaseSymbol(Token token, TypeSpecifier typeSpecifier, TypeQualifier qualifier, boolean isParameter, int parameterIndex) {
+    protected BaseSymbol(Token token, TypeSpecifier typeSpecifier, StorageQualifier storageQualifier, boolean isParameter, int parameterIndex) {
         this.token = token;
         this.typeSpecifier = typeSpecifier;
-        this.qualifier = qualifier;
+        this.storageQualifier = storageQualifier;
         this.isParameter = isParameter;
         this.parameterIndex = parameterIndex;
     }
 
-    public static BaseSymbol parameter(Token token, TypeSpecifier type, TypeQualifier qualifier, int parameterIndex) {
+    public static BaseSymbol parameter(Token token, TypeSpecifier type, StorageQualifier qualifier, int parameterIndex) {
         return new BaseSymbol(token, type, qualifier, true, parameterIndex);
     }
 
-    public static BaseSymbol variable(Token token, TypeSpecifier type, TypeQualifier qualifier) {
+    public static BaseSymbol variable(Token token, TypeSpecifier type, StorageQualifier qualifier) {
         return new BaseSymbol(token, type, qualifier, false, -1);
     }
 
@@ -58,14 +57,14 @@ public class BaseSymbol{
         if (o == null || getClass() != o.getClass()) return false;
 
         BaseSymbol symbol = (BaseSymbol) o;
-        return qualifier.equals(symbol.qualifier) && token.equals(symbol.token) && typeSpecifier.equals(symbol.typeSpecifier);
+        return storageQualifier.equals(symbol.storageQualifier) && token.equals(symbol.token) && typeSpecifier.equals(symbol.typeSpecifier);
     }
 
     @Override
     public int hashCode() {
         int result = token.hashCode();
         result = 31 * result + typeSpecifier.hashCode();
-        result = 31 * result + qualifier.hashCode();
+        result = 31 * result + storageQualifier.hashCode();
         return result;
     }
 
@@ -94,16 +93,12 @@ public class BaseSymbol{
         return parameterIndex;
     }
 
-    public boolean isStatic() {
-        return qualifier.isStatic();
+    public StorageQualifier getStorageQualifier() {
+        return storageQualifier;
     }
 
     public boolean canResideInRegister() {
         // TODO: guard against address-of operator
-        return !qualifier.isExtern() && !isParameter && !qualifier.isStatic() && typeSpecifier.allocSize() > 0;
-    }
-
-    public TypeQualifier getTypeQualifier() {
-        return qualifier;
+        return !storageQualifier.isExtern() && !isParameter && !storageQualifier.isStatic() && typeSpecifier.allocSize() > 0 && typeSpecifier.allocSize() <= 2;
     }
 }

@@ -2,20 +2,20 @@ package com.lnc.cc.types;
 
 public class PointerType extends AbstractSubscriptableType {
 
-    private final PointerKind pointerKind;
+    private final StorageLocation pointerKind;
 
-    public PointerKind getPointerKind() {
+    public static TypeSpecifier wrap(TypeSpecifier ts, boolean hasConst, StorageLocation sl) {
+        return new PointerType(ts, hasConst, sl);
+    }
+
+    public StorageLocation getPointerKind() {
         return pointerKind;
     }
 
-    // near/far type
-    public enum PointerKind {
-        NEAR, FAR
-    }
-
-    public PointerType(TypeSpecifier baseType, PointerKind kind) {
+    public PointerType(TypeSpecifier baseType, boolean isPointerConst, StorageLocation kind) {
         super(Type.POINTER, baseType);
         this.pointerKind = kind;
+        this.isConst = isPointerConst;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PointerType extends AbstractSubscriptableType {
 
     @Override
     public int typeSize() {
-        return pointerKind == PointerKind.FAR ? 2 : 1;
+        return pointerKind == StorageLocation.FAR ? 2 : 1;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PointerType extends AbstractSubscriptableType {
         }
 
         if(other instanceof UI16Type otherUI16) {
-            return pointerKind == PointerKind.FAR;
+            return pointerKind == StorageLocation.FAR;
         }
 
         return false;

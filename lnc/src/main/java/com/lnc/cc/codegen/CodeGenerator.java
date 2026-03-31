@@ -98,7 +98,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getTypeSpecifier();
-            if(type.type != TypeSpecifier.Type.FUNCTION && entry.isStatic() && !entry.getTypeQualifier().isExtern()){
+            var storageQualifier = entry.getStorageQualifier();
+            if(type.type != TypeSpecifier.Type.FUNCTION && entry.getStorageQualifier().isStatic() && !entry.getStorageQualifier().isExtern()){
                 dataPageVariable(entry.getName(), type.allocSize());
             }
         }
@@ -349,37 +350,15 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Argument visit(Location location) {
         // by this time, if this is still a location, it is either a static local or a global variable
-        return CodeGenUtils.labelRef(location.getSymbol().getName());
-    }
-
-
-    @Override
-    public Argument visit(StructMemberAccess structMemberAccess) {
-        throw new UnsupportedOperationException("StructMemberAccess is not supported in this code generator.");
+        if(location.locType != Location.LocationType.SYMBOL){
+            throw new IllegalStateException("Unsupported location type in code generation: " + location.locType);
+        }
+        return CodeGenUtils.labelRef(((StaticSymbolLocation)location).getSymbol().getName());
     }
 
     @Override
-    public Argument visit(ArrayElementAccess arrayElementAccess) {
-        throw new UnsupportedOperationException("ArrayElementAccess is not supported in this code generator.");
-    }
-
-    @Override
-    public Argument visit(StackFrameOperand stackFrameOperand) {
-        Token opToken = stackFrameOperand.getOperandType() == StackFrameOperand.OperandType.LOCAL ?
-                Token.__internal(TokenType.PLUS, "+") :
-                Token.__internal(TokenType.MINUS, "-");
-        return new Dereference(
-                new RegisterOffset(
-                        new com.lnc.assembler.parser.argument.Register(Token.__internal(TokenType.BP, "BP")),
-                        opToken,
-                        new Byte(Token.__internal(TokenType.INTEGER, stackFrameOperand.getOffset()))
-                )
-        );
-    }
-
-    @Override
-    public Argument visit(Deref deref) {
-        return new Dereference(deref.getTarget().accept(this));
+    public Argument visit(AddressOf addressOf) {
+        return null;
     }
 
     @Override
@@ -391,7 +370,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public void visit(IRUnit unit) {
 
-        if(unit.getFunctionDeclaration().declarator.typeQualifier().isExport()){
+        if(unit.getFunctionDeclaration().declarator.storageQualifier().isExport()){
             currentOutput.exportLabel(unit.getFunctionDeclaration().name.lexeme);
         }
 

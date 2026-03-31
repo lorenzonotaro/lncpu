@@ -1,62 +1,39 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.Location;
+import com.lnc.cc.types.PointerType;
+import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.Collection;
 import java.util.List;
 
-public class AddressOf extends IRInstruction {
-    private IROperand operand;
-    private IROperand result;
-
-    public AddressOf(IROperand operand, IROperand result) {
+public class AddressOf extends IROperand {
+    private Location operand;
+    public AddressOf(Location operand) {
+        super(Type.ADDRESS_OF);
         this.operand = operand;
-        this.result = result;
     }
 
     @Override
-    public <E> E accept(IIRInstructionVisitor<E> visitor) {
-        // return visitor.visit(this);
-        return null;
+    public <T> T accept(IIROperandVisitor<T> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public TypeSpecifier getTypeSpecifier() {
+        // &x -> pointer to x. We set isPointerConst to true even though it doesn't matter, as the & operator
+        // is always a rvalue (cannot be assigned to)
+        return new PointerType(operand.getTypeSpecifier(), true, operand.getPointerKind());
     }
 
     @Override
     public String toString() {
-        return result.toString() + " <- &" + operand.toString();
+        return "&" + operand;
     }
 
-    @Override
-    public Collection<IROperand> getReadOperands() {
-        return List.of(operand);
-    }
-
-    @Override
-    public Collection<IROperand> getWriteOperands() {
-        return List.of(result);
-    }
-
-    @Override
-    public void replaceOperand(IROperand oldOp, IROperand newOp) {
-        if (operand.equals(oldOp)) {
-            operand = newOp;
-        } else if (result.equals(oldOp)) {
-            result = newOp;
-        }
-    }
 
     public IROperand getOperand() {
         return operand;
-    }
-
-    public void setOperand(IROperand operand) {
-        this.operand = operand;
-    }
-
-    public IROperand getResult() {
-        return result;
-    }
-
-    public void setResult(IROperand result) {
-        this.result = result;
     }
 }

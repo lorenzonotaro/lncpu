@@ -5,7 +5,8 @@ import com.lnc.cc.common.ConstantSymbol;
 import com.lnc.cc.common.ScopedASTVisitor;
 import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.types.FunctionType;
-import com.lnc.cc.types.TypeQualifier;
+import com.lnc.cc.types.StorageLocation;
+import com.lnc.cc.types.StorageQualifier;
 
 /**
  * The LocalResolver class extends the ScopedASTVisitor and is responsible for
@@ -101,7 +102,7 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){
-            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), new TypeQualifier(functionDeclaration.isForwardDeclaration(), false, true, functionDeclaration.declarator.typeQualifier().isExport())));
+            define(BaseSymbol.variable(functionDeclaration.name, FunctionType.of(functionDeclaration), new StorageQualifier(functionDeclaration.isForwardDeclaration(), false, functionDeclaration.declarator.storageQualifier().isExport(), StorageLocation.FAR)));
         }
 
         super.visitStatement(statement);
@@ -113,9 +114,9 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
         BaseSymbol symbol;
 
         if (variableDeclaration.isParameter) {
-            symbol = BaseSymbol.parameter(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier(), variableDeclaration.getParameterIndex());
+            symbol = BaseSymbol.parameter(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.storageQualifier(), variableDeclaration.getParameterIndex());
         } else {
-            symbol = BaseSymbol.variable(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.typeQualifier());
+            symbol = BaseSymbol.variable(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.storageQualifier());
         }
 
         define(symbol);

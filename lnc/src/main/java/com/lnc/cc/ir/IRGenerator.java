@@ -7,14 +7,13 @@ import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.*;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class IRGenerator extends ScopedASTVisitor<IROperand> {
-
-
     private final List<IRUnit> blocks = new ArrayList<>();
     private final FlatSymbolTable globalSymbolTable;
     private final Scope globalScope;
@@ -294,8 +293,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         var dest = assignmentExpression.left.accept(this);
 
-        if(!assignmentExpression.isInitializer() && dest.type == IROperand.Type.LOCATION && ((Location) dest).getSymbol().getTypeQualifier().isConst()){
-            throw new CompileException("assignment to constant variable", assignmentExpression.left.token);
+        if(dest.type != IROperand.Type.LOCATION){
+            throw new CompileException("assignment to rvalue", assignmentExpression.left.token);
+        }
+
+        if(!assignmentExpression.isInitializer() && dest.getTypeSpecifier().isConst()){
+            throw new CompileException("assignment to constant lvalue", assignmentExpression.left.token);
         }
 
         emit(new Move(value, dest));
@@ -348,39 +351,52 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(IdentifierExpression identifierExpression) {
         BaseSymbol symbol = resolveSymbol(identifierExpression.token);
-
-        return new Location(symbol);
+        return new StaticSymbolLocation(symbol);
     }
 
     @Override
     public IROperand visit(MemberAccessExpression memberAccessExpression) {
         IROperand left = memberAccessExpression.left.accept(this);
 
-        StructDefinitionType definition = getStructDefinitionType(left, memberAccessExpression.token);
+        if(left.type != IROperand.Type.LOCATION){
+            throw new CompileException("invalid type for member access", memberAccessExpression.token);
+        }
+        Location loc = (Location) left;
+
+        StructDefinitionType definition = getStructDefinitionType(loc, memberAccessExpression.token);
 
         if(definition == null){
             throw new CompileException("struct type not defined", memberAccessExpression.token);
+        }
+
+        // check correct usage of member access operator
+        TypeSpecifier.Type baseType = loc.getTypeSpecifier().type;
+        TokenType operatorType = memberAccessExpression.accessOperator.type;
+        if(baseType == TypeSpecifier.Type.POINTER && operatorType == TokenType.DOT){
+            throw new CompileException("wrong operand '.' for struct pointer member access ('->' required)", memberAccessExpression.token);
+        }
+
+        if(baseType == TypeSpecifier.Type.STRUCT && operatorType == TokenType.ARROW){
+            throw new CompileException("wrong operand '->' for struct member access ('.' required)", memberAccessExpression.token);
         }
 
         StructFieldEntry fieldEntry = definition.getField(memberAccessExpression.right.lexeme);
 
         if (fieldEntry == null) throw new CompileException("no such field", memberAccessExpression.right);
 
-        return new StructMemberAccess(left, fieldEntry);
+        return new StructMemberAccess(baseType == TypeSpecifier.Type.POINTER ? new DerefLocation(loc) : loc, fieldEntry);
     }
 
-    private static StructDefinitionType getStructDefinitionType(IROperand left, Token operatorToken) {
+    private static StructDefinitionType getStructDefinitionType(Location left, Token operatorToken) {
         if(left.type != IROperand.Type.LOCATION){
             throw new CompileException("invalid type for member access", operatorToken);
         }
 
-        BaseSymbol symbol = ((Location) left).getSymbol();
-
-        if(symbol.getTypeSpecifier().type == TypeSpecifier.Type.STRUCT){
-            StructType structType = (StructType) symbol.getTypeSpecifier();
+        if(left.getTypeSpecifier().type == TypeSpecifier.Type.STRUCT){
+            StructType structType = (StructType) left.getTypeSpecifier();
             return structType.getDefinition();
-        }else if (symbol.getTypeSpecifier().type == TypeSpecifier.Type.POINTER){
-            PointerType pointerType = (PointerType) symbol.getTypeSpecifier();
+        }else if (left.getTypeSpecifier().type == TypeSpecifier.Type.POINTER){
+            PointerType pointerType = (PointerType) left.getTypeSpecifier();
             if(pointerType.getBaseType().type == TypeSpecifier.Type.STRUCT){
                 StructType structType = (StructType) pointerType.getBaseType();
                 return structType.getDefinition();
@@ -403,7 +419,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand visit(StringExpression stringExpression) {
-        return new Location(resolveConstant(
+        return new StaticSymbolLocation(resolveConstant(
                 stringExpression.token.lexeme));
     }
 
@@ -417,6 +433,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IROperand baseOp  = expr.left.accept(this);
         IROperand idxOp   = expr.index.accept(this);
 
+        if(baseOp.type != IROperand.Type.LOCATION){
+            throw new CompileException("subscript operator on non-array and non-pointer type", expr.token);
+        }
+
+        Location baseLoc = (Location) baseOp;
+
         // 2) check at semantic time that left.type is array or pointer
         TypeSpecifier leftType = expr.left.getTypeSpecifier();
         if (leftType instanceof AbstractSubscriptableType at) {// 3) fetch element type and stride
@@ -424,7 +446,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             int stride = elemType.allocSize();
 
             // 4) emit NO loads/stores here—just make the abstract IR node
-            return new ArrayElementAccess(baseOp, idxOp, elemType, stride);
+            return new ArrayIndexLocation(baseLoc, idxOp, elemType, stride);
         } else {
             throw new CompileException(
                     "Subscript on non-array/pointer type", expr.token);
@@ -459,14 +481,14 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 throw new CompileException("dereference of non-pointer type", unaryExpression.token);
             }
 
-            returnVal = new Deref(operand);
+            returnVal = new DerefLocation(operand);
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
 
             if(operand.type != IROperand.Type.LOCATION){
                 throw new CompileException("requested address of non-memory operand", unaryExpression.token);
             }
 
-            return (Location) operand;
+            return new AddressOf((Location) operand);
         }
 
         return returnVal;

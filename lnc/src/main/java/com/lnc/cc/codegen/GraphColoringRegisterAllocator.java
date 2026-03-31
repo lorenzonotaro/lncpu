@@ -6,7 +6,7 @@ import com.lnc.cc.ir.IRBlock;
 import com.lnc.cc.ir.IRInstruction;
 import com.lnc.cc.ir.IRUnit;
 import com.lnc.cc.ir.Move;
-import com.lnc.cc.ir.operands.StackFrameOperand;
+import com.lnc.cc.ir.operands.StackFrameLocation;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import com.mxgraph.view.mxGraph;
 
@@ -500,12 +500,12 @@ public class GraphColoringRegisterAllocator {
                         // after defs
                         boolean isRegParamDemotion = inst instanceof Move mv && mv.isRegParamDemotion();
                         if(isRegParamDemotion) {
-                            inst.replaceOperand(spillCandidate.vr, new StackFrameOperand(spillCandidate.vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
+                            inst.replaceOperand(spillCandidate.vr, new StackFrameLocation(spillCandidate.vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
                             spillStores.add(new AbstractMap.SimpleEntry<>(spillCandidate.vr, (Move) inst));
                         }else{
                             for (VirtualRegister vr : inst.getWrites()) {
                                 if (spillCandidate.vr.equals(vr)) {
-                                    Move move = new Move(vr, new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0));
+                                    Move move = new Move(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
                                     spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
                                     inst.insertAfter(move);
                                 }
@@ -518,7 +518,7 @@ public class GraphColoringRegisterAllocator {
                                 // allocate a temp for the loaded value
                                 VirtualRegister temp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
                                 temp.setRegisterClass(vr.getRegisterClass());
-                                Move load = new Move(new StackFrameOperand(vr.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, 0), temp);
+                                Move load = new Move(new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0), temp);
                                 spillLoads.add(new AbstractMap.SimpleEntry<>(vr, load));
                                 inst.insertBefore(load);
                                 inst.replaceOperand(vr, temp);
@@ -564,14 +564,14 @@ public class GraphColoringRegisterAllocator {
         for(var entry : spillStores) {
             VirtualRegister vr = entry.getKey();
             Move store = entry.getValue();
-            StackFrameOperand sfOp = (StackFrameOperand) store.getDest();
+            StackFrameLocation sfOp = (StackFrameLocation) store.getDest();
             sfOp.setOffset(slotOf.get(vr));
         }
 
         for(var entry : spillLoads) {
             VirtualRegister vr = entry.getKey();
             Move load = entry.getValue();
-            StackFrameOperand sfOp = (StackFrameOperand) load.getSource();
+            StackFrameLocation sfOp = (StackFrameLocation) load.getSource();
             sfOp.setOffset(slotOf.get(vr));
         }
     }

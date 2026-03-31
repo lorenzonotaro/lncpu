@@ -64,7 +64,7 @@ public class Scope {
 
         symbol.setScope(this);
 
-        if(existing != null && !existing.getTypeQualifier().isExtern() && !symbol.getTypeQualifier().isExtern()){
+        if(existing != null && !existing.getStorageQualifier().isExtern() && !symbol.getStorageQualifier().isExtern()){
             throw new RuntimeException("symbol '%s' already defined here: '%s'".formatted(existing.getName(), existing.getToken().formatLocation()));
         }
 

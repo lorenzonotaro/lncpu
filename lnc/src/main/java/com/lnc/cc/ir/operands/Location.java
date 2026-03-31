@@ -1,33 +1,31 @@
 package com.lnc.cc.ir.operands;
 
-import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.ir.IIROperandVisitor;
+import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.TypeSpecifier;
 
-public class Location extends IROperand {
-    private final BaseSymbol symbol;
+public abstract class Location extends IROperand {
 
-    public Location(BaseSymbol symbol) {
+    public enum LocationType{
+        SYMBOL, STACK_FRAME, ARRAY_INDEX, DEREF /* = dynamic derived */, STRUCT_MEMBER, STATIC_DERIVED
+    }
+
+    public final LocationType locType;
+
+    public Location(LocationType type) {
         super(Type.LOCATION);
-        this.symbol = symbol;
-    }
-
-    public BaseSymbol getSymbol() {
-        return symbol;
+        this.locType = type;
     }
 
     @Override
-    public String toString() {
-        return symbol.getAsmName();
-    }
-
-    @Override
-    public <T> T accept(IIROperandVisitor<T> visitor) {
+    public final <T> T accept(IIROperandVisitor<T> visitor) {
         return visitor.visit(this);
     }
 
-    @Override
-    public TypeSpecifier getTypeSpecifier() {
-        return symbol.getTypeSpecifier();
-    }
+    /**
+    * @return the kind (near or far) of a pointer to this location
+    * */
+    public abstract StorageLocation getPointerKind();
+
+    public abstract TypeSpecifier getTypeSpecifier();
 }

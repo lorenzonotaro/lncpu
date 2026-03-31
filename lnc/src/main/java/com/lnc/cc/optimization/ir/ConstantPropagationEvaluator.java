@@ -1,5 +1,6 @@
 package com.lnc.cc.optimization.ir;
 
+import com.lnc.cc.ir.AddressOf;
 import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.ir.operands.*;
@@ -21,22 +22,7 @@ public class ConstantPropagationEvaluator implements IIROperandVisitor<PropValue
     }
 
     @Override
-    public PropValue visit(StructMemberAccess structMemberAccess) {
-        return PropValue.unknown();
-    }
-
-    @Override
-    public PropValue visit(ArrayElementAccess arrayElementAccess) {
-        return PropValue.unknown();
-    }
-
-    @Override
-    public PropValue visit(StackFrameOperand stackFrameOperand) {
-        return PropValue.unknown();
-    }
-
-    @Override
-    public PropValue visit(Deref deref) {
+    public PropValue visit(AddressOf addressOf) {
         return PropValue.unknown();
     }
 }

@@ -6,10 +6,7 @@ import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.common.FlatSymbolTable;
 import com.lnc.cc.common.Scope;
 import com.lnc.cc.common.BaseSymbol;
-import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.Location;
-import com.lnc.cc.ir.operands.StackFrameOperand;
-import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.FunctionType;
 
 import java.util.*;
@@ -247,7 +244,7 @@ public class IRUnit implements Iterable<IRBlock>{
             IROperand operand;
             if(parameter.onStack()){
                 int offset = parameter.stackOffset();
-                operand = new StackFrameOperand(parameter.type(), StackFrameOperand.OperandType.PARAMETER, offset);
+                operand = new StackFrameLocation(parameter.type(), StackFrameLocation.OperandType.PARAMETER, offset);
             }else{
                 VirtualRegister originalReg = vrManager.getRegister(parameter.type());
                 originalReg.setRegisterClass(parameter.regClass());
@@ -264,11 +261,11 @@ public class IRUnit implements Iterable<IRBlock>{
             var name = entry.getKey();
             var symbol = entry.getValue();
 
-            if(symbol.getTypeQualifier().isExtern() || symbol.isParameter())
+            if(symbol.getStorageQualifier().isExtern() || symbol.isParameter())
                 continue;
 
-            if(symbol.isStatic()){
-                mappings.put(symbol.getName(), new Location(symbol));
+            if(symbol.getStorageQualifier().isStatic()){
+                mappings.put(symbol.getName(), new StaticSymbolLocation(symbol));
             }else if(symbol.canResideInRegister()){
                 var vr = vrManager.getRegister(symbol.getTypeSpecifier());
                 vr.setRegisterClass(symbol.getTypeSpecifier().allocSize() == 1 ? RegisterClass.ANY : RegisterClass.WORD);
@@ -276,7 +273,7 @@ public class IRUnit implements Iterable<IRBlock>{
             }else{
                 // If the symbol is not a parameter and not static, we create a StackFrameOperand
                 int offset = forcedStackFrameLocalsSize;
-                IROperand operand = new StackFrameOperand(symbol.getTypeSpecifier(), StackFrameOperand.OperandType.LOCAL, offset);
+                IROperand operand = new StackFrameLocation(symbol.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, offset);
                 mappings.put(symbol.getName(), operand);
                 forcedStackFrameLocalsSize += symbol.getTypeSpecifier().allocSize();
             }
@@ -291,8 +288,8 @@ public class IRUnit implements Iterable<IRBlock>{
 
         Map<String, Integer> localOffsets = new HashMap<>();
         for (var entry : localMappingInfo.mappings().entrySet()) {
-            if (entry.getValue() instanceof StackFrameOperand stackFrameOperand) {
-                localOffsets.put(entry.getKey(), stackFrameOperand.getOffset());
+            if (entry.getValue() instanceof StackFrameLocation stackFrameLocation) {
+                localOffsets.put(entry.getKey(), stackFrameLocation.getOffset());
             }
         }
 

@@ -22,9 +22,12 @@ import java.util.stream.Stream;
  * declarations.
  */
 public class LncParser extends FullSourceParser<AST> {
-
     private static final TokenType[] SYNC_TOKENS = Stream.of(
-            TypeQualifier.VALID_TOKENS,
+            new TokenType[]{TokenType.IF, TokenType.WHILE, TokenType.FOR, TokenType.DO, TokenType.RETURN, TokenType.BREAK, TokenType.CONTINUE},
+            new TokenType[]{
+                    TokenType.CONST, TokenType.NEAR, TokenType.FAR
+            },
+            StorageQualifier.VALID_TOKENS,
             TypeSpecifier.VALID_TOKENS,
             new TokenType[]{TokenType.SEMICOLON, TokenType.L_CURLY_BRACE, TokenType.R_CURLY_BRACE}
     ).flatMap(Stream::of).toArray(TokenType[]::new);
@@ -57,7 +60,7 @@ public class LncParser extends FullSourceParser<AST> {
     }
 
     private Declaration externalDeclaration() {
-        var statement = variableDeclaration(true, false);
+        var statement = variableDeclaration(VarDeclRules.EXTERNAL_DECL);
 
         if(statement == null){
             return null;
@@ -79,7 +82,7 @@ public class LncParser extends FullSourceParser<AST> {
             var parameters = new ArrayList<VariableDeclaration>();
 
             while(!check(TokenType.R_PAREN)){
-                var decl = variableDeclaration(false, false, true, parameters.size());
+                var decl = variableDeclaration(VarDeclRules.PARAMETER_DECL, parameters.size());
                 if(decl == null || decl.type != Statement.Type.DECLARATION || ((Declaration) decl).declarationType != Declaration.Type.VARIABLE){
                     throw new CompileException("expected parameter declaration", peek());
                 }
@@ -94,7 +97,7 @@ public class LncParser extends FullSourceParser<AST> {
             if(match(TokenType.SEMICOLON)){
                 return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), null);
             }else if(match(TokenType.L_CURLY_BRACE)) {
-                if(variableDeclaration.declarator.typeQualifier().isExtern())
+                if(variableDeclaration.declarator.storageQualifier().isExtern())
                     throw new CompileException("extern function cannot have a body", variableDeclaration.name);
                 return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), block());
             }else {
@@ -107,35 +110,26 @@ public class LncParser extends FullSourceParser<AST> {
         throw new CompileException("expected ';'", peek());
     }
 
-    private Statement variableDeclaration(boolean allowInitializer, boolean expectSemicolon) {
-        return variableDeclaration(allowInitializer, expectSemicolon, false, -1);
+    private Statement variableDeclaration(VarDeclRules varDeclRules) {
+        return variableDeclaration(varDeclRules, -1);
     }
 
     /**
      * Parses a variable declaration.
-     * If allowInitializer is true, it allows an initializer to be present.
-     * If expectSemicolon is true, it expects a semicolon after the declaration.
-     * If isParameter is true, it indicates that this is a parameter declaration (e.g., in a function signature).
-     * @param allowInitializer whether to allow an initializer
-     * @param expectSemicolon whether to expect a semicolon after the declaration
-     * @param isParameter whether this is a parameter declaration
-     * @param parameterIndex the index of the parameter if it is a parameter declaration
+     * @param rules the rules for parsing the variable declaration
      * @return the parsed variable declaration or null if no valid declaration was found
      */
-    private Statement variableDeclaration(boolean allowInitializer, boolean expectSemicolon, boolean isParameter, int parameterIndex) {
+    private Statement variableDeclaration(VarDeclRules rules, int parameterIndex) {
         Declarator declarator = declarator();
 
         if(declarator == null){
             return statement();
         }
 
-        //while we have a pointer, keep wrapping the type specifier
-        declarator = pointer(declarator);
-
-        if(!isParameter && declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT && match(TokenType.SEMICOLON)){
+        if(!rules.isParameter && declarator.typeSpecifier().type == TypeSpecifier.Type.STRUCT && match(TokenType.SEMICOLON)){
             var structDecl = (StructType) declarator.typeSpecifier();
-            if(!declarator.typeQualifier().isNone()){
-                throw new CompileException("struct declaration cannot have type qualifiers", structDecl.getName());
+            if(!declarator.storageQualifier().isNone()){
+                throw new CompileException("struct declarations cannot have type qualifiers", structDecl.getName());
             }
             return new StructDeclaration(structDecl.getName(), structDecl.getDefinition());
         }
@@ -151,61 +145,87 @@ public class LncParser extends FullSourceParser<AST> {
 
         VariableDeclaration decl;
 
-        if(allowInitializer && match(TokenType.EQUALS)){
+        if(rules.allowInitializer && match(TokenType.EQUALS)){
 
             var equals = previous();
 
             var initializer = expression();
 
-            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer, true), isParameter, parameterIndex);
+            decl = new VariableDeclaration(declarator, ident, new AssignmentExpression(new IdentifierExpression(ident), equals, initializer, true), rules.isParameter, parameterIndex);
         }else{
-            decl = new VariableDeclaration(declarator, ident, null, isParameter, parameterIndex);
+            decl = new VariableDeclaration(declarator, ident, null, rules.isParameter, parameterIndex);
         }
 
-        if(expectSemicolon){
+        if(rules.expectSemicolon){
             consume("expected ';'", TokenType.SEMICOLON);
         }
 
         return decl;
     }
 
-    private Declarator pointer(Declarator declarator) {
-        while(match(TokenType.STAR, TokenType.NEAR, TokenType.FAR)){
-            TokenType pointerType = previous().type;
-            if(pointerType == TokenType.STAR){
-                declarator = Declarator.wrapPointer(declarator, PointerType.PointerKind.NEAR);
-            }else if(pointerType == TokenType.NEAR){
-                consume("expected pointer", TokenType.STAR);
-                declarator = Declarator.wrapPointer(declarator, PointerType.PointerKind.NEAR);
-            }else if(pointerType == TokenType.FAR){
-                consume("expected pointer", TokenType.STAR);
-                declarator = Declarator.wrapPointer(declarator, PointerType.PointerKind.FAR);
-            }else{
-                throw new CompileException("unexpected token in pointer declaration", previous());
-            }
-        }
-        return declarator;
-    }
-
     private Declarator declarator(){
-        TypeQualifier qualifier;
-        qualifier = TypeQualifier.parse(this);
+        StorageQualifier storageQualifier = StorageQualifier.parse(this);
         TypeSpecifier typeSpecifier = typeSpecifier();
 
         if(typeSpecifier == null){
             return null;
         }
 
-        return new Declarator(qualifier, typeSpecifier);
+        return new Declarator(storageQualifier, typeSpecifier);
     }
 
     private TypeSpecifier typeSpecifier() {
+        TypeSpecifier ts = null;
         if(check(TypeSpecifier.VALID_TOKENS)){
-            return TypeSpecifier.parsePrimaryType(this);
+            ts = TypeSpecifier.parsePrimaryType(this);
         }else if(check(TokenType.STRUCT)){
-            return structSpecifier();
+            ts = structSpecifier();
         }
-        return null;
+        if(ts == null){
+            return null;
+        }
+
+        while(check(TokenType.STAR, TokenType.NEAR, TokenType.FAR, TokenType.CONST)){
+            ts = wrapPointer(ts);
+        }
+        return ts;
+    }
+
+    private TypeSpecifier wrapPointer(TypeSpecifier ts) {
+        boolean hasNear = false, hasFar = false, hasConst = false;
+        StorageLocation sl = StorageLocation.NEAR;
+        while(check(TokenType.STAR, TokenType.NEAR, TokenType.FAR, TokenType.CONST)){
+            switch(advance().type){
+                case STAR:
+                    return PointerType.wrap(ts, hasConst, sl);
+                case NEAR:
+                    if(hasNear){
+                        throw new CompileException("duplicate 'near'", previous());
+                    }
+                    if(hasFar){
+                        throw new CompileException("conflicting near and far specifiers for pointer type", previous());
+                    }
+                    hasNear = true;
+                    break;
+                case FAR:
+                    if(hasFar){
+                        throw new CompileException("duplicate 'far'", previous());
+                    }
+                    if (hasNear){
+                        throw new CompileException("conflicting near and far specifiers for pointer type", previous());
+                    }
+                    hasFar = true;
+                    sl = StorageLocation.FAR;
+                    break;
+                case CONST:
+                    if(hasConst){
+                        throw new CompileException("duplicate 'const'", previous());
+                    }
+                    hasConst = true;
+                    break;
+            }
+        }
+        return ts;
     }
 
     private TypeSpecifier structSpecifier() {
@@ -215,7 +235,7 @@ public class LncParser extends FullSourceParser<AST> {
         if(match(TokenType.L_CURLY_BRACE)){
             var members = new ArrayList<VariableDeclaration>();
             while(!check(TokenType.R_CURLY_BRACE)){
-                var member = variableDeclaration(true, true);
+                var member = variableDeclaration(VarDeclRules.STRUCT_MEMBER_DECL);
                 if(member == null || member.type != Statement.Type.DECLARATION || ((Declaration) member).declarationType != Declaration.Type.VARIABLE){
                     throw new CompileException("expected struct member declaration", peek());
                 }
@@ -243,7 +263,7 @@ public class LncParser extends FullSourceParser<AST> {
     }
 
     private Statement declaration() {
-        return variableDeclaration(true, true);
+        return variableDeclaration(VarDeclRules.INTERNAL_DECL);
     }
 
     private Statement statement() {
@@ -281,7 +301,7 @@ public class LncParser extends FullSourceParser<AST> {
             consume("expected '('", TokenType.L_PAREN);
             Statement initializer = null;
             if (!match(TokenType.SEMICOLON)) {
-                initializer = variableDeclaration(true, true);
+                initializer = variableDeclaration(VarDeclRules.INTERNAL_DECL);
             }
             Expression condition = null;
             if (!match(TokenType.SEMICOLON)) {

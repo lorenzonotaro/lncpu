@@ -2,7 +2,6 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.codegen.RegisterClass;
-import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.TypeSpecifier;
@@ -75,7 +74,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
             vr.setRegisterClass(registerClass);
-            getCurrentInstruction().insertBefore(new Move(operand, vr));
+            emitBefore(new Move(operand, vr));
             return vr;
         } else {
             return move(operand, registerClass);
@@ -86,7 +85,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         VirtualRegisterManager vrm = getUnit().getVrManager();
         VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
         vr.setRegisterClass(registerClass);
-        getCurrentInstruction().insertBefore(new Move(operand, vr));
+        emitBefore(new Move(operand, vr));
         return vr;
     }
 
@@ -193,7 +192,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         unary.setTarget(target);
 
         if(unary.getOperator() == UnaryExpression.Operator.INCREMENT || unary.getOperator() == UnaryExpression.Operator.DECREMENT && operand.type != IROperand.Type.VIRTUAL_REGISTER) {
-            getCurrentInstruction().insertAfter(new Move(target, operand));
+            emitAfter(new Move(target, operand));
         }
 
         return null;
@@ -211,41 +210,33 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public IROperand visit(Location location) {
+        switch(location.locType){
+            case SYMBOL -> {
+                var symbolLoc = (StaticSymbolLocation) location;
+                var resolvedLocal = getUnit().getLocalMappingInfo().mappings().get(symbolLoc.getSymbol().getName());
+                return resolvedLocal != null ? resolvedLocal : location;
+            }
+            case STACK_FRAME -> {
+                return location;
+            }
+            case ARRAY_INDEX -> {
+                var arrayLoc = (ArrayIndexLocation) location;
+                var resolvedBase = location.accept(this);
+                var resolvedIndex = arrayLoc.getIndex().accept(this);
+            }
+            case DEREF -> {
+                return new DerefLocation(location.accept(this));
+            }
+            case STRUCT_MEMBER -> {
 
-        var resolvedLocal = getUnit().getLocalMappingInfo().mappings().get(location.getSymbol().getName());
-
-        return resolvedLocal != null ? resolvedLocal : location;
-    }
-
-    @Override
-    public IROperand visit(StructMemberAccess structMemberAccess) {
-        //TODO
-        return structMemberAccess;
-    }
-
-    @Override
-    public IROperand visit(ArrayElementAccess arrayElementAccess) {
-        //TODO
-        return arrayElementAccess;
-    }
-
-    @Override
-    public IROperand visit(StackFrameOperand stackFrameOperand) {
-        //TODO
-        return stackFrameOperand;
-    }
-
-    @Override
-    public IROperand visit(Deref deref) {
-        IROperand target = deref.getTarget().accept(this);
-
-        if(target.type != IROperand.Type.VIRTUAL_REGISTER) {
-            target = moveOrLoadIntoVR(target);
+            }
         }
+        throw new Error("Not implemented: " + location.locType + " lowering");
+    }
 
-        deref.setTarget(target);
-
-        return deref;
+    @Override
+    public IROperand visit(AddressOf addressOf) {
+        return addressOf;
     }
 
     @Override
@@ -263,5 +254,23 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             unit.prependEntryBlock(instrs);
 
         super.visit(unit);
+    }
+
+    /**
+     * Emits the given instructions before the current instruction, in the order they are provided.
+     * For example, if the current instruction is C, then emitBefore(A, B) will result in
+     * A, B, C
+     * */
+    public void emitBefore(IRInstruction... instrs){
+        getCurrentInstruction().insertBefore(List.of(instrs));
+    }
+
+    /**
+     * Emits the given instructions after the current instruction, in the order they are provided.
+     * For example, if the current instruction is C, then emitAfter(A, B) will result in
+     * C, A, B
+     * */
+    public void emitAfter(IRInstruction... instrs){
+        getCurrentInstruction().insertAfter(List.of(instrs));
     }
 }

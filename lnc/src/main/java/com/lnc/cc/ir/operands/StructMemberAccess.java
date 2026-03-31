@@ -1,15 +1,13 @@
 package com.lnc.cc.ir.operands;
 
-import com.lnc.cc.ir.IIROperandVisitor;
-import com.lnc.cc.types.StructFieldEntry;
-import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.cc.types.*;
 
-public class StructMemberAccess extends IROperand{
-    private final IROperand base;
+public class StructMemberAccess extends Location{
+    private final Location base;
     private final StructFieldEntry field;
 
-    public StructMemberAccess(IROperand base, StructFieldEntry field) {
-        super(Type.STRUCT_MEMBER_ACCESS);
+    public StructMemberAccess(Location base, StructFieldEntry field) {
+        super(LocationType.STRUCT_MEMBER);
         this.base = base;
         this.field = field;
     }
@@ -19,11 +17,6 @@ public class StructMemberAccess extends IROperand{
     public int getByteOffset()        { return field.getOffset(); }
 
     @Override
-    public <T> T accept(IIROperandVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
     public TypeSpecifier getTypeSpecifier() {
         return field.getField().declarator.typeSpecifier();
     }
@@ -31,5 +24,12 @@ public class StructMemberAccess extends IROperand{
     @Override
     public String toString() {
         return base.toString() + "." + field.getField().name.lexeme;
+    }
+
+    @Override
+    public StorageLocation getPointerKind() {
+        return base.getPointerKind();
+        // struct member pointers are always the same as the base pointer, if the struct is addressed
+        // by a far pointer, the member pointer is far too
     }
 }

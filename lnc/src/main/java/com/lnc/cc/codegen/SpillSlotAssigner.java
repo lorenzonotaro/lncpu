@@ -1,7 +1,5 @@
 package com.lnc.cc.codegen;
 
-import com.lnc.cc.ir.Move;
-import com.lnc.cc.ir.operands.StackFrameOperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -38,14 +38,9 @@ public abstract class IROperand {
 
     public enum Type{
         IMMEDIATE,
-
         VIRTUAL_REGISTER,
-        DERIVED_LOCATION,
-        STRUCT_MEMBER_ACCESS,
         ADDRESS_OF,
-        ARRAY_ACCESS,
-        STACK_FRAME_OPERAND,
         DEREF,
-        LOCATION;
+        LOCATION,
     }
 }

@@ -9,6 +9,10 @@ public abstract class TypeSpecifier {
 
     public final Type type;
 
+    public boolean isConst;
+
+    public final StorageLocation storageLocation;
+
     private final boolean primitive;
 
     public static final TokenType[] VALID_TOKENS = new TokenType[]{
@@ -20,11 +24,15 @@ public abstract class TypeSpecifier {
     };
 
     public TypeSpecifier(Type type){
-        this(type, true);
+        this(type, StorageLocation.NEAR, true);
     }
 
     public TypeSpecifier(Type type, boolean primitive) {
+        this(type, StorageLocation.NEAR, primitive);
+    }
+    public TypeSpecifier(Type type, StorageLocation storageLocation, boolean primitive) {
         this.type = type;
+        this.storageLocation = storageLocation;
         this.primitive = primitive;
     }
 
@@ -33,6 +41,7 @@ public abstract class TypeSpecifier {
         Type type = null;
         boolean signed = false;
         boolean unsigned = false;
+        boolean const_ = false;
         while(parser.check(VALID_TOKENS)){
             switch((token = parser.advance()).type){
                 case UNSIGNED:
@@ -56,6 +65,10 @@ public abstract class TypeSpecifier {
                 case VOID:
                     if(type != null) throw new CompileException("duplicate type specifier", token);
                     type = Type.VOID;
+                    break;
+                case CONST:
+                    if (const_) throw new CompileException("duplicate 'const' qualifier", token);
+                    const_ = true;
                     break;
                 default:
                     throw new CompileException("Invalid type specifier: " + token, token);
@@ -88,6 +101,14 @@ public abstract class TypeSpecifier {
 
     public boolean isPrimitive() {
         return primitive;
+    }
+
+    public boolean isConst() {
+        return isConst;
+    }
+
+    public StorageLocation storageLocation() {
+        return storageLocation;
     }
 
     public enum Type{
