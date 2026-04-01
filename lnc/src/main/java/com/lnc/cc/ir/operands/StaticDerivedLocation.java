@@ -32,4 +32,12 @@ public class StaticDerivedLocation extends StaticLocation{
     public String toString() {
         return compose();
     }
+
+    public StaticLocation getBase() {
+        return base;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
 }

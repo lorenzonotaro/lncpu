@@ -5,7 +5,8 @@ import com.lnc.common.frontend.TokenType;
 import java.util.Arrays;
 
 public enum Register {
-    RA(1), RB(1), RC(1), RD(1), RCRD(2, "RC:RD", RC, RD);
+    RA(1), RB(1), RC(1), RD(1), RCRD(2, "RC:RD", RC, RD), RARB(2, "RA:RB", RA, RB),
+    RARC(2, "RA:RC", RA, RC), RARD(2, "RA:RD", RA, RD), RBRC(2, "RB:RC", RB, RC), RBRD(2, "RB:RD", RB, RD);
 
     private final int size;
     private final Register[] compound;

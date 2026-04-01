@@ -21,14 +21,24 @@ import java.util.*;
  */
 public record LivenessInfo(
         Map<IRBlock, Set<VirtualRegister>> liveIn,
-        Map<IRBlock, Set<VirtualRegister>> liveOut
+        Map<IRBlock, Set<VirtualRegister>> liveOut,
+        Map<IRInstruction, Set<VirtualRegister>> instructionLiveAfter
 ) {
+    private static Set<VirtualRegister> virtualRegisters(Collection<? extends IROperand> operands) {
+        Set<VirtualRegister> out = new LinkedHashSet<>();
+        for (IROperand op : operands) {
+            if (op instanceof VirtualRegister vr) {
+                out.add(vr);
+            }
+        }
+        return out;
+    }
+
     public static LivenessInfo computeBlockLiveness(IRUnit unit) {
         List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
         if (blocks.isEmpty()) {
-            return new LivenessInfo(Map.of(), Map.of());
+            return new LivenessInfo(Map.of(), Map.of(), Map.of());
         }
-        IRBlock entry = blocks.get(0);
 
         // 1) Precompute uses[B] and defs[B] for each block
         Map<IRBlock, Set<VirtualRegister>> uses  = new LinkedHashMap<>();
@@ -100,6 +110,63 @@ public record LivenessInfo(
             }
         } while (changed);
 
-        return new LivenessInfo(liveIn, liveOut);
+        Map<IRInstruction, Set<VirtualRegister>> instructionLiveAfter =
+                computeInstructionLiveAfter(unit, liveOut);
+
+        return new LivenessInfo(liveIn, liveOut, instructionLiveAfter);
+    }
+
+    public static Map<IRInstruction, Set<VirtualRegister>> computeInstructionLiveAfter(
+            IRUnit unit,
+            Map<IRBlock, Set<VirtualRegister>> liveOut
+    ) {
+        Map<IRInstruction, Set<VirtualRegister>> liveAfterByInstruction = new LinkedHashMap<>();
+        List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
+
+        for (IRBlock block : blocks) {
+            Set<VirtualRegister> live = new LinkedHashSet<>(
+                    liveOut.getOrDefault(block, Collections.emptySet())
+            );
+
+            for (IRInstruction inst = block.getLast(); inst != null; inst = inst.getPrev()) {
+                liveAfterByInstruction.put(inst, new LinkedHashSet<>(live));
+
+                Set<VirtualRegister> defsHere = virtualRegisters(inst.getWrites());
+                Set<VirtualRegister> usesHere = virtualRegisters(inst.getReads());
+                live.removeAll(defsHere);
+                live.addAll(usesHere);
+            }
+        }
+
+        return liveAfterByInstruction;
+    }
+
+    public Set<VirtualRegister> getLiveAfter(IRInstruction instr) {
+        return instructionLiveAfter.getOrDefault(instr, Collections.emptySet());
+    }
+
+    public boolean isLiveAfter(VirtualRegister vr, IRInstruction instr) {
+        if (instructionLiveAfter.containsKey(instr)) {
+            return instructionLiveAfter.get(instr).contains(vr);
+        }
+
+        // Conservative fallback if this instruction is unknown to the map.
+        for (IRInstruction p = instr.getNext(); p != null; p = p.getNext()) {
+            if (p.getReads().contains(vr)) return true;
+            if (p.getWrites().contains(vr)) return false;
+        }
+        return liveOut.getOrDefault(instr.getParentBlock(), Collections.emptySet()).contains(vr);
+    }
+
+    public boolean isDeadAfter(
+            VirtualRegister vr,
+            IRInstruction instr,
+            Map<IRInstruction, Set<VirtualRegister>> liveAfterByInstruction
+    ) {
+        return !liveAfterByInstruction.getOrDefault(instr, Collections.emptySet()).contains(vr);
+    }
+
+    public boolean isDeadAfter(VirtualRegister vr, IRInstruction instr) {
+        return !isLiveAfter(vr, instr);
     }
 }

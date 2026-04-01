@@ -1,9 +1,12 @@
 package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.UnaryExpression;
+import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.FunctionType;
+import com.lnc.cc.types.PointerType;
+import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.TypeSpecifier;
 
 import java.util.ArrayList;
@@ -210,33 +213,131 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public IROperand visit(Location location) {
-        switch(location.locType){
+        return switch (location.locType) {
             case SYMBOL -> {
                 var symbolLoc = (StaticSymbolLocation) location;
                 var resolvedLocal = getUnit().getLocalMappingInfo().mappings().get(symbolLoc.getSymbol().getName());
-                return resolvedLocal != null ? resolvedLocal : location;
+                if (resolvedLocal == null || resolvedLocal == location) {
+                    yield location;
+                }
+                yield resolvedLocal.accept(this);
             }
-            case STACK_FRAME -> {
-                return location;
-            }
-            case ARRAY_INDEX -> {
-                var arrayLoc = (ArrayIndexLocation) location;
-                var resolvedBase = location.accept(this);
-                var resolvedIndex = arrayLoc.getIndex().accept(this);
-            }
+            case STACK_FRAME, STATIC_DERIVED -> location;
             case DEREF -> {
-                return new DerefLocation(location.accept(this));
+                var deref = (DerefLocation) location;
+                var loweredTarget = deref.getTarget().accept(this);
+                if(loweredTarget instanceof AddressOf loweredAddr) {
+                    // the dereference of an address-of is simply the address-of target
+                    yield loweredAddr.getOperand();
+                }
+                yield new DerefLocation(loweredTarget);
             }
-            case STRUCT_MEMBER -> {
-
-            }
-        }
-        throw new Error("Not implemented: " + location.locType + " lowering");
+            case ARRAY_INDEX -> lowerArrayIndex((ArrayIndexLocation) location);
+            case STRUCT_MEMBER -> lowerStructMember((StructMemberAccess) location);
+        };
     }
 
     @Override
     public IROperand visit(AddressOf addressOf) {
-        return addressOf;
+        IROperand loweredOperand = addressOf.getOperand().accept(this);
+        if (!(loweredOperand instanceof Location loweredLoc)) {
+            throw new IllegalStateException("address-of target is not a location after lowering: " + loweredOperand);
+        }else if(loweredOperand instanceof DerefLocation deref){
+            // the address of a dereference is simply the dereference target
+            return deref.getTarget();
+        }
+        return new AddressOf(loweredLoc);
+    }
+
+    private IROperand lowerStructMember(StructMemberAccess memberAccess) {
+        IROperand loweredBase = memberAccess.getBase().accept(this);
+        if (!(loweredBase instanceof Location baseLoc)) {
+            throw new IllegalStateException("struct member base is not a location after lowering: " + loweredBase);
+        }
+
+        int offset = memberAccess.getByteOffset();
+
+        if (baseLoc instanceof StaticLocation staticLoc) {
+            return new StaticDerivedLocation(staticLoc, offset);
+        }
+
+        IROperand baseAddress = new AddressOf(baseLoc);
+        IROperand pointerWithOffset = addConstantOffset(baseAddress, offset);
+        return new DerefLocation(pointerWithOffset);
+    }
+
+    private IROperand lowerArrayIndex(ArrayIndexLocation arrayLoc) {
+        IROperand loweredBase = arrayLoc.getBase().accept(this);
+        if (!(loweredBase instanceof Location baseLoc)) {
+            throw new IllegalStateException("array index base is not a location after lowering: " + loweredBase);
+        }
+
+        IROperand loweredIndex = arrayLoc.getIndex().accept(this);
+
+        if (loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StaticLocation staticBase) {
+            int byteOffset = imm.getValue() * arrayLoc.getStride();
+            return new StaticDerivedLocation(staticBase, byteOffset);
+        }
+
+        IROperand baseAddress = (baseLoc instanceof DerefLocation deref) ? deref.getTarget() : new AddressOf(baseLoc);
+        IROperand byteOffset = scaleIndex(loweredIndex, arrayLoc.getStride());
+        IROperand indexedAddress = addOffset(baseAddress, byteOffset, baseLoc.getPointerKind());
+
+        return new DerefLocation(indexedAddress);
+    }
+
+    private IROperand scaleIndex(IROperand index, int stride) {
+        if (stride == 1) {
+            return index;
+        }
+
+        if (index instanceof ImmediateOperand imm) {
+            return new ImmediateOperand(imm.getValue() * stride, imm.getTypeSpecifier());
+        }
+
+        IROperand indexVr = moveOrLoadIntoVR(index);
+        VirtualRegister acc = getUnit().getVrManager().getRegister(indexVr.getTypeSpecifier());
+        acc.setRegisterClass(RegisterClass.ANY);
+        emitBefore(new Move(new ImmediateOperand(0, indexVr.getTypeSpecifier()), acc));
+
+        for (int i = 0; i < stride; i++) {
+            emitBefore(new Bin(acc, acc, indexVr, BinaryExpression.Operator.ADD));
+        }
+
+        return acc;
+    }
+
+    private IROperand addOffset(IROperand baseAddress, IROperand byteOffset, StorageLocation pointerKind) {
+        if (byteOffset instanceof ImmediateOperand imm && imm.getValue() == 0) {
+            return baseAddress;
+        }
+
+        VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
+        moveOrLoadIntoVR(pointerVr, pointerKind == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
+
+        IROperand rhs = byteOffset instanceof ImmediateOperand
+                ? byteOffset
+                : moveOrLoadIntoVR(byteOffset, RegisterClass.ANY);
+
+        emitBefore(new Bin(pointerVr, pointerVr, rhs, BinaryExpression.Operator.ADD));
+        return pointerVr;
+    }
+
+    private IROperand addConstantOffset(IROperand baseAddress, int offset) {
+        if (offset == 0) {
+            return baseAddress;
+        }
+
+        if (baseAddress.getTypeSpecifier() instanceof PointerType pointerType
+                && pointerType.getPointerKind() == StorageLocation.FAR) {
+            throw new IllegalStateException("constant offset on FAR pointers is not supported yet");
+        }
+
+        VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
+        pointerVr.setRegisterClass(RegisterClass.NEAR_DEREF);
+        emitBefore(new Move(baseAddress, pointerVr));
+        emitBefore(new Bin(pointerVr, pointerVr, new ImmediateOperand(offset, pointerVr.getTypeSpecifier()), BinaryExpression.Operator.ADD));
+        return pointerVr;
     }
 
     @Override

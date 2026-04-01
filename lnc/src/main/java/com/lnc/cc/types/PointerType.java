@@ -21,7 +21,7 @@ public class PointerType extends AbstractSubscriptableType {
     @Override
     public String toString(){
         String baseType = this.baseType.toString();
-        return baseType + (baseType.endsWith("*") ? "" : " ") + "*";
+        return baseType + (baseType.endsWith("*") ? "" : " ") + (pointerKind == StorageLocation.FAR ? "far " : "") + "*";
     }
 
     @Override

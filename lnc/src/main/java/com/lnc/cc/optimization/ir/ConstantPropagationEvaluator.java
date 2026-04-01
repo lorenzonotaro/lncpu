@@ -1,7 +1,6 @@
 package com.lnc.cc.optimization.ir;
 
-import com.lnc.cc.ir.AddressOf;
-import com.lnc.cc.ir.operands.StructMemberAccess;
+import com.lnc.cc.ir.operands.AddressOf;
 import com.lnc.cc.ir.IIROperandVisitor;
 import com.lnc.cc.ir.operands.*;
 

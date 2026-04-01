@@ -41,12 +41,10 @@ public abstract class IRPass extends GraphicalIRVisitor{
     }
 
     boolean isDeadAfter(VirtualRegister vr, IRInstruction instr) {
-        // backward walk inside the current basic block
-        for (IRInstruction p = instr.getNext(); p != null; p = p.getNext()) {
-            if (p.getReads().contains(vr))   return false;    // value is read later
-            if (p.getWrites().contains(vr))   return true;     // overwritten => previous value dead
-        }
-        // at block end: consult liveOut[block] bit-set
-        return !this.livenessInfo.liveOut().get(instr.getParentBlock()).contains(vr);
+        return livenessInfo.isDeadAfter(vr, instr);
+    }
+
+    boolean isLiveAfter(VirtualRegister vr, IRInstruction instr) {
+        return livenessInfo.isLiveAfter(vr, instr);
     }
 }

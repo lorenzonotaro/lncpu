@@ -14,7 +14,7 @@ public class RegisterClass {
 
     public static RegisterClass ANY = new RegisterClass(Set.of(Register.RC, Register.RB, Register.RA, Register.RD));
 
-    public static RegisterClass WORD = new RegisterClass(Set.of(Register.RCRD));
+    public static RegisterClass WORD = new RegisterClass(Set.of(Register.RCRD, Register.RARB, Register.RARC, Register.RARD, Register.RBRC, Register.RBRD));
 
     public static RegisterClass BYTEPARAM_1 = new RegisterClass(Set.of(Register.RA));
 
@@ -32,7 +32,9 @@ public class RegisterClass {
 
     public static RegisterClass SHIFT = new RegisterClass(Set.of(Register.RA));
 
-    public static RegisterClass DEREF = new RegisterClass(Set.of(Register.RD));
+    public static RegisterClass NEAR_DEREF = new RegisterClass(Set.of(Register.RD));
+
+    public static RegisterClass FAR_DEREF = new RegisterClass(Set.of(Register.RCRD));
 
     public static RegisterClass RETURN = new RegisterClass(Set.of(Register.RB));
 

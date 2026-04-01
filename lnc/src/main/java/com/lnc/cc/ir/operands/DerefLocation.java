@@ -38,6 +38,9 @@ public class DerefLocation extends Location {
 
     @Override
     public List<VirtualRegister> getVRReads() {
+        if (target instanceof VirtualRegister vr) {
+            return List.of(vr);
+        }
         return target.getVRReads();
     }
 

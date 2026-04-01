@@ -5,9 +5,7 @@ import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.argument.*;
-import com.lnc.assembler.parser.argument.Byte;
 import com.lnc.cc.ast.BinaryExpression;
-import com.lnc.cc.ir.operands.StructMemberAccess;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.TypeSpecifier;
@@ -349,16 +347,74 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Argument visit(Location location) {
-        // by this time, if this is still a location, it is either a static local or a global variable
-        if(location.locType != Location.LocationType.SYMBOL){
-            throw new IllegalStateException("Unsupported location type in code generation: " + location.locType);
-        }
-        return CodeGenUtils.labelRef(((StaticSymbolLocation)location).getSymbol().getName());
+        return switch (location.locType) {
+            case SYMBOL -> CodeGenUtils.labelRef(((StaticSymbolLocation) location).getSymbol().getAsmName());
+            case STACK_FRAME -> toStackFrameAddress((StackFrameLocation) location, true);
+            case STATIC_DERIVED -> toStaticAddress((StaticDerivedLocation) location, true);
+            case DEREF -> {
+                var deref = (DerefLocation) location;
+                yield CodeGenUtils.deref(deref.getTarget().accept(this));
+            }
+            default -> throw new IllegalStateException("Unsupported non-lowered location type in code generation: " + location.locType);
+        };
     }
 
     @Override
     public Argument visit(AddressOf addressOf) {
-        return null;
+        IROperand operand = addressOf.getOperand();
+
+        if (!(operand instanceof Location location)) {
+            throw new IllegalStateException("AddressOf operand is not a location: " + operand);
+        }
+
+        return switch (location.locType) {
+            case SYMBOL -> CodeGenUtils.labelRef(((StaticSymbolLocation) location).getSymbol().getAsmName());
+            case STACK_FRAME -> toStackFrameAddress((StackFrameLocation) location, false);
+            case STATIC_DERIVED -> toStaticAddress((StaticDerivedLocation) location, false);
+            case DEREF -> ((DerefLocation) location).getTarget().accept(this);
+            default -> throw new IllegalStateException("Unsupported address-of target in code generation: " + location.locType);
+        };
+    }
+
+    private Argument toStackFrameAddress(StackFrameLocation location, boolean dereference) {
+        TokenType operator = location.getOperandType() == StackFrameLocation.OperandType.PARAMETER
+                ? TokenType.MINUS
+                : TokenType.PLUS;
+
+        Argument addr = new RegisterOffset(
+                CodeGenUtils.reg(TokenType.BP),
+                Token.__internal(operator, operator == TokenType.PLUS ? "+" : "-"),
+                (NumericalArgument) CodeGenUtils.immByte(location.getOffset())
+        );
+
+        return dereference ? CodeGenUtils.deref(addr) : addr;
+    }
+
+    private Argument toStaticAddress(StaticDerivedLocation location, boolean dereference) {
+        Argument baseAddress = staticLocationAddress(location.getBase());
+        int offset = location.getOffset();
+
+        Argument addr = offset == 0
+                ? baseAddress
+                : CodeGenUtils.bin(baseAddress, CodeGenUtils.immByte(offset), TokenType.PLUS);
+
+        return dereference ? CodeGenUtils.deref(addr) : addr;
+    }
+
+    private Argument staticLocationAddress(StaticLocation location) {
+        if (location instanceof StaticSymbolLocation symbolLocation) {
+            return CodeGenUtils.labelRef(symbolLocation.getSymbol().getAsmName());
+        }
+
+        if (location instanceof StaticDerivedLocation derivedLocation) {
+            Argument baseAddress = staticLocationAddress(derivedLocation.getBase());
+            int offset = derivedLocation.getOffset();
+            return offset == 0
+                    ? baseAddress
+                    : CodeGenUtils.bin(baseAddress, CodeGenUtils.immByte(offset), TokenType.PLUS);
+        }
+
+        throw new IllegalStateException("Unsupported static location kind: " + location.getClass().getSimpleName());
     }
 
     @Override

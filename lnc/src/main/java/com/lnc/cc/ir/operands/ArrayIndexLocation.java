@@ -3,6 +3,8 @@ package com.lnc.cc.ir.operands;
 import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.TypeSpecifier;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class ArrayIndexLocation extends Location {
@@ -39,5 +41,19 @@ public final class ArrayIndexLocation extends Location {
     @Override
     public String toString() {
         return base.toString() + "[" + index.toString() + "]";
+    }
+
+    @Override
+    public List<VirtualRegister> getVRReads() {
+        List<VirtualRegister> reads = new ArrayList<>();
+        reads.addAll(base.getVRReads());
+
+        if (index instanceof VirtualRegister vr) {
+            reads.add(vr);
+        } else {
+            reads.addAll(index.getVRReads());
+        }
+
+        return reads;
     }
 }

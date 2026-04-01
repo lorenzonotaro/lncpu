@@ -360,21 +360,20 @@ public class GraphColoringRegisterAllocator {
         while (!selectStack.isEmpty()) {
             var n = selectStack.pop();
 
-            // compute forbidden colors from already‐colored neighbors
-            Set<Register> forbidden = new HashSet<>();
+            // Collect assigned colors from already-colored neighbors.
+            Set<Register> usedNeighborColors = new LinkedHashSet<>();
             for (var w : n.adj) {
                 w = getAlias(w);
-                if (coloredNodes.contains(w)) {
-                    forbidden.add(w.assigned);
-                    for (var color : graph.getPhysicalNode(w.assigned).adj){
-                        forbidden.addAll(List.of(color.phys.getComponents()));
-                    }
+                if (coloredNodes.contains(w) && w.assigned != null) {
+                    usedNeighborColors.add(w.assigned);
                 }
             }
-            var okColors = n.allowedColors().stream().filter(c -> !forbidden.contains(c)).collect(Collectors.toCollection(LinkedHashSet::new));
+            var okColors = n.allowedColors().stream()
+                    .filter(c -> usedNeighborColors.stream().noneMatch(used -> overlaps(c, used)))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
 
             if (!okColors.isEmpty()) {
-                n.assigned = chooseColor(n, okColors, forbidden);
+                n.assigned = chooseColor(n, okColors, usedNeighborColors);
                 coloredNodes.add(n);
             } else {
                 // real spill
@@ -418,6 +417,17 @@ public class GraphColoringRegisterAllocator {
 
         // 2) Fallback: pick any available color deterministically.
         return okColors.iterator().next();
+    }
+
+    private static boolean overlaps(Register a, Register b) {
+        for (Register ac : a.getComponents()) {
+            for (Register bc : b.getComponents()) {
+                if (ac == bc) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private int moveWeight(InterferenceGraph.Node n, InterferenceGraph.Node partner) {

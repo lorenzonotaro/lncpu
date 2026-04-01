@@ -149,9 +149,19 @@ public class InterferenceGraph {
             Map<VirtualRegister, Integer> defs
     ) {}
 
+    private static Set<VirtualRegister> virtualRegisters(Collection<? extends IROperand> operands) {
+        Set<VirtualRegister> out = new LinkedHashSet<>();
+        for (IROperand op : operands) {
+            if (op instanceof VirtualRegister vr) {
+                out.add(vr);
+            }
+        }
+        return out;
+    }
+
     public static VrInfo computeVrInfo(
             IRUnit unit,
-            LivenessInfo li
+            LivenessInfo livenessInfo
     ) {
         // 1) create empty ranges
         Map<VirtualRegister,LiveRange> ranges = new LinkedHashMap<>();
@@ -184,16 +194,18 @@ public class InterferenceGraph {
             }
         }
 
-        // 3) backward scan per block, seeded with liveOut
+        // 3) Backward scan per block using per-instruction live-after sets.
         for (IRBlock B : rpo) {
             var blockLoopWeight = B.getLoopDepth();
-            Set<VirtualRegister> live = new LinkedHashSet<>(li.liveOut().get(B));
             for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
                 int i = inst.getIndex();
+                Set<VirtualRegister> live = new LinkedHashSet<>(
+                        livenessInfo.getLiveAfter(inst)
+                );
 
                 // Compute liveBefore = (live - defs) ∪ uses
-                Set<VirtualRegister> defsHere = new LinkedHashSet<>(inst.getWrites());
-                Set<VirtualRegister> usesHere = new LinkedHashSet<>(inst.getReads());
+                Set<VirtualRegister> defsHere = virtualRegisters(inst.getWrites());
+                Set<VirtualRegister> usesHere = virtualRegisters(inst.getReads());
 
                 // update counts and weights
                 for (VirtualRegister d : defsHere) {
@@ -224,9 +236,6 @@ public class InterferenceGraph {
                     LiveRange lr = ranges.get(u);
                     if (lr != null) lr.addPoint(B, i);
                 }
-
-                // Prepare for previous instruction
-                live = liveBefore;
             }
         }
 
@@ -265,19 +274,19 @@ public class InterferenceGraph {
         // 2) Build interference edges in a control-flow aware manner:
         //    For each block, scan instructions backward. For each def, add edges to all currently live vregs.
         //    Special-case moves: do not connect dest with src, but add a preference instead.
-        var liveOut = livenessInfo.liveOut();
         List<IRBlock> order = unit.computeReversePostOrderAndCFG();
 
         for (IRBlock B : order) {
-            Set<VirtualRegister> live = new LinkedHashSet<>(liveOut.get(B));
-
             for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
+                Set<VirtualRegister> liveAfter = new LinkedHashSet<>(
+                        livenessInfo.getLiveAfter(inst)
+                );
+
                 // Collect defs/uses
-                Set<VirtualRegister> defsHere = new LinkedHashSet<>(inst.getWrites());
-                Set<VirtualRegister> usesHere = new LinkedHashSet<>(inst.getReads());
+                Set<VirtualRegister> defsHere = virtualRegisters(inst.getWrites());
 
                 // Handle move preferences and compute "work" live set for interference
-                Set<VirtualRegister> work = new LinkedHashSet<>(live);
+                Set<VirtualRegister> work = new LinkedHashSet<>(liveAfter);
                 if (inst instanceof Move mv) {
                     IROperand s = mv.getSource(), d = mv.getDest();
                     if (s instanceof VirtualRegister vs && d instanceof VirtualRegister vd) {
@@ -293,12 +302,19 @@ public class InterferenceGraph {
                     }
                 }
 
-                // Call-site clobbers: any vreg live across the call cannot take those phys colors
+                // Call-site clobbers: any vreg live across the call cannot take the same color as the return register
                 if (inst instanceof Call call) {
+                    Set<VirtualRegister> liveAcrossCall = new LinkedHashSet<>(liveAfter);
+                    liveAcrossCall.removeAll(defsHere); // call defs (return target) are not live-through values
+
                     var ret = call.getReturnTarget();
-                    if (ret != null) {
-                        for (VirtualRegister vr : live) {
-                            graph.addEdge(vr, ret);
+
+                    if(ret != null){ // if the function returns void, no registers are clobbered
+                        Set<Register> returnRegs = ret.getRegisterClass().getRegisters();
+                        for (VirtualRegister vr : liveAcrossCall) {
+                            for (Register retReg : returnRegs) {
+                                graph.addEdge(vr, retReg);
+                            }
                         }
                     }
                 }
@@ -325,9 +341,6 @@ public class InterferenceGraph {
                         graph.addPreference(dest, src);
                 }
 
-                // Standard liveness update for backward scan
-                live.removeAll(defsHere);
-                live.addAll(usesHere);
             }
         }
 

@@ -429,23 +429,26 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand visit(SubscriptExpression expr) {
-        // 1) lower the “array” and “index” sub-expressions
-        IROperand baseOp  = expr.left.accept(this);
-        IROperand idxOp   = expr.index.accept(this);
+        IROperand baseOp = expr.left.accept(this);
+        IROperand idxOp = expr.index.accept(this);
 
-        if(baseOp.type != IROperand.Type.LOCATION){
-            throw new CompileException("subscript operator on non-array and non-pointer type", expr.token);
-        }
-
-        Location baseLoc = (Location) baseOp;
-
-        // 2) check at semantic time that left.type is array or pointer
         TypeSpecifier leftType = expr.left.getTypeSpecifier();
-        if (leftType instanceof AbstractSubscriptableType at) {// 3) fetch element type and stride
+        if (leftType instanceof AbstractSubscriptableType at) {
+            Location baseLoc;
+
+            if (leftType.type == TypeSpecifier.Type.POINTER) {
+                // p[i] -> *(p + i): represent the base as *p so that &base recovers p.
+                baseLoc = new DerefLocation(baseOp);
+            } else {
+                if (baseOp.type != IROperand.Type.LOCATION) {
+                    throw new CompileException("subscript base is not addressable", expr.left.token);
+                }
+                baseLoc = (Location) baseOp;
+            }
+
             TypeSpecifier elemType = at.getBaseType();
             int stride = elemType.allocSize();
 
-            // 4) emit NO loads/stores here—just make the abstract IR node
             return new ArrayIndexLocation(baseLoc, idxOp, elemType, stride);
         } else {
             throw new CompileException(
