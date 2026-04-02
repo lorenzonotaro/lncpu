@@ -16,12 +16,15 @@ import com.lnc.assembler.parser.RegisterId;
 public class Composite extends Argument {
     public final Argument high, low;
 
-    public Composite(Argument high, Argument low) {
+    public Composite(Argument high, Argument low){
+        this(high, low, true);
+    }
+    public Composite(Argument high, Argument low, boolean enforceIRA) {
         super(high.token, Type.COMPOSITE);
         this.high = high;
         this.low = low;
 
-        if(!((high.type == Type.BYTE && low.type == Type.BYTE) ||
+        if(enforceIRA && !((high.type == Type.BYTE && low.type == Type.BYTE) ||
                 high.type == Type.REGISTER && low.type == Type.REGISTER && ((Register)high).reg == RegisterId.RC && ((Register)low).reg == RegisterId.RD))
             throw new CompileException("Invalid composite argument: " + high.type + ", " + low.type, token);
     }

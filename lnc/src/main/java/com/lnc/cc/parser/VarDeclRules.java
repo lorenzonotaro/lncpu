@@ -4,7 +4,7 @@ enum VarDeclRules {
     EXTERNAL_DECL(true, true, true, false, false),
     PARAMETER_DECL(false, false, false, true, false),
     INTERNAL_DECL(true, true, false, false, true),
-    STRUCT_MEMBER_DECL(false, false, false, false, false)
+    STRUCT_MEMBER_DECL(false, false, false, false, true)
     ;
     final boolean allowInitializer;
     final boolean allowStatic;

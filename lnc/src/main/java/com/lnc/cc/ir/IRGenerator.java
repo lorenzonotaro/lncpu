@@ -509,7 +509,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     }
 
     private VirtualRegister moveOrLoadIntoVR(IROperand operand) {
-        return moveOrLoadIntoVR(operand, RegisterClass.ANY);
+        return moveOrLoadIntoVR(operand, operand.getTypeSpecifier().allocSize() == 1 ? RegisterClass.ANY : RegisterClass.WORD);
     }
 
     private VirtualRegister moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {

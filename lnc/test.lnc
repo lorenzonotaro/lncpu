@@ -1,6 +1,10 @@
+struct my_data{
+    unsigned int a;
+    unsigned int b;
+};
+
 void main(){
-    int far *data = 0x1000;
-    for(int i = 0; i < 16; i++){
-        data[i] = i;
-    }
+    struct my_data far *data;
+    data->a = 1;
+    data->b = 2;
 }

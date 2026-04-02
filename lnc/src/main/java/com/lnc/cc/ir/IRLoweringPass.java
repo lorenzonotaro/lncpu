@@ -121,7 +121,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         bin.setLeft(left);
 
-        if(right.type != IROperand.Type.VIRTUAL_REGISTER && right.type != IROperand.Type.IMMEDIATE) {
+        boolean requiresRegisterRhs = (bin.getOperator() == BinaryExpression.Operator.ADD || bin.getOperator() == BinaryExpression.Operator.SUB)
+                && bin.getDest().getTypeSpecifier().allocSize() > 1;
+
+        if(right.type != IROperand.Type.VIRTUAL_REGISTER && (requiresRegisterRhs || right.type != IROperand.Type.IMMEDIATE)) {
             right = moveOrLoadIntoVR(right);
         }
 
@@ -230,6 +233,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
                     // the dereference of an address-of is simply the address-of target
                     yield loweredAddr.getOperand();
                 }
+                moveOrLoadIntoVR(loweredTarget, loweredTarget.getTypeSpecifier().allocSize() > 1 ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
                 yield new DerefLocation(loweredTarget);
             }
             case ARRAY_INDEX -> lowerArrayIndex((ArrayIndexLocation) location);
@@ -263,7 +267,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         IROperand baseAddress = new AddressOf(baseLoc);
         IROperand pointerWithOffset = addConstantOffset(baseAddress, offset);
-        return new DerefLocation(pointerWithOffset);
+        return new DerefLocation(pointerWithOffset, memberAccess.getTypeSpecifier());
     }
 
     private IROperand lowerArrayIndex(ArrayIndexLocation arrayLoc) {
@@ -328,13 +332,9 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             return baseAddress;
         }
 
-        if (baseAddress.getTypeSpecifier() instanceof PointerType pointerType
-                && pointerType.getPointerKind() == StorageLocation.FAR) {
-            throw new IllegalStateException("constant offset on FAR pointers is not supported yet");
-        }
-
         VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
-        pointerVr.setRegisterClass(RegisterClass.NEAR_DEREF);
+        pointerVr.setRegisterClass(baseAddress.getTypeSpecifier() instanceof PointerType pointerType
+                && pointerType.getPointerKind() == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
         emitBefore(new Move(baseAddress, pointerVr));
         emitBefore(new Bin(pointerVr, pointerVr, new ImmediateOperand(offset, pointerVr.getTypeSpecifier()), BinaryExpression.Operator.ADD));
         return pointerVr;

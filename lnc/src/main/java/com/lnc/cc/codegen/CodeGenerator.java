@@ -6,6 +6,7 @@ import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.argument.*;
 import com.lnc.cc.ast.BinaryExpression;
+import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.TypeSpecifier;
@@ -39,6 +40,7 @@ import java.util.*;
  */
 public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisitor<Argument>{
     private final IR ir;
+    private final SoftwareExtensionsManager softwareExtensionsManager = new SoftwareExtensionsManager();
 
     private CompilerOutput currentOutput;
 
@@ -74,6 +76,11 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             outputs.add(currentOutput);
 
             super.reset();
+        }
+
+        var extensionOutput = softwareExtensionsManager.emitOutput();
+        if (extensionOutput != null) {
+            outputs.add(extensionOutput);
         }
 
         return outputs;
@@ -123,8 +130,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         IRBlock trueTarget = condJump.getTarget();
         IRBlock falseTarget = condJump.getFalseTarget();
         IRBlock continueTo = condJump.getContinueTo();
-
-        instrf(TokenType.CMP, left, right);
 
         // Emit minimal conditional jumps and schedule targets using LIFO (push in reverse order)
         switch(condJump.getCond()){
@@ -227,6 +232,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Void visit(Bin bin) {
 
+        if (emitSoftwareWordBin(bin)) {
+            return null;
+        }
+
         var dest = bin.getDest().accept(this);
         var left = bin.getLeft().accept(this);
         var right = bin.getRight().accept(this);
@@ -249,7 +258,66 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         return null;
     }
 
+    private boolean emitSoftwareWordBin(Bin bin) {
+        BinaryExpression.Operator op = bin.getOperator();
+        if (op != BinaryExpression.Operator.ADD && op != BinaryExpression.Operator.SUB) {
+            return false;
+        }
+
+        Register destWord = asWordVirtualRegister(bin.getDest());
+        if (destWord == null) {
+            return false;
+        }
+
+        IROperand rhs = bin.getRight();
+        if (!bin.getDest().equals(bin.getLeft())) {
+            if (op.isCommutative() && bin.getDest().equals(bin.getRight())) {
+                rhs = bin.getLeft();
+            } else {
+                emitWordMove(bin.getLeft(), destWord);
+            }
+        }
+
+        Register byteSrc = asByteVirtualRegister(rhs);
+        String symbol;
+        if (byteSrc != null) {
+            symbol = op == BinaryExpression.Operator.ADD
+                    ? softwareExtensionsManager.requireAddWordByte(destWord, byteSrc)
+                    : softwareExtensionsManager.requireSubWordByte(destWord, byteSrc);
+        } else {
+            Register wordSrc = asWordVirtualRegister(rhs);
+            if (wordSrc == null) {
+                throw new UnsupportedOperationException("Word " + op + " requires register RHS after lowering: " + rhs);
+            }
+
+            symbol = op == BinaryExpression.Operator.ADD
+                    ? softwareExtensionsManager.requireAddWordWord(destWord, wordSrc)
+                    : softwareExtensionsManager.requireSubWordWord(destWord, wordSrc);
+        }
+
+        instrf(TokenType.LCALL, CodeGenUtils.labelRef(symbol));
+        return true;
+    }
+
+    private void emitWordMove(IROperand source, Register dstWord) {
+        Register srcWord = asWordVirtualRegister(source);
+        if (srcWord != null) {
+            instrf(TokenType.MOV, CodeGenUtils.reg(srcWord.getComponents()[0]), CodeGenUtils.reg(dstWord.getComponents()[0]));
+            instrf(TokenType.MOV, CodeGenUtils.reg(srcWord.getComponents()[1]), CodeGenUtils.reg(dstWord.getComponents()[1]));
+            return;
+        }
+
+        Argument sourceArg = source.accept(this);
+        var splitSource = CodeGenUtils.splitWord(sourceArg);
+        instrf(TokenType.MOV, splitSource[0], CodeGenUtils.reg(dstWord.getComponents()[0]));
+        instrf(TokenType.MOV, splitSource[1], CodeGenUtils.reg(dstWord.getComponents()[1]));
+    }
+
     private void emitBinOp(BinaryExpression.Operator op, Argument target, Argument right) {
+        if (emitSoftwareBinOp(op, target, right)) {
+            return;
+        }
+
         switch(op){
             case ADD -> {
                 instrf(TokenType.ADD, target, right);
@@ -278,6 +346,48 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         }
     }
 
+    private boolean emitSoftwareBinOp(BinaryExpression.Operator op, Argument target, Argument right) {
+        Register targetWord = asWordRegister(target);
+        if (targetWord == null) {
+            return false;
+        }
+
+        String extensionSymbol;
+
+        switch (op) {
+            case ADD -> {
+                Register byteSrc = asByteRegister(right);
+                if (byteSrc != null) {
+                    extensionSymbol = softwareExtensionsManager.requireAddWordByte(targetWord, byteSrc);
+                } else {
+                    Register wordSrc = asWordRegister(right);
+                    if (wordSrc == null) {
+                        throw new UnsupportedOperationException("Word ADD requires a byte or word register source: " + right);
+                    }
+                    extensionSymbol = softwareExtensionsManager.requireAddWordWord(targetWord, wordSrc);
+                }
+            }
+            case SUB -> {
+                Register byteSrc = asByteRegister(right);
+                if (byteSrc != null) {
+                    extensionSymbol = softwareExtensionsManager.requireSubWordByte(targetWord, byteSrc);
+                } else {
+                    Register wordSrc = asWordRegister(right);
+                    if (wordSrc == null) {
+                        throw new UnsupportedOperationException("Word SUB requires a byte or word register source: " + right);
+                    }
+                    extensionSymbol = softwareExtensionsManager.requireSubWordWord(targetWord, wordSrc);
+                }
+            }
+            default -> {
+                return false;
+            }
+        }
+
+        instrf(TokenType.LCALL, CodeGenUtils.labelRef(extensionSymbol));
+        return true;
+    }
+
     @Override
     public Void visit(Call call) {
         instrf(TokenType.LCALL, call.getCallee().accept(this));
@@ -292,11 +402,18 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void visit(Unary unary) {
-        var target = unary.getTarget().accept(this);
-        var operand = unary.getOperand().accept(this);
+        if (unary.getOperator() == UnaryExpression.Operator.INCREMENT || unary.getOperator() == UnaryExpression.Operator.DECREMENT) {
+            Register targetWord = asWordVirtualRegister(unary.getTarget());
+            if (targetWord != null) {
+                String extensionSymbol = unary.getOperator() == UnaryExpression.Operator.INCREMENT
+                        ? softwareExtensionsManager.requireIncWord(targetWord)
+                        : softwareExtensionsManager.requireDecWord(targetWord);
+                instrf(TokenType.LCALL, CodeGenUtils.labelRef(extensionSymbol));
+                return null;
+            }
+        }
 
-        var targetStr = target.toString();
-        var operandStr = operand.toString();
+        var target = unary.getTarget().accept(this);
 
         switch(unary.getOperator()){
             case NEGATE -> {
@@ -339,10 +456,68 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             Register[] components = assignedPhysicalRegister.getComponents();
             var high = components[0];
             var low = components[1];
-            return new Composite(CodeGenUtils.reg(high), CodeGenUtils.reg(low));
+            return new Composite(CodeGenUtils.reg(high), CodeGenUtils.reg(low), false);
         }else{
             return CodeGenUtils.reg(assignedPhysicalRegister);
         }
+    }
+
+    private Register asByteVirtualRegister(IROperand operand) {
+        if (!(operand instanceof VirtualRegister vr)) {
+            return null;
+        }
+
+        Register reg = vr.getAssignedPhysicalRegister();
+        if (reg != null && !reg.isCompound()) {
+            return reg;
+        }
+
+        return null;
+    }
+
+    private Register asWordVirtualRegister(IROperand operand) {
+        if (operand instanceof VirtualRegister vr) {
+            Register reg = vr.getAssignedPhysicalRegister();
+            if (reg != null && reg.isCompound()) {
+                return reg;
+            }
+        }
+        return null;
+    }
+
+    private Register asByteRegister(Argument argument) {
+        if (argument instanceof com.lnc.assembler.parser.argument.Register registerArgument) {
+            Register reg = Register.valueOf(registerArgument.reg.name());
+            return reg.isCompound() ? null : reg;
+        }
+        return null;
+    }
+
+    private Register asWordRegister(Argument argument) {
+        if (!(argument instanceof Composite composite)) {
+            return null;
+        }
+
+        if (!(composite.high instanceof com.lnc.assembler.parser.argument.Register highArg) ||
+                !(composite.low instanceof com.lnc.assembler.parser.argument.Register lowArg)) {
+            return null;
+        }
+
+        Register high = Register.valueOf(highArg.reg.name());
+        Register low = Register.valueOf(lowArg.reg.name());
+
+        for (Register candidate : Register.values()) {
+            if (!candidate.isCompound()) {
+                continue;
+            }
+
+            Register[] components = candidate.getComponents();
+            if (components[0] == high && components[1] == low) {
+                return candidate;
+            }
+        }
+
+        return null;
     }
 
     @Override

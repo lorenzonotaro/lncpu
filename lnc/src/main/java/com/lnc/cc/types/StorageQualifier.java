@@ -55,6 +55,6 @@ public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExp
     }
 
     public boolean isNone() {
-        return NONE == this;
+        return NONE.equals(this);
     }
 }

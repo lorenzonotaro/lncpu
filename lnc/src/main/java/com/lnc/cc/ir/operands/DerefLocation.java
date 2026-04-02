@@ -8,15 +8,28 @@ import java.util.List;
 
 public class DerefLocation extends Location {
 
+    private final TypeSpecifier typeSpecifier;
     private IROperand target;
 
     public DerefLocation(IROperand target) {
+        super(LocationType.DEREF);
+        TypeSpecifier typeSpecifier = target.getTypeSpecifier();
+        if(typeSpecifier.type != TypeSpecifier.Type.POINTER) {
+            throw new IllegalArgumentException("DerefLocation target must be of pointer type");
+        }
+        this.target = target;
+        this.typeSpecifier = typeSpecifier;
+    }
+
+    public DerefLocation(IROperand target, TypeSpecifier typeSpecifier) {
         super(LocationType.DEREF);
         if(target.getTypeSpecifier().type != TypeSpecifier.Type.POINTER) {
             throw new IllegalArgumentException("DerefLocation target must be of pointer type");
         }
         this.target = target;
+        this.typeSpecifier = typeSpecifier;
     }
+
     @Override
     public StorageLocation getPointerKind() {
         return ((PointerType) target.getTypeSpecifier()).getPointerKind();
@@ -24,7 +37,7 @@ public class DerefLocation extends Location {
 
     @Override
     public TypeSpecifier getTypeSpecifier() {
-        return ((PointerType) target.getTypeSpecifier()).getBaseType();
+        return typeSpecifier;
     }
 
     @Override
