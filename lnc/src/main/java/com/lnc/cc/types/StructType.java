@@ -43,6 +43,11 @@ public class StructType extends TypeSpecifier{
         return definition.allocSize();
     }
 
+    @Override
+    protected TypeSpecifier copy() {
+        return new StructType(name, definition);
+    }
+
     public Token getName() {
         return name;
     }

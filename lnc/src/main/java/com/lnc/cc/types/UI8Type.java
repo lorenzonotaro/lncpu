@@ -20,4 +20,9 @@ public class UI8Type extends TypeSpecifier {
     public boolean compatible(TypeSpecifier other) {
         return other instanceof UI8Type;
     }
+
+    @Override
+    protected TypeSpecifier copy() {
+        return new UI8Type();
+    }
 }

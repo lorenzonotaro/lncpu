@@ -59,6 +59,11 @@ public class FunctionType extends TypeSpecifier {
         return 2;
     }
 
+    @Override
+    protected TypeSpecifier copy() {
+        return new FunctionType(functionDeclaration, returnType);
+    }
+
     public List<CallingConvention.ParamLocation> getParameterMapping() {
         return parameterMapping;
     }

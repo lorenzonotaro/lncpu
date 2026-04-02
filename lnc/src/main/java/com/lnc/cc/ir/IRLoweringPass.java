@@ -4,10 +4,7 @@ import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.operands.*;
-import com.lnc.cc.types.FunctionType;
-import com.lnc.cc.types.PointerType;
-import com.lnc.cc.types.StorageLocation;
-import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.cc.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +59,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     }
 
     private IROperand moveOrLoadIntoVR(IROperand operand) {
-        return moveOrLoadIntoVR(operand, RegisterClass.ANY);
+        return moveOrLoadIntoVR(operand, operand.getTypeSpecifier().allocSize() > 1 ? RegisterClass.WORD : RegisterClass.ANY);
     }
 
     private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
@@ -111,6 +108,12 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
     @Override
     public Void visit(Bin bin) {
+        lowerBinOperands(bin);
+        return null;
+
+    }
+
+    private void lowerBinOperands(Bin bin) {
 
         IROperand left = bin.getLeft().accept(this);
         IROperand right = bin.getRight().accept(this);
@@ -129,9 +132,12 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         }
 
         bin.setRight(right);
+    }
 
-        return null;
-
+    private void emitLoweredAdd(IROperand dest, IROperand left, IROperand right) {
+        Bin add = new Bin(dest, left, right, BinaryExpression.Operator.ADD);
+        lowerBinOperands(add);
+        emitBefore(add);
     }
 
     @Override
@@ -233,8 +239,8 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
                     // the dereference of an address-of is simply the address-of target
                     yield loweredAddr.getOperand();
                 }
-                moveOrLoadIntoVR(loweredTarget, loweredTarget.getTypeSpecifier().allocSize() > 1 ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
-                yield new DerefLocation(loweredTarget);
+                loweredTarget = materializeDerefTarget(loweredTarget);
+                yield new DerefLocation(loweredTarget, deref.getTypeSpecifier());
             }
             case ARRAY_INDEX -> lowerArrayIndex((ArrayIndexLocation) location);
             case STRUCT_MEMBER -> lowerStructMember((StructMemberAccess) location);
@@ -267,7 +273,8 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         IROperand baseAddress = new AddressOf(baseLoc);
         IROperand pointerWithOffset = addConstantOffset(baseAddress, offset);
-        return new DerefLocation(pointerWithOffset, memberAccess.getTypeSpecifier());
+        IROperand derefTarget = materializeDerefTarget(pointerWithOffset);
+        return new DerefLocation(derefTarget, memberAccess.getTypeSpecifier());
     }
 
     private IROperand lowerArrayIndex(ArrayIndexLocation arrayLoc) {
@@ -287,7 +294,16 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         IROperand byteOffset = scaleIndex(loweredIndex, arrayLoc.getStride());
         IROperand indexedAddress = addOffset(baseAddress, byteOffset, baseLoc.getPointerKind());
 
-        return new DerefLocation(indexedAddress);
+        IROperand derefTarget = materializeDerefTarget(indexedAddress);
+        return new DerefLocation(derefTarget, arrayLoc.getTypeSpecifier());
+    }
+
+    private RegisterClass derefRegisterClass(TypeSpecifier typeSpecifier) {
+        return typeSpecifier.allocSize() > 1 ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF;
+    }
+
+    private IROperand materializeDerefTarget(IROperand target) {
+        return moveOrLoadIntoVR(target, derefRegisterClass(target.getTypeSpecifier()));
     }
 
     private IROperand scaleIndex(IROperand index, int stride) {
@@ -302,10 +318,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         IROperand indexVr = moveOrLoadIntoVR(index);
         VirtualRegister acc = getUnit().getVrManager().getRegister(indexVr.getTypeSpecifier());
         acc.setRegisterClass(RegisterClass.ANY);
-        emitBefore(new Move(new ImmediateOperand(0, indexVr.getTypeSpecifier()), acc));
+        emitBefore(new Move(new ImmediateOperand(0, new UI8Type()), acc));
 
         for (int i = 0; i < stride; i++) {
-            emitBefore(new Bin(acc, acc, indexVr, BinaryExpression.Operator.ADD));
+            emitLoweredAdd(acc, acc, indexVr);
         }
 
         return acc;
@@ -317,13 +333,14 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         }
 
         VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
-        moveOrLoadIntoVR(pointerVr, pointerKind == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
+        pointerVr.setRegisterClass(pointerKind == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
+        emitBefore(new Move(baseAddress, pointerVr));
 
         IROperand rhs = byteOffset instanceof ImmediateOperand
                 ? byteOffset
                 : moveOrLoadIntoVR(byteOffset, RegisterClass.ANY);
 
-        emitBefore(new Bin(pointerVr, pointerVr, rhs, BinaryExpression.Operator.ADD));
+        emitLoweredAdd(pointerVr, pointerVr, rhs);
         return pointerVr;
     }
 
@@ -336,7 +353,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         pointerVr.setRegisterClass(baseAddress.getTypeSpecifier() instanceof PointerType pointerType
                 && pointerType.getPointerKind() == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
         emitBefore(new Move(baseAddress, pointerVr));
-        emitBefore(new Bin(pointerVr, pointerVr, new ImmediateOperand(offset, pointerVr.getTypeSpecifier()), BinaryExpression.Operator.ADD));
+        emitLoweredAdd(pointerVr, pointerVr, new ImmediateOperand(offset, new UI8Type()));
         return pointerVr;
     }
 

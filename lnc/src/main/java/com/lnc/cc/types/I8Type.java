@@ -15,4 +15,9 @@ public class I8Type extends TypeSpecifier {
     public int typeSize() {
         return 1;
     }
+
+    @Override
+    protected TypeSpecifier copy() {
+        return new I8Type();
+    }
 }

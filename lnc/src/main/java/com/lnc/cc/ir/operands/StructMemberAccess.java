@@ -18,7 +18,9 @@ public class StructMemberAccess extends Location{
 
     @Override
     public TypeSpecifier getTypeSpecifier() {
-        return field.getField().declarator.typeSpecifier();
+        // the member storage location is the same as the base storage location
+        // so we need to adjust the type specifier from the struct declaration to reflect this (making a copy of the type specifier)
+        return field.getField().declarator.typeSpecifier().withStorageLocation(base.getPointerKind());
     }
 
     @Override

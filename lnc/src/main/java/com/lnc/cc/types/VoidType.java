@@ -15,4 +15,9 @@ public class VoidType extends TypeSpecifier {
     public int typeSize() {
         return 0;
     }
+
+    @Override
+    protected TypeSpecifier copy() {
+        return new VoidType();
+    }
 }

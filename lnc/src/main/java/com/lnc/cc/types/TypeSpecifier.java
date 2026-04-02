@@ -11,7 +11,7 @@ public abstract class TypeSpecifier {
 
     public boolean isConst;
 
-    public final StorageLocation storageLocation;
+    public StorageLocation storageLocation;
 
     private final boolean primitive;
 
@@ -110,6 +110,14 @@ public abstract class TypeSpecifier {
     public StorageLocation storageLocation() {
         return storageLocation;
     }
+
+    public TypeSpecifier withStorageLocation(StorageLocation storageLocation) {
+        var copy = this.copy();
+        copy.storageLocation = storageLocation;
+        return copy;
+    }
+
+    protected abstract TypeSpecifier copy();
 
     public enum Type{
         VOID,

@@ -30,6 +30,11 @@ public class ArrayType extends AbstractSubscriptableType {
     }
 
     @Override
+    protected TypeSpecifier copy() {
+        return new ArrayType(baseType.copy(), size);
+    }
+
+    @Override
     public String toString() {
         return baseType + "[" + size + "]";
     }

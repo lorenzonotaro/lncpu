@@ -9,4 +9,9 @@ public class UI16Type extends TypeSpecifier {
     public int typeSize() {
         return 2;
     }
+
+    @Override
+    protected TypeSpecifier copy() {
+        return new UI16Type();
+    }
 }
