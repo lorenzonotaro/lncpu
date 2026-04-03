@@ -77,6 +77,14 @@ public class Call extends IRInstruction {
         if (callee.equals(oldOp)) {
             callee = newOp;
         }
+
+        if (arguments != null) {
+            for (int i = 0; i < arguments.length; i++) {
+                if (arguments[i].equals(oldOp)) {
+                    arguments[i] = newOp;
+                }
+            }
+        }
     }
 
     @Override

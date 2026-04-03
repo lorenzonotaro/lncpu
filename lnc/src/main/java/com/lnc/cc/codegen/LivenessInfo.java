@@ -3,8 +3,10 @@ package com.lnc.cc.codegen;
 import com.lnc.cc.ir.IRBlock;
 import com.lnc.cc.ir.IRInstruction;
 import com.lnc.cc.ir.IRUnit;
+import com.lnc.cc.ir.Bin;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.ast.BinaryExpression;
 
 import java.util.*;
 
@@ -139,6 +141,118 @@ public record LivenessInfo(
         }
 
         return liveAfterByInstruction;
+    }
+
+    public record DefUseStats(
+            int writeCount,
+            int readCount,
+            int directReadCount,
+            IRInstruction singleWriter
+    ) {
+        public boolean hasSingleWrite() {
+            return writeCount == 1 && singleWriter != null;
+        }
+
+        public boolean allReadsAreDirect() {
+            return readCount == directReadCount;
+        }
+    }
+
+    public static DefUseStats computeDefUseStats(IRUnit unit, VirtualRegister vr) {
+        int writeCount = 0;
+        int readCount = 0;
+        int directReadCount = 0;
+        IRInstruction singleWriter = null;
+
+        List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
+        for (IRBlock block : blocks) {
+            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                for (VirtualRegister readVr : inst.getReads()) {
+                    if (vr.equals(readVr)) {
+                        readCount++;
+                    }
+                }
+
+                for (IROperand readOperand : inst.getReadOperands()) {
+                    if (vr.equals(readOperand)) {
+                        directReadCount++;
+                    }
+                }
+
+                for (VirtualRegister writeVr : inst.getWrites()) {
+                    if (vr.equals(writeVr)) {
+                        writeCount++;
+                        if (writeCount == 1) {
+                            singleWriter = inst;
+                        } else {
+                            singleWriter = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        return new DefUseStats(writeCount, readCount, directReadCount, singleWriter);
+    }
+
+    public static List<IRInstruction> directReadUsers(IRUnit unit, VirtualRegister vr) {
+        List<IRInstruction> users = new ArrayList<>();
+        List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
+
+        for (IRBlock block : blocks) {
+            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                for (IROperand readOperand : inst.getReadOperands()) {
+                    if (vr.equals(readOperand)) {
+                        users.add(inst);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return users;
+    }
+
+    public static boolean canReplaceDirectReadWithImmediate(IRInstruction inst, VirtualRegister vr) {
+        if (!directlyReads(inst, vr)) {
+            return false;
+        }
+
+        if (!(inst instanceof Bin bin)) {
+            return true;
+        }
+
+        if (!isWordAddOrSub(bin)) {
+            return true;
+        }
+
+        // Word add/sub lowering requires register RHS. Replacing a read in a position
+        // that becomes RHS after two-address normalization is unsafe.
+        if (vr.equals(bin.getRight())) {
+            return false;
+        }
+
+        return !(bin.getOperator().isCommutative()
+                && bin.getDest().equals(bin.getRight())
+                && vr.equals(bin.getLeft()));
+    }
+
+    private static boolean directlyReads(IRInstruction inst, VirtualRegister vr) {
+        for (IROperand readOperand : inst.getReadOperands()) {
+            if (vr.equals(readOperand)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isWordAddOrSub(Bin bin) {
+        if (bin.getDest().getTypeSpecifier().typeSize() != 2) {
+            return false;
+        }
+
+        return bin.getOperator() == BinaryExpression.Operator.ADD
+                || bin.getOperator() == BinaryExpression.Operator.SUB;
     }
 
     public Set<VirtualRegister> getLiveAfter(IRInstruction instr) {

@@ -99,6 +99,12 @@ public class BaseSymbol{
 
     public boolean canResideInRegister() {
         // TODO: guard against address-of operator
-        return !storageQualifier.isExtern() && !isParameter && !storageQualifier.isStatic() && typeSpecifier.allocSize() > 0 && typeSpecifier.allocSize() <= 2;
+        return
+                !storageQualifier.isExtern() &&
+                        !isParameter &&
+                        !storageQualifier.isStatic() &&
+                        typeSpecifier.allocSize() > 0 &&
+                        typeSpecifier.allocSize() <= 2&&
+                        !typeSpecifier.isAggregateType();
     }
 }

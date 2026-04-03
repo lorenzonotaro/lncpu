@@ -51,11 +51,10 @@ public class GraphColoringRegisterAllocator {
 
     public GraphColoringRegisterAllocator(InterferenceGraph graph) {
         this.graph = graph;
-
-        computeSpillCosts();
-
         // count physical nodes (excluding compounds if you treat them specially)
         this.K = graph.getPhysicalNodes().size();
+
+        computeSpillCosts();
 
         coloredNodes.addAll(graph.getPhysicalNodes());
 
@@ -68,9 +67,11 @@ public class GraphColoringRegisterAllocator {
         for(var node : graph.getVirtualNodes()){
             int loopWeight = graph.getLoopWeights().getOrDefault(node.vr, 1);
             int base = graph.getUses().getOrDefault(node.vr, 0) + 2 * graph.getDefs().getOrDefault(node.vr, 0);
-            int span = graph.getLiveRanges().get(node.vr).getSpan() / 10;
+            LiveRange range = graph.getLiveRanges().get(node.vr);
+            int span = range == null ? 0 : range.getSpan() / 10;
             int size = node.vr.getTypeSpecifier().allocSize();
-            int classWt = K / node.allowedColors().size();
+            int classSize = Math.max(1, node.allowedColors().size());
+            int classWt = Math.max(1, K / classSize);
             int cost = loopWeight * (base + span) * size * classWt;
             spillCost.put(node.vr, cost);
         }
@@ -458,11 +459,46 @@ public class GraphColoringRegisterAllocator {
             }
         }
 
+        verifyColoringSafety();
+
         // at this point, any node not in coloredNodes ∪ precoloredNodes is spilled
     }
 
     private Set<Register> getUsedRegisters() {
         return usedRegisters;
+    }
+
+    private void verifyColoringSafety() {
+        for (InterferenceGraph.Node n0 : graph.getVirtualNodes()) {
+            InterferenceGraph.Node n = getAlias(n0);
+            Register nc = n.assigned;
+            if (nc == null) continue;
+
+            if (!n.allowedColors().contains(nc)) {
+                throw new IllegalStateException("Assigned color outside register class for " + n + ": " + nc);
+            }
+
+            for (InterferenceGraph.Node m0 : n.adj) {
+                InterferenceGraph.Node m = getAlias(m0);
+                Register mc = m.assigned;
+                if (mc == null) continue;
+                if (overlaps(nc, mc)) {
+                    throw new IllegalStateException("Interference violation between " + n + "=" + nc + " and " + m + "=" + mc);
+                }
+            }
+        }
+    }
+
+    private Set<VirtualRegister> getSpilledVirtualRegisters(InterferenceGraph.Node spillNode) {
+        if (spillNode == null) return Collections.emptySet();
+        InterferenceGraph.Node rep = getAlias(spillNode);
+        Set<VirtualRegister> spilled = new LinkedHashSet<>();
+        for (InterferenceGraph.Node n : graph.getVirtualNodes()) {
+            if (getAlias(n) == rep) {
+                spilled.add(n.vr);
+            }
+        }
+        return spilled;
     }
 
     public InterferenceGraph.Node getSpillCandidate() {
@@ -504,17 +540,26 @@ public class GraphColoringRegisterAllocator {
             usedRegisters = allocator.getUsedRegisters();
 
             if(spillCandidate != null) {
+                spillStores.clear();
+                spillLoads.clear();
+                Set<VirtualRegister> spilledVirtuals = allocator.getSpilledVirtualRegisters(spillCandidate);
+
                 // 2) Insert spill code for each spilled vreg
                 for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
                     for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
                         // after defs
                         boolean isRegParamDemotion = inst instanceof Move mv && mv.isRegParamDemotion();
                         if(isRegParamDemotion) {
-                            inst.replaceOperand(spillCandidate.vr, new StackFrameLocation(spillCandidate.vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
-                            spillStores.add(new AbstractMap.SimpleEntry<>(spillCandidate.vr, (Move) inst));
+                            for (VirtualRegister vr : spilledVirtuals) {
+                                if (!inst.getReads().contains(vr) && !inst.getWrites().contains(vr)) {
+                                    continue;
+                                }
+                                inst.replaceOperand(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
+                                spillStores.add(new AbstractMap.SimpleEntry<>(vr, (Move) inst));
+                            }
                         }else{
-                            for (VirtualRegister vr : inst.getWrites()) {
-                                if (spillCandidate.vr.equals(vr)) {
+                            for (VirtualRegister vr : new LinkedHashSet<>(inst.getWrites())) {
+                                if (spilledVirtuals.contains(vr)) {
                                     Move move = new Move(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
                                     spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
                                     inst.insertAfter(move);
@@ -523,8 +568,8 @@ public class GraphColoringRegisterAllocator {
                         }
                         // before uses
 
-                        for (VirtualRegister vr : inst.getReads()) {
-                            if (spillCandidate.vr.equals(vr)) {
+                        for (VirtualRegister vr : new LinkedHashSet<>(inst.getReads())) {
+                            if (spilledVirtuals.contains(vr)) {
                                 // allocate a temp for the loaded value
                                 VirtualRegister temp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
                                 temp.setRegisterClass(vr.getRegisterClass());
@@ -538,10 +583,8 @@ public class GraphColoringRegisterAllocator {
                 }
 
                 Map<VirtualRegister, LiveRange> allRanges = ig.getLiveRanges();
-                InterferenceGraph finalIg = ig;
-                InterferenceGraph.Node finalSpillCandidate = spillCandidate;
                 Map<VirtualRegister, LiveRange> spillRanges = allRanges.entrySet().stream()
-                        .filter(e -> finalSpillCandidate.equals(finalIg.getNode(e.getKey())))
+                        .filter(e -> spilledVirtuals.contains(e.getKey()))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                 slotAssigner.assignSlots(spillRanges);
                 patchSpillOffsets(spillStores, spillLoads, slotAssigner.slotOffset);

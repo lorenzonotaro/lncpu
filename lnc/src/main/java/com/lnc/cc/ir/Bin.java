@@ -43,11 +43,16 @@ public class Bin extends IRInstruction {
 
     @Override
     public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        boolean replacedRead = false;
         if (left.equals(oldOp)) {
             left = newOp;
-        } else if (right.equals(oldOp)) {
+            replacedRead = true;
+        }
+        if (right.equals(oldOp)) {
             right = newOp;
-        } else if (dest.equals(oldOp)) {
+            replacedRead = true;
+        }
+        if (!replacedRead && dest.equals(oldOp)) {
             dest = newOp;
         }
     }

@@ -135,7 +135,8 @@ public class CondJump extends AbstractBranchInstr {
     public void replaceOperand(IROperand oldOp, IROperand newOp) {
         if (left.equals(oldOp)) {
             left = newOp;
-        } else if (right.equals(oldOp)) {
+        }
+        if (right.equals(oldOp)) {
             right = newOp;
         }
     }

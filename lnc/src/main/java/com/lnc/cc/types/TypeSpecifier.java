@@ -119,6 +119,10 @@ public abstract class TypeSpecifier {
 
     protected abstract TypeSpecifier copy();
 
+    public boolean isAggregateType() {
+        return type == Type.STRUCT || type == Type.ARRAY;
+    }
+
     public enum Type{
         VOID,
         CHAR,

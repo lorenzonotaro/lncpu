@@ -1,12 +1,14 @@
 struct my_data{
     unsigned int a;
     unsigned int b;
-    unsigned int c;
 };
 
 void main(){
-    struct my_data far *data = 0x1000;
-    data->a = 1;
-    data->b = 2;
-    data->c = 3;
+    struct my_data far * d = 0x1000;
+    struct my_data far * e = 0x1002;
+    d->a = 1;
+    d->b = 2;
+    e->a = 3;
+    e->b = 4;
+
 }

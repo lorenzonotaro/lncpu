@@ -235,12 +235,8 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             case DEREF -> {
                 var deref = (DerefLocation) location;
                 var loweredTarget = deref.getTarget().accept(this);
-                if(loweredTarget instanceof AddressOf loweredAddr) {
-                    // the dereference of an address-of is simply the address-of target
-                    yield loweredAddr.getOperand();
-                }
                 loweredTarget = materializeDerefTarget(loweredTarget);
-                yield new DerefLocation(loweredTarget, deref.getTypeSpecifier());
+                yield deriveDerefLocation(loweredTarget, deref.getTypeSpecifier());
             }
             case ARRAY_INDEX -> lowerArrayIndex((ArrayIndexLocation) location);
             case STRUCT_MEMBER -> lowerStructMember((StructMemberAccess) location);
@@ -250,13 +246,17 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     @Override
     public IROperand visit(AddressOf addressOf) {
         IROperand loweredOperand = addressOf.getOperand().accept(this);
+        return createAddressOf(loweredOperand);
+    }
+
+    private static IROperand createAddressOf(IROperand loweredOperand) {
         if (!(loweredOperand instanceof Location loweredLoc)) {
             throw new IllegalStateException("address-of target is not a location after lowering: " + loweredOperand);
         }else if(loweredOperand instanceof DerefLocation deref){
             // the address of a dereference is simply the dereference target
             return deref.getTarget();
         }
-        return new AddressOf(loweredLoc);
+        return createAddressOf(loweredLoc);
     }
 
     private IROperand lowerStructMember(StructMemberAccess memberAccess) {
@@ -267,15 +267,26 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         int offset = memberAccess.getByteOffset();
 
+        TypeSpecifier typeSpecifier = memberAccess.getTypeSpecifier();
         if (baseLoc instanceof StaticLocation staticLoc) {
             return new StaticDerivedLocation(staticLoc, offset);
+        }else if(baseLoc instanceof StackFrameLocation stackLoc){
+            return new StackFrameLocation(typeSpecifier, stackLoc.getOperandType(), stackLoc.getOffset() + offset);
         }
 
-        IROperand baseAddress = new AddressOf(baseLoc);
+        IROperand baseAddress = createAddressOf(baseLoc);
         IROperand pointerWithOffset = addConstantOffset(baseAddress, offset);
         IROperand derefTarget = materializeDerefTarget(pointerWithOffset);
-        return new DerefLocation(derefTarget, memberAccess.getTypeSpecifier());
+        return deriveDerefLocation(derefTarget, typeSpecifier);
     }
+
+    private static IROperand deriveDerefLocation(IROperand derefTarget, TypeSpecifier typeSpecifier) {
+        if(derefTarget instanceof AddressOf addrOf){ // the dereference of an address-of is simply the address-of target
+            return addrOf.getOperand();
+        }
+        return new DerefLocation(derefTarget, typeSpecifier);
+    }
+
 
     private IROperand lowerArrayIndex(ArrayIndexLocation arrayLoc) {
         IROperand loweredBase = arrayLoc.getBase().accept(this);
@@ -288,14 +299,16 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         if (loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StaticLocation staticBase) {
             int byteOffset = imm.getValue() * arrayLoc.getStride();
             return new StaticDerivedLocation(staticBase, byteOffset);
+        }else if(loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StackFrameLocation stackBase){
+            return new StackFrameLocation(arrayLoc.getTypeSpecifier(), stackBase.getOperandType(), stackBase.getOffset() + imm.getValue() * arrayLoc.getStride());
         }
 
-        IROperand baseAddress = (baseLoc instanceof DerefLocation deref) ? deref.getTarget() : new AddressOf(baseLoc);
+        IROperand baseAddress = (baseLoc instanceof DerefLocation deref) ? deref.getTarget() : createAddressOf(baseLoc);
         IROperand byteOffset = scaleIndex(loweredIndex, arrayLoc.getStride());
         IROperand indexedAddress = addOffset(baseAddress, byteOffset, baseLoc.getPointerKind());
 
         IROperand derefTarget = materializeDerefTarget(indexedAddress);
-        return new DerefLocation(derefTarget, arrayLoc.getTypeSpecifier());
+        return deriveDerefLocation(derefTarget, arrayLoc.getTypeSpecifier());
     }
 
     private RegisterClass derefRegisterClass(TypeSpecifier typeSpecifier) {

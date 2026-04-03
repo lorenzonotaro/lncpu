@@ -50,9 +50,12 @@ public class Move extends IRInstruction {
 
     @Override
     public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        boolean replacedRead = false;
         if (source.equals(oldOp)) {
             source = newOp;
-        } else if (dest.equals(oldOp)) {
+            replacedRead = true;
+        }
+        if (!replacedRead && dest.equals(oldOp)) {
             dest = newOp;
         }
     }

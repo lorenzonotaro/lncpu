@@ -91,12 +91,8 @@ public class CodeGenUtils {
                     regOffset,
                     new RegisterOffset(
                             regOffset.register,
-                            regOffset.token,
-                            new BinaryOp(
-                                    regOffset.offset,
-                                    new Byte(Token.__internal(TokenType.INTEGER, 1)),
-                                    Token.__internal(TokenType.PLUS, "+")
-                            )
+                            Token.__internal(TokenType.PLUS, '+'),
+                            regOffset.offset instanceof Byte b ? new Byte(Token.__internal(TokenType.INTEGER, 1 + b.value)) : new Word(Token.__internal(TokenType.INTEGER, 1 + ((Word) regOffset.offset).value))
                     )
             };
         } else {

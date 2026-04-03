@@ -30,6 +30,10 @@ public class AddressOf extends IROperand {
         return "&" + operand;
     }
 
+    @Override
+    public List<VirtualRegister> getVRReads() {
+        return operand.getVRReads();
+    }
 
     public IROperand getOperand() {
         return operand;
