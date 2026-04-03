@@ -28,7 +28,7 @@ public class StageOneIROptimizer {
 
     private static final List<IRPass> PASSES = List.of(
             new ConstantFoldingPass(),
-            //new RematerializationPass(),
+            new RematerializationPass(),
             new CopyPropagationAndMoveForwardingPass(),
             new LocalDeadCodeEliminationPass(),
             new TrivialGotoEliminationPass(),

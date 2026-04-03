@@ -4,7 +4,7 @@ struct my_data{
 };
 
 void main(){
-    struct my_data far * d = 0x1000;
+    struct my_data far * far d = 0x1000;
     struct my_data far * e = 0x1002;
     d->a = 1;
     d->b = 2;

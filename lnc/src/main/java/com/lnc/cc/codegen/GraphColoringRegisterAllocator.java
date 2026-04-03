@@ -6,6 +6,7 @@ import com.lnc.cc.ir.IRBlock;
 import com.lnc.cc.ir.IRInstruction;
 import com.lnc.cc.ir.IRUnit;
 import com.lnc.cc.ir.Move;
+import com.lnc.cc.ir.operands.ImmediateOperand;
 import com.lnc.cc.ir.operands.StackFrameLocation;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import com.lnc.cc.optimization.ir.StageOneIROptimizer;
@@ -565,6 +566,11 @@ public class GraphColoringRegisterAllocator {
                         }else{
                             for (VirtualRegister vr : new LinkedHashSet<>(inst.getWrites())) {
                                 if (spilledVirtuals.contains(vr)) {
+                                    // If the def is `move imm -> vr`, spill directly to the slot.
+                                    if (tryFoldImmediateSpillStore(inst, vr, spillStores)) {
+                                        continue;
+                                    }
+
                                     Move move = new Move(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
                                     spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
                                     inst.insertAfter(move);
@@ -607,6 +613,29 @@ public class GraphColoringRegisterAllocator {
         unit.setUsedRegisters(usedRegisters);
 
         return new AllocationInfo(ig, livenessInfo);
+    }
+
+    private static boolean tryFoldImmediateSpillStore(IRInstruction inst,
+                                                      VirtualRegister spilledVr,
+                                                      List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores) {
+        if (!(inst instanceof Move defMove)) {
+            return false;
+        }
+        if (!(defMove.getSource() instanceof ImmediateOperand)) {
+            return false;
+        }
+        if (!(defMove.getDest() instanceof VirtualRegister destVr) || destVr != spilledVr) {
+            return false;
+        }
+
+        StackFrameLocation slot = new StackFrameLocation(
+                spilledVr.getTypeSpecifier(),
+                StackFrameLocation.OperandType.LOCAL,
+                0
+        );
+        defMove.setDest(slot);
+        spillStores.add(new AbstractMap.SimpleEntry<>(spilledVr, defMove));
+        return true;
     }
 
     private static boolean maybeRunPostSpillIROptimizer(IRUnit unit) {
