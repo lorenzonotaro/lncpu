@@ -225,6 +225,11 @@ public class LncParser extends FullSourceParser<AST> {
                     break;
             }
         }
+
+        if(previous().type != TokenType.STAR){
+            throw new CompileException("invalid token", previous()); // pointers must always end in a '*' token
+        }
+
         return ts;
     }
 
