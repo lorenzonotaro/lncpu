@@ -111,5 +111,10 @@
   "--first-pass-opt-max-iter": {
     "help": "Sets the maximum number of iterations for the first pass optimizer.",
     "value": 20
+  },
+
+  "--reg-alloc-post-spill-ir-opt": {
+    "help": "Runs stage-one IR optimizer after spill code insertion before the next register-allocation iteration.",
+    "value": false
   }
 }

@@ -8,6 +8,7 @@ import com.lnc.cc.ir.IRUnit;
 import com.lnc.cc.ir.Move;
 import com.lnc.cc.ir.operands.StackFrameLocation;
 import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.optimization.ir.StageOneIROptimizer;
 import com.mxgraph.view.mxGraph;
 
 import java.util.*;
@@ -544,9 +545,13 @@ public class GraphColoringRegisterAllocator {
                 spillLoads.clear();
                 Set<VirtualRegister> spilledVirtuals = allocator.getSpilledVirtualRegisters(spillCandidate);
 
-                // 2) Insert spill code for each spilled vreg
+                // 2) Insert spill code for each spilled vreg.
+                // Walk only the original instruction chain so post-def spill stores inserted
+                // with insertAfter() are not re-processed in this same iteration.
                 for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
-                    for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
+                    for (IRInstruction inst = bb.getFirst(); inst != null; ) {
+                        IRInstruction nextOriginal = inst.getNext();
+
                         // after defs
                         boolean isRegParamDemotion = inst instanceof Move mv && mv.isRegParamDemotion();
                         if(isRegParamDemotion) {
@@ -567,7 +572,6 @@ public class GraphColoringRegisterAllocator {
                             }
                         }
                         // before uses
-
                         for (VirtualRegister vr : new LinkedHashSet<>(inst.getReads())) {
                             if (spilledVirtuals.contains(vr)) {
                                 // allocate a temp for the loaded value
@@ -579,6 +583,8 @@ public class GraphColoringRegisterAllocator {
                                 inst.replaceOperand(vr, temp);
                             }
                         }
+
+                        inst = nextOriginal;
                     }
                 }
 
@@ -588,6 +594,8 @@ public class GraphColoringRegisterAllocator {
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                 slotAssigner.assignSlots(spillRanges);
                 patchSpillOffsets(spillStores, spillLoads, slotAssigner.slotOffset);
+
+                maybeRunPostSpillIROptimizer(unit);
             }
 
             livenessInfo = LivenessInfo.computeBlockLiveness(unit);
@@ -599,6 +607,14 @@ public class GraphColoringRegisterAllocator {
         unit.setUsedRegisters(usedRegisters);
 
         return new AllocationInfo(ig, livenessInfo);
+    }
+
+    private static boolean maybeRunPostSpillIROptimizer(IRUnit unit) {
+        if (!LNC.settings.get("--reg-alloc-post-spill-ir-opt", Boolean.class)) {
+            return false;
+        }
+
+        return new StageOneIROptimizer().run(unit);
     }
 
     private static void updateGraph(mxGraph mxGraph, Collection<InterferenceGraph.Node> virtualNodes) {

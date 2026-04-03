@@ -35,8 +35,8 @@ public class StageOneIROptimizer {
             new DeadMoveEliminationPass()
     );
 
-    public void run(IRUnit unit){
-        boolean changed;
+    public boolean run(IRUnit unit){
+        boolean changed, overallChanged = false;
         int maxIter = LNC.settings.get("--first-pass-opt-max-iter", Double.class).intValue();
         do{
             if(maxIter-- <= 0) {
@@ -49,12 +49,15 @@ public class StageOneIROptimizer {
                 pass.visit(unit);
                 boolean passChanged = pass.isChanged();
                 changed |= passChanged;
+                overallChanged |= changed;
 
                 if(passChanged) {
                     livenessInfo = LivenessInfo.computeBlockLiveness(unit);
                 }
             }
         }while(changed);
+
+        return overallChanged;
     }
 
 
