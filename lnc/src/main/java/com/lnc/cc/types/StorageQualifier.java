@@ -1,6 +1,9 @@
 package com.lnc.cc.types;
 
 import com.lnc.cc.parser.LncParser;
+import com.lnc.cc.parser.VarDeclRules;
+import com.lnc.common.frontend.CompileException;
+import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
 public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExport, StorageLocation pointerKind)
@@ -15,7 +18,7 @@ public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExp
             TokenType.FAR,
     };
 
-    public static StorageQualifier parse(LncParser parser){
+    public static StorageQualifier parse(LncParser parser, VarDeclRules rules){
         boolean isExtern = false;
         boolean isStatic = false;
         boolean isExport = false;
@@ -23,23 +26,26 @@ public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExp
         boolean hasFar = false;
         StorageLocation pointerKind = StorageLocation.NEAR;
         while(parser.check(VALID_TOKENS)){
-            TokenType tokenType = parser.advance().type;
+            Token token = parser.advance();
+            TokenType tokenType = token.type;
             switch(tokenType){
                 case EXTERN -> {
-                    if(isExtern) throw new RuntimeException("duplicate 'extern' qualifier");
+                    if(isExtern) throw new CompileException("duplicate 'extern' qualifier", token);
                     isExtern = true;
                 }
                 case STATIC -> {
-                    if(isStatic) throw new RuntimeException("duplicate 'static' qualifier");
+                    if(isStatic) throw new CompileException("duplicate 'static' qualifier", token);
+                    if(!rules.allowStatic)
+                        throw new CompileException("'static' qualifier not allowed in this context", token);
                     isStatic = true;
                 }
                 case EXPORT -> {
-                    if(isExport) throw new RuntimeException("duplicate 'export' qualifier");
+                    if(isExport) throw new CompileException("duplicate 'export' qualifier", token);
                     isExport = true;
                 }
                 case NEAR -> {
-                    if(hasNear) throw new RuntimeException("duplicate 'near' qualifier");
-                    if(hasFar) throw new RuntimeException("cannot have both 'near' and 'far' qualifiers");
+                    if(hasNear) throw new CompileException("duplicate 'near' qualifier", token);
+                    if(hasFar) throw new CompileException("cannot have both 'near' and 'far' qualifiers", token);
                     hasNear = true;
                     pointerKind = StorageLocation.NEAR;
                 }
@@ -50,6 +56,9 @@ public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExp
                     pointerKind = StorageLocation.FAR;
                 }
             }
+        }
+        if((hasFar || hasNear) && !isStatic && !rules.allowNonStaticNearFar){
+            throw new RuntimeException("cannot have 'near' or 'far' qualifiers without 'static' qualifier");
         }
         return new StorageQualifier(isExtern, isStatic, isExport, pointerKind);
     }

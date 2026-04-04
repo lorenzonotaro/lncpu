@@ -7,6 +7,7 @@ import com.lnc.cc.common.BaseSymbol;
 import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.StorageQualifier;
+import com.lnc.cc.types.TypeSpecifier;
 
 /**
  * The LocalResolver class extends the ScopedASTVisitor and is responsible for
@@ -113,10 +114,12 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
 
         BaseSymbol symbol;
 
+        StorageQualifier storageQualifier = variableDeclaration.declarator.storageQualifier();
+        TypeSpecifier type = variableDeclaration.declarator.typeSpecifier();
         if (variableDeclaration.isParameter) {
-            symbol = BaseSymbol.parameter(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.storageQualifier(), variableDeclaration.getParameterIndex());
+            symbol = BaseSymbol.parameter(variableDeclaration.name, type, storageQualifier, variableDeclaration.getParameterIndex());
         } else {
-            symbol = BaseSymbol.variable(variableDeclaration.name, variableDeclaration.declarator.typeSpecifier(), variableDeclaration.declarator.storageQualifier());
+            symbol = BaseSymbol.variable(variableDeclaration.name, type, storageQualifier);
         }
 
         define(symbol);

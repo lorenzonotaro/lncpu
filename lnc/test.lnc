@@ -4,11 +4,5 @@ struct my_data{
 };
 
 void main(){
-    struct my_data far * d = 0x1000;
-    struct my_data far * e = 0x1002;
-    d->a = 1;
-    d->b = 2;
-    e->a = 3;
-    e->b = 4;
-
+    static far struct my_data d;
 }

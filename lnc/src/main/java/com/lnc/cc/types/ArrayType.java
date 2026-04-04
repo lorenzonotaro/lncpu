@@ -30,7 +30,7 @@ public class ArrayType extends AbstractSubscriptableType {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new ArrayType(baseType.copy(), size);
     }
 

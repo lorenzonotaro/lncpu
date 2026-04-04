@@ -120,7 +120,7 @@ public class LncParser extends FullSourceParser<AST> {
      * @return the parsed variable declaration or null if no valid declaration was found
      */
     private Statement variableDeclaration(VarDeclRules rules, int parameterIndex) {
-        Declarator declarator = declarator();
+        Declarator declarator = declarator(rules);
 
         if(declarator == null){
             return statement();
@@ -163,8 +163,8 @@ public class LncParser extends FullSourceParser<AST> {
         return decl;
     }
 
-    private Declarator declarator(){
-        StorageQualifier storageQualifier = StorageQualifier.parse(this);
+    private Declarator declarator(VarDeclRules rules){
+        StorageQualifier storageQualifier = StorageQualifier.parse(this, rules);
         TypeSpecifier typeSpecifier = typeSpecifier();
 
         if(typeSpecifier == null){

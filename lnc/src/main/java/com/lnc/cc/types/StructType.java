@@ -44,7 +44,7 @@ public class StructType extends TypeSpecifier{
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new StructType(name, definition);
     }
 

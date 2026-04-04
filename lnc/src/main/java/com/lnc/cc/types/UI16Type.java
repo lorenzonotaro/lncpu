@@ -11,7 +11,7 @@ public class UI16Type extends TypeSpecifier {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new UI16Type();
     }
 }

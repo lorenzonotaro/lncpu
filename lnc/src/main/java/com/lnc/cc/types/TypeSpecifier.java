@@ -117,7 +117,7 @@ public abstract class TypeSpecifier {
         return copy;
     }
 
-    protected abstract TypeSpecifier copy();
+    public abstract TypeSpecifier copy();
 
     public boolean isAggregateType() {
         return type == Type.STRUCT || type == Type.ARRAY;

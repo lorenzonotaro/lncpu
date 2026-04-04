@@ -11,7 +11,7 @@ public class I16Type extends TypeSpecifier {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new I16Type();
     }
 }

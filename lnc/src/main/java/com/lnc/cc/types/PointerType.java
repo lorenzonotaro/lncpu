@@ -51,7 +51,7 @@ public class PointerType extends AbstractSubscriptableType {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new PointerType(baseType.copy(), isConst, pointerKind);
     }
 }

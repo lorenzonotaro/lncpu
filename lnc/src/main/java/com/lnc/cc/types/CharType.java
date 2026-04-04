@@ -17,7 +17,7 @@ public class CharType extends TypeSpecifier {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new CharType();
     }
 }

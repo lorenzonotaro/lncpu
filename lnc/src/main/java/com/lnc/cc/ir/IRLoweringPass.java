@@ -256,7 +256,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             // the address of a dereference is simply the dereference target
             return deref.getTarget();
         }
-        return createAddressOf(loweredLoc);
+        return new AddressOf(loweredLoc);
     }
 
     private IROperand lowerStructMember(StructMemberAccess memberAccess) {
@@ -269,7 +269,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         TypeSpecifier typeSpecifier = memberAccess.getTypeSpecifier();
         if (baseLoc instanceof StaticLocation staticLoc) {
-            return new StaticDerivedLocation(staticLoc, offset);
+            return new StaticDerivedLocation(staticLoc, offset, typeSpecifier);
         }else if(baseLoc instanceof StackFrameLocation stackLoc){
             return new StackFrameLocation(typeSpecifier, stackLoc.getOperandType(), stackLoc.getOffset() + offset);
         }
@@ -298,7 +298,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         if (loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StaticLocation staticBase) {
             int byteOffset = imm.getValue() * arrayLoc.getStride();
-            return new StaticDerivedLocation(staticBase, byteOffset);
+            return new StaticDerivedLocation(staticBase, byteOffset, arrayLoc.getTypeSpecifier());
         }else if(loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StackFrameLocation stackBase){
             return new StackFrameLocation(arrayLoc.getTypeSpecifier(), stackBase.getOperandType(), stackBase.getOffset() + imm.getValue() * arrayLoc.getStride());
         }

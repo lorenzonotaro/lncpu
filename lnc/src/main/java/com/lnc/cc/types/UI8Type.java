@@ -22,7 +22,7 @@ public class UI8Type extends TypeSpecifier {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new UI8Type();
     }
 }

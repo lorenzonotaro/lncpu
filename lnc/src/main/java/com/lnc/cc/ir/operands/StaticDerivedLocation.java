@@ -6,11 +6,13 @@ import com.lnc.cc.types.TypeSpecifier;
 public class StaticDerivedLocation extends StaticLocation{
     private final StaticLocation base;
     private final int offset;
+    private final TypeSpecifier typeSpecifier;
 
-    public StaticDerivedLocation(StaticLocation base, int offset) {
+    public StaticDerivedLocation(StaticLocation base, int offset, TypeSpecifier typeSpecifier) {
         super(StaticDerivedLocation.LocationType.STATIC_DERIVED);
         this.base = base;
         this.offset = offset;
+        this.typeSpecifier = typeSpecifier;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class StaticDerivedLocation extends StaticLocation{
 
     @Override
     public TypeSpecifier getTypeSpecifier() {
-        return base.getTypeSpecifier();
+        return typeSpecifier;
     }
 
     @Override

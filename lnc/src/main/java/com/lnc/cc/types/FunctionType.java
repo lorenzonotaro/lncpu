@@ -60,7 +60,7 @@ public class FunctionType extends TypeSpecifier {
     }
 
     @Override
-    protected TypeSpecifier copy() {
+    public TypeSpecifier copy() {
         return new FunctionType(functionDeclaration, returnType);
     }
 
