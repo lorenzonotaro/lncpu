@@ -36,7 +36,7 @@ public abstract class TypeSpecifier {
         this.primitive = primitive;
     }
 
-    public static TypeSpecifier parsePrimaryType(LncParser parser) {
+    public static TypeSpecifier parsePrimaryType(LncParser parser, StorageLocation storageLocation) {
         Token token;
         Type type = null;
         boolean signed = false;
@@ -79,12 +79,14 @@ public abstract class TypeSpecifier {
             throw new CompileException("Missing type specifier", parser.peek());
         }
 
-        return switch (type) {
+        TypeSpecifier sp = switch (type) {
             case CHAR -> new CharType();
             case I8 -> unsigned ? new UI8Type() : new I8Type();
             case VOID -> new VoidType();
             default -> throw new Error("Invalid type specifier: " + type);
         };
+        sp.storageLocation = storageLocation;
+        return sp;
     }
 
     /** Size of this type (in bytes), for type checking. */

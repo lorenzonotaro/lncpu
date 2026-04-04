@@ -165,7 +165,7 @@ public class LncParser extends FullSourceParser<AST> {
 
     private Declarator declarator(VarDeclRules rules){
         StorageQualifier storageQualifier = StorageQualifier.parse(this, rules);
-        TypeSpecifier typeSpecifier = typeSpecifier();
+        TypeSpecifier typeSpecifier = typeSpecifier(storageQualifier);
 
         if(typeSpecifier == null){
             return null;
@@ -174,12 +174,12 @@ public class LncParser extends FullSourceParser<AST> {
         return new Declarator(storageQualifier, typeSpecifier);
     }
 
-    private TypeSpecifier typeSpecifier() {
+    private TypeSpecifier typeSpecifier(StorageQualifier storageQualifier) {
         TypeSpecifier ts = null;
         if(check(TypeSpecifier.VALID_TOKENS)){
-            ts = TypeSpecifier.parsePrimaryType(this);
+            ts = TypeSpecifier.parsePrimaryType(this, storageQualifier.pointerKind());
         }else if(check(TokenType.STRUCT)){
-            ts = structSpecifier();
+            ts = structSpecifier(storageQualifier.pointerKind());
         }
         if(ts == null){
             return null;
@@ -233,7 +233,7 @@ public class LncParser extends FullSourceParser<AST> {
         return ts;
     }
 
-    private TypeSpecifier structSpecifier() {
+    private TypeSpecifier structSpecifier(StorageLocation storageLocation) {
         consume("expected 'struct'", TokenType.STRUCT);
         Token name = consume("expected struct name", TokenType.IDENTIFIER);
 
@@ -248,9 +248,9 @@ public class LncParser extends FullSourceParser<AST> {
             }
             consume("expected '}'", TokenType.R_CURLY_BRACE);
 
-            return new StructType(name, new StructDefinitionType(name, members));
+            return new StructType(name, new StructDefinitionType(name, members), storageLocation);
         }else{
-            return new StructType(name);
+            return new StructType(name, storageLocation);
         }
     }
 

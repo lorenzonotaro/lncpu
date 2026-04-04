@@ -5,4 +5,7 @@ struct my_data{
 
 void main(){
     static far struct my_data d;
+    d.a = 1;
+    d.b = 2;
+
 }

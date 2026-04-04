@@ -8,15 +8,16 @@ public class StructType extends TypeSpecifier{
 
     private StructDefinitionType definition;
 
-    public StructType(Token name) {
-        this(name, null);
+    public StructType(Token name, StorageLocation storageLocation) {
+        this(name, null, storageLocation);
     }
 
-    public StructType(Token name, StructDefinitionType structDefinitionType) {
+    public StructType(Token name, StructDefinitionType structDefinitionType, StorageLocation storageLocation) {
         super(Type.STRUCT, false);
         this.name = name;
         this.providesDefinition = structDefinitionType != null;
         this.definition = structDefinitionType;
+        this.storageLocation = storageLocation;
     }
 
     public StructDefinitionType getDefinition() {
@@ -45,7 +46,7 @@ public class StructType extends TypeSpecifier{
 
     @Override
     public TypeSpecifier copy() {
-        return new StructType(name, definition);
+        return new StructType(name, definition, storageLocation);
     }
 
     public Token getName() {
