@@ -6,7 +6,7 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
-public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExport, StorageLocation pointerKind)
+public record StorageQualifier(boolean isExtern, boolean isStatic, boolean isExport, StorageLocation storageLocation)
 {
     public static final StorageQualifier NONE = new StorageQualifier(false, false, false,  StorageLocation.NEAR);
 

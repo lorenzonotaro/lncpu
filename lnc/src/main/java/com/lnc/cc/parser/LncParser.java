@@ -177,9 +177,9 @@ public class LncParser extends FullSourceParser<AST> {
     private TypeSpecifier typeSpecifier(StorageQualifier storageQualifier) {
         TypeSpecifier ts = null;
         if(check(TypeSpecifier.VALID_TOKENS)){
-            ts = TypeSpecifier.parsePrimaryType(this, storageQualifier.pointerKind());
+            ts = TypeSpecifier.parsePrimaryType(this, storageQualifier.storageLocation());
         }else if(check(TokenType.STRUCT)){
-            ts = structSpecifier(storageQualifier.pointerKind());
+            ts = structSpecifier(storageQualifier.storageLocation());
         }
         if(ts == null){
             return null;

@@ -9,6 +9,7 @@ import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
+import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
 import com.lnc.common.frontend.Token;
@@ -52,7 +53,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     public List<CompilerOutput> run(){
 
-        outputDataSection();
+        outputDataSections();
 
         outputConstSection();
 
@@ -97,15 +98,20 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         outputs.add(currentOutput);
     }
 
-    private void outputDataSection() {
+    private void outputDataSections() {
 
-        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNCDATA", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false));
+        var dataPage = new CompilerOutput(null, new SectionInfo("LNCDPAGE", 0x2000, LinkTarget.RAM, LinkMode.FIXED, false, true, false));
+        var farData = new CompilerOutput(null, new SectionInfo("LNCDATA", -1, LinkTarget.RAM, LinkMode.PAGE_FIT, false, false, false));
 
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getTypeSpecifier();
             var storageQualifier = entry.getStorageQualifier();
             if(type.type != TypeSpecifier.Type.FUNCTION && entry.getStorageQualifier().isStatic() && !entry.getStorageQualifier().isExtern()){
-                dataPageVariable(entry.getName(), type.allocSize());
+                this.currentOutput = storageQualifier.storageLocation() == StorageLocation.FAR ? farData : dataPage;
+                variable(entry.getName(), type.allocSize());
+                if(entry.getStorageQualifier().isExport()){
+                    this.currentOutput.exportLabel(entry.getName());
+                }
             }
         }
 
@@ -612,7 +618,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         instrf(TokenType.RET);
     }
 
-    private void dataPageVariable(String asmName, int size) {
+    private void variable(String asmName, int size) {
         label(asmName);
         currentOutput.append(EncodedData.of(new byte[size]));
     }

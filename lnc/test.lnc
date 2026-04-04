@@ -3,8 +3,8 @@ struct my_data{
     unsigned int b;
 };
 
-void main(){
-    static far struct my_data d;
+export void main(){
+    static export far struct my_data d;
     d.a = 1;
     d.b = 2;
 

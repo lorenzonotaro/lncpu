@@ -1,6 +1,6 @@
 package com.lnc.cc.types;
 
-// pointerKind/far type
+// storageLocation/far type
 public enum StorageLocation {
     NEAR, FAR
 }

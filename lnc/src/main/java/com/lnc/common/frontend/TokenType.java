@@ -158,7 +158,7 @@ public enum TokenType {
     EXTERN("extern"),
     CONST("const"),
     EXPORT("export"),
-    NEAR("pointerKind"),
+    NEAR("storageLocation"),
     FAR("far");
 
     public static final TokenType[] LNASM_KEYWORDSET = new TokenType[]{
