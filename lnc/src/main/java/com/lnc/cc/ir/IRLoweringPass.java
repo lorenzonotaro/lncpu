@@ -121,6 +121,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         boolean isShift = bin.getOperator() == BinaryExpression.Operator.SHL || bin.getOperator() == BinaryExpression.Operator.SHR;
 
+        // Shift instructions have a target-specific register constraint: the left operand must be
+        // placed in the SHIFT register class before code generation. For non-shift binary operations
+        // we use the usual lowering rules, but for SHL/SHR we must explicitly move/load the operand
+        // into a SHIFT-class virtual register to match the hardware instruction form.
         if(left.type != IROperand.Type.VIRTUAL_REGISTER || ((isShift) && ((VirtualRegister) left).getRegisterClass() != RegisterClass.SHIFT)) {
             left = moveOrLoadIntoVR(left, isShift ? RegisterClass.SHIFT : (left.getTypeSpecifier().allocSize() > 1 ? RegisterClass.WORD : RegisterClass.ANY));
         }

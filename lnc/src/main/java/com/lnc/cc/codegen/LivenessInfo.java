@@ -222,6 +222,9 @@ public record LivenessInfo(
             return true;
         }
 
+        // Shift lowering has operand-form constraints: the shifted value may need to stay
+        // in a register, and the shift count must remain in its dedicated immediate/register
+        // form. Replacing a direct read with an arbitrary immediate is therefore unsafe.
         if(bin.getOperator() == BinaryExpression.Operator.SHL || bin.getOperator() == BinaryExpression.Operator.SHR){
             return false;
         }

@@ -314,8 +314,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IROperand target = allocVR(left.getTypeSpecifier());
 
         if(binaryExpression.operator == BinaryExpression.Operator.SHL || binaryExpression.operator == BinaryExpression.Operator.SHR){
-            if((right instanceof ImmediateOperand io) && (right.getTypeSpecifier().type == TypeSpecifier.Type.I8 || right.getTypeSpecifier().type == TypeSpecifier.Type.UI8) && (io.getValue() < 1 || io.getValue() > 7)) {
-                throw new CompileException("right operand of shift operator must be immediate value between 1 and 7", binaryExpression.token);
+            if((if((right instanceof ImmediateOperand io) && (right.getTypeSpecifier().type == TypeSpecifier.Type.I8 || right.getTypeSpecifier().type == TypeSpecifier.Type.UI8) && (io.getValue() < 0 || io.getValue() > 7)) {
+                throw new CompileException("right operand of shift operator must be immediate value between 0 and 7", binaryExpression.token);
             }
             if(left.getTypeSpecifier().allocSize() != 1){
                 throw new CompileException("left operand of shift operator must be a single byte", binaryExpression.token);

@@ -267,6 +267,9 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             // If the operator is commutative, we can swap left and right
             emitBinOp(operator, dest, left);
         }else if(isShift){
+            // Shifts are emitted in-place on the value being shifted because the target
+            // instruction form expects that operand/register layout; move the result to
+            // dest afterwards when dest is different from left.
             emitBinOp(operator, left, right);
             instrf(TokenType.MOV, left, dest);
         } else{
@@ -360,12 +363,18 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 instrf(TokenType.XOR, target, right);
             }
             case SHL -> {
-                for(int i = 0; i < ((Byte) right).value; i++){
+                if (!(right instanceof Byte shiftAmount)) {
+                    throw new IllegalArgumentException("Shift operations require an immediate byte argument; this should be guaranteed by IR generation.");
+                }
+                for (int i = 0; i < shiftAmount.value; i++) {
                     instrf(TokenType.SHL, target);
                 }
             }
             case SHR -> {
-                for(int i = 0; i < ((Byte) right).value; i++){
+                if (!(right instanceof Byte shiftAmount)) {
+                    throw new IllegalArgumentException("Shift operations require an immediate byte argument; this should be guaranteed by IR generation.");
+                }
+                for (int i = 0; i < shiftAmount.value; i++) {
                     instrf(TokenType.SHR, target);
                 }
             }
