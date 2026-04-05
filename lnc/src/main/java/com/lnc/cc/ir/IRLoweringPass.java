@@ -294,11 +294,13 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             throw new IllegalStateException("array index base is not a location after lowering: " + loweredBase);
         }
 
+        TypeSpecifier typeSpecifier = arrayLoc.getTypeSpecifier();
+
         IROperand loweredIndex = arrayLoc.getIndex().accept(this);
 
         if (loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StaticLocation staticBase) {
             int byteOffset = imm.getValue() * arrayLoc.getStride();
-            return new StaticDerivedLocation(staticBase, byteOffset, arrayLoc.getTypeSpecifier());
+            return new StaticDerivedLocation(staticBase, byteOffset, typeSpecifier);
         }else if(loweredIndex instanceof ImmediateOperand imm && baseLoc instanceof StackFrameLocation stackBase){
             return new StackFrameLocation(arrayLoc.getTypeSpecifier(), stackBase.getOperandType(), stackBase.getOffset() + imm.getValue() * arrayLoc.getStride());
         }
@@ -308,7 +310,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         IROperand indexedAddress = addOffset(baseAddress, byteOffset, baseLoc.getPointerKind());
 
         IROperand derefTarget = materializeDerefTarget(indexedAddress);
-        return deriveDerefLocation(derefTarget, arrayLoc.getTypeSpecifier());
+        return deriveDerefLocation(derefTarget, typeSpecifier);
     }
 
     private RegisterClass derefRegisterClass(TypeSpecifier typeSpecifier) {

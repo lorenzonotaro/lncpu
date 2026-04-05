@@ -1,11 +1,13 @@
 struct my_data{
     unsigned int a;
     unsigned int b;
+    int data[10];
 };
 
-export void main(){
-    static export far struct my_data d;
-    d.a = 1;
-    d.b = 2;
+far struct my_data d;
 
+export void main(){
+    for(int far *i = &(d.data); i < &(d.data) + 10; i++){
+        *i = 1;
+    }
 }

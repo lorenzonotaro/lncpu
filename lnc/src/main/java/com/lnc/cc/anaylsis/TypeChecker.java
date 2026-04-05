@@ -303,8 +303,11 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         int offset = 0;
         for(VariableDeclaration field : definition.getFields()){
             checkTypeCompleteness(field.declarator.typeSpecifier());
+            if(fieldMap.containsKey(field.name.lexeme)){
+                throw new CompileException("duplicate field name '" + field.name.lexeme + "' in struct '" + name.lexeme + "'", field.name);
+            }
             fieldMap.put(field.name.lexeme, new StructFieldEntry(offset, field));
-            offset += field.declarator.typeSpecifier().typeSize();
+            offset += field.declarator.typeSpecifier().allocSize();
         }
 
         definition.setFieldMap(fieldMap);

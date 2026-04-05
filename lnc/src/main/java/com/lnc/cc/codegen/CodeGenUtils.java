@@ -95,7 +95,13 @@ public class CodeGenUtils {
                             regOffset.offset instanceof Byte b ? new Byte(Token.__internal(TokenType.INTEGER, 1 + b.value)) : new Word(Token.__internal(TokenType.INTEGER, 1 + ((Word) regOffset.offset).value))
                     )
             };
-        } else {
+        } else if(argument.type == Argument.Type.BINARY_OP){
+            var bin = (BinaryOp) argument;
+            return new Argument[]{
+                    new NumberCast(new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 8)), Token.__internal(TokenType.BITWISE_RIGHT, ">>")), bin.token, Token.__internal(TokenType.IDENTIFIER, "byte")),
+                    new NumberCast(new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 0xFF)), Token.__internal(TokenType.AMPERSAND, "&")), bin.token, Token.__internal(TokenType.IDENTIFIER, "byte"))
+            };
+        }else {
             throw new IllegalArgumentException("Argument must be a Word or Byte type");
         }
     }

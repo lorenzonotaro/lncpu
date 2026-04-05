@@ -18,7 +18,7 @@ public class DerefLocation extends Location {
             throw new IllegalArgumentException("DerefLocation target must be of pointer type");
         }
         this.target = target;
-        this.typeSpecifier = typeSpecifier;
+        this.typeSpecifier = ((PointerType)typeSpecifier).getBaseType();
     }
 
     public DerefLocation(IROperand target, TypeSpecifier typeSpecifier) {

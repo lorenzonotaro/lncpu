@@ -106,7 +106,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getTypeSpecifier();
             var storageQualifier = entry.getStorageQualifier();
-            if(type.type != TypeSpecifier.Type.FUNCTION && entry.getStorageQualifier().isStatic() && !entry.getStorageQualifier().isExtern()){
+            if(type.type != TypeSpecifier.Type.FUNCTION && (entry.getScope().isRoot() || entry.getStorageQualifier().isStatic()) && !entry.getStorageQualifier().isExtern()){
                 this.currentOutput = storageQualifier.storageLocation() == StorageLocation.FAR ? farData : dataPage;
                 variable(entry.getName(), type.allocSize());
                 if(entry.getStorageQualifier().isExport()){
@@ -115,7 +115,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             }
         }
 
-        outputs.add(currentOutput);
+        outputs.add(dataPage);
+        outputs.add(farData);
     }
 
     @Override
