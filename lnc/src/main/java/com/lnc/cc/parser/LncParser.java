@@ -463,12 +463,66 @@ public class LncParser extends FullSourceParser<AST> {
     }
 
     private Expression leftUnary() {
+        if(isCastExpressionAhead()){
+            return castExpression();
+        }
+
         if(match(TokenType.MINUS, TokenType.LOGICAL_NOT, TokenType.BITWISE_NOT, TokenType.STAR, TokenType.AMPERSAND, TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS, TokenType.SIZEOF)){
             var op = previous();
             var right = leftUnary();
             return new UnaryExpression(right, op, UnaryExpression.UnaryPosition.PRE);
         }
         return rightUnary();
+    }
+
+    private Expression castExpression() {
+        var castToken = consume("expected '('", TokenType.L_PAREN);
+        var targetType = castTypeSpecifier();
+        consume("expected ')'", TokenType.R_PAREN);
+
+        // Cast precedence matches other left-unary operators.
+        var operand = leftUnary();
+        return new CastExpression(castToken, targetType, operand);
+    }
+
+    private TypeSpecifier castTypeSpecifier() {
+        var typeSpecifier = typeSpecifier(StorageQualifier.NONE);
+
+        if(typeSpecifier == null){
+            throw new CompileException("expected type specifier in cast expression", peek());
+        }
+
+        if(typeSpecifier.type == TypeSpecifier.Type.STRUCT && ((StructType) typeSpecifier).providesDefinition()){
+            throw new CompileException("struct definition is not allowed in cast expression", ((StructType) typeSpecifier).getName());
+        }
+
+        return typeSpecifier;
+    }
+
+    private boolean isCastExpressionAhead() {
+        if(!check(TokenType.L_PAREN)){
+            return false;
+        }
+
+        var savedIndex = index;
+        try {
+            advance(); // consume '('
+
+            var typeSpecifier = typeSpecifier(StorageQualifier.NONE);
+            if(typeSpecifier == null){
+                return false;
+            }
+
+            if(typeSpecifier.type == TypeSpecifier.Type.STRUCT && ((StructType) typeSpecifier).providesDefinition()){
+                return false;
+            }
+
+            return check(TokenType.R_PAREN);
+        } catch (CompileException ignored) {
+            return false;
+        } finally {
+            index = savedIndex;
+        }
     }
 
     private Expression rightUnary() {

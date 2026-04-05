@@ -18,4 +18,6 @@ public interface IExpressionVisitor<E> {
     E visit(SubscriptExpression subscriptExpression);
 
     E visit(UnaryExpression unaryExpression);
+
+    E visit(CastExpression castExpression);
 }

@@ -496,6 +496,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         return returnVal;
     }
+
+    @Override
+    public IROperand visit(CastExpression castExpression) {
+        return castExpression.operand.accept(this);
+    }
+
     private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
         return currentUnit.getVrManager().getRegister(typeSpecifier);
     }

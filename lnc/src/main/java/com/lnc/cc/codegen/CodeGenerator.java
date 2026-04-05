@@ -12,6 +12,7 @@ import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
+import com.lnc.common.Logger;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
@@ -51,7 +52,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         this.ir = ir;
     }
 
-    public List<CompilerOutput> run(){
+    public boolean run(){
 
         outputDataSections();
 
@@ -66,8 +67,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
             currentOutput = new CompilerOutput(unit, new SectionInfo("LNC_" + unit.getFunctionDeclaration().name.lexeme, -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
 
-            GraphColoringRegisterAllocator.AllocationInfo allocationInfo = GraphColoringRegisterAllocator.run(unit);
-
+            GraphColoringRegisterAllocator.AllocationInfo allocationInfo;
+            try {
+                allocationInfo = GraphColoringRegisterAllocator.run(unit);
+            }catch (RuntimeException e){
+                Logger.error("Register allocation failed: " + e.getMessage());
+                return false;
+            }
             PostRAOptimizer.run(unit, allocationInfo);
 
             unit.compileFrameInfo();
@@ -84,7 +90,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             outputs.add(extensionOutput);
         }
 
-        return outputs;
+        return true;
     }
 
     private void outputConstSection() {
@@ -632,4 +638,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         currentOutput.append(CodeGenUtils.instr(opcode, args));
     }
 
+    public List<CompilerOutput> getOutputs() {
+        return outputs;
+    }
 }

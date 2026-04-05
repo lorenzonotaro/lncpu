@@ -155,7 +155,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) baseType);
 
-            TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier();
+            TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier().copy().withStorageLocation(left.storageLocation);;
             memberAccessExpression.setTypeSpecifier(typeSpecifier);
 
             return typeSpecifier;
@@ -166,7 +166,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) left);
 
-            TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier();
+            TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier().copy().withStorageLocation(left.storageLocation);
             memberAccessExpression.setTypeSpecifier(typeSpecifier);
             return typeSpecifier;
         }
@@ -241,7 +241,10 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             }
         }else if(unaryExpression.operator == UnaryExpression.Operator.ADDRESS_OF){
             TypeSpecifier operandType = unaryExpression.operand.accept(this);
-            PointerType pointerType = new PointerType(operandType, true, StorageLocation.NEAR);
+            if(operandType.type == TypeSpecifier.Type.ARRAY){ // special case: the address of an array is a pointer to the first element
+                return new PointerType(((ArrayType)operandType).getBaseType(), true, operandType.storageLocation);
+            }
+            PointerType pointerType = new PointerType(operandType, true, operandType.storageLocation);
             unaryExpression.setTypeSpecifier(pointerType);
             return pointerType;
         }
@@ -250,6 +253,18 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         unaryExpression.setTypeSpecifier(type);
 
         return type;
+    }
+
+    @Override
+    public TypeSpecifier visit(CastExpression castExpression) {
+        TypeSpecifier operandType = castExpression.operand.accept(this);
+        castExpression.setTypeSpecifier(castExpression.targetType);
+        if(operandType.compatible(castExpression.targetType)){
+            return castExpression.targetType;
+        }else if(operandType.typeSize() == castExpression.targetType.typeSize()){
+            Logger.compileWarning("implicit conversion from '" + operandType + "' to '" + castExpression.targetType + "'", castExpression.token);
+            return castExpression.targetType;
+        }else throw new CompileException("incompatible types: " + operandType + " and " + castExpression.targetType, castExpression.token);
     }
 
     private void check(TypeSpecifier type, TypeSpecifier expectedType, Token location) {

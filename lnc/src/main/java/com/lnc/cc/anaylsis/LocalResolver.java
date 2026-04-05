@@ -100,6 +100,13 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(CastExpression castExpression) {
+        castExpression.operand.accept(this);
+
+        return null;
+    }
+
+    @Override
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){

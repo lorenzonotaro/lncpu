@@ -131,7 +131,11 @@ public class Compiler {
         Logger.setProgramState("codegen");
         CodeGenerator codeGenerator = new CodeGenerator(result);
 
-        this.output = codeGenerator.run();
+        if(!codeGenerator.run()){
+            return false;
+        }
+
+        this.output = codeGenerator.getOutputs();
 
         Logger.setProgramState("asmopt");
         AsmLevelOptimizer asmOptimizer = new AsmLevelOptimizer();

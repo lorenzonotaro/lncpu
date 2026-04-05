@@ -7,7 +7,7 @@ struct my_data{
 far struct my_data d;
 
 export void main(){
-    for(int far *i = &(d.data); i < &(d.data) + 10; i++){
+    for(int far *i = (&(d.data)); i < (&(d.data)) + 10; i++){
         *i = 1;
     }
 }
