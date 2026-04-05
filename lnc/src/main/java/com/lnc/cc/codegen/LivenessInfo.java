@@ -222,6 +222,10 @@ public record LivenessInfo(
             return true;
         }
 
+        if(bin.getOperator() == BinaryExpression.Operator.SHL || bin.getOperator() == BinaryExpression.Operator.SHR){
+            return false;
+        }
+
         if (!isWordAddOrSub(bin)) {
             return true;
         }

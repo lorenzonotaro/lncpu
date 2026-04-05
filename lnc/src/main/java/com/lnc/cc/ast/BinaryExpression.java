@@ -31,6 +31,8 @@ public class BinaryExpression extends Expression {
         XOR(true),
         EQ(true),
         NE(true),
+        SHL,
+        SHR,
         LT,
         GT,
         LE,
@@ -61,6 +63,8 @@ public class BinaryExpression extends Expression {
                 case GREATER_THAN -> GT;
                 case LESS_THAN_OR_EQUAL -> LE;
                 case GREATER_THAN_OR_EQUAL -> GE;
+                case BITWISE_LEFT -> SHL;
+                case BITWISE_RIGHT -> SHR;
                 default -> throw new CompileException("invalid binary operator: " + token, token);
             };
         }

@@ -20,7 +20,13 @@ public class Bin extends IRInstruction {
         this.right = right;
         this.operator = operator;
 
-        if(operator != BinaryExpression.Operator.ADD && operator != BinaryExpression.Operator.SUB && operator != BinaryExpression.Operator.AND && operator != BinaryExpression.Operator.OR && operator != BinaryExpression.Operator.XOR){
+        if(operator != BinaryExpression.Operator.ADD
+                && operator != BinaryExpression.Operator.SUB
+                && operator != BinaryExpression.Operator.AND
+                && operator != BinaryExpression.Operator.OR
+                && operator != BinaryExpression.Operator.XOR
+                && operator != BinaryExpression.Operator.SHL
+                && operator != BinaryExpression.Operator.SHR){
             throw new RuntimeException("invalid operator for Bin: %s".formatted(operator));
         }
 

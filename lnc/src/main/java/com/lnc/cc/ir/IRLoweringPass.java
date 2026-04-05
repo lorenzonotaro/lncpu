@@ -5,6 +5,7 @@ import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.*;
+import com.lnc.common.frontend.CompileException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,8 +119,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         IROperand left = bin.getLeft().accept(this);
         IROperand right = bin.getRight().accept(this);
 
-        if(left.type != IROperand.Type.VIRTUAL_REGISTER) {
-            left = moveOrLoadIntoVR(left);
+        boolean isShift = bin.getOperator() == BinaryExpression.Operator.SHL || bin.getOperator() == BinaryExpression.Operator.SHR;
+
+        if(left.type != IROperand.Type.VIRTUAL_REGISTER || ((isShift) && ((VirtualRegister) left).getRegisterClass() != RegisterClass.SHIFT)) {
+            left = moveOrLoadIntoVR(left, isShift ? RegisterClass.SHIFT : (left.getTypeSpecifier().allocSize() > 1 ? RegisterClass.WORD : RegisterClass.ANY));
         }
 
         bin.setLeft(left);

@@ -5,6 +5,7 @@ import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.argument.*;
+import com.lnc.assembler.parser.argument.Byte;
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.*;
@@ -258,12 +259,17 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var rightStr = right.toString();
 
         BinaryExpression.Operator operator = bin.getOperator();
+
+        boolean isShift = operator == BinaryExpression.Operator.SHL || operator == BinaryExpression.Operator.SHR;
         if(destStr.equals(leftStr)){
             emitBinOp(operator, dest, right);
         }else if(operator.isCommutative() && destStr.equals(rightStr)){
             // If the operator is commutative, we can swap left and right
             emitBinOp(operator, dest, left);
-        }else{
+        }else if(isShift){
+            emitBinOp(operator, left, right);
+            instrf(TokenType.MOV, left, dest);
+        } else{
             instrf(TokenType.MOV, left, dest);
             emitBinOp(operator, dest, right);
         }
@@ -352,6 +358,16 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             }
             case XOR -> {
                 instrf(TokenType.XOR, target, right);
+            }
+            case SHL -> {
+                for(int i = 0; i < ((Byte) right).value; i++){
+                    instrf(TokenType.SHL, target);
+                }
+            }
+            case SHR -> {
+                for(int i = 0; i < ((Byte) right).value; i++){
+                    instrf(TokenType.SHR, target);
+                }
             }
             default -> {
                 throw new UnsupportedOperationException("Unsupported binary operator: " + op);
