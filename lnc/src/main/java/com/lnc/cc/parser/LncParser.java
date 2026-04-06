@@ -359,6 +359,11 @@ public class LncParser extends FullSourceParser<AST> {
             var right = assignment();
             return new AssignmentExpression(left, operator, right, false);
         }
+        if(match(TokenType.BITWISE_SHIFT_LEFT_EQUALS, TokenType.BITWISE_SHIFT_LEFT_EQUALS, TokenType.BITWISE_SHIFT_RIGHT_EQUALS, TokenType.BITWISE_AND_EQUALS, TokenType.BITWISE_OR_EQUALS, TokenType.BITWISE_XOR_EQUALS, TokenType.PLUS_EQUALS, TokenType.MINUS_EQUALS)){
+            var operator = previous();
+            var right = assignment();
+            return new AssignmentExpression(left, operator, new BinaryExpression(left, right, operator), false);
+        }
         return left;
     }
 

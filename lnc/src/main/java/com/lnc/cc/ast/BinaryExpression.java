@@ -50,21 +50,21 @@ public class BinaryExpression extends Expression {
 
         public static Operator fromTokenType(Token token) {
             return switch (token.type) {
-                case PLUS -> ADD;
-                case MINUS -> SUB;
+                case PLUS, PLUS_EQUALS -> ADD;
+                case MINUS, MINUS_EQUALS -> SUB;
                 case STAR -> MUL;
                 case SLASH -> DIV;
-                case AMPERSAND -> AND;
-                case BITWISE_OR -> OR;
-                case BITWISE_XOR -> XOR;
+                case AMPERSAND, BITWISE_AND_EQUALS -> AND;
+                case BITWISE_OR, BITWISE_OR_EQUALS -> OR;
+                case BITWISE_XOR, BITWISE_XOR_EQUALS -> XOR;
                 case DOUBLE_EQUALS -> EQ;
                 case NOT_EQUALS -> NE;
                 case LESS_THAN -> LT;
                 case GREATER_THAN -> GT;
                 case LESS_THAN_OR_EQUAL -> LE;
                 case GREATER_THAN_OR_EQUAL -> GE;
-                case BITWISE_LEFT -> SHL;
-                case BITWISE_RIGHT -> SHR;
+                case BITWISE_LEFT, BITWISE_SHIFT_LEFT_EQUALS -> SHL;
+                case BITWISE_RIGHT, BITWISE_SHIFT_RIGHT_EQUALS -> SHR;
                 default -> throw new CompileException("invalid binary operator: " + token, token);
             };
         }

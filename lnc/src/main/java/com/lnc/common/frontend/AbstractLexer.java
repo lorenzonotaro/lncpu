@@ -90,6 +90,9 @@ public abstract class AbstractLexer<T>
                 if (peek() == '+') {
                     advance();
                     return token(TokenType.DOUBLE_PLUS);
+                }else if(peek() == '='){
+                    advance();
+                    return token(TokenType.PLUS_EQUALS);
                 }
                 return token(TokenType.PLUS);
             case '-':
@@ -99,6 +102,9 @@ public abstract class AbstractLexer<T>
                 }else if (peek() == '-') {
                     advance();
                     return token(TokenType.DOUBLE_MINUS);
+                }else if (peek() == '=') {
+                    advance();
+                    return token(TokenType.MINUS_EQUALS);
                 }
                 return token(TokenType.MINUS);
             case '*':
@@ -122,6 +128,10 @@ public abstract class AbstractLexer<T>
             case '<':
                 if (peek() == '<') {
                     advance();
+                    if(peek() == '=') {
+                        advance();
+                        return token(TokenType.BITWISE_SHIFT_LEFT_EQUALS);
+                    }
                     return token(TokenType.BITWISE_LEFT);
                 } else if (peek() == '=') {
                     advance();
@@ -131,6 +141,10 @@ public abstract class AbstractLexer<T>
             case '>':
                 if (peek() == '>') {
                     advance();
+                    if(peek() == '=') {
+                        advance();
+                        return token(TokenType.BITWISE_SHIFT_RIGHT_EQUALS);
+                    }
                     return token(TokenType.BITWISE_RIGHT);
                 }else if (peek() == '=') {
                     advance();
@@ -141,15 +155,23 @@ public abstract class AbstractLexer<T>
                 if (peek() == '&') {
                     advance();
                     return token(TokenType.LOGICAL_AND);
+                }else if(peek() == '='){
+                    return token(TokenType.BITWISE_AND_EQUALS);
                 }
                 return token(TokenType.AMPERSAND);
             case '|':
                 if (peek() == '|') {
                     advance();
                     return token(TokenType.LOGICAL_OR);
+                }else if(peek() == '='){
+                    return token(TokenType.BITWISE_OR_EQUALS);
                 }
                 return token(TokenType.BITWISE_OR);
             case '^':
+                if(peek() == '='){
+                    advance();
+                    return token(TokenType.BITWISE_XOR_EQUALS);
+                }
                 return token(TokenType.BITWISE_XOR);
             case '~':
                 return token(TokenType.BITWISE_NOT);

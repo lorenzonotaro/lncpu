@@ -1,0 +1,6 @@
+static int c;
+
+void add(int i){
+    int h = c;
+    h+=i;
+}

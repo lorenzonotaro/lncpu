@@ -119,6 +119,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         IROperand left = bin.getLeft().accept(this);
         IROperand right = bin.getRight().accept(this);
 
+        // TODO: check if left can reside in memory instead of being loaded
         boolean isShift = bin.getOperator() == BinaryExpression.Operator.SHL || bin.getOperator() == BinaryExpression.Operator.SHR;
 
         // Shift instructions have a target-specific register constraint: the left operand must be
