@@ -22,7 +22,7 @@ import java.util.*;
 public final class CompilerOutput {
     private final LinkedList<CodeElement> code;
     private final SectionInfo sectionInfo;
-    private final IRUnit unit;
+    private IRUnit unit;
     private final Set<String> exportedLabels;
     private ArrayList<LabelInfo> labels;
 
@@ -115,5 +115,9 @@ public final class CompilerOutput {
 
     public Set<String> exportedLabels() {
         return exportedLabels;
+    }
+
+    public void setUnit(IRUnit unit) {
+        this.unit = unit;
     }
 }

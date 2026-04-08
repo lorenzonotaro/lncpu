@@ -59,6 +59,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
         outputConstSection();
 
+        currentOutput = new CompilerOutput(new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT_LABELS, false, false, false));
+
         for(IRUnit unit : ir.units()){
 
             if(unit.getFunctionDeclaration().isForwardDeclaration()){
@@ -66,7 +68,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 continue;
             }
 
-            currentOutput = new CompilerOutput(unit, new SectionInfo("LNC_" + unit.getFunctionDeclaration().name.lexeme, -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
+            currentOutput.setUnit(unit);
 
             GraphColoringRegisterAllocator.AllocationInfo allocationInfo;
             try {
@@ -95,7 +97,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     private void outputConstSection() {
-        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNCCONST", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false));
+        this.currentOutput = new CompilerOutput(null, new SectionInfo("LNCCONST", -1, LinkTarget.ROM, LinkMode.PAGE_FIT_LABELS, false, false, false));
 
         for(var constSymbol : ir.symbolTable().getConstants().values()){
             label(constSymbol.getAsmName());
