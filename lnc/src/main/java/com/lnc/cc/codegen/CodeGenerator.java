@@ -652,7 +652,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     private void variable(String asmName, int size) {
         label(asmName);
-        currentOutput.append(EncodedData.of(new byte[size]));
+        currentOutput.append(ReservedSpace.of(size));
     }
 
     private void label(String lexeme) {

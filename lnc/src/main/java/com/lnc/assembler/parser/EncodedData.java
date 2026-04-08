@@ -17,9 +17,9 @@ import java.util.Arrays;
  */
 public class EncodedData extends CodeElement{
 
-    private final byte[] data;
+    protected final byte[] data;
 
-    private EncodedData(byte[] data) {
+    protected EncodedData(byte[] data) {
         this.data = data;
     }
 
