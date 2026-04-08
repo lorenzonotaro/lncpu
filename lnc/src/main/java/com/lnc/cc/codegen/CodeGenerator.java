@@ -6,6 +6,7 @@ import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.argument.*;
 import com.lnc.assembler.parser.argument.Byte;
+import com.lnc.cc.ast.AST;
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.*;
@@ -59,7 +60,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
         outputConstSection();
 
-        currentOutput = new CompilerOutput(new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT_LABELS, false, false, false));
+        SectionInfo lnccode = new SectionInfo("LNCCODE", -1, LinkTarget.ROM, LinkMode.PAGE_FIT_LABELS, true, false, false);
 
         for(IRUnit unit : ir.units()){
 
@@ -68,7 +69,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 continue;
             }
 
-            currentOutput.setUnit(unit);
+            currentOutput = new CompilerOutput(unit, lnccode);
 
             GraphColoringRegisterAllocator.AllocationInfo allocationInfo;
             try {
@@ -115,7 +116,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         for(var entry : ir.symbolTable().getSymbols().values()){
             var type = entry.getTypeSpecifier();
             var storageQualifier = entry.getStorageQualifier();
-            if(type.type != TypeSpecifier.Type.FUNCTION && (entry.getScope().isRoot() || entry.getStorageQualifier().isStatic()) && !entry.getStorageQualifier().isExtern()){
+            if(type.type != TypeSpecifier.Type.FUNCTION && ("".equals(entry.getScope().getId()) || entry.getStorageQualifier().isStatic()) && !entry.getStorageQualifier().isExtern()){
                 this.currentOutput = storageQualifier.storageLocation() == StorageLocation.FAR ? farData : dataPage;
                 variable(entry.getName(), type.allocSize());
                 if(entry.getStorageQualifier().isExport()){
@@ -430,13 +431,24 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void visit(Call call) {
-        instrf(TokenType.LCALL, call.getCallee().accept(this));
+        Argument callee = call.getCallee().accept(this);
+        if(callee.type == Argument.Type.DEREFERENCE){
+            // cannot call a dereference (probably the result of accept() on a Location. Call the target instead
+            callee = ((Dereference)callee).inner;
+        }
+        instrf(TokenType.LCALL, callee);
         return null;
     }
 
     @Override
     public Void visit(Push push) {
-        instrf(TokenType.PUSH, push.getArg().accept(this));
+        if(push.getArg().getTypeSpecifier().allocSize() == 1){
+            instrf(TokenType.PUSH, push.getArg().accept(this));
+        }else{
+            var splitArg = CodeGenUtils.splitWord(push.getArg().accept(this));
+            instrf(TokenType.PUSH, splitArg[0]);
+            instrf(TokenType.PUSH, splitArg[1]);
+        }
         return null;
     }
 
