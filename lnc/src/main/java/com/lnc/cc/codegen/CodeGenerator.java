@@ -561,7 +561,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Argument visit(Location location) {
         return switch (location.locType) {
-            case SYMBOL -> CodeGenUtils.labelRef(((StaticSymbolLocation) location).getSymbol().getAsmName());
+            case SYMBOL -> CodeGenUtils.deref(CodeGenUtils.labelRef(((StaticSymbolLocation) location).getSymbol().getAsmName()));
             case STACK_FRAME -> toStackFrameAddress((StackFrameLocation) location, true);
             case STATIC_DERIVED -> toStaticAddress((StaticDerivedLocation) location, true);
             case DEREF -> {

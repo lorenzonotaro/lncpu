@@ -14,4 +14,9 @@ public class UI16Type extends TypeSpecifier {
     public TypeSpecifier copy() {
         return new UI16Type();
     }
+
+    @Override
+    public String toString() {
+        return "unsigned word";
+    }
 }

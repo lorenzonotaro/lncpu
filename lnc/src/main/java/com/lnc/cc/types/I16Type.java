@@ -14,4 +14,9 @@ public class I16Type extends TypeSpecifier {
     public TypeSpecifier copy() {
         return new I16Type();
     }
+
+    @Override
+    public String toString() {
+        return "word";
+    }
 }

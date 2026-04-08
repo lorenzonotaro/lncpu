@@ -61,6 +61,10 @@ public class CodeGenUtils {
     }
 
     public static Argument[] splitWord(Argument argument){
+        return splitWord(argument,false);
+    }
+
+    public static Argument[] splitWord(Argument argument, boolean insideDeref){
         if(argument.type == Argument.Type.WORD){
             return new Argument[]{
                     new Byte(Token.__internal(TokenType.INTEGER, ((Word) argument).value >> 8 & 0xFF)),
@@ -80,7 +84,7 @@ public class CodeGenUtils {
             };
         }else if(argument.type == Argument.Type.DEREFERENCE) {
             Argument inner = ((Dereference) argument).inner;
-            Argument[] splitWord = splitWord(inner);
+            Argument[] splitWord = splitWord(inner, true);
             return new Argument[]{
                     new Dereference(splitWord[0]),
                     new Dereference(splitWord[1])
@@ -97,10 +101,17 @@ public class CodeGenUtils {
             };
         } else if(argument.type == Argument.Type.BINARY_OP){
             var bin = (BinaryOp) argument;
-            return new Argument[]{
-                    new NumberCast(new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 8)), Token.__internal(TokenType.BITWISE_RIGHT, ">>")), bin.token, Token.__internal(TokenType.IDENTIFIER, "byte")),
-                    new NumberCast(new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 0xFF)), Token.__internal(TokenType.AMPERSAND, "&")), bin.token, Token.__internal(TokenType.IDENTIFIER, "byte"))
-            };
+            if(insideDeref){
+                return new Argument[] {
+                        bin,
+                        new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 1)), Token.__internal(TokenType.PLUS, '+'))
+                };
+            }else{
+                return new Argument[]{
+                        new NumberCast(new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 8)), Token.__internal(TokenType.BITWISE_RIGHT, ">>")), bin.token, Token.__internal(TokenType.IDENTIFIER, "byte")),
+                        new NumberCast(new BinaryOp(bin, new Byte(Token.__internal(TokenType.INTEGER, 0xFF)), Token.__internal(TokenType.AMPERSAND, "&")), bin.token, Token.__internal(TokenType.IDENTIFIER, "byte"))
+                };
+            }
         }else {
             throw new IllegalArgumentException("Argument must be a Word or Byte type");
         }
