@@ -38,10 +38,13 @@ public enum LinkMode {
     // automatic positioning, fit to page
     PAGE_FIT(0x100, 2, "page-fitted"),
 
+    // automatic positioning, each top-level-label span must fit in one page
+    PAGE_FIT_LABELS(0x2000, 3, "page-fit-labels"),
+
     /**
      *
      */
-    FIT(0x2000, 3, "fit");
+    FIT(0x2000, 4, "fit");
 
 
     /**

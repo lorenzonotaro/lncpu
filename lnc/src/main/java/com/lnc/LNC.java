@@ -79,7 +79,7 @@ public class LNC {
                 }
             }
 
-            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(noLncFiles), output, requestedOutputs);
+            Assembler assembler = new Assembler(settings.getLnasmFiles().stream().map(Path::of).toList(), getLinkerConfig(true), output, requestedOutputs);
 
             if(!assembler.assemble())
                 System.exit(1);
@@ -169,7 +169,11 @@ public class LNC {
         if(!"".equals(configScript) && !"".equals(configFile)){
             throw new IllegalStateException("cannot specify both linker config file and script");
         }else if(!"".equals(configFile)){
-            return Files.readString(Path.of(configFile));
+            try{
+                return Files.readString(Path.of(configFile));
+            }catch(IOException e){
+                throw new FileNotFoundException("unable to open linker config file '%s'".formatted(configFile));
+            }
         }else{
             return configScript;
         }

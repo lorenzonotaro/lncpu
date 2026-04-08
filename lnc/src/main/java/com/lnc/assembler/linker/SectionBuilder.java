@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class SectionBuilder {
 
@@ -107,6 +108,38 @@ public class SectionBuilder {
         return codeLength;
     }
 
+    /**
+     * Returns top-level label spans as instruction-relative ranges.
+     * Each span starts at a top-level label and ends where the next top-level label starts,
+     * or at the end of the section for the last one.
+     */
+    public List<TopLevelLabelSpan> getTopLevelLabelSpans() {
+        record Boundary(String labelName, int offset) {}
+
+        List<Boundary> boundaries = new ArrayList<>();
+        for (InstructionEntry entry : instructions) {
+            for (var label : entry.instruction.getLabels()) {
+                if (!label.name().contains(LnasmParser.SUBLABEL_SEPARATOR)) {
+                    boundaries.add(new Boundary(label.name(), entry.index));
+                }
+            }
+        }
+
+        if (boundaries.isEmpty()) {
+            return List.of();
+        }
+
+        List<TopLevelLabelSpan> spans = new ArrayList<>(boundaries.size());
+        for (int i = 0; i < boundaries.size(); i++) {
+            Boundary current = boundaries.get(i);
+            int endOffsetExclusive = i + 1 < boundaries.size()
+                    ? boundaries.get(i + 1).offset
+                    : codeLength;
+            spans.add(new TopLevelLabelSpan(current.labelName, current.offset, endOffsetExclusive));
+        }
+        return spans;
+    }
+
     public boolean isAlreadyWritten() {
         return alreadyWritten;
     }
@@ -140,5 +173,8 @@ public class SectionBuilder {
     }
 
     public record Descriptor(SectionInfo sectionInfo, int start, int length) {
+    }
+
+    public record TopLevelLabelSpan(String labelName, int startOffset, int endOffsetExclusive) {
     }
 }

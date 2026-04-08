@@ -1,6 +1,7 @@
 package com.lnc.assembler.linker;
 
 import java.util.Objects;
+import java.util.List;
 
 /**
  * MemoryLayoutManager is responsible for managing memory segments, organizing and allocating them
@@ -27,8 +28,51 @@ public class MemoryLayoutManager {
             case FIXED -> allocateFixed(sectionBuilder);
             case PAGE_ALIGN -> allocatePageAlign(sectionBuilder);
             case PAGE_FIT -> allocatePageFit(sectionBuilder);
+            case PAGE_FIT_LABELS -> allocatePageFitLabels(sectionBuilder);
             case FIT -> allocateFit(sectionBuilder);
         }
+    }
+
+    private void allocatePageFitLabels(SectionBuilder sectionBuilder) {
+        List<SectionBuilder.TopLevelLabelSpan> spans = sectionBuilder.getTopLevelLabelSpans();
+        if (spans.isEmpty()) {
+            // With no top-level labels available, fall back to normal page-fit behavior.
+            allocatePageFit(sectionBuilder);
+            return;
+        }
+
+        Segment current = head;
+        while (current != null) {
+            if (!current.isAllocated() && current.getSize() >= sectionBuilder.getCodeLength()) {
+                int maxOffset = current.getSize() - sectionBuilder.getCodeLength();
+                for (int offset = 0; offset <= maxOffset; offset++) {
+                    if (fitsTopLevelSpansInPages(current.start + offset, spans)) {
+                        current.allocate(offset, sectionBuilder);
+                        return;
+                    }
+                }
+            }
+            current = current.next;
+        }
+
+        unableToPlace(sectionBuilder);
+    }
+
+    private boolean fitsTopLevelSpansInPages(int sectionStart, List<SectionBuilder.TopLevelLabelSpan> spans) {
+        for (SectionBuilder.TopLevelLabelSpan span : spans) {
+            int length = span.endOffsetExclusive() - span.startOffset();
+            if (length <= 0) {
+                continue;
+            }
+
+            int spanStart = sectionStart + span.startOffset();
+            int spanEnd = sectionStart + span.endOffsetExclusive() - 1;
+            if ((spanStart & 0xFF00) != (spanEnd & 0xFF00)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void allocatePageFit(SectionBuilder sectionBuilder) {
@@ -151,6 +195,11 @@ public class MemoryLayoutManager {
                     case PAGE_FIT -> {
                         if((current.start & 0xFF00) != (current.end & 0xFF00)) {
                             throw new IllegalStateException("unable to place section '%s' in page fit mode".formatted(current.sectionBuilder.getSectionInfo().getName()));
+                        }
+                    }
+                    case PAGE_FIT_LABELS -> {
+                        if(!fitsTopLevelSpansInPages(current.start, current.sectionBuilder.getTopLevelLabelSpans())) {
+                            throw new IllegalStateException("unable to place section '%s' in page-fit-labels mode".formatted(current.sectionBuilder.getSectionInfo().getName()));
                         }
                     }
                 }

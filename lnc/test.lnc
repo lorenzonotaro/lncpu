@@ -1,15 +1,4 @@
-near struct my_data {
-    int x;
-    int y;
-    int z[10];
-    int near *k;
-} a;
-
+int x;
 void main(){
-    a.x = 1;
-    a.y = 2;
-    a.z[0] = 3;
-    a.k = 0x10;
-    a.k[1] = 5;
-
+    x += 5;
 }
