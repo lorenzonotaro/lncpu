@@ -1,7 +1,7 @@
 {
   "name": "lnasm",
   "displayName": "lnasm",
-  "description": "LNASM assembly",
+  "description": "LNASM/LNC syntax highlighting and basic editor features for Visual Studio Code.",
   "version": "0.0.1",
   "publisher": "Lorenzo Notaro",
   "engines": {
@@ -9,7 +9,9 @@
   },
   "activationEvents": [
     "workspaceContains:**/*.lnasm",
-    "workspaceContains:**/*.s"
+    "workspaceContains:**/*.lnc",
+    "onLanguage:lnasm",
+    "onLanguage:lnc"
   ],
   "categories": [
     "Programming Languages"
@@ -19,12 +21,24 @@
       "id": "lnasm",
       "aliases": ["LNASM", "lnasm"],
       "extensions": [".lnasm"],
-      "configuration": "./language-configuration.json"
+      "configuration": "./lnasm-language-configuration.json"
+    },
+  
+    {
+      "id": "lnc",
+      "aliases": ["LNC", "lnc"],
+      "extensions": [".lnc", ".lnh"],
+      "configuration": "./lnc-language-configuration.json"
     }],
     "grammars": [{
       "language": "lnasm",
       "scopeName": "source.lnasm",
       "path": "./syntaxes/lnasm.tmLanguage.json"
+    },
+    {
+      "language": "lnc",
+      "scopeName": "source.lnc",
+      "path": "./syntaxes/lnc.tmLanguage.json"
     }],
     "configuration": {
       "type": "object",
