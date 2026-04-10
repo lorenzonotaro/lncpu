@@ -2,12 +2,12 @@
 // Created by loryn on 9/6/2025.
 //
 
-#include "vm.h"
-#include "emu_device.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "opcodes.h"
+#include "vm.h"
+#include "emu_device.h"
 #include "linker_config/link_target.h"
 #include "linker_config/linker_config.h"
 #include "linker_config/linker_config_parser.h"

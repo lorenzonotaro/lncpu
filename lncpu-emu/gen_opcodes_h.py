@@ -10,9 +10,20 @@ def sanitize(param):
 
 if __name__ == "__main__":
     csv_filename = sys.argv[1] if len(sys.argv) > 1 else "../v1/controlunit/opcodes.tsv"
-    with open(csv_filename, 'r') as csvfile, open('opcodes.h', 'w') as outfile:
+    with open(csv_filename, 'r') as csvfile, open('opcodes.h', 'w') as hfile:
         reader = list(csv.reader(csvfile, delimiter='\t'))[1:]
-        outfile.write("#ifndef LNCPU_EMU_OPCODES_H\n#define LNCPU_EMU_OPCODES_H\n\n enum Opcode {")
+        print(f"Read {len(reader)} opcodes from {csv_filename}")
+        hfile.write("#ifndef LNCPU_EMU_OPCODES_H\n#define LNCPU_EMU_OPCODES_H\n\n#include <stdint.h>\n\n")
+        
+        hfile.write("struct opcode_info_t {\n\tconst uint8_t opcode; const char *mnemonic;\n\tconst uint8_t data_length;\n\tconst uint8_t clock_cycles;\n};\n\n")
+
+        hfile.write("enum Opcode {") 
         for row in reader:
-            outfile.write(f"\tOP_{sanitize(row[1])} =\t{row[0]}, \n")
-        outfile.write("\n};\n#endif //LNCPU_EMU_OPCODES_H\n")
+            hfile.write(f"\tOP_{sanitize(row[1])} =\t{row[0]}, \n")
+        hfile.write("\n};")
+
+        hfile.write("\n\nstatic const struct opcode_info_t opcode_info[] = {\n")
+        for row in reader:
+            hfile.write(f"\t{{OP_{sanitize(row[1])}, \"{row[1]}\", {row[2]}, {row[3]}}},\n")
+
+        hfile.write("};\n\n#endif //LNCPU_EMU_OPCODES_H\n")

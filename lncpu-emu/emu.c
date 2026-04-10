@@ -11,6 +11,7 @@
 #include <string.h>
 #include <windows.h>
 
+#include "opcodes.h"
 #include "utlist.h"
 #include "vm.h"
 #include "config/cmdline.h"
@@ -80,10 +81,30 @@ void memdump_bin(struct lncpu_vm *vm, const char *filename) {
     fclose(f);
 }
 
+void get_instruction_mnemonic(const uint8_t *addr_space, uint16_t cspc, char *dest){
+    const struct opcode_info_t info = opcode_info[addr_space[cspc]];
+    size_t index = 0;
+    index += sprintf(dest, "%s", info.mnemonic);
+    if(info.data_length > 1){
+        index += sprintf(dest + index, "%s ", info.mnemonic);
+        for(size_t i = 1; i < info.data_length; i++){
+            if(cspc + i >= 0x10000){
+                sprintf(dest + index, "??");
+            }else{
+                index += sprintf(dest + index, "%02x ", addr_space[cspc + i]);
+            }
+        }
+    }
+    sprintf(dest + index, "\t(0x%02x)\n\0", addr_space[cspc]);
+}
+
 void pause(struct emulator *emu) {
 
     if (emu->status != EMU_STATUS_TERMINATED) {
         printf("==== LNCPU paused at 0x%04x ====\n\n", emu->vm.cspc);
+        char mnemonic_buffer[64];
+        get_instruction_mnemonic((&emu->vm)->addr_space, (emu->vm).cspc, mnemonic_buffer);
+        printf("\n\n\t%s\t\n\n", mnemonic_buffer);
     }
 
     emu->status = EMU_STATUS_PAUSED;

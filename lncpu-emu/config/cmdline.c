@@ -22,6 +22,7 @@ void cmdline_init(struct emu_cmdline_params *params) {
     params->emu_tty_device = NULL;
     params->rom_file = NULL;
     params->ram_file = NULL;
+    
     params->d0_file = NULL;
     params->d1_file = NULL;
     params->d2_file = NULL;
