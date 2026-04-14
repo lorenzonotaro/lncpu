@@ -10,6 +10,13 @@ import java.util.List;
 
 public class CondJump extends AbstractBranchInstr {
 
+    public static boolean isSupportedOperator(BinaryExpression.Operator operator) {
+        return switch (operator) {
+            case EQ, NE, LT, LE, GT, GE -> true;
+            default -> false;
+        };
+    }
+
     @Override
     public void replaceReference(IRBlock oldBlock, IRBlock newBlock) {
         if (target == oldBlock) {
