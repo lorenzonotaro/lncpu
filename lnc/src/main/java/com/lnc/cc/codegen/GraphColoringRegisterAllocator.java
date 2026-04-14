@@ -5,7 +5,9 @@ import com.lnc.LNC;
 import com.lnc.cc.ir.IRBlock;
 import com.lnc.cc.ir.IRInstruction;
 import com.lnc.cc.ir.IRUnit;
+import com.lnc.cc.ir.Pop;
 import com.lnc.cc.ir.Move;
+import com.lnc.cc.ir.Push;
 import com.lnc.cc.ir.operands.ImmediateOperand;
 import com.lnc.cc.ir.operands.StackFrameLocation;
 import com.lnc.cc.ir.operands.VirtualRegister;
@@ -347,7 +349,7 @@ public class GraphColoringRegisterAllocator {
                 .min(Comparator
                         .comparingInt((InterferenceGraph.Node m) -> spillCost.get(m.vr))
                         .thenComparingInt(m -> m.vr.getRegisterNumber()))
-                .get());
+                .orElseThrow());
 
         for (var neighbor : simplifyWork.get(n)) {
             Set<InterferenceGraph.Node> nbrs = simplifyWork.get(neighbor);
@@ -415,7 +417,8 @@ public class GraphColoringRegisterAllocator {
         if (!freq.isEmpty()) {
             return freq.entrySet().stream()
                     .max(Map.Entry.comparingByValue())
-                    .get().getKey();
+                    .orElseThrow()
+                    .getKey();
         }
 
         // 2) Fallback: pick any available color deterministically.
@@ -523,7 +526,7 @@ public class GraphColoringRegisterAllocator {
         Set<Register> usedRegisters = new LinkedHashSet<>();
 
         InterferenceGraph ig = null;
-        LivenessInfo livenessInfo = null;
+        LivenessInfo livenessInfo = LivenessInfo.computeBlockLiveness(unit);
 
         do{
 
@@ -542,6 +545,12 @@ public class GraphColoringRegisterAllocator {
             usedRegisters = allocator.getUsedRegisters();
 
             if(spillCandidate != null) {
+                if (tryConservativeSameBlockSplit(unit, livenessInfo, spillCandidate, allocator.spillCost)) {
+                    maybeRunPostSpillIROptimizer(unit);
+                    livenessInfo = LivenessInfo.computeBlockLiveness(unit);
+                    continue;
+                }
+
                 spillStores.clear();
                 spillLoads.clear();
                 Set<VirtualRegister> spilledVirtuals = allocator.getSpilledVirtualRegisters(spillCandidate);
@@ -644,6 +653,165 @@ public class GraphColoringRegisterAllocator {
         }
 
         return new StageOneIROptimizer().run(unit);
+    }
+
+    private static boolean tryConservativeSameBlockSplit(IRUnit unit,
+                                                        LivenessInfo livenessInfo,
+                                                        InterferenceGraph.Node spillCandidate,
+                                                        Map<VirtualRegister, Integer> spillCost) {
+        if (spillCandidate == null || spillCandidate.vr == null) {
+            return false;
+        }
+
+        Set<VirtualRegister> candidateNeighbors = spillCandidate.adj.stream()
+                .map(n -> n.vr)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        if (candidateNeighbors.isEmpty()) {
+            return false;
+        }
+
+        for (IRBlock block : unit.computeReversePostOrderAndCFG()) {
+            if (block.getFirst() == null || block.getLast() == null) {
+                continue;
+            }
+
+            if (livenessInfo.liveOut().getOrDefault(block, Collections.emptySet()).contains(spillCandidate.vr)) {
+                continue;
+            }
+
+            if (blockContainsSavedRegister(block, spillCandidate.vr)) {
+                continue;
+            }
+
+            List<IRInstruction> instructions = new ArrayList<>();
+            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                instructions.add(inst);
+            }
+
+            List<Integer> outerUses = directUseIndices(instructions, spillCandidate.vr);
+            if (outerUses.size() < 2) {
+                continue;
+            }
+
+            Optional<VirtualRegister> maybeInner = candidateNeighbors.stream()
+                    .filter(inner -> !blockContainsSavedRegister(block, inner))
+                    .filter(inner -> !inner.equals(spillCandidate.vr))
+                    .filter(inner -> isNestedWithinSameBlock(instructions, outerUses, inner))
+                    .max(Comparator
+                            .comparingInt((VirtualRegister vr) -> spillCost.getOrDefault(vr, 0))
+                            .thenComparingInt(VirtualRegister::getRegisterNumber));
+
+            if (maybeInner.isEmpty()) {
+                continue;
+            }
+
+            VirtualRegister inner = maybeInner.orElseThrow();
+            List<Integer> innerUses = directUseIndices(instructions, inner);
+
+            int innerFirstUse = innerUses.get(0);
+            int innerLastUse = innerUses.get(innerUses.size() - 1);
+
+            int pushBeforeIndex = lastIndexBefore(outerUses, innerFirstUse);
+            int popBeforeIndex = firstIndexAfter(outerUses, innerLastUse);
+            if (pushBeforeIndex < 0 || popBeforeIndex < 0 || pushBeforeIndex >= popBeforeIndex) {
+                continue;
+            }
+
+            if (applySameBlockSplit(unit, block, instructions, spillCandidate.vr, pushBeforeIndex, popBeforeIndex)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean applySameBlockSplit(IRUnit unit,
+                                               IRBlock block,
+                                               List<IRInstruction> instructions,
+                                               VirtualRegister outer,
+                                               int pushBeforeIndex,
+                                               int popBeforeIndex) {
+        IRInstruction pushSite = pushBeforeIndex < 0 ? block.getFirst() : instructions.get(pushBeforeIndex);
+        IRInstruction popSite = instructions.get(popBeforeIndex);
+
+        VirtualRegister restored = unit.getVirtualRegisterManager().getRegister(outer.getTypeSpecifier());
+        restored.setRegisterClass(outer.getRegisterClass());
+
+        if (pushBeforeIndex < 0) {
+            pushSite.insertBefore(new Push(outer));
+        } else {
+            pushSite.insertAfter(new Push(outer));
+        }
+
+        Pop restore = new Pop(restored);
+        if (popSite == block.getFirst()) {
+            popSite.insertBefore(restore);
+        } else {
+            popSite.insertBefore(restore);
+        }
+
+        for (IRInstruction cursor = restore.getNext(); cursor != null; cursor = cursor.getNext()) {
+            cursor.replaceOperand(outer, restored);
+        }
+
+        return true;
+    }
+
+    private static boolean isNestedWithinSameBlock(List<IRInstruction> instructions,
+                                                   List<Integer> outerUses,
+                                                   VirtualRegister inner) {
+        List<Integer> innerUses = directUseIndices(instructions, inner);
+        if (innerUses.isEmpty()) {
+            return false;
+        }
+
+        return outerUses.get(0) < innerUses.get(0)
+                && innerUses.get(innerUses.size() - 1) < outerUses.get(outerUses.size() - 1);
+    }
+
+    private static List<Integer> directUseIndices(List<IRInstruction> instructions, VirtualRegister vr) {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < instructions.size(); i++) {
+            IRInstruction inst = instructions.get(i);
+            if (inst.getReads().contains(vr) || inst.getWrites().contains(vr)) {
+                indices.add(i);
+            }
+        }
+        return indices;
+    }
+
+    private static int lastIndexBefore(List<Integer> indices, int boundaryExclusive) {
+        int result = -1;
+        for (int index : indices) {
+            if (index >= boundaryExclusive) {
+                break;
+            }
+            result = index;
+        }
+        return result;
+    }
+
+    private static int firstIndexAfter(List<Integer> indices, int boundaryExclusive) {
+        for (int index : indices) {
+            if (index > boundaryExclusive) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean blockContainsSavedRegister(IRBlock block, VirtualRegister vr) {
+        for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+            if (inst instanceof Push push && vr.equals(push.getArg())) {
+                return true;
+            }
+            if (inst instanceof Pop pop && vr.equals(pop.getArg())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void updateGraph(mxGraph mxGraph, Collection<InterferenceGraph.Node> virtualNodes) {

@@ -4,9 +4,14 @@ import java.util.*;
 
 public abstract class GraphicalIRVisitor implements IIRInstructionVisitor<Void> {
 
+    @Override
+    public Void visit(Pop pop) {
+        return null;
+    }
+
     private final TraversalOrder traversalOrder;
 
-    public static enum TraversalOrder {
+    public enum TraversalOrder {
         REVERSE_POST_ORDER_ONLY,
         CUSTOM_ENQUEUE_WITH_SUCCESSORS,
     }

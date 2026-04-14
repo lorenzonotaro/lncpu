@@ -58,6 +58,12 @@ public class IRPrinter extends GraphicalIRVisitor {
     }
 
     @Override
+    public Void visit(Pop pop) {
+        appendInstr(pop);
+        return null;
+    }
+
+    @Override
     public Void visit(Unary unary) {
         appendInstr(unary);
         return null;

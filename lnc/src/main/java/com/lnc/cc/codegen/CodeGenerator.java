@@ -442,13 +442,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void visit(Push push) {
-        if(push.getArg().getTypeSpecifier().allocSize() == 1){
-            instrf(TokenType.PUSH, push.getArg().accept(this));
-        }else{
-            var splitArg = CodeGenUtils.splitWord(push.getArg().accept(this));
-            instrf(TokenType.PUSH, splitArg[0]);
-            instrf(TokenType.PUSH, splitArg[1]);
-        }
+        instrf(TokenType.PUSH, push.getArg().accept(this));
+        return null;
+    }
+
+    @Override
+    public Void visit(Pop pop) {
+        instrf(TokenType.POP, pop.getArg().accept(this));
         return null;
     }
 

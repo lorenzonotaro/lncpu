@@ -1,0 +1,49 @@
+package com.lnc.cc.ir;
+
+import com.lnc.cc.ir.operands.IROperand;
+
+import java.util.Collection;
+import java.util.List;
+
+public class Pop extends IRInstruction {
+    private IROperand arg;
+
+    public Pop(IROperand arg) {
+        this.arg = arg;
+    }
+
+    @Override
+    public <E> E accept(IIRInstructionVisitor<E> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "pop " + arg;
+    }
+
+    @Override
+    public Collection<IROperand> getReadOperands() {
+        return List.of();
+    }
+
+    @Override
+    public Collection<IROperand> getWriteOperands() {
+        return List.of(arg);
+    }
+
+    @Override
+    public void replaceOperand(IROperand oldOp, IROperand newOp) {
+        if (arg.equals(oldOp)) {
+            arg = newOp;
+        }
+    }
+
+    public IROperand getArg() {
+        return arg;
+    }
+
+    public void setArg(IROperand arg) {
+        this.arg = arg;
+    }
+}

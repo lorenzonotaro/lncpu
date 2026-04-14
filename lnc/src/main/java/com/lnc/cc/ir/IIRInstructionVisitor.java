@@ -15,6 +15,8 @@ public interface IIRInstructionVisitor<E> {
 
     E visit(Push push);
 
+    E visit(Pop pop);
+
     E visit(Unary unary);
 
 }

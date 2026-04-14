@@ -27,7 +27,7 @@ struct ddi_device {
 #define DEV_FLAG_HAS_CPAGE       0b00010000
 
 extern struct ddi_device far * ddi_get_device(unsigned int idx);
-extern unsigned int ddi_num_devices;
+extern far unsigned int ddi_num_devices;
 
 #ifndef BOOT_LNH
 #define BOOT_LNH

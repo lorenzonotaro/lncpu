@@ -5,7 +5,6 @@ import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.types.*;
-import com.lnc.common.frontend.CompileException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,6 +198,14 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         IROperand operand = push.getArg().accept(this);
         push.setArg(operand);
+
+        return null;
+    }
+
+    @Override
+    public Void visit(Pop pop) {
+        IROperand operand = pop.getArg().accept(this);
+        pop.setArg(operand);
 
         return null;
     }
