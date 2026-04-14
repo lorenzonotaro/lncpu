@@ -98,36 +98,41 @@ public class Preprocessor {
                 }else throw new CompileException("invalid macro syntax", macroToken);
             } else if (macroToken.type.equals(TokenType.MACRO_INCLUDE)){
                 if(line.size() == 2){
-                    String fileName = (String) line.get(1).literal;
+                    for(String ext : macroIncludeConfig.preprocessorConfig().includeExtensions){
 
-                    if(!fileName.endsWith(".lnasm")){
-                        fileName += ".lnasm";
-                    }
+                        String fileName = (String) line.get(1).literal;
 
-                    try {
-                        var path = resolvePath(fileName, line.get(1).location, false);
-                        List<List<Token>> inc = lexInclude(path, macroToken);
-                        iterator.remove();
-                        addLines(new LinkedList<>(inc), iterator);
-                    } catch (IOException e) {
-                       throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
+                        if(!fileName.endsWith(ext)){
+                            fileName += ext;
+                        }
+                        
+                        try {
+                            var path = resolvePath(fileName, line.get(1).location, false);
+                            List<List<Token>> inc = lexInclude(path, macroToken);
+                            iterator.remove();
+                            addLines(new LinkedList<>(inc), iterator);
+                            return;
+                        } catch (IOException e) {}
                     }
+                    throw new CompileException("unable to resolve file '" + ((String) line.get(1).literal) + "'", macroToken);
                 }else if(line.size() == 4 && line.get(1).type == TokenType.LESS_THAN && line.get(2).type == TokenType.IDENTIFIER && line.get(3).type == TokenType.GREATER_THAN){
-                    String fileName = line.get(2).lexeme;
+                    for(String ext : macroIncludeConfig.preprocessorConfig().includeExtensions){
 
-                    if(!fileName.endsWith(".lnasm")){
-                        fileName += ".lnasm";
+                        String fileName = (String) line.get(1).literal;
+
+                        if(!fileName.endsWith(ext)){
+                            fileName += ext;
+                        }
+                        
+                        try {
+                            var path = resolvePath(fileName, line.get(1).location, true);
+                            List<List<Token>> inc = lexInclude(path, macroToken);
+                            iterator.remove();
+                            addLines(new LinkedList<>(inc), iterator);
+                            return;
+                        } catch (IOException e) {}
                     }
-
-                    try {
-                        var path = resolvePath(fileName, line.get(2).location, true);
-                        List<List<Token>> inc = lexInclude(path, macroToken);
-                        iterator.remove();
-                        addLines(new LinkedList<>(inc), iterator);
-                    } catch (IOException e) {
-                        throw new CompileException("unable to resolve file '" + fileName + "'", macroToken);
-                    }
-
+                    throw new CompileException("unable to resolve file '" + ((String) line.get(1).literal) + "'", macroToken);
                 }else {throw new CompileException("invalid macro syntax", macroToken); }
             } else if(macroToken.type.equals(TokenType.MACRO_IFDEF)){
                 Token secondToken;

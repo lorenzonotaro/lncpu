@@ -153,6 +153,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
                 throw new CompileException("base operand of '->' operator has non-struct type '" + baseType + "'", memberAccessExpression.token);
             }
 
+            checkTypeCompleteness(baseType);
+
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) baseType);
 
             TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier().copy().withStorageLocation(left.storageLocation);;
@@ -163,6 +165,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             if(left.type != TypeSpecifier.Type.STRUCT){
                 throw new CompileException("base operand of '.' operator has non-struct type '" + left + "'", memberAccessExpression.token);
             }
+
+            checkTypeCompleteness(left);
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) left);
 

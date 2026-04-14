@@ -189,8 +189,7 @@ public abstract class AbstractLexer<T>
             case '\'':
                 return string(c);
             default:
-                if((config.preprocessorConfig() == LexerConfig.PreprocessorConfig.ASM_STYLE && c == '%') ||
-                        (config.preprocessorConfig() == LexerConfig.PreprocessorConfig.C_STYLE && c == '#'))
+                if(c == config.preprocessorConfig().preprocessorChar)
                     return macro();
                 if (Character.isLetter(c) || c == '_')
                     return name();

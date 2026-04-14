@@ -365,20 +365,16 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(MemberAccessExpression memberAccessExpression) {
         IROperand left = memberAccessExpression.left.accept(this);
+        
 
-        if(left.type != IROperand.Type.LOCATION){
-            throw new CompileException("invalid type for member access", memberAccessExpression.token);
-        }
-        Location loc = (Location) left;
-
-        StructDefinitionType definition = getStructDefinitionType(loc, memberAccessExpression.token);
+        StructDefinitionType definition = getStructDefinitionType(left, memberAccessExpression.token);
 
         if(definition == null){
             throw new CompileException("struct type not defined", memberAccessExpression.token);
         }
 
         // check correct usage of member access operator
-        TypeSpecifier.Type baseType = loc.getTypeSpecifier().type;
+        TypeSpecifier.Type baseType = left.getTypeSpecifier().type;
         TokenType operatorType = memberAccessExpression.accessOperator.type;
         if(baseType == TypeSpecifier.Type.POINTER && operatorType == TokenType.DOT){
             throw new CompileException("wrong operand '.' for struct pointer member access ('->' required)", memberAccessExpression.token);
@@ -392,14 +388,16 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         if (fieldEntry == null) throw new CompileException("no such field", memberAccessExpression.right);
 
-        return new StructMemberAccess(baseType == TypeSpecifier.Type.POINTER ? new DerefLocation(loc) : loc, fieldEntry);
+        if(left.getTypeSpecifier().type == TypeSpecifier.Type.POINTER){
+            return new StructMemberAccess(new DerefLocation(left), fieldEntry);
+        }else if(left.type == IROperand.Type.LOCATION){
+            return new StructMemberAccess((Location) left, fieldEntry);
+        }else{
+            throw new CompileException("invalid type for member access", memberAccessExpression.token);
+        }
     }
 
-    private static StructDefinitionType getStructDefinitionType(Location left, Token operatorToken) {
-        if(left.type != IROperand.Type.LOCATION){
-            throw new CompileException("invalid type for member access", operatorToken);
-        }
-
+    private static StructDefinitionType getStructDefinitionType(IROperand left, Token operatorToken) {
         if(left.getTypeSpecifier().type == TypeSpecifier.Type.STRUCT){
             StructType structType = (StructType) left.getTypeSpecifier();
             return structType.getDefinition();

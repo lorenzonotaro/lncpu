@@ -20,6 +20,9 @@ public record LexerConfig(TokenType[] keywordSet,
                           boolean caseSensitive
                           ) {
 
+    public static final String[] LNC_INCLUDE_EXTENSIONS = {".lnc", ".lnh"};
+    public static final String[] LNASM_INCLUDE_EXTENSIONS = {".lnasm"};
+
     public enum SingleLineCommentsConfig {
         DISABLED,
         C_STYLE,
@@ -32,14 +35,17 @@ public record LexerConfig(TokenType[] keywordSet,
     }
 
     public enum PreprocessorConfig {
-        DISABLED(""),
-        C_STYLE("#"),
-        ASM_STYLE("#");
+        DISABLED('\0',  new String[0]),
+        C_STYLE('#', LNC_INCLUDE_EXTENSIONS),
+        ASM_STYLE('#', LNASM_INCLUDE_EXTENSIONS);
 
-        public final String preprocessorChar;
+        public final char preprocessorChar;
+        
+        public final String[] includeExtensions;
 
-        PreprocessorConfig(String preprocessorChar) {
+        PreprocessorConfig(char preprocessorChar, String[] includeExtensions) {
             this.preprocessorChar = preprocessorChar;
+            this.includeExtensions = includeExtensions;
         }
     }
 }
