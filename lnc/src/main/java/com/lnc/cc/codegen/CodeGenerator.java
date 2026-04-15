@@ -226,6 +226,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                     srcSize);
         }
 
+        if (destSize == 2 && tryEmitRcrdSelfDerefWordLoad(source, target)) {
+            return null;
+        }
+
         if(destSize == 1){
             instrf(TokenType.MOV, source, target);
         }else{
@@ -238,6 +242,30 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
 
         return null;
+    }
+
+    private boolean tryEmitRcrdSelfDerefWordLoad(Argument source, Argument target) {
+        Register dstWord = asWordRegister(target);
+        if (dstWord != Register.RCRD) {
+            return false;
+        }
+
+        if (!(source instanceof Dereference deref)) {
+            return false;
+        }
+
+        Register baseWord = asWordRegister(deref.inner);
+        if (baseWord != Register.RCRD) {
+            return false;
+        }
+
+        String incSymbol = softwareExtensionsManager.requireIncWord(Register.RCRD);
+        instrf(TokenType.PUSH, source);
+        instrf(TokenType.LCALL, CodeGenUtils.labelRef(incSymbol));
+        instrf(TokenType.PUSH, source);
+        instrf(TokenType.POP, CodeGenUtils.reg(Register.RD));
+        instrf(TokenType.POP, CodeGenUtils.reg(Register.RC));
+        return true;
     }
 
     @Override

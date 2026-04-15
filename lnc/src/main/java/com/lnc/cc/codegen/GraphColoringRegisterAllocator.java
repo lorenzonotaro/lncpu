@@ -545,11 +545,6 @@ public class GraphColoringRegisterAllocator {
             usedRegisters = allocator.getUsedRegisters();
 
             if(spillCandidate != null) {
-                if (tryConservativeSameBlockSplit(unit, livenessInfo, spillCandidate, allocator.spillCost)) {
-                    maybeRunPostSpillIROptimizer(unit);
-                    livenessInfo = LivenessInfo.computeBlockLiveness(unit);
-                    continue;
-                }
 
                 spillStores.clear();
                 spillLoads.clear();
