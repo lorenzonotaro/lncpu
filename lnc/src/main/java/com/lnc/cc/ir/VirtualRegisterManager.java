@@ -41,4 +41,10 @@ public class VirtualRegisterManager {
     public Set<VirtualRegister> getAllRegisters() {
         return virtualRegisters;
     }
+
+    public void clearAssignedPhysicalRegisters() {
+        for (VirtualRegister vr : virtualRegisters) {
+            vr.setAssignedPhysicalRegister(null);
+        }
+    }
 }

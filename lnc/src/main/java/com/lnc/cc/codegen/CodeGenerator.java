@@ -3,10 +3,8 @@ package com.lnc.cc.codegen;
 import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
-import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.argument.*;
 import com.lnc.assembler.parser.argument.Byte;
-import com.lnc.cc.ast.AST;
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.*;
@@ -144,6 +142,8 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var left = condJump.getLeft().accept(this);
         var right = condJump.getRight().accept(this);
 
+        instrf(TokenType.CMP, left, right);
+
         IRBlock trueTarget = condJump.getTarget();
         IRBlock falseTarget = condJump.getFalseTarget();
         IRBlock continueTo = condJump.getContinueTo();
@@ -214,11 +214,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     @Override
     public Void visit(Move move) {
 
-        int destSize = move.getDest().getTypeSpecifier().allocSize();
-        int srcSize = move.getSource().getTypeSpecifier().allocSize();
-
-        var target = move.getDest().accept(this);
-        var source = move.getSource().accept(this);
+        IROperand destIr = move.getDest();
+        IROperand srcIr = move.getSource();
+        int destSize = destIr.getTypeSpecifier().allocSize();
+        int srcSize = srcIr.getTypeSpecifier().allocSize();
 
         if(destSize != srcSize){
             throw new IllegalArgumentException("Mov argument size mismatch: " +
@@ -226,9 +225,13 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                     srcSize);
         }
 
-        if (destSize == 2 && tryEmitRcrdSelfDerefWordLoad(source, target)) {
+        if (tryEmitSelfDerefLoad(srcIr, destIr, srcSize)) {
             return null;
         }
+
+
+        var target = destIr.accept(this);
+        var source = srcIr.accept(this);
 
         if(destSize == 1){
             instrf(TokenType.MOV, source, target);
@@ -240,32 +243,31 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             instrf(TokenType.MOV, splitSource[1], splitTarget[1]);
         }
 
-
         return null;
     }
 
-    private boolean tryEmitRcrdSelfDerefWordLoad(Argument source, Argument target) {
-        Register dstWord = asWordRegister(target);
-        if (dstWord != Register.RCRD) {
-            return false;
+    private boolean tryEmitSelfDerefLoad(IROperand srcIr, IROperand destIr, int size) {
+        if(srcIr instanceof DerefLocation deref
+                && deref.getTarget() instanceof VirtualRegister srcVr
+                && destIr instanceof VirtualRegister destVr
+                && (destVr.getRegisterClass().equals(RegisterClass.NEAR_DEREF) || destVr.getRegisterClass().equals(RegisterClass.FAR_DEREF))){
+            if(size == 1){
+                var target = destIr.accept(this);
+                var source = srcIr.accept(this);
+                instrf(TokenType.MOV, source, target);
+                return true;
+            }else if(size == 2){
+                var target = destIr.accept(this);
+                var source = srcIr.accept(this);
+                instrf(TokenType.PUSH, source);
+                visit(new Unary(srcVr, srcVr, UnaryExpression.Operator.INCREMENT));
+                Argument[] splitWord = CodeGenUtils.splitWord(target);
+                instrf(TokenType.MOV, source, splitWord[1]);
+                instrf(TokenType.POP, splitWord[0]);
+                return true;
+            }
         }
-
-        if (!(source instanceof Dereference deref)) {
-            return false;
-        }
-
-        Register baseWord = asWordRegister(deref.inner);
-        if (baseWord != Register.RCRD) {
-            return false;
-        }
-
-        String incSymbol = softwareExtensionsManager.requireIncWord(Register.RCRD);
-        instrf(TokenType.PUSH, source);
-        instrf(TokenType.LCALL, CodeGenUtils.labelRef(incSymbol));
-        instrf(TokenType.PUSH, source);
-        instrf(TokenType.POP, CodeGenUtils.reg(Register.RD));
-        instrf(TokenType.POP, CodeGenUtils.reg(Register.RC));
-        return true;
+        return false;
     }
 
     @Override

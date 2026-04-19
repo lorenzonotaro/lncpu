@@ -210,11 +210,11 @@ public class InterferenceGraph {
                 // update counts and weights
                 for (VirtualRegister d : defsHere) {
                     defs.put(d, defs.getOrDefault(d, 0) + 1);
-                    loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), (int) Math.pow(10, blockLoopWeight)));
+                    loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), (int) Math.pow(10, blockLoopWeight + 1)));
                 }
                 for (VirtualRegister u : usesHere) {
                     uses.put(u, uses.getOrDefault(u, 0) + 1);
-                    loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), (int) Math.pow(10, blockLoopWeight)));
+                    loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), (int) Math.pow(10, blockLoopWeight + 1)));
                 }
 
                 Set<VirtualRegister> liveBefore = new LinkedHashSet<>(live);
