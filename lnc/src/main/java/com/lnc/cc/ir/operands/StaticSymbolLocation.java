@@ -28,7 +28,7 @@ public class StaticSymbolLocation extends StaticLocation {
 
     @Override
     public StorageLocation getPointerKind() {
-        return symbol.getTypeSpecifier().storageLocation();
+        return symbol.getStorageQualifier().storageLocation();
     }
 
     @Override

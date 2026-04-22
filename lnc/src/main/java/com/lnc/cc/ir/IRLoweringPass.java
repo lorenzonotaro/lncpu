@@ -380,9 +380,17 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         }
 
         VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
-        pointerVr.setRegisterClass(baseAddress.getTypeSpecifier() instanceof PointerType pointerType
-                && pointerType.getPointerKind() == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
+        RegisterClass registerClass = baseAddress.getTypeSpecifier() instanceof PointerType pointerType
+                && pointerType.getPointerKind() == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF;
+        pointerVr.setRegisterClass(registerClass);
         emitBefore(new Move(baseAddress, pointerVr));
+        if(offset == 1){
+            VirtualRegister dest = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
+            dest.setRegisterClass(registerClass);
+            emitBefore(new Move(pointerVr, dest));
+            emitBefore(new Unary(dest, dest, UnaryExpression.Operator.INCREMENT));
+            return dest;
+        }
         emitLoweredAdd(pointerVr, pointerVr, new ImmediateOperand(offset, new UI8Type()));
         return pointerVr;
     }
