@@ -59,6 +59,7 @@ public class FullSourceLexer extends AbstractLexer<List<Token>>{
     @Override
     protected void reset(String source) {
         this.line = 1;
+        this.lastLf = 0;
         super.reset(source);
     }
 
