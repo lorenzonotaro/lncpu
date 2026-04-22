@@ -593,51 +593,31 @@ public class GraphColoringRegisterAllocator {
                 spillLoads.clear();
                 Set<VirtualRegister> spilledVirtuals = allocator.getSpilledVirtualRegisters(spillCandidate);
 
-                // 2) Insert spill code for each spilled vreg.
-                // Walk only the original instruction chain so post-def spill stores inserted
-                // with insertAfter() are not re-processed in this same iteration.
+                // 2) Insert spill code using conservative same-block live-range splitting.
+                // Load once at the beginning of a merged segment, keep the temporary live
+                // across adjacent touches when liveness and palette pressure allow it, and
+                // store once at the end of the segment.
                 for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
-                    for (IRInstruction inst = bb.getFirst(); inst != null; ) {
-                        IRInstruction nextOriginal = inst.getNext();
-
-                        // after defs
-                        boolean isRegParamDemotion = inst instanceof Move mv && mv.isRegParamDemotion();
-                        if(isRegParamDemotion) {
-                            for (VirtualRegister vr : spilledVirtuals) {
-                                if (!inst.getReads().contains(vr) && !inst.getWrites().contains(vr)) {
-                                    continue;
-                                }
-                                inst.replaceOperand(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
-                                spillStores.add(new AbstractMap.SimpleEntry<>(vr, (Move) inst));
-                            }
-                        }else{
-                            for (VirtualRegister vr : new LinkedHashSet<>(inst.getWrites())) {
-                                if (spilledVirtuals.contains(vr)) {
-                                    // If the def is `move imm -> vr`, spill directly to the slot.
-                                    if (tryFoldImmediateSpillStore(inst, vr, spillStores)) {
-                                        continue;
-                                    }
-
-                                    Move move = new Move(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
-                                    spillStores.add(new AbstractMap.SimpleEntry<>(vr, move));
-                                    inst.insertAfter(move);
-                                }
-                            }
-                        }
-                        // before uses
-                        for (VirtualRegister vr : new LinkedHashSet<>(inst.getReads())) {
-                            if (spilledVirtuals.contains(vr)) {
-                                // allocate a temp for the loaded value
-                                VirtualRegister temp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
-                                temp.setRegisterClass(vr.getRegisterClass());
-                                Move load = new Move(new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0), temp);
-                                spillLoads.add(new AbstractMap.SimpleEntry<>(vr, load));
-                                inst.insertBefore(load);
-                                inst.replaceOperand(vr, temp);
-                            }
+                    for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
+                        if (!(inst instanceof Move mv && mv.isRegParamDemotion())) {
+                            continue;
                         }
 
-                        inst = nextOriginal;
+                        for (VirtualRegister vr : spilledVirtuals) {
+                            if (!inst.getReads().contains(vr) && !inst.getWrites().contains(vr)) {
+                                continue;
+                            }
+
+                            inst.replaceOperand(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
+                            spillStores.add(new AbstractMap.SimpleEntry<>(vr, mv));
+                        }
+                    }
+                }
+
+                Map<VirtualRegister, List<SpillSegment>> spillSegments = planSpillSegments(unit, livenessInfo, ig, spilledVirtuals);
+                for (VirtualRegister vr : spilledVirtuals) {
+                    for (SpillSegment segment : spillSegments.getOrDefault(vr, Collections.emptyList())) {
+                        applySpillSegment(unit, vr, segment, livenessInfo, spillStores, spillLoads);
                     }
                 }
 
@@ -683,6 +663,151 @@ public class GraphColoringRegisterAllocator {
         defMove.setDest(slot);
         spillStores.add(new AbstractMap.SimpleEntry<>(spilledVr, defMove));
         return true;
+    }
+
+    private record SpillSegment(IRBlock block,
+                                List<IRInstruction> instructions,
+                                int startIndex,
+                                int endIndex) {
+    }
+
+    private static Map<VirtualRegister, List<SpillSegment>> planSpillSegments(IRUnit unit,
+                                                                              LivenessInfo livenessInfo,
+                                                                              InterferenceGraph graph,
+                                                                              Set<VirtualRegister> spilledVirtuals) {
+        Map<VirtualRegister, List<SpillSegment>> spillSegments = new LinkedHashMap<>();
+        List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
+
+        for (VirtualRegister vr : spilledVirtuals) {
+            InterferenceGraph.Node spillNode = graph.getNode(vr);
+            List<SpillSegment> segments = new ArrayList<>();
+
+            for (IRBlock block : blocks) {
+                List<IRInstruction> instructions = new ArrayList<>();
+                for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                    instructions.add(inst);
+                }
+
+                List<Integer> touchIndices = directUseIndices(instructions, vr);
+                if (touchIndices.isEmpty()) {
+                    continue;
+                }
+
+                int segmentStart = touchIndices.get(0);
+                int segmentEnd = segmentStart;
+
+                for (int i = 1; i < touchIndices.size(); i++) {
+                    int nextTouch = touchIndices.get(i);
+                    if (canExtendSpillSegment(vr, instructions, livenessInfo, spillNode, segmentStart, nextTouch)) {
+                        segmentEnd = nextTouch;
+                    } else {
+                        segments.add(new SpillSegment(block, instructions, segmentStart, segmentEnd));
+                        segmentStart = segmentEnd = nextTouch;
+                    }
+                }
+
+                segments.add(new SpillSegment(block, instructions, segmentStart, segmentEnd));
+            }
+
+            spillSegments.put(vr, segments);
+        }
+
+        return spillSegments;
+    }
+
+    private static boolean canExtendSpillSegment(VirtualRegister vr,
+                                                 List<IRInstruction> instructions,
+                                                 LivenessInfo livenessInfo,
+                                                 InterferenceGraph.Node spillNode,
+                                                 int segmentStartIndex,
+                                                 int candidateEndIndex) {
+        Set<Register> palette = spillNode.allowedColors();
+        int paletteBudget = palette.size();
+        IRInstruction candidateTouch = instructions.get(candidateEndIndex);
+        boolean candidateWritesVr = candidateTouch.getWrites().contains(vr);
+
+        for (int i = segmentStartIndex; i < candidateEndIndex; i++) {
+            IRInstruction inst = instructions.get(i);
+
+            // The lowered three-address form often moves the "variable value" through
+            // short-lived temporaries, so the original spilled vreg can be dead between
+            // an input read and a later write-back touch. Allow extending such spans only
+            // when the next touch writes the spilled vreg.
+            if (!livenessInfo.isLiveAfter(vr, inst) && !candidateWritesVr) {
+                return false;
+            }
+
+            int blockers = 0;
+            for (VirtualRegister liveVr : livenessInfo.getLiveAfter(inst)) {
+                if (liveVr.equals(vr)) {
+                    continue;
+                }
+
+                if (Collections.disjoint(liveVr.getRegisterClass().getRegisters(), palette)) {
+                    continue;
+                }
+
+                blockers++;
+                if (blockers >= paletteBudget) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static void applySpillSegment(IRUnit unit,
+                                          VirtualRegister vr,
+                                          SpillSegment segment,
+                                          LivenessInfo livenessInfo,
+                                          List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores,
+                                          List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillLoads) {
+        IRInstruction start = segment.instructions().get(segment.startIndex());
+        IRInstruction end = segment.instructions().get(segment.endIndex());
+        boolean hasWrite = segmentHasWrite(vr, segment);
+
+        if (segment.startIndex() == segment.endIndex() && !start.getReads().contains(vr)
+                && tryFoldImmediateSpillStore(start, vr, spillStores)) {
+            return;
+        }
+
+        VirtualRegister temp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
+        temp.setRegisterClass(vr.getRegisterClass());
+
+        if (start.getReads().contains(vr)) {
+            Move load = new Move(
+                    new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0),
+                    temp
+            );
+            spillLoads.add(new AbstractMap.SimpleEntry<>(vr, load));
+            start.insertBefore(load);
+        }
+
+        for (int i = segment.startIndex(); i <= segment.endIndex(); i++) {
+            IRInstruction inst = segment.instructions().get(i);
+            if (inst.getReads().contains(vr) || inst.getWrites().contains(vr)) {
+                inst.replaceOperand(vr, temp);
+            }
+        }
+
+        if (hasWrite && livenessInfo.isLiveAfter(vr, end)) {
+            Move store = new Move(
+                    temp,
+                    new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0)
+            );
+            spillStores.add(new AbstractMap.SimpleEntry<>(vr, store));
+            end.insertAfter(store);
+        }
+    }
+
+    private static boolean segmentHasWrite(VirtualRegister vr, SpillSegment segment) {
+        for (int i = segment.startIndex(); i <= segment.endIndex(); i++) {
+            if (segment.instructions().get(i).getWrites().contains(vr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean maybeRunPostSpillIROptimizer(IRUnit unit) {
