@@ -107,6 +107,14 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(SizeofExpression sizeofExpression) {
+        if(sizeofExpression.targetType == SizeofExpression.TargetType.EXPRESSION){
+            sizeofExpression.expression.accept(this);
+        }
+        return null;
+    }
+
+    @Override
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){

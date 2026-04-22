@@ -472,7 +472,21 @@ public class LncParser extends FullSourceParser<AST> {
             return castExpression();
         }
 
-        if(match(TokenType.MINUS, TokenType.LOGICAL_NOT, TokenType.BITWISE_NOT, TokenType.STAR, TokenType.AMPERSAND, TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS, TokenType.SIZEOF)){
+        if(match(TokenType.SIZEOF)){
+            Token sizeofToken = previous();
+            consume("expected '('", TokenType.L_PAREN);
+            var decl = declarator(VarDeclRules.SIZEOF_DECL);
+            if(decl != null){
+                consume("expected ')'", TokenType.R_PAREN);
+                return new SizeofExpression(sizeofToken, decl.typeSpecifier());
+            }else{
+                Expression operand = expression();
+                consume("expected ')'", TokenType.R_PAREN);
+                return new SizeofExpression(sizeofToken, operand);
+            }
+        }
+
+        if(match(TokenType.MINUS, TokenType.LOGICAL_NOT, TokenType.BITWISE_NOT, TokenType.STAR, TokenType.AMPERSAND, TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS)){
             var op = previous();
             var right = leftUnary();
             return new UnaryExpression(right, op, UnaryExpression.UnaryPosition.PRE);

@@ -271,6 +271,19 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         }else throw new CompileException("incompatible types: " + operandType + " and " + castExpression.targetType, castExpression.token);
     }
 
+    @Override
+    public TypeSpecifier visit(SizeofExpression sizeofExpression) {
+        if(sizeofExpression.targetType == SizeofExpression.TargetType.TYPE){
+            checkTypeCompleteness(sizeofExpression.type);
+            sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(sizeofExpression.type.typeSize()));
+        }else{
+            TypeSpecifier operandType = sizeofExpression.expression.accept(this);
+            checkTypeCompleteness(operandType);
+            sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(operandType.typeSize()));
+        }
+        return sizeofExpression.getTypeSpecifier();
+    }
+
     private void check(TypeSpecifier type, TypeSpecifier expectedType, Token location) {
         if (type == null || expectedType == null) {
             throw new IllegalStateException("Type or expected type is null");

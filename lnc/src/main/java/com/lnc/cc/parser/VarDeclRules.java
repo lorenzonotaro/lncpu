@@ -4,8 +4,8 @@ public enum VarDeclRules {
     EXTERNAL_DECL(true, true, true, false, false),
     PARAMETER_DECL(false, false, false, true, false),
     INTERNAL_DECL(true, true, false, false, true),
-    STRUCT_MEMBER_DECL(false, false, false, false, true)
-    ;
+    STRUCT_MEMBER_DECL(false, false, false, false, true),
+    SIZEOF_DECL(false, false, false, false, false);
     public final boolean allowInitializer;
     public final boolean allowStatic;
     public final boolean allowNonStaticNearFar;

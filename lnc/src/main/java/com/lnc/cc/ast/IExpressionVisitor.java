@@ -20,4 +20,6 @@ public interface IExpressionVisitor<E> {
     E visit(UnaryExpression unaryExpression);
 
     E visit(CastExpression castExpression);
+
+    E visit(SizeofExpression sizeofExpression);
 }
