@@ -33,7 +33,6 @@ extern far unsigned int ddi_num_devices;
 #define BOOT_LNH
 
 struct boot_device {
-    unsigned int unused[8];
     unsigned int device_idx;
     unsigned int boot_mode;
 };

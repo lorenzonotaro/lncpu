@@ -58,7 +58,7 @@ public class RegisterClass {
     }
 
     public Register onlyRegister() {
-        return registers.size() == 1 ? registers.iterator().next() : null;
+        return registers.size() == 1 ? registers.stream().sorted().findFirst().orElse(null) : null;
     }
 
     public static RegisterClass of(Collection<Register> registers) {

@@ -187,7 +187,7 @@ public class GraphColoringRegisterAllocator {
         // v = virtual, p = precolored single-color node
         InterferenceGraph.Node v = x.isPseudoPhysical() ? y : x;
         InterferenceGraph.Node p = x.isPseudoPhysical() ? x : y;
-        Register c = palette.iterator().next();
+        Register c = palette.stream().sorted().findFirst().orElseThrow();
 
         for (InterferenceGraph.Node t0 : v.adj) {
             InterferenceGraph.Node t = getAlias(t0);
@@ -278,7 +278,7 @@ public class GraphColoringRegisterAllocator {
                 // If u is a single-color node equal to c and already adjacent to p,
                 // it won't block t from using any non-c color after the merge.
                 if (u.isPseudoPhysical() && u.allowedColors().size() == 1) {
-                    Register uc = u.allowedColors().iterator().next();
+                    Register uc = u.allowedColors().stream().sorted().findFirst().orElseThrow();
                     if (uc.equals(c) && u.adj.contains(p)) continue;
                 }
 
@@ -454,13 +454,14 @@ public class GraphColoringRegisterAllocator {
 
         if (!freq.isEmpty()) {
             return freq.entrySet().stream()
-                    .max(Map.Entry.comparingByValue())
+                    .max(Map.Entry.<Register, Integer>comparingByValue()
+                            .thenComparing((e1, e2) -> e1.getKey().name().compareTo(e2.getKey().name())))
                     .orElseThrow()
                     .getKey();
         }
 
-        // 2) Fallback: pick any available color deterministically.
-        return okColors.iterator().next();
+        // 2) Fallback: pick the first available color deterministically (by register name order).
+        return okColors.stream().sorted().findFirst().orElseThrow();
     }
 
     private static boolean overlaps(Register a, Register b) {

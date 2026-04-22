@@ -64,7 +64,22 @@ public class InterferenceGraph {
         public Register onlyColor() {
             if(!isPseudoPhysical())
                 throw new IllegalStateException("Node is not a pseudo-physical node.");
-            return isPhysical() ? phys : allowedColors().iterator().next();
+            return isPhysical() ? phys : allowedColors().stream().sorted().findFirst().orElseThrow();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Node node = (Node) o;
+            // Identity-based equality: nodes are unique per vreg or phys register
+            return this == node;
+        }
+
+        @Override
+        public int hashCode() {
+            // Use system identity hash code for consistency
+            return System.identityHashCode(this);
         }
     }
 
