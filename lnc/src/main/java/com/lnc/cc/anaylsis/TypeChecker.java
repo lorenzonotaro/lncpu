@@ -226,7 +226,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         subscriptExpression.setTypeSpecifier(pointer.getBaseType());
 
-        return pointer.getBaseType();
+        return pointer.getBaseType().withStorageLocation(arrayType.storageLocation);
     }
 
     @Override

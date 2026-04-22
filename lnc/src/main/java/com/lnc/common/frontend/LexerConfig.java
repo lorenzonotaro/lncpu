@@ -37,7 +37,7 @@ public record LexerConfig(TokenType[] keywordSet,
     public enum PreprocessorConfig {
         DISABLED('\0',  new String[0]),
         C_STYLE('#', LNC_INCLUDE_EXTENSIONS),
-        ASM_STYLE('#', LNASM_INCLUDE_EXTENSIONS);
+        ASM_STYLE('%', LNASM_INCLUDE_EXTENSIONS);
 
         public final char preprocessorChar;
         
