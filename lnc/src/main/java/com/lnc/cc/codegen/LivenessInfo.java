@@ -1,9 +1,6 @@
 package com.lnc.cc.codegen;
 
-import com.lnc.cc.ir.IRBlock;
-import com.lnc.cc.ir.IRInstruction;
-import com.lnc.cc.ir.IRUnit;
-import com.lnc.cc.ir.Bin;
+import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import com.lnc.cc.ast.BinaryExpression;
@@ -215,6 +212,10 @@ public record LivenessInfo(
 
     public static boolean canReplaceDirectReadWithImmediate(IRInstruction inst, VirtualRegister vr) {
         if (!directlyReads(inst, vr)) {
+            return false;
+        }
+
+        if(inst instanceof Call){ // Calls never get direct reads
             return false;
         }
 
