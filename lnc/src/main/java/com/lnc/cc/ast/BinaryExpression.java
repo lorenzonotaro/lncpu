@@ -22,30 +22,33 @@ public class BinaryExpression extends Expression {
     }
 
     public enum Operator {
-        ADD(true),
-        SUB,
-        MUL(true),
-        DIV,
-        AND(true),
-        OR(true),
-        XOR(true),
-        EQ(true),
-        NE(true),
-        SHL,
-        SHR,
-        LT,
-        GT,
-        LE,
-        GE;
+        ADD(true, false),
+        SUB(false, false),
+        MUL(true, false),
+        DIV(false, false),
+        AND(true, false),
+        OR(true, false),
+        XOR(true, false),
+        EQ(true, true),
+        NE(true, true),
+        SHL(false, true),
+        SHR(false, true),
+        LT(false, true),
+        GT(false, true),
+        LE(false, true),
+        GE(false, true);
 
         private final boolean commutative;
 
+        private final boolean comparison;
+
         Operator(){
-            this(false);
+            this(false, false);
         }
 
-        Operator(boolean commutative) {
+        Operator(boolean commutative, boolean comparison) {
             this.commutative = commutative;
+            this.comparison = comparison;
         }
 
         public static Operator fromTokenType(Token token) {
@@ -71,6 +74,10 @@ public class BinaryExpression extends Expression {
 
         public boolean isCommutative() {
             return commutative;
+        }
+
+        public boolean isComparison() {
+            return comparison;
         }
     }
 }

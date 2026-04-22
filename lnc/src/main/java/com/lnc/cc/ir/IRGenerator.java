@@ -218,7 +218,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IROperand left, right;
         CondJump.Cond originalCond;
 
-        if (condExpr instanceof BinaryExpression be) {
+        if (condExpr instanceof BinaryExpression be && be.operator.isComparison()) {
             left  = be.left .accept(this);
             right = be.right.accept(this);
             originalCond = CondJump.Cond.of(be.operator, be.token);
