@@ -217,6 +217,7 @@ Use the following properties to define a section:
   * `fixed`: the section is placed at a fixed address. You must specify the start address using the `start` property.
   * `page_align`: the section is placed at the first available address that is page-aligned (`xx00`). You must specify the target device using the `target` property.
   * `page_fit`: the section is placed at the first available address that fits its size and so that the section does not cross a page boundary. You must specify the target device using the `target` property.
+  * `page_fit_labels`: the section is placed at the first available address that fits its size and so that all top-level labels in the section do not cross a page boundary. You must specify the target device using the `target` property.
   * `fit`: the section is placed at the first available address that fits its size, regardless of page boundaries. You must specify the target device using the `target` property.
 * `target`: the target device for the section. This property is mandatory for `page_align`, `page_fit` and `fit` sections. One of `ROM`, `RAM`, `D0` through `D5`.
 * `datapage`: if present, indicates that the section represents a data page. All labels in this section will evaluate to a `cst` (byte) value.
@@ -249,10 +250,10 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
  - [ ] Other forms of flow control (switch)
  - [x] Continue and break statements 
  - [x] Data page variables and pointers
- - [ ] Absolute variables and pointers
- - [ ] Data page arrays
- - [ ] Absolute arrays
- - [ ] Structs (data page only)
+ - [x] Absolute variables and pointers
+ - [x] Data page arrays
+ - [x] Absolute arrays
+ - [x] Structs
  - [ ] Unions
  - [x] Reentrant functions
 

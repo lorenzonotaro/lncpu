@@ -62,7 +62,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         return moveOrLoadIntoVR(operand, operand.getTypeSpecifier().allocSize() > 1 ? RegisterClass.WORD : RegisterClass.ANY);
     }
 
-    private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
+    private VirtualRegister moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
             VirtualRegister vr = (VirtualRegister) operand;
             if(registerClass == RegisterClass.ANY || vr.getRegisterClass() == registerClass) {
@@ -81,7 +81,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         }
     }
 
-    private IROperand move(IROperand operand, RegisterClass registerClass) {
+    private VirtualRegister move(IROperand operand, RegisterClass registerClass) {
         VirtualRegisterManager vrm = getUnit().getVrManager();
         VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
         vr.setRegisterClass(registerClass);
@@ -345,15 +345,22 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             return new ImmediateOperand(imm.getValue() * stride, imm.getTypeSpecifier());
         }
 
-        IROperand indexVr = moveOrLoadIntoVR(index);
-        VirtualRegister acc = getUnit().getVrManager().getRegister(indexVr.getTypeSpecifier());
-        acc.setRegisterClass(RegisterClass.ANY);
-        emitBefore(new Move(new ImmediateOperand(0, new UI8Type()), acc));
+        int log2 = Integer.numberOfTrailingZeros(Integer.highestOneBit(stride));
 
-        for (int i = 0; i < stride; i++) {
-            emitLoweredAdd(acc, acc, indexVr);
+        VirtualRegister acc = getUnit().getVrManager().getRegister(index.getTypeSpecifier());
+        emitBefore(new Move(index, acc));
+        acc.setRegisterClass(log2 > 0 ? RegisterClass.SHIFT : RegisterClass.ANY);
+
+        if(log2 > 0) {
+            emitBefore(new Bin(acc, acc, new ImmediateOperand(log2, new UI8Type()), BinaryExpression.Operator.SHL));
         }
-
+        stride = stride - (1 << log2);
+        if(stride > 0){
+            acc = moveOrLoadIntoVR(acc, RegisterClass.ANY);
+            for (int i = 0; i < stride; i++) {
+                emitLoweredAdd(acc, acc, index);
+            }
+        }
         return acc;
     }
 
