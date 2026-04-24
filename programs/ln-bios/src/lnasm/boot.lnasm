@@ -1,0 +1,72 @@
+%ifndef BIOS_BOOT_F
+%define BIOS_BOOT_F
+
+%include "opts"
+%include "bios_utils"
+%include "rescue"
+
+.section BIOS_BOOT
+; The main boot sequence of the BIOS.
+boot_seq:
+    lcall   log_prefix_info
+    mov     (LOOK_FOR_BOOT_DEVICE >> 8)::byte, RC
+    mov     (LOOK_FOR_BOOT_DEVICE & 0xFF)::byte, RD
+    lcall   puts
+    lcall   find_boot_devices
+    mov     [boot_devices_count], RA ; store the number of boot devices found
+    cmp     RA, 0
+    jz      _no_boot_devices
+    cmp     RA, 1
+    jz      _single_boot_device
+    lgoto   boot_menu
+    hlt
+_single_boot_device:
+    mov     0, RA
+    mov     (BOOT_DEVICE_FOUND_FMT >> 8)::byte, RC
+    mov     (BOOT_DEVICE_FOUND_FMT & 0xFF)::byte, RD
+    lcall   boot_attempt ; if this call returns, it means the boot attempt failed
+    lcall   log_prefix_crit
+    mov     BIOS_STATUS_CRIT_BOOT_FAILED, [bios_status] ; set BIOS status to critical error: boot failed
+    mov     (BOOT_FAILED_FOR_DEVICE >> 8)::byte, RC
+    mov     (BOOT_FAILED_FOR_DEVICE & 0xFF)::byte, RD
+    lcall   puts
+_no_boot_devices:
+%ifdef RESCUE_ON_NO_BOOTABLE
+    lgoto    rescue_seq
+%endif
+%ifndef RESCUE_ON_NO_BOOTABLE
+    mov     BIOS_STATUS_CRIT_NO_BOOTABLE, [bios_status] ; set BIOS status to critical error: no bootable device
+    mov     (NO_BOOT_DEVICE >> 8)::byte, RC
+    mov     (NO_BOOT_DEVICE & 0xFF)::byte, RD
+    lcall   puts
+%endif
+    hlt
+
+boot_menu:
+    mov    (BOOT_MENU >> 8)::byte, RC
+    mov    (BOOT_MENU & 0xFF)::byte, RD
+    lcall  puts
+    hlt
+
+.section BIOS_DATA
+boot_devices_count:
+    .res 1 ; Number of bootable devices found during the boot sequence.
+boot_devices_table:
+    .res 16 ; Space for up to 8 boot devices, each represented by a byte indicating the index in the device table. A value of 0xFF indicates an empty slot.
+
+.section BIOS_CONST
+LOOK_FOR_BOOT_DEVICE:
+    .data "Looking for boot device(s)...\n" 0
+
+NO_BOOT_DEVICE:
+    .data "No bootable device found. The CPU will now halt.\n" 0
+
+BOOT_MENU:
+    .data "Bootable devices found:\n" 0
+SELECT_BOOT_DEVICE:
+    .data "Please select a boot device by entering its number: \n" 0
+
+BOOT_FAILED_FOR_DEVICE:
+    .data "Boot failed for device.\n" 0
+
+%endif

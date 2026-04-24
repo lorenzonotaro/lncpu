@@ -1,0 +1,15 @@
+#ifndef IO_LNH
+#define IO_LNH
+
+extern char getc();
+
+extern char gets(char far *destbf, char terminator, unsigned int maxlen);
+
+extern void putc(const char c);
+
+extern void puts(const char far *str);
+
+extern void stdtxt_set_opts(unsigned int opts);
+
+extern char format_hex(unsigned int val);
+#endif

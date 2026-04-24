@@ -1,0 +1,24 @@
+#include "boot.lnh"
+#include "ddi.lnh"
+#include "mem.lnh"
+void find_boot_devices() {
+
+    memfill(&boot_devices_table, sizeof(boot_devices_table), 0xFF);
+
+    unsigned int count = 0;
+    for(unsigned int i = 2; i < ddi_num_devices; i++) {
+        unsigned int dev_flags = ddi_get_device(i)->descriptor->flags;
+        if(dev_flags & DEV_FLAG_BOOTABLE){
+            if(count < 8){
+                boot_devices_table[count].device_idx = i;
+                if(dev_flags & DEV_FLAG_LNFS){
+                    boot_devices_table[count].boot_mode = 1; // LNFS boot mode
+                } else {
+                    boot_devices_table[count].boot_mode = 0; // XIP mode
+                }
+                count++;
+            }
+        }
+    }
+    boot_devices_count = count;
+}

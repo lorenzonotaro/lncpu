@@ -1,0 +1,18 @@
+%ifndef RESCUE_F
+%define RESCUE_F
+
+rescue_seq:
+    lcall   log_prefix_crit
+    mov     (RESCUE_MODE >> 8)::byte, RC
+    mov     (RESCUE_MODE & 0xFF)::byte, RD
+    lcall   puts
+
+    ; In rescue mode, the BIOS will simply print a message and halt.
+    ; In a real implementation, this could be expanded to include more functionality, such as a simple command prompt for troubleshooting.
+    hlt
+
+.section BIOS_CONST
+RESCUE_MODE:
+    .data "Entering rescue mode.\n" 0
+
+%endif

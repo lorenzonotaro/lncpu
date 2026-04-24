@@ -1,0 +1,11 @@
+#ifndef MEM_LNH
+#define MEM_LNH
+
+
+extern void memzero(void far *dest, unsigned int length);
+
+extern void memfill(void far *dest, unsigned int length, unsigned int value);
+
+extern void memcpy(void far *src, void far *dest, unsigned int length);
+
+#endif
