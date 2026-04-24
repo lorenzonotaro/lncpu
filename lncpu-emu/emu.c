@@ -86,12 +86,11 @@ void get_instruction_mnemonic(const uint8_t *addr_space, uint16_t cspc, char *de
     size_t index = 0;
     index += sprintf(dest, "%s", info.mnemonic);
     if(info.data_length > 1){
-        index += sprintf(dest + index, "%s ", info.mnemonic);
         for(size_t i = 1; i < info.data_length; i++){
             if(cspc + i >= 0x10000){
                 sprintf(dest + index, "??");
             }else{
-                index += sprintf(dest + index, "%02x ", addr_space[cspc + i]);
+                index += sprintf(dest + index, " %02x ", addr_space[cspc + i]);
             }
         }
     }
