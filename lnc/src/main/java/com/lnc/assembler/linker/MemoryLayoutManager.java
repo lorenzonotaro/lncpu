@@ -28,7 +28,7 @@ public class MemoryLayoutManager {
             case FIXED -> allocateFixed(sectionBuilder);
             case PAGE_ALIGN -> allocatePageAlign(sectionBuilder);
             case PAGE_FIT -> allocatePageFit(sectionBuilder);
-            case PAGE_FIT_LABELS -> allocatePageFitLabels(sectionBuilder);
+            case PAGE_FIT_LABELS -> throw new IllegalStateException("page-fit-labels mode not supported");
             case FIT -> allocateFit(sectionBuilder);
         }
     }
@@ -79,7 +79,7 @@ public class MemoryLayoutManager {
         Segment current = head;
         while(current != null){
             if(!current.isAllocated() && current.getSize() >= sectionBuilder.getCodeLength()){
-                if((current.start & 0xFF00) == (current.start + sectionBuilder.getCodeLength() - 1 & 0xFF00)){
+                if((current.start & 0xFF00) == ((current.start + sectionBuilder.getCodeLength() - 1) & 0xFF00)){
                     current.allocate(0, sectionBuilder);
                     return;
                 }else if(allocatePageAlignedInSegment(current, sectionBuilder)){
@@ -178,7 +178,7 @@ public class MemoryLayoutManager {
                 }
 
                 if(current.start != current.sectionBuilder.getStart() || current.end != current.sectionBuilder.getStart() + current.sectionBuilder.getCodeLength() - 1){
-                    throw new IllegalStateException("section '%s': mismatch between allocated segment (%04x-%04x) and section boundaries (%04x-%04x)".formatted(current.sectionBuilder.getSectionInfo().getName(), current.start, current.end, current.sectionBuilder.getSectionInfo().getStart(), current.sectionBuilder.getSectionInfo().getStart() + current.sectionBuilder.getCodeLength() - 1));
+                    throw new IllegalStateException("section '%s': mismatch between allocated segment (%04x-%04x) and section boundaries (%04x-%04x)".formatted(current.sectionBuilder.getSectionInfo().getName(), current.start, current.end, current.sectionBuilder.getStart(), current.sectionBuilder.getStart() + current.sectionBuilder.getCodeLength() - 1));
                 }
 
                 switch (current.sectionBuilder.getSectionInfo().getMode()) {
@@ -274,7 +274,7 @@ public class MemoryLayoutManager {
                 throw new IllegalArgumentException("offset out of bounds");
                 }
 
-            if(offset == getSize() - 1){
+            if(offset == getSize()){
                 return;
             }
 

@@ -1,5 +1,6 @@
 package com.lnc.assembler.linker;
 
+import com.lnc.assembler.common.LinkMode;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.parser.CodeElement;
@@ -51,13 +52,15 @@ public class SectionBuilder {
             throw new CompileException("duplicate section '%s' (use 'multi = true' in linker config to append multiple code blocks to the same section)".formatted(sectionInfo.getName()), block.sectionToken);
         }
 
-        for (var instruction : block.instructions) {
-            int size = instruction.size(locator);
-            instructions.add(new InstructionEntry(this.codeLength, size, instruction));
-            this.codeLength += size;
-        }
+        block.instructions.forEach(this::appendInstr);
 
         alreadyWritten = true;
+    }
+
+    private void appendInstr(CodeElement instruction) {
+        int size = instruction.size(locator);
+        instructions.add(new InstructionEntry(this.codeLength, size, instruction));
+        this.codeLength += size;
     }
 
     public void setSectionStart(int sectionStart){
@@ -117,10 +120,11 @@ public class SectionBuilder {
         record Boundary(String labelName, int offset) {}
 
         List<Boundary> boundaries = new ArrayList<>();
-        for (InstructionEntry entry : instructions) {
+        for (int i = 0; i < instructions.size(); i++) {
+            InstructionEntry entry = instructions.get(i);
             for (var label : entry.instruction.getLabels()) {
                 if (!label.name().contains(LnasmParser.SUBLABEL_SEPARATOR)) {
-                    boundaries.add(new Boundary(label.name(), entry.index));
+                    boundaries.add(new Boundary(label.name(), i));
                 }
             }
         }
@@ -134,7 +138,7 @@ public class SectionBuilder {
             Boundary current = boundaries.get(i);
             int endOffsetExclusive = i + 1 < boundaries.size()
                     ? boundaries.get(i + 1).offset
-                    : codeLength;
+                    : instructions.size();
             spans.add(new TopLevelLabelSpan(current.labelName, current.offset, endOffsetExclusive));
         }
         return spans;
@@ -146,6 +150,30 @@ public class SectionBuilder {
 
     public Descriptor getDescriptor() {
         return new Descriptor(sectionInfo, sectionStart, codeLength);
+    }
+
+    public Map<String,SectionBuilder> splitByTopLevelLabel() {
+        return this.getTopLevelLabelSpans().stream().collect(
+                HashMap::new,
+                (map, span) -> {
+                    var childSectionInfo = new SectionInfo(
+                            sectionInfo.getName() + "#" + span.labelName,
+                            -1,
+                            sectionInfo.getTarget(),
+                            LinkMode.PAGE_FIT,
+                            false,
+                            false,
+                            false
+
+                    );
+                    var sectionBuilder = new SectionBuilder(childSectionInfo, locator);
+                    for (InstructionEntry instructionEntry : this.instructions.subList(span.startOffset, span.endOffsetExclusive)) {
+                        sectionBuilder.appendInstr(instructionEntry.instruction);
+                    }
+                    map.put(childSectionInfo.getName(),  sectionBuilder);;
+                },
+                HashMap::putAll
+        );
     }
 
     record InstructionEntry(int index, int size, CodeElement instruction){

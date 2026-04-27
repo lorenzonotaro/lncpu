@@ -1,5 +1,6 @@
 package com.lnc.assembler.linker;
 
+import com.lnc.assembler.common.LinkMode;
 import com.lnc.common.frontend.CompileException;
 import com.lnc.assembler.common.LabelSectionInfo;
 import com.lnc.assembler.parser.LnasmParseResult;
@@ -213,6 +214,16 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
 
             sb.append(block);
         }
+
+        Map<String, SectionBuilder> childBuilders = new HashMap<>();
+        for (Iterator<SectionBuilder> iterator = sectionBuilders.values().iterator(); iterator.hasNext(); ) {
+            var sectionBuilder = iterator.next();
+            if(sectionBuilder.getSectionInfo().getMode() == LinkMode.PAGE_FIT_LABELS){
+                childBuilders.putAll(sectionBuilder.splitByTopLevelLabel());
+                iterator.remove();
+            }
+        }
+        sectionBuilders.putAll(childBuilders);
 
         return sectionBuilders;
     }

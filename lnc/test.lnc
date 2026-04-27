@@ -37,6 +37,7 @@ struct boot_device {
     unsigned int boot_mode;
 };
 
+extern void putc(unsigned int c, unsigned int b);
 extern far unsigned int bootable_devices_count;
 extern far struct boot_device boot_devices_table[8];
 
