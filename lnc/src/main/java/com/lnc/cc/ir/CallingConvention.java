@@ -1,8 +1,10 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ast.FunctionDeclaration;
 import com.lnc.cc.ast.VariableDeclaration;
 import com.lnc.cc.codegen.RegisterClass;
 import com.lnc.cc.types.TypeSpecifier;
+import com.lnc.common.frontend.CompileException;
 
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -21,7 +23,8 @@ public class CallingConvention {
     ) {}
 
     /** Returns the calling‐convention mapping for a call’s actual arguments. */
-    public static List<ParamLocation> mapCallArguments(VariableDeclaration[] params) {
+    public static List<ParamLocation> mapCallArguments(FunctionDeclaration functionDeclaration) {
+        VariableDeclaration[] params = functionDeclaration.parameters;
         List<ParamLocation> locs = new ArrayList<>();
         boolean hasWordArg = Arrays.stream(params)
                 .anyMatch(op -> op.declarator.typeSpecifier().allocSize() == 2);
@@ -67,6 +70,10 @@ public class CallingConvention {
                 }
                 byteIdx++;
             }
+        }
+
+        if(functionDeclaration.isVariadic() && stackOffset > 0){
+            throw new CompileException("Variadic functions with stack arguments are not supported", functionDeclaration.name);
         }
 
         return locs;

@@ -18,7 +18,7 @@ public class FunctionType extends TypeSpecifier {
         this.functionDeclaration = functionDeclaration;
         this.returnType = returnType;
         this.parameterTypes = Arrays.stream(functionDeclaration.parameters).map(p -> p.declarator.typeSpecifier()).toArray(TypeSpecifier[]::new);
-        this.parameterMapping = CallingConvention.mapCallArguments(functionDeclaration.parameters);
+        this.parameterMapping = CallingConvention.mapCallArguments(functionDeclaration);
     }
 
     public static FunctionType of(FunctionDeclaration functionDeclaration) {

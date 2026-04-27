@@ -115,6 +115,11 @@ public class LocalResolver extends ScopedASTVisitor<Void> {
     }
 
     @Override
+    public Void visit(VaPopExpression vaPopExpression) {
+        return null;
+    }
+
+    @Override
     public void visitStatement(Statement statement) {
 
         if(statement instanceof FunctionDeclaration functionDeclaration){

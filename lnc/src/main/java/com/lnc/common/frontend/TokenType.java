@@ -93,7 +93,7 @@ public enum TokenType {
     ARROW,
 
     DOT,
-
+    TRIPLE_DOT,
     //instructions
     NOP,
     HLT,
@@ -172,6 +172,7 @@ public enum TokenType {
     EXTERN("extern"),
     CONST("const"),
     LONG("long"),
+    VA_POP("va_pop"),
     EXPORT("export"),
     NEAR("near"),
 
@@ -289,7 +290,8 @@ public enum TokenType {
             TokenType.LONG,
             TokenType.EXPORT,
             TokenType.NEAR,
-            TokenType.FAR
+            TokenType.FAR,
+            TokenType.VA_POP
     };
 
     private final String strValue;

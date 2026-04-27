@@ -12,4 +12,8 @@ public interface IIROperandVisitor<T> {
     T visit(AddressOf addressOf);
 
     T visit(SizedCast sizedCast);
+
+    default T visit(VaPop vaPop){
+        return null; // TODO: implement va_pop
+    }
 }

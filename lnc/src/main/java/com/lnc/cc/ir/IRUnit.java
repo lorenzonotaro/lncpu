@@ -239,7 +239,7 @@ public class IRUnit implements Iterable<IRBlock>{
         int forcedStackFrameLocalsSize = 0;
 
         // parameters
-        var parameters = CallingConvention.mapCallArguments(getFunctionDeclaration().parameters);
+        var parameters = CallingConvention.mapCallArguments(getFunctionDeclaration());
         for (var parameter : parameters){
             IROperand operand;
             if(parameter.onStack()){

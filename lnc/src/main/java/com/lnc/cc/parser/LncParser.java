@@ -81,7 +81,13 @@ public class LncParser extends FullSourceParser<AST> {
         if(match(TokenType.L_PAREN)){
             var parameters = new ArrayList<VariableDeclaration>();
 
+            boolean variadic = false;
+
             while(!check(TokenType.R_PAREN)){
+                if(match(TokenType.TRIPLE_DOT)){
+                    variadic = true;
+                    break;
+                }
                 var decl = variableDeclaration(VarDeclRules.PARAMETER_DECL, parameters.size());
                 if(decl == null || decl.type != Statement.Type.DECLARATION || ((Declaration) decl).declarationType != Declaration.Type.VARIABLE){
                     throw new CompileException("expected parameter declaration", peek());
@@ -95,11 +101,11 @@ public class LncParser extends FullSourceParser<AST> {
             consume("expected ')'", TokenType.R_PAREN);
 
             if(match(TokenType.SEMICOLON)){
-                return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), null);
+                return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), variadic, null);
             }else if(match(TokenType.L_CURLY_BRACE)) {
                 if(variableDeclaration.declarator.storageQualifier().isExtern())
                     throw new CompileException("extern function cannot have a body", variableDeclaration.name);
-                return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), block());
+                return new FunctionDeclaration(variableDeclaration.declarator, variableDeclaration.name, parameters.toArray(new VariableDeclaration[0]), variadic, block());
             }else {
                 throw new CompileException("expected function body or ';'", peek());
             }
@@ -484,6 +490,14 @@ public class LncParser extends FullSourceParser<AST> {
                 consume("expected ')'", TokenType.R_PAREN);
                 return new SizeofExpression(sizeofToken, operand);
             }
+        }else if(match(TokenType.VA_POP)){
+            consume("expected '('", TokenType.L_PAREN);
+            TypeSpecifier typeSpecifier = typeSpecifier(StorageQualifier.NONE);
+            if(typeSpecifier == null){
+                throw new CompileException("expected type specifier in va_pop expression", peek());
+            }
+            consume("expected ')'", TokenType.R_PAREN);
+            return new VaPopExpression(previous(), typeSpecifier);
         }
 
         if(match(TokenType.MINUS, TokenType.LOGICAL_NOT, TokenType.BITWISE_NOT, TokenType.STAR, TokenType.AMPERSAND, TokenType.DOUBLE_PLUS, TokenType.DOUBLE_MINUS)){

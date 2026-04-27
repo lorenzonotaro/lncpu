@@ -579,6 +579,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
     }
 
+    @Override
+    public IROperand visit(VaPopExpression vaPopExpression) {
+        throw new CompileException("va_pop() is not supported", vaPopExpression.token);
+    }
+
     private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
         return currentUnit.getVrManager().getRegister(typeSpecifier);
     }

@@ -6,7 +6,6 @@ import com.lnc.cc.types.Declarator;
 import com.lnc.common.frontend.Token;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 
 public class FunctionDeclaration extends Declaration implements IScopedStatement {
@@ -16,12 +15,14 @@ public class FunctionDeclaration extends Declaration implements IScopedStatement
     private Scope scope;
 
     public final VariableDeclaration[] parameters;
+    private final boolean variadic;
     public final BlockStatement body;
 
-    public FunctionDeclaration(Declarator declarator, Token name, VariableDeclaration[] parameters, BlockStatement body) {
+    public FunctionDeclaration(Declarator declarator, Token name, VariableDeclaration[] parameters, boolean hasVariadic, BlockStatement body) {
         super(Declaration.Type.FUNCTION, name);
         this.declarator = declarator;
         this.parameters = parameters;
+        this.variadic = hasVariadic;
         this.body = body;
     }
 
@@ -70,5 +71,9 @@ public class FunctionDeclaration extends Declaration implements IScopedStatement
         result = 31 * result + Arrays.hashCode(parameters);
         result = 31 * result + body.hashCode();
         return result;
+    }
+
+    public boolean isVariadic() {
+        return variadic;
     }
 }

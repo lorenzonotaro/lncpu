@@ -161,13 +161,22 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         List<StackArg> stackArgs = new ArrayList<>();
 
-        for (int i = 0; i < args.length; i++) {
+        int i;
+        for (i = 0; i < funType.parameterTypes.length; i++) {
             CallingConvention.ParamLocation loc = funType.getParameterMapping().get(i);
             if (loc.onStack()) {
                 stackArgs.add(new StackArg(args[i], loc.stackOffset()));
             } else {
                 args[i] = moveOrLoadIntoVR(args[i], loc.regClass());
             }
+        }
+
+        if(funType.functionDeclaration.isVariadic()){
+            for(int k = i; k < args.length; k++){
+                stackArgs.add(new StackArg(args[k], stackArgs.size() * 2)); // variadic arguments are always word sized and pushed in reverse order
+            }
+        }else if(args.length != funType.parameterTypes.length){
+            throw new IllegalStateException("Incorrect number of arguments passed to function: " + call.getCallee() + " expected " + funType.parameterTypes.length + " but got " + args.length);
         }
 
         call.setArguments(args);

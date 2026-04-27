@@ -63,6 +63,10 @@ public abstract class AbstractLexer<T>
             case '.':
                 if(config.directivesEnabled())
                     return directive();
+                else if(peek() == '.' && peek(1) == '.'){
+                    advance(2);
+                    return token(TokenType.TRIPLE_DOT);
+                }
                 return token(TokenType.DOT);
             case '[':
                 return token(TokenType.L_SQUARE_BRACKET);
@@ -339,6 +343,17 @@ public abstract class AbstractLexer<T>
 
     protected boolean isAtEnd() {
         return (index >= source.length());
+    }
+
+
+    protected char advance(int n) {
+        char c = '\0';
+        for (int i = 0; i < n; i++) {
+            if (isAtEnd())
+                return '\0';
+            c = source.charAt(index++);
+        }
+        return c;
     }
 
     protected char advance() {

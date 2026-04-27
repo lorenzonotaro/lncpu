@@ -9,6 +9,7 @@ import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ast.UnaryExpression;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.*;
+import com.lnc.cc.types.FunctionType;
 import com.lnc.cc.types.StorageLocation;
 import com.lnc.cc.types.TypeSpecifier;
 import com.lnc.common.IntUtils;
@@ -501,6 +502,16 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             callee = ((Dereference)callee).inner;
         }
         instrf(TokenType.LCALL, callee);
+        FunctionType funType = (FunctionType) call.getCallee().getTypeSpecifier();
+        if(funType.functionDeclaration.isVariadic()){
+            int varargs = call.getArguments().length - funType.parameterTypes.length;
+            if(varargs > 0){
+                instrf(TokenType.SUB, CodeGenUtils.reg(TokenType.SP), CodeGenUtils.immByte(Arrays.stream(
+                        Arrays.copyOfRange(call.getArguments(), funType.parameterTypes.length, call.getArguments().length)
+                ).map(arg -> arg.getTypeSpecifier().allocSize()).reduce(0, Integer::sum)
+                ));
+            }
+        }
         return null;
     }
 

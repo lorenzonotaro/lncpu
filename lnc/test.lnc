@@ -1,7 +1,5 @@
-extern void puti(unsigned int a);
+extern void printf(const char far *fmt, ...);
 
-unsigned int far * far *i;
-
-unsigned int far *main(){
-    return *i;
+void main(){
+    printf("Hello, world, %d %d!\n", 0, 1);
 }

@@ -255,7 +255,7 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
  - [x] Absolute arrays
  - [x] Structs
  - [ ] Unions
- - [x] Reentrant functions
+ - [ ] Varargs
 
 
 ### Calling convention
@@ -263,10 +263,37 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
 #### Parameters
 
 The calling convention for functions in `lnc` allows for up to 4 1-byte paramters and 2 2-byte parameters to be passed in the general purpose registers `RA`, `RB`, `RC` and `RD`. If more than 4 parameters are needed, the remaining parameters must be passed via the stack. Specifically:
-- if the callee doesn't require any 2-byte parameters, the first 4 parameters are passed in `RA`, `RB`, `RC` and `RD`; the remaining parameters are passed on the stack.
-- if the callee requires a 2-byte parameter, such parameter is passed in `RC:RD`; `RA` and `RB` are used for the first two 1-byte parameters, while the remaining parameters are passed on the stack.
+- if the callee doesn't require any 2-byte parameters, the first 4 parameters are passed in `RA`, `RB`, `RC` and `RD`; the remaining parameters are passed on the stack, __in reverse order (*)__.
+- if the callee requires a 2-byte parameter, such parameter is passed in `RC:RD`; `RA` and `RB` are used for the first two 1-byte parameters, while the remaining parameters are passed on the stack, __in reverse order (*)__.
+
+__(*) Reverse order:__ Values are pushed right to left so that, from the callee's perspective, later parameters are further away from the base pointer (BP).
 
 In case any parameters are passed on the stack, the *callee* is responsible for clearing the stack (including its parameters) before returning. This can be easily done by using the `ret <stack size>` instruction, specifying the number of bytes to pop from the stack after the function returns.
+
+#### Variadic functions
+
+Variadic functions behave a little differently than regular functions.
+- All parameters that can be passed onto registers follow the rules above;
+- Fixed parameters on the stack are NOT supported; the stack is exclusively used for the variadic parameters.
+- Variadic parameters are passed in reverse order.
+- Since the callee cannot know how many variadic parameters are passed, stack cleanup is **the caller's responsibility** (only case).
+
+The callee can use the `va_pop(<type>)` function to pop a variadic parameter. Each parameter can be popped exactly once; they are popped in the declaration order.
+
+Example:
+```C
+  int add(int count, ...){
+    int sum = 0;
+    for(int i = 0; i < count; i++){
+      sum += va_pop(int);
+    }
+    return sum;
+  }
+  
+  void main(){
+    int sum = add(3, 10, 20, 30);
+  }
+```
 
 #### Return values
 If the function returns a 1-byte value, it is returned in the `RB` register. If the function returns a 2-byte value, it is returned in the `RC:RD` registers.

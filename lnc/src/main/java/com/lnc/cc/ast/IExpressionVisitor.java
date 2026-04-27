@@ -22,4 +22,6 @@ public interface IExpressionVisitor<E> {
     E visit(CastExpression castExpression);
 
     E visit(SizeofExpression sizeofExpression);
+
+    E visit(VaPopExpression vaPopExpression);
 }

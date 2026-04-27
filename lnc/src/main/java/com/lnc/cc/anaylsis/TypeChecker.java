@@ -159,13 +159,26 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             throw new CompileException("called object is not a function or function pointer", callExpression.callee.token);
         }
 
-        if (callExpression.arguments.length != function.parameterTypes.length) {
+        if (callExpression.arguments.length != function.parameterTypes.length && !function.functionDeclaration.isVariadic()) {
             throw new CompileException("function expects " + function.parameterTypes.length + " arguments, but " + callExpression.arguments.length + (callExpression.arguments.length == 1 ? " was" : " were") + " given", callExpression.token);
         }
 
-        for (int i = 0; i < callExpression.arguments.length; i++) {
+        if(function.functionDeclaration.isVariadic() && callExpression.arguments.length < function.parameterTypes.length){
+            throw new CompileException("function expects at least " + function.parameterTypes.length + " arguments, but " + callExpression.arguments.length + (callExpression.arguments.length == 1 ? " was" : " were") + " given", callExpression.token);
+        }
+
+        for (int i = 0; i < function.parameterTypes.length; i++) {
             TypeSpecifier argumentType = callExpression.arguments[i].accept(this);
             check(argumentType, function.parameterTypes[i], callExpression.arguments[i].token);
+        }
+
+        if(function.functionDeclaration.isVariadic()){
+            for(int i = function.parameterTypes.length; i < callExpression.arguments.length; i++){
+                TypeSpecifier argumentType = callExpression.arguments[i].accept(this);
+                if(argumentType.allocSize() > 2 || argumentType.allocSize() == 0){
+                    throw new CompileException("variadic function expects all arguments to be of size 1 or 2 bytes", callExpression.arguments[i].token);
+                }
+            }
         }
 
         callExpression.setTypeSpecifier(function.returnType);
@@ -329,6 +342,16 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(operandType.typeSize()));
         }
         return sizeofExpression.getTypeSpecifier();
+    }
+
+    @Override
+    public TypeSpecifier visit(VaPopExpression vaPopExpression) {
+        TypeSpecifier typeSpecifier = vaPopExpression.getTypeSpecifier();
+        int allocSize = typeSpecifier.allocSize();
+        if(allocSize == 0 || allocSize > 2){
+            throw new CompileException("va_pop() can only be used on variables of size 1 or 2 bytes", vaPopExpression.token);
+        }
+        return typeSpecifier;
     }
 
     private void check(TypeSpecifier type, TypeSpecifier expectedType, Token location) {
