@@ -127,6 +127,8 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
                 throw error(exportAs, "label already exported");
             }
 
+            exportedLabels.add(exportName);
+
             return null; // exports are handled in the linker, no need to add anything to the instruction list
         }
         return instruction();

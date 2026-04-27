@@ -81,11 +81,15 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         if (externalSymTablesFiles != null && !externalSymTablesFiles.isEmpty()){
             externalSymbols = new HashMap<>();
             for(String externalSymTableFile : externalSymTablesFiles){
-                var extSymTable = ExternalSymbolTableIO.read(externalSymTableFile);
-                for(var entry : extSymTable.entrySet()){
-                    if(externalSymbols.putIfAbsent(entry.getKey(), entry.getValue()) != null){
-                        throw new LinkException("duplicate external label '%s' in external symbol table '%s'".formatted(entry.getKey(), externalSymTableFile));
+                try{
+                    var extSymTable = ExternalSymbolTableIO.read(externalSymTableFile);
+                    for (var entry : extSymTable.entrySet()) {
+                        if (externalSymbols.putIfAbsent(entry.getKey(), entry.getValue()) != null) {
+                            throw new LinkException("duplicate external label '%s' in external symbol table '%s'".formatted(entry.getKey(), externalSymTableFile));
+                        }
                     }
+                }catch(RuntimeException e){
+                    throw new LinkException("error reading external symbol table '%s'".formatted(externalSymTableFile), e);
                 }
             }
         }
