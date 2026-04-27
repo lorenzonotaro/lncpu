@@ -13,6 +13,12 @@ import com.lnc.assembler.common.SectionInfo;
  */
 public class LinkerConfig{
 
+    public enum ConflictResolutionMode {
+        ERROR,
+        KEEP_FIRST,
+        KEEP_LAST,
+    }
+
     private final SectionInfo[] sections;
     private final Map<String, SectionInfo> sectionMap;
 
@@ -47,13 +53,25 @@ public class LinkerConfig{
         return sections;
     }
 
-    public static LinkerConfig join(LinkerConfig... configs) {
-        SectionInfo[] sections = Arrays.stream(configs)
-                .map(LinkerConfig::getSectionInfos)
-                .flatMap(Arrays::stream)
-                .toArray(SectionInfo[]::new);
+    public static LinkerConfig join(ConflictResolutionMode conflictResolutionMode, LinkerConfig... configs){
+        Map<String, SectionInfo> sectionMap = new HashMap<>();
+        for(LinkerConfig config : configs){
+            for(SectionInfo section : config.getSectionInfos()){
+                if(sectionMap.containsKey(section.getName())){
+                    switch(conflictResolutionMode){
+                        case KEEP_FIRST -> {}
+                        case KEEP_LAST -> sectionMap.remove(section.getName());
+                        case ERROR -> throw new IllegalArgumentException("section name must be unique");
+                    }
+                }
+                sectionMap.put(section.getName(), section);
+            }
+        }
+        return new LinkerConfig(sectionMap.values().toArray(SectionInfo[]::new));
+    }
 
-        return new LinkerConfig(sections);
+    public static LinkerConfig join(LinkerConfig... configs) {
+        return join(ConflictResolutionMode.ERROR, configs);
     }
 
     public boolean hasSection(String sectionName) {
