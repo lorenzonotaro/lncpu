@@ -1,8 +1,7 @@
 extern void puti(unsigned int a);
 
-unsigned long int x;
+unsigned int far * far *i;
 
-unsigned int main(){
-    x = 1234;
-    return (unsigned int) x;
+unsigned int far *main(){
+    return *i;
 }

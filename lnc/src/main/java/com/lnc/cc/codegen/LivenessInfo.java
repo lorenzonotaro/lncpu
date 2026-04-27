@@ -2,7 +2,6 @@ package com.lnc.cc.codegen;
 
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.IROperand;
-import com.lnc.cc.ir.operands.SizedCast;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import com.lnc.cc.ast.BinaryExpression;
 
@@ -22,237 +21,119 @@ import java.util.*;
 public record LivenessInfo(
         Map<IRBlock, Set<VirtualRegister>> liveIn,
         Map<IRBlock, Set<VirtualRegister>> liveOut,
-        Map<IRInstruction, Set<VirtualRegister>> instructionLiveAfter,
-        Map<IRBlock, Map<VirtualRegister, Integer>> liveInMasks,
-        Map<IRBlock, Map<VirtualRegister, Integer>> liveOutMasks,
-        Map<IRInstruction, Map<VirtualRegister, Integer>> instructionLiveAfterMasks
+        Map<IRInstruction, Set<VirtualRegister>> instructionLiveAfter
 ) {
-    public static final int COMPONENT_LOW = 0x1;
-    public static final int COMPONENT_HIGH = 0x2;
-    public static final int COMPONENT_BOTH = COMPONENT_LOW | COMPONENT_HIGH;
-
-    private static int fullMask(VirtualRegister vr) {
-        return vr.getTypeSpecifier().allocSize() == 2 ? COMPONENT_BOTH : COMPONENT_LOW;
-    }
-
-    private static void mergeMask(Map<VirtualRegister, Integer> map, VirtualRegister vr, int mask) {
-        if (mask == 0) {
-            return;
-        }
-        map.merge(vr, mask, (a, b) -> a | b);
-    }
-
-    private static void removeMask(Map<VirtualRegister, Integer> map, VirtualRegister vr, int mask) {
-        if (mask == 0) {
-            return;
-        }
-        int current = map.getOrDefault(vr, 0);
-        int next = current & ~mask;
-        if (next == 0) {
-            map.remove(vr);
-        } else if (next != current) {
-            map.put(vr, next);
-        }
-    }
-
-    private static Map<VirtualRegister, Integer> projectAnyLive(Map<VirtualRegister, Integer> masks) {
-        Map<VirtualRegister, Integer> out = new LinkedHashMap<>();
-        for (Map.Entry<VirtualRegister, Integer> e : masks.entrySet()) {
-            if (e.getValue() != 0) {
-                out.put(e.getKey(), e.getValue());
+    private static Set<VirtualRegister> virtualRegisters(Collection<? extends IROperand> operands) {
+        Set<VirtualRegister> out = new LinkedHashSet<>();
+        for (IROperand op : operands) {
+            if (op instanceof VirtualRegister vr) {
+                out.add(vr);
             }
         }
         return out;
     }
-
-    private static Set<VirtualRegister> projectAnyLiveSet(Map<VirtualRegister, Integer> masks) {
-        return new LinkedHashSet<>(projectAnyLive(masks).keySet());
-    }
-
-    private static Map<VirtualRegister, Integer> copyMaskMap(Map<VirtualRegister, Integer> source) {
-        return new LinkedHashMap<>(projectAnyLive(source));
-    }
-
-    private static Map<VirtualRegister, Integer> computeReadMasksFromOperand(IROperand op) {
-        Map<VirtualRegister, Integer> out = new LinkedHashMap<>();
-
-        if (op instanceof VirtualRegister vr) {
-            mergeMask(out, vr, fullMask(vr));
-            return out;
-        }
-
-        if (op instanceof SizedCast sizedCast && sizedCast.getOperand() instanceof VirtualRegister vr) {
-            int sourceSize = vr.getTypeSpecifier().allocSize();
-            int targetSize = sizedCast.getTypeSpecifier().allocSize();
-
-            if (sourceSize == 2 && targetSize == 1) {
-                int mask = sizedCast.getByteSelection() == SizedCast.ByteSelection.HIGH
-                        ? COMPONENT_HIGH
-                        : COMPONENT_LOW;
-                mergeMask(out, vr, mask);
-                return out;
-            }
-        }
-
-        for (VirtualRegister vr : op.getVRReads()) {
-            mergeMask(out, vr, fullMask(vr));
-        }
-        return out;
-    }
-
-    public static Map<VirtualRegister, Integer> computeReadMasks(IRInstruction inst) {
-        Map<VirtualRegister, Integer> out = new LinkedHashMap<>();
-
-        for (IROperand readOperand : inst.getReadOperands()) {
-            for (Map.Entry<VirtualRegister, Integer> e : computeReadMasksFromOperand(readOperand).entrySet()) {
-                mergeMask(out, e.getKey(), e.getValue());
-            }
-        }
-
-        // Keep parity with IRInstruction.getReads() for implicit reads coming from addressing operands.
-        for (VirtualRegister vr : inst.getReads()) {
-            mergeMask(out, vr, out.getOrDefault(vr, fullMask(vr)));
-        }
-
-        return out;
-    }
-
-    public static Map<VirtualRegister, Integer> computeWriteMasks(IRInstruction inst) {
-        Map<VirtualRegister, Integer> out = new LinkedHashMap<>();
-
-        for (VirtualRegister vr : inst.getWrites()) {
-            mergeMask(out, vr, fullMask(vr));
-        }
-
-        return out;
-    }
-
 
     public static LivenessInfo computeBlockLiveness(IRUnit unit) {
         List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
         if (blocks.isEmpty()) {
-            return new LivenessInfo(Map.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
+            return new LivenessInfo(Map.of(), Map.of(), Map.of());
         }
 
-        // 1) Precompute component-aware uses[B] and defs[B] for each block
-        Map<IRBlock, Map<VirtualRegister, Integer>> uses = new LinkedHashMap<>();
-        Map<IRBlock, Map<VirtualRegister, Integer>> defs = new LinkedHashMap<>();
+        // 1) Precompute uses[B] and defs[B] for each block
+        Map<IRBlock, Set<VirtualRegister>> uses  = new LinkedHashMap<>();
+        Map<IRBlock, Set<VirtualRegister>> defs  = new LinkedHashMap<>();
         for (IRBlock B : blocks) {
-            Map<VirtualRegister, Integer> useMask = new LinkedHashMap<>();
-            Map<VirtualRegister, Integer> defMask = new LinkedHashMap<>();
+            Set<VirtualRegister> useSet = new LinkedHashSet<>();
+            Set<VirtualRegister> defSet = new LinkedHashSet<>();
 
             for (IRInstruction inst = B.getFirst(); inst != null; inst = inst.getNext()) {
-                Map<VirtualRegister, Integer> reads = computeReadMasks(inst);
-                Map<VirtualRegister, Integer> writes = computeWriteMasks(inst);
-
-                // Account for reads that happen before the corresponding component is defined in this block.
-                for (Map.Entry<VirtualRegister, Integer> e : reads.entrySet()) {
-                    VirtualRegister vr = e.getKey();
-                    int unseen = e.getValue() & ~defMask.getOrDefault(vr, 0);
-                    mergeMask(useMask, vr, unseen);
+                // first account for uses before the current instruction's defs
+                for (IROperand op : inst.getReads()) {
+                    if (op instanceof VirtualRegister vr && !defSet.contains(vr)) {
+                        useSet.add(vr);
+                    }
                 }
-
-                // Record newly-defined components.
-                for (Map.Entry<VirtualRegister, Integer> e : writes.entrySet()) {
-                    mergeMask(defMask, e.getKey(), e.getValue());
+                // then record defs produced by this instruction
+                for (IROperand op : inst.getWrites()) {
+                    if (op instanceof VirtualRegister vr) {
+                        defSet.add(vr);
+                    }
                 }
             }
 
-            uses.put(B, useMask);
-            defs.put(B, defMask);
+            uses.put(B, useSet);
+            defs.put(B, defSet);
         }
 
-        // 2) Initialize component-aware liveIn/Out to empty maps.
-        Map<IRBlock, Map<VirtualRegister, Integer>> liveInMask = new LinkedHashMap<>();
-        Map<IRBlock, Map<VirtualRegister, Integer>> liveOutMask = new LinkedHashMap<>();
+        // 3) Initialize liveIn/Out to empty sets
+        Map<IRBlock, Set<VirtualRegister>> liveIn  = new LinkedHashMap<>();
+        Map<IRBlock, Set<VirtualRegister>> liveOut = new LinkedHashMap<>();
         for (IRBlock B : blocks) {
-            liveInMask.put(B, new LinkedHashMap<>());
-            liveOutMask.put(B, new LinkedHashMap<>());
+            liveIn.put(B,  new LinkedHashSet<>());
+            liveOut.put(B, new LinkedHashSet<>());
         }
 
-        // 3) Fixed-point iteration:
-        //    liveOut[B] = OR(liveIn[S]) for S in succ(B)
-        //    liveIn[B]  = uses[B] OR (liveOut[B] - defs[B])
+        // 4) Fixed‐point iteration of
+        //    liveOut[B] = ∪ liveIn[S] for S ∈ succ(B)
+        //    liveIn[B]  = uses[B] ∪ (liveOut[B] – defs[B])
         boolean changed;
         do {
             changed = false;
-
+            // process in reverse RPO for faster convergence (but any order works)
             for (int bi = blocks.size() - 1; bi >= 0; bi--) {
                 IRBlock B = blocks.get(bi);
 
-                Map<VirtualRegister, Integer> newOut = new LinkedHashMap<>();
+                // compute new liveOut
+                Set<VirtualRegister> newOut = new LinkedHashSet<>();
                 for (IRBlock succ : B.getSuccessors()) {
-                    for (Map.Entry<VirtualRegister, Integer> e : liveInMask.get(succ).entrySet()) {
-                        mergeMask(newOut, e.getKey(), e.getValue());
+                    newOut.addAll(liveIn.get(succ));
+                }
+
+                // compute new liveIn
+                Set<VirtualRegister> newIn = new LinkedHashSet<>(uses.get(B));
+                for (VirtualRegister vr : newOut) {
+                    if (!defs.get(B).contains(vr)) {
+                        newIn.add(vr);
                     }
                 }
 
-                Map<VirtualRegister, Integer> newIn = copyMaskMap(uses.get(B));
-                for (Map.Entry<VirtualRegister, Integer> e : newOut.entrySet()) {
-                    int surviving = e.getValue() & ~defs.get(B).getOrDefault(e.getKey(), 0);
-                    mergeMask(newIn, e.getKey(), surviving);
-                }
-
-                if (!newOut.equals(liveOutMask.get(B))) {
-                    liveOutMask.put(B, newOut);
+                // check for changes
+                if (!newOut.equals(liveOut.get(B))) {
+                    liveOut.put(B, newOut);
                     changed = true;
                 }
-                if (!newIn.equals(liveInMask.get(B))) {
-                    liveInMask.put(B, newIn);
+                if (!newIn.equals(liveIn.get(B))) {
+                    liveIn.put(B, newIn);
                     changed = true;
                 }
             }
         } while (changed);
 
-        Map<IRInstruction, Map<VirtualRegister, Integer>> instructionLiveAfterMask =
-                computeInstructionLiveAfter(unit, liveOutMask);
+        Map<IRInstruction, Set<VirtualRegister>> instructionLiveAfter =
+                computeInstructionLiveAfter(unit, liveOut);
 
-        Map<IRInstruction, Set<VirtualRegister>> instructionLiveAfter = new LinkedHashMap<>();
-        for (Map.Entry<IRInstruction, Map<VirtualRegister, Integer>> e : instructionLiveAfterMask.entrySet()) {
-            instructionLiveAfter.put(e.getKey(), projectAnyLiveSet(e.getValue()));
-        }
-
-        Map<IRBlock, Set<VirtualRegister>> liveIn = new LinkedHashMap<>();
-        Map<IRBlock, Set<VirtualRegister>> liveOut = new LinkedHashMap<>();
-        for (IRBlock block : blocks) {
-            liveIn.put(block, projectAnyLiveSet(liveInMask.get(block)));
-            liveOut.put(block, projectAnyLiveSet(liveOutMask.get(block)));
-        }
-
-        return new LivenessInfo(
-                liveIn,
-                liveOut,
-                instructionLiveAfter,
-                liveInMask,
-                liveOutMask,
-                instructionLiveAfterMask
-        );
+        return new LivenessInfo(liveIn, liveOut, instructionLiveAfter);
     }
 
-    public static Map<IRInstruction, Map<VirtualRegister, Integer>> computeInstructionLiveAfter(
+    public static Map<IRInstruction, Set<VirtualRegister>> computeInstructionLiveAfter(
             IRUnit unit,
-            Map<IRBlock, Map<VirtualRegister, Integer>> liveOutMasks
+            Map<IRBlock, Set<VirtualRegister>> liveOut
     ) {
-        Map<IRInstruction, Map<VirtualRegister, Integer>> liveAfterByInstruction = new LinkedHashMap<>();
+        Map<IRInstruction, Set<VirtualRegister>> liveAfterByInstruction = new LinkedHashMap<>();
         List<IRBlock> blocks = unit.computeReversePostOrderAndCFG();
 
         for (IRBlock block : blocks) {
-            Map<VirtualRegister, Integer> live = copyMaskMap(
-                    liveOutMasks.getOrDefault(block, Collections.emptyMap())
+            Set<VirtualRegister> live = new LinkedHashSet<>(
+                    liveOut.getOrDefault(block, Collections.emptySet())
             );
 
             for (IRInstruction inst = block.getLast(); inst != null; inst = inst.getPrev()) {
-                liveAfterByInstruction.put(inst, copyMaskMap(live));
+                liveAfterByInstruction.put(inst, new LinkedHashSet<>(live));
 
-                Map<VirtualRegister, Integer> defsHere = computeWriteMasks(inst);
-                Map<VirtualRegister, Integer> usesHere = computeReadMasks(inst);
-
-                for (Map.Entry<VirtualRegister, Integer> e : defsHere.entrySet()) {
-                    removeMask(live, e.getKey(), e.getValue());
-                }
-                for (Map.Entry<VirtualRegister, Integer> e : usesHere.entrySet()) {
-                    mergeMask(live, e.getKey(), e.getValue());
-                }
+                Set<VirtualRegister> defsHere = virtualRegisters(inst.getWrites());
+                Set<VirtualRegister> usesHere = virtualRegisters(inst.getReads());
+                live.removeAll(defsHere);
+                live.addAll(usesHere);
             }
         }
 
@@ -386,17 +267,9 @@ public record LivenessInfo(
         return instructionLiveAfter.getOrDefault(instr, Collections.emptySet());
     }
 
-    public Map<VirtualRegister, Integer> getLiveAfterMasks(IRInstruction instr) {
-        return instructionLiveAfterMasks.getOrDefault(instr, Collections.emptyMap());
-    }
-
-    public int getLiveAfterMask(VirtualRegister vr, IRInstruction instr) {
-        return getLiveAfterMasks(instr).getOrDefault(vr, 0);
-    }
-
     public boolean isLiveAfter(VirtualRegister vr, IRInstruction instr) {
-        if (instructionLiveAfterMasks.containsKey(instr)) {
-            return instructionLiveAfterMasks.get(instr).getOrDefault(vr, 0) != 0;
+        if (instructionLiveAfter.containsKey(instr)) {
+            return instructionLiveAfter.get(instr).contains(vr);
         }
 
         // Conservative fallback if this instruction is unknown to the map.
@@ -404,8 +277,7 @@ public record LivenessInfo(
             if (p.getReads().contains(vr)) return true;
             if (p.getWrites().contains(vr)) return false;
         }
-        return liveOutMasks.getOrDefault(instr.getParentBlock(), Collections.emptyMap())
-                .getOrDefault(vr, 0) != 0;
+        return liveOut.getOrDefault(instr.getParentBlock(), Collections.emptySet()).contains(vr);
     }
 
     public boolean isDeadAfter(

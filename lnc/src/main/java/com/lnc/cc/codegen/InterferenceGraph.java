@@ -164,12 +164,11 @@ public class InterferenceGraph {
             Map<VirtualRegister, Integer> defs
     ) {}
 
-
-    private static Set<VirtualRegister> virtualRegisters(Map<VirtualRegister, Integer> componentMasks) {
+    private static Set<VirtualRegister> virtualRegisters(Collection<? extends IROperand> operands) {
         Set<VirtualRegister> out = new LinkedHashSet<>();
-        for (Map.Entry<VirtualRegister, Integer> e : componentMasks.entrySet()) {
-            if (e.getValue() != 0) {
-                out.add(e.getKey());
+        for (IROperand op : operands) {
+            if (op instanceof VirtualRegister vr) {
+                out.add(vr);
             }
         }
         return out;
@@ -215,50 +214,40 @@ public class InterferenceGraph {
             var blockLoopWeight = B.getLoopDepth();
             for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
                 int i = inst.getIndex();
-                Map<VirtualRegister, Integer> live = new LinkedHashMap<>(
-                        livenessInfo.getLiveAfterMasks(inst)
+                Set<VirtualRegister> live = new LinkedHashSet<>(
+                        livenessInfo.getLiveAfter(inst)
                 );
 
                 // Compute liveBefore = (live - defs) ∪ uses
-                Map<VirtualRegister, Integer> defsHere = LivenessInfo.computeWriteMasks(inst);
-                Map<VirtualRegister, Integer> usesHere = LivenessInfo.computeReadMasks(inst);
+                Set<VirtualRegister> defsHere = virtualRegisters(inst.getWrites());
+                Set<VirtualRegister> usesHere = virtualRegisters(inst.getReads());
 
                 // update counts and weights
-                for (VirtualRegister d : defsHere.keySet()) {
+                for (VirtualRegister d : defsHere) {
                     defs.put(d, defs.getOrDefault(d, 0) + 1);
                     loopWeights.put(d, Math.max(loopWeights.getOrDefault(d, 0), (int) Math.pow(10, blockLoopWeight + 1)));
                 }
-                for (VirtualRegister u : usesHere.keySet()) {
+                for (VirtualRegister u : usesHere) {
                     uses.put(u, uses.getOrDefault(u, 0) + 1);
                     loopWeights.put(u, Math.max(loopWeights.getOrDefault(u, 0), (int) Math.pow(10, blockLoopWeight + 1)));
                 }
 
-                Map<VirtualRegister, Integer> liveBefore = new LinkedHashMap<>(live);
-                for (Map.Entry<VirtualRegister, Integer> e : defsHere.entrySet()) {
-                    int prevMask = liveBefore.getOrDefault(e.getKey(), 0);
-                    int nextMask = prevMask & ~e.getValue();
-                    if (nextMask == 0) {
-                        liveBefore.remove(e.getKey());
-                    } else {
-                        liveBefore.put(e.getKey(), nextMask);
-                    }
-                }
-                for (Map.Entry<VirtualRegister, Integer> e : usesHere.entrySet()) {
-                    liveBefore.merge(e.getKey(), e.getValue(), (a, b) -> a | b);
-                }
+                Set<VirtualRegister> liveBefore = new LinkedHashSet<>(live);
+                liveBefore.removeAll(defsHere);
+                liveBefore.addAll(usesHere);
 
                 // Mark liveness at this program point
-                for (VirtualRegister v : virtualRegisters(liveBefore)) {
+                for (VirtualRegister v : liveBefore) {
                     LiveRange lr = ranges.get(v);
                     if (lr != null) lr.addPoint(B, i);
                 }
 
                 // Also mark direct defs/uses points for better visualization
-                for (VirtualRegister d : defsHere.keySet()) {
+                for (VirtualRegister d : defsHere) {
                     LiveRange lr = ranges.get(d);
                     if (lr != null) lr.addPoint(B, i);
                 }
-                for (VirtualRegister u : usesHere.keySet()) {
+                for (VirtualRegister u : usesHere) {
                     LiveRange lr = ranges.get(u);
                     if (lr != null) lr.addPoint(B, i);
                 }
@@ -304,12 +293,12 @@ public class InterferenceGraph {
 
         for (IRBlock B : order) {
             for (IRInstruction inst = B.getLast(); inst != null; inst = inst.getPrev()) {
-                Set<VirtualRegister> liveAfter = virtualRegisters(
-                        livenessInfo.getLiveAfterMasks(inst)
+                Set<VirtualRegister> liveAfter = new LinkedHashSet<>(
+                        livenessInfo.getLiveAfter(inst)
                 );
 
                 // Collect defs/uses
-                Set<VirtualRegister> defsHere = virtualRegisters(LivenessInfo.computeWriteMasks(inst));
+                Set<VirtualRegister> defsHere = virtualRegisters(inst.getWrites());
 
                 // Handle move preferences and compute "work" live set for interference
                 Set<VirtualRegister> work = new LinkedHashSet<>(liveAfter);
