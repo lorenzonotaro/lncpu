@@ -212,7 +212,7 @@ public abstract class IRInstruction {
 
     public abstract Collection<IROperand> getReadOperands();
 
-    protected abstract Collection<IROperand> getWriteOperands();
+    public abstract Collection<IROperand> getWriteOperands();
 
     public abstract void replaceOperand(IROperand oldOp, IROperand newOp);
 }
