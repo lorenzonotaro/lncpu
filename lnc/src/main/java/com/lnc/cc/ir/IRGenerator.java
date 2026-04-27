@@ -505,7 +505,68 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand visit(CastExpression castExpression) {
-        return castExpression.operand.accept(this);
+        IROperand highByteCast = tryCaptureHighByteCast(castExpression);
+        if (highByteCast != null) {
+            return highByteCast;
+        }
+
+        var operand = castExpression.operand.accept(this);
+        if (operand instanceof ImmediateOperand immediateOperand) {
+            return castImmediate(immediateOperand, castExpression.targetType);
+        }
+
+        if(operand.getTypeSpecifier().allocSize() == castExpression.targetType.allocSize()){
+            return operand;
+        }else{
+            return new SizedCast(operand, castExpression.targetType);
+        }
+    }
+
+    private IROperand castImmediate(ImmediateOperand immediateOperand, TypeSpecifier targetType) {
+        int value = immediateOperand.getValue();
+
+        value = switch (targetType.allocSize()) {
+            case 1 -> value & 0xFF;
+            case 2 -> value & 0xFFFF;
+            default -> value;
+        };
+
+        return new ImmediateOperand(value, targetType);
+    }
+
+    private IROperand tryCaptureHighByteCast(CastExpression castExpression) {
+        if (castExpression.targetType.allocSize() != 1 || !(castExpression.operand instanceof BinaryExpression andExpr)
+                || andExpr.operator != BinaryExpression.Operator.AND) {
+            return null;
+        }
+
+        BinaryExpression shiftExpr;
+        Expression maskExpr;
+
+        if (andExpr.left instanceof BinaryExpression leftShift && leftShift.operator == BinaryExpression.Operator.SHR) {
+            shiftExpr = leftShift;
+            maskExpr = andExpr.right;
+        } else if (andExpr.right instanceof BinaryExpression rightShift && rightShift.operator == BinaryExpression.Operator.SHR) {
+            shiftExpr = rightShift;
+            maskExpr = andExpr.left;
+        } else {
+            return null;
+        }
+
+        if (!(maskExpr instanceof NumericalExpression maskNum) || maskNum.value != 0xFF) {
+            return null;
+        }
+
+        if (!(shiftExpr.right instanceof NumericalExpression shiftAmount) || shiftAmount.value != 8) {
+            return null;
+        }
+
+        IROperand source = shiftExpr.left.accept(this);
+        if (source.getTypeSpecifier().allocSize() != 2) {
+            return null;
+        }
+
+        return new SizedCast(source, castExpression.targetType, SizedCast.ByteSelection.HIGH);
     }
 
     @Override

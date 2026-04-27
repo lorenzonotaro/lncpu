@@ -100,7 +100,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     public Void visit(Ret ret) {
 
         if(ret.getValue() != null) {
-            ret.setValue(moveOrLoadIntoVR(ret.getValue().accept(this), RegisterClass.RETURN));
+            ret.setValue(moveOrLoadIntoVR(ret.getValue().accept(this), CallingConvention.returnRegisterFor(ret.getValue().getTypeSpecifier())));
         }
 
         return null;
@@ -262,6 +262,46 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     public IROperand visit(AddressOf addressOf) {
         IROperand loweredOperand = addressOf.getOperand().accept(this);
         return createAddressOf(loweredOperand);
+    }
+
+    @Override
+    public IROperand visit(SizedCast sizedCast) {
+        IROperand loweredOperand = sizedCast.getOperand().accept(this);
+        sizedCast.setOperand(loweredOperand);
+
+        int sourceSize = loweredOperand.getTypeSpecifier().allocSize();
+        int targetSize = sizedCast.getTypeSpecifier().allocSize();
+
+        if (sourceSize == targetSize) {
+            return loweredOperand;
+        }
+
+        if (sourceSize == 2 && targetSize == 1) {
+            if (loweredOperand instanceof ImmediateOperand immediate) {
+                return new ImmediateOperand(selectByte(immediate.getValue(), sizedCast.getByteSelection()), sizedCast.getTypeSpecifier());
+            }
+
+            if (loweredOperand.type != IROperand.Type.VIRTUAL_REGISTER) {
+                loweredOperand = moveOrLoadIntoVR(loweredOperand, RegisterClass.WORD);
+                sizedCast.setOperand(loweredOperand);
+            }
+
+            return sizedCast;
+        }
+
+        if (sourceSize == 1 && targetSize == 2) {
+            if (loweredOperand instanceof ImmediateOperand immediate) {
+                return new ImmediateOperand(immediate.getValue() & 0xFF, sizedCast.getTypeSpecifier());
+            }
+
+            return sizedCast;
+        }
+
+        throw new IllegalStateException("Unsupported sized cast in lowering: " + sourceSize + " -> " + targetSize);
+    }
+
+    private static int selectByte(int value, SizedCast.ByteSelection byteSelection) {
+        return byteSelection == SizedCast.ByteSelection.HIGH ? (value >>> 8) & 0xFF : value & 0xFF;
     }
 
     private static IROperand createAddressOf(IROperand loweredOperand) {

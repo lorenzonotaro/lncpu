@@ -21,6 +21,8 @@ public abstract class TypeSpecifier {
         TokenType.T_INT,
         TokenType.UNSIGNED,
         TokenType.SIGNED,
+        TokenType.CONST,
+        TokenType.LONG,
     };
 
     public TypeSpecifier(Type type){
@@ -40,6 +42,7 @@ public abstract class TypeSpecifier {
         Token token;
         Type type = null;
         boolean signed = false;
+        boolean long_ = false;
         boolean unsigned = false;
         boolean const_ = false;
         while(parser.check(VALID_TOKENS)){
@@ -70,18 +73,33 @@ public abstract class TypeSpecifier {
                     if (const_) throw new CompileException("duplicate 'const' qualifier", token);
                     const_ = true;
                     break;
+                case LONG:
+                    if (long_) throw new CompileException("duplicate 'long' qualifier", token);
+                    long_ = true;
+                    break;
                 default:
                     throw new CompileException("Invalid type specifier: " + token, token);
             }
         }
 
-        if(type == null) {
+        if(type == null && !long_) {
             throw new CompileException("Missing type specifier", parser.peek());
         }
 
+        // apply long modifier
+        if(long_){
+            if(type == Type.I8) {
+                type = Type.I16;
+            }else{
+                throw new CompileException("long type qualifier only allowed with 'int'", parser.peek());
+            }
+        }
+
+        // apply sign modifiers
         TypeSpecifier sp = switch (type) {
             case CHAR -> new CharType();
             case I8 -> unsigned ? new UI8Type() : new I8Type();
+            case I16 -> unsigned ? new UI16Type() : new I16Type();
             case VOID -> new VoidType();
             default -> throw new Error("Invalid type specifier: " + type);
         };

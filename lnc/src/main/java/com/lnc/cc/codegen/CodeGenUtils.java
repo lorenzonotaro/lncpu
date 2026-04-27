@@ -73,10 +73,17 @@ public class CodeGenUtils {
         } else if (argument.type == Argument.Type.BYTE) {
             return new Argument[]{new Byte(Token.__internal(TokenType.INTEGER, 0)), argument};
         } else if(argument.type == Argument.Type.LABEL) {
-            return new Argument[]{
-                    new NumberCast(new BinaryOp(new LabelRef(argument.token), new Byte(Token.__internal(TokenType.INTEGER, 8)), Token.__internal(TokenType.BITWISE_RIGHT, ">>")), argument.token, Token.__internal(TokenType.IDENTIFIER, "byte")),
-                    new NumberCast(argument, argument.token, Token.__internal(TokenType.IDENTIFIER, "byte"))
-            };
+            if(insideDeref){
+                return new Argument[]{
+                        new LabelRef(argument.token),
+                        new BinaryOp(new LabelRef(argument.token), new Byte(Token.__internal(TokenType.INTEGER, 1)), Token.__internal(TokenType.PLUS, '+'))
+                };
+            }else{
+                return new Argument[]{
+                        new NumberCast(new BinaryOp(new LabelRef(argument.token), new Byte(Token.__internal(TokenType.INTEGER, 8)), Token.__internal(TokenType.BITWISE_RIGHT, ">>")), argument.token, Token.__internal(TokenType.IDENTIFIER, "byte")),
+                        new NumberCast(argument, argument.token, Token.__internal(TokenType.IDENTIFIER, "byte"))
+                };
+            }
         } else if(argument.type == Argument.Type.COMPOSITE) {
             return new Argument[]{
                     ((Composite) argument).high,

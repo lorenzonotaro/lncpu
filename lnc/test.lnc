@@ -1,63 +1,7 @@
+extern void puti(unsigned int a);
 
-struct ddi_device_descriptor {
-    char magic[4];
-    unsigned int version;
-    unsigned int type;
-    unsigned int flags;   
-    unsigned int size_pages;
-    void far * boot_start;
-    void far *control_page;
-    unsigned int reserved[3];
-    unsigned int control_byte;
-};
+unsigned int far * far *i;
 
-struct ddi_device {
-    char name[8];
-    struct ddi_device_descriptor far *descriptor;
-    unsigned int start_page;
-    unsigned int device_idx;
-    unsigned int device_subidx;
-    unsigned int reserved[3];
-};
-
-#define DEV_FLAG_WRITABLE        0b00000001
-#define DEV_FLAG_EXECUTABLE      0b00000010
-#define DEV_FLAG_BOOTABLE        0b00000100
-#define DEV_FLAG_LNFS            0b00001000
-#define DEV_FLAG_HAS_CPAGE       0b00010000
-
-extern struct ddi_device far * ddi_get_device(unsigned int idx);
-extern far unsigned int ddi_num_devices;
-
-#ifndef BOOT_LNH
-#define BOOT_LNH
-
-struct boot_device {
-    unsigned int device_idx;
-    unsigned int boot_mode;
-};
-
-extern void putc(unsigned int c, unsigned int b);
-extern far unsigned int bootable_devices_count;
-extern far struct boot_device boot_devices_table[8];
-
-
-#endif
-
-void find_bootable_devices() {
-    unsigned int count = 0;
-    for(unsigned int i = 2; i < ddi_num_devices; i++) {
-        unsigned int dev_flags = ddi_get_device(i)->descriptor->flags;
-        if(dev_flags){
-            if(count < 8){
-                boot_devices_table[count].device_idx = i;
-                if(dev_flags){
-                    boot_devices_table[count].boot_mode = 1; // LNFS boot mode
-                } else {
-                    boot_devices_table[count].boot_mode = 0; // XIP mode
-                }
-                count++;
-            }
-        }
-    }
+unsigned int far *main(){
+    return *i;
 }

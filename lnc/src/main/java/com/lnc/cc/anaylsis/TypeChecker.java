@@ -98,11 +98,55 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier rightType = binaryExpression.right.accept(this);
 
+        leftType = coerceNumericLiteral(binaryExpression.left, leftType, rightType);
+        rightType = coerceNumericLiteral(binaryExpression.right, rightType, leftType);
+
+        if (binaryExpression.operator == BinaryExpression.Operator.SHL || binaryExpression.operator == BinaryExpression.Operator.SHR) {
+            if (!isIntegerType(leftType) || !isIntegerType(rightType)) {
+                throw new CompileException("shift operands must be integer types", binaryExpression.token);
+            }
+
+            binaryExpression.setTypeSpecifier(leftType);
+            return leftType;
+        }
+
         check(leftType, rightType, binaryExpression.token);
 
         binaryExpression.setTypeSpecifier(leftType);
 
         return leftType;
+    }
+
+    private TypeSpecifier coerceNumericLiteral(Expression expression, TypeSpecifier expressionType, TypeSpecifier oppositeType) {
+        if (!(expression instanceof NumericalExpression numerical) || !isIntegerType(expressionType) || !isIntegerType(oppositeType)) {
+            return expressionType;
+        }
+
+        if (!fitsInType(numerical.value, oppositeType.type)) {
+            return expressionType;
+        }
+
+        TypeSpecifier promoted = oppositeType.copy();
+        numerical.setTypeSpecifier(promoted);
+        return promoted;
+    }
+
+    private boolean isIntegerType(TypeSpecifier type) {
+        return type.type == TypeSpecifier.Type.CHAR
+                || type.type == TypeSpecifier.Type.I8
+                || type.type == TypeSpecifier.Type.UI8
+                || type.type == TypeSpecifier.Type.I16
+                || type.type == TypeSpecifier.Type.UI16;
+    }
+
+    private boolean fitsInType(int value, TypeSpecifier.Type targetType) {
+        return switch (targetType) {
+            case CHAR, I8 -> IntUtils.inI8Range(value);
+            case UI8 -> IntUtils.inUI8Range(value);
+            case I16 -> IntUtils.inI16Range(value);
+            case UI16 -> IntUtils.inUI16Range(value);
+            default -> false;
+        };
     }
 
     @Override
@@ -268,7 +312,10 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         }else if(operandType.typeSize() == castExpression.targetType.typeSize()){
             Logger.compileWarning("implicit conversion from '" + operandType + "' to '" + castExpression.targetType + "'", castExpression.token);
             return castExpression.targetType;
-        }else throw new CompileException("incompatible types: " + operandType + " and " + castExpression.targetType, castExpression.token);
+        }else if(operandType.typeSize() + castExpression.targetType.typeSize() == 3) { // one-byte to two-byte cast or viceversa
+            return castExpression.targetType;
+        }
+        throw new CompileException("incompatible types: " + operandType + " and " + castExpression.targetType, castExpression.token);
     }
 
     @Override

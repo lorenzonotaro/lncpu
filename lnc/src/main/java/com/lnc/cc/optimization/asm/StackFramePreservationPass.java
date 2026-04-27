@@ -58,7 +58,7 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
                 .mapToInt(CallingConvention.ParamLocation::size)
                 .sum();
         RegisterClass registerClass = CallingConvention.returnRegisterFor(unit.getFunctionType().returnType);
-        this.returnRegisters = registerClass == null ? Set.of() : registerClass.getRegisters().stream().map(Enum::toString).collect(Collectors.toSet());
+        this.returnRegisters = registerClass == null ? Set.of() : registerClass.getRegisters().stream().flatMap(r -> Arrays.stream(r.getComponents())).map(Enum::toString).collect(Collectors.toSet());
         this.frameInfo = unit.getFrameInfo();
         this.funName = unit.getFunctionDeclaration().name.lexeme;
     }

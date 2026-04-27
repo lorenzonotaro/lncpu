@@ -10,4 +10,6 @@ public interface IIROperandVisitor<T> {
     T visit(Location location);
 
     T visit(AddressOf addressOf);
+
+    T visit(SizedCast sizedCast);
 }

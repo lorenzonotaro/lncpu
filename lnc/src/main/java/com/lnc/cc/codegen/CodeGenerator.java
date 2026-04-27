@@ -236,11 +236,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         if(destSize == 1){
             instrf(TokenType.MOV, source, target);
         }else{
-            var splitSource = CodeGenUtils.splitWord(source);
-            var splitTarget = CodeGenUtils.splitWord(target);
-
-            instrf(TokenType.MOV, splitSource[0], splitTarget[0]);
-            instrf(TokenType.MOV, splitSource[1], splitTarget[1]);
+            emitWordMove(source, target);
         }
 
         return null;
@@ -250,7 +246,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         if(srcIr instanceof DerefLocation deref
                 && deref.getTarget() instanceof VirtualRegister srcVr
                 && destIr instanceof VirtualRegister destVr
-                && (destVr.getRegisterClass().equals(RegisterClass.NEAR_DEREF) || destVr.getRegisterClass().equals(RegisterClass.FAR_DEREF))){
+                && (destVr.getRegisterClass().equals(RegisterClass.NEAR_DEREF) || destVr.getRegisterClass().equals(RegisterClass.FAR_DEREF) || srcVr.getAssignedPhysicalRegister().equals(destVr.getAssignedPhysicalRegister()))){
             if(size == 1){
                 var target = destIr.accept(this);
                 var source = srcIr.accept(this);
@@ -363,9 +359,47 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         }
 
         Argument sourceArg = source.accept(this);
-        var splitSource = CodeGenUtils.splitWord(sourceArg);
-        instrf(TokenType.MOV, splitSource[0], CodeGenUtils.reg(dstWord.getComponents()[0]));
-        instrf(TokenType.MOV, splitSource[1], CodeGenUtils.reg(dstWord.getComponents()[1]));
+        emitWordMove(
+                sourceArg,
+                new Composite(CodeGenUtils.reg(dstWord.getComponents()[0]), CodeGenUtils.reg(dstWord.getComponents()[1]), false)
+        );
+    }
+
+    private void emitWordMove(Argument source, Argument target) {
+        if (source instanceof Dereference derefSource
+                && target instanceof Composite splitTarget) {
+            if(derefSource.inner instanceof com.lnc.assembler.parser.argument.Register pointer){
+                instrf(TokenType.MOV, source, splitTarget.high);
+                instrf(TokenType.INC, pointer);
+                instrf(TokenType.MOV, source, splitTarget.low);
+                instrf(TokenType.DEC, pointer);
+                return;
+            }else if(derefSource.inner instanceof Composite splitInner && splitInner.high instanceof com.lnc.assembler.parser.argument.Register highPointer && splitInner.low instanceof com.lnc.assembler.parser.argument.Register lowPointer){
+                String incLbl = softwareExtensionsManager.requireIncWord(splitInner);
+                String decLbl = softwareExtensionsManager.requireDecWord(splitInner);
+                instrf(TokenType.MOV, source, splitTarget.high);
+                instrf(TokenType.LCALL, CodeGenUtils.labelRef(incLbl));
+                instrf(TokenType.MOV, source, splitTarget.low);
+                instrf(TokenType.LCALL, CodeGenUtils.labelRef(decLbl));
+                return;
+            }
+        }
+
+        if (target instanceof Dereference derefTarget
+                && derefTarget.inner instanceof com.lnc.assembler.parser.argument.Register pointer
+                && source instanceof Composite splitSource) {
+            instrf(TokenType.MOV, splitSource.high, target);
+            instrf(TokenType.INC, pointer);
+            instrf(TokenType.MOV, splitSource.low, target);
+            instrf(TokenType.DEC, pointer);
+            return;
+        }
+
+        var splitSource = CodeGenUtils.splitWord(source);
+        var splitTarget = CodeGenUtils.splitWord(target);
+
+        instrf(TokenType.MOV, splitSource[0], splitTarget[0]);
+        instrf(TokenType.MOV, splitSource[1], splitTarget[1]);
     }
 
     private void emitBinOp(BinaryExpression.Operator op, Argument target, Argument right) {
@@ -631,6 +665,41 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             case DEREF -> ((DerefLocation) location).getTarget().accept(this);
             default -> throw new IllegalStateException("Unsupported address-of target in code generation: " + location.locType);
         };
+    }
+
+    @Override
+    public Argument visit(SizedCast sizedCast) {
+        Argument source = sizedCast.getOperand().accept(this);
+
+        int sourceSize = sizedCast.getOperand().getTypeSpecifier().allocSize();
+        int targetSize = sizedCast.getTypeSpecifier().allocSize();
+
+        if (sourceSize == targetSize) {
+            return source;
+        }
+
+        if (sourceSize == 1 && targetSize == 2) {
+            return new Composite(CodeGenUtils.immByte(0), source, false);
+        }
+
+        if (sourceSize == 2 && targetSize == 1) {
+            if (source instanceof Composite composite) {
+                return sizedCast.getByteSelection() == SizedCast.ByteSelection.HIGH ? composite.high : composite.low;
+            }
+
+            if (source instanceof Word word) {
+                int value = sizedCast.getByteSelection() == SizedCast.ByteSelection.HIGH ? (word.value >>> 8) & 0xFF : word.value & 0xFF;
+                return CodeGenUtils.immByte(value);
+            }
+
+            if (source instanceof Byte byteValue) {
+                return byteValue;
+            }
+
+            throw new IllegalStateException("SizedCast 16->8 requires a materialized word source after lowering: " + sizedCast.getOperand());
+        }
+
+        throw new UnsupportedOperationException("Unsupported sized cast in codegen: " + sourceSize + " -> " + targetSize);
     }
 
     private Argument toStackFrameAddress(StackFrameLocation location, boolean dereference) {

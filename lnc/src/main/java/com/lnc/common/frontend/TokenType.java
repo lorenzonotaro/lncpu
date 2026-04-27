@@ -171,6 +171,7 @@ public enum TokenType {
     STATIC("static"),
     EXTERN("extern"),
     CONST("const"),
+    LONG("long"),
     EXPORT("export"),
     NEAR("near"),
 
@@ -285,6 +286,7 @@ public enum TokenType {
             TokenType.STATIC,
             TokenType.EXTERN,
             TokenType.CONST,
+            TokenType.LONG,
             TokenType.EXPORT,
             TokenType.NEAR,
             TokenType.FAR

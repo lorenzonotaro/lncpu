@@ -4,6 +4,7 @@ import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.linker.LinkTarget;
 import com.lnc.assembler.parser.argument.Argument;
+import com.lnc.assembler.parser.argument.Composite;
 import com.lnc.common.frontend.TokenType;
 
 import java.util.ArrayList;
@@ -42,6 +43,14 @@ public class SoftwareExtensionsManager {
 
     public String requireIncWord(Register dstWord) {
         return require(ExtensionKind.INC_WORD, dstWord, null);
+    }
+
+    public String requireIncWord(Composite splitInner) {
+        return require(ExtensionKind.INC_WORD, Register.valueOf(splitInner.high.toString().toUpperCase() + splitInner.low.toString().toUpperCase()), null);
+    }
+
+    public String requireDecWord(Composite splitInner) {
+        return require(ExtensionKind.DEC_WORD, Register.valueOf(splitInner.high.toString().toUpperCase() + splitInner.low.toString().toUpperCase()), null);
     }
 
     public String requireDecWord(Register dstWord) {

@@ -13,7 +13,7 @@ public class PointerType extends AbstractSubscriptableType {
     }
 
     public PointerType(TypeSpecifier baseType, boolean isPointerConst, StorageLocation kind) {
-        super(Type.POINTER, baseType);
+        super(Type.POINTER, baseType.withStorageLocation(kind));
         this.pointerKind = kind;
         this.isConst = isPointerConst;
     }
