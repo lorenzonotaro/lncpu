@@ -14,7 +14,7 @@ for arg in "$@"; do
         build_eeprom_serial_loader=false
     elif [ "$arg" == "--no-eeproms" ]; then
         make_eeproms=false
-    elif [ "$arg" == "--no-lncpuemu" ]; then
+    elif [ "$arg" == "--no-lncpuemu" ] || [ "$arg" == "--no-emu" ]; then
         make_emu=false
     else
         echo "Unknown argument: $arg"
@@ -135,6 +135,13 @@ if [ $make_emu = true ] ; then
     cmake ..
 
     echo "Building lncpu-emu..."
+
+    python gen_opcodes_h.py
+
+    if [ $? -ne 0 ]; then
+        echo "Error: gen_opcodes_h.py failed"
+        exit 1
+    fi
 
     cmake --build . --config Release
 

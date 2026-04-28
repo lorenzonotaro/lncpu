@@ -8,6 +8,9 @@ a.txt
 immediate.txt
 *immediate.txt
 
+# Compiled C/C++ files
+build
+
 .idea
 .venv
 
