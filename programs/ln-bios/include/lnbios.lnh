@@ -1,0 +1,7 @@
+#ifndef LNBIOS_LNH
+#define LNBIOS_LNH
+
+extern unsigned int bios_version_major;
+extern unsigned int bios_version_minor;
+
+#endif

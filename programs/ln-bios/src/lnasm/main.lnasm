@@ -13,6 +13,9 @@ bios_main:
 
     mov     BIOS_STATUS_INITIALIZING, [bios_status] ; set BIOS status to initializing
 
+    mov     BIOS_VERSION_MAJOR, [bios_version_major] ; set BIOS version major
+    mov     BIOS_VERSION_MINOR, [bios_version_minor] ; set BIOS version minor
+
     ; main BIOS code starts here
     lcall   ddi_init                ; initialize DDI
     lcall   ddi_device_discovery    ; discover devices

@@ -228,9 +228,10 @@ stdtxt_set_opts:
 
 .section IO_UTILS
 
-; lnc non-compliant
+; lnc compliant
 ; formats and prints the given string (RC:RD) to stdtxt with the given arguments, passed on stack (reverse order, big endian).
 ; Supported formats: %s, %x, %%
+; lnc signature: ```void printf(const char far *format, ...);```
 printf:
     push    BP
     push    RA
@@ -315,6 +316,8 @@ _ret:
     pop     RA
     pop     BP
     ret
+
+.export printf
 
 ; lnc compliant
 ; Converts the digit stored in the 4 least-significant bits of RA into a ASCII character and returns it in RB

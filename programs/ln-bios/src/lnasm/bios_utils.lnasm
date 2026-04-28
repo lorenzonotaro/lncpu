@@ -17,6 +17,14 @@
 ; Code indicating BIOS has not found a standard text output device (and was compiled with HALT_ON_NO_STDTXT)
 %define BIOS_STATUS_CRIT_NO_STDTXT 0x80
 
+;   Code indicating that BIOS found a boot device but failed to boot from it (e.g. due to an invalid boot sector or missing bootloader)
+%define BIOS_STATUS_CRIT_BOOT_FAILED 0x10
+
+; Code indicating that BIOS found a boot device but it does not support the required boot mode (e.g. LNFS boot attempted on a device that only supports XIP)
+%define BIOS_STATUS_CRIT_NO_BOOTABLE 0x11
+
+%define BIOS_CRIT_LNFS_NOT_SUPPORTED 0x12
+
 ; Code indicating that an interrupt was received but no device could handle it
 %define BIOS_STATUS_CRIT_INT_NO_DEV 0x81
 
@@ -120,8 +128,17 @@ log_prefix_crit:
     pop RC
     ret
 
-
 .section BIOS_DATA
+bios_version_major:
+    .res 1
+
+.export  bios_version_major
+
+bios_version_minor:
+    .res 1
+
+.export  bios_version_minor
+
 bios_status:
     .res 1
 

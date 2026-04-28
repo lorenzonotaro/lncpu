@@ -21,15 +21,15 @@ boot_seq:
     lgoto   boot_menu
     hlt
 _single_boot_device:
-    mov     0, RA
-    mov     (BOOT_DEVICE_FOUND_FMT >> 8)::byte, RC
-    mov     (BOOT_DEVICE_FOUND_FMT & 0xFF)::byte, RD
+    mov     0, RA ; index of the single boot device in the boot devices table
     lcall   boot_attempt ; if this call returns, it means the boot attempt failed
     lcall   log_prefix_crit
     mov     BIOS_STATUS_CRIT_BOOT_FAILED, [bios_status] ; set BIOS status to critical error: boot failed
-    mov     (BOOT_FAILED_FOR_DEVICE >> 8)::byte, RC
-    mov     (BOOT_FAILED_FOR_DEVICE & 0xFF)::byte, RD
-    lcall   puts
+    push    RB
+    mov     (BOOT_FAILED_FOR_DEVICE_FMT >> 8)::byte, RC
+    mov     (BOOT_FAILED_FOR_DEVICE_FMT & 0xFF)::byte, RD
+    lcall   printf
+    sub     SP, 1
 _no_boot_devices:
 %ifdef RESCUE_ON_NO_BOOTABLE
     lgoto    rescue_seq
@@ -48,6 +48,84 @@ boot_menu:
     lcall  puts
     hlt
 
+boot_attempt:
+    push RA
+    push RC
+    push RD
+    push BP
+    mov  SP, BP
+    add SP, 0x03 ; reserve 2 bytes of locals:
+        ; [BP + 0-1] -> ddi_device far * for the boot candidate
+        ; [BP + 2] -> boot mode (0 for XIP, 1 for LNFS)
+    shl RA
+    shl RA
+    shl RA
+    shl RA ; multiply RA by 16 to get the offset of the boot device entry in the boot devices table
+    mov (boot_devices_table >> 8)::byte, RC
+    mov (boot_devices_table & 0xFF)::byte, RD
+    add RD, RA ; no need for word/long addressing since we don't cross any pages
+    inc RD ; get the boot mode: 0 for XIP, 1 for LNFS
+    mov [RC:RD], RA
+    and RA, RA ; do an ALU NOP to set the flags based on the boot mode
+    jz  _xip ; push mode accordingly as last argument to printf
+    mov 1, [BP + 2]
+    push (LNFS_MODE >> 8)::byte
+    push (LNFS_MODE & 0xFF)::byte
+    goto _continue
+_xip:
+    mov 0, [BP + 2]
+    push (XIP_MODE >> 8)::byte
+    push (XIP_MODE & 0xFF)::byte
+_continue:
+    dec RD ; point to device index
+    mov [RC:RD], RA ; get the device index
+    lcall ddi_get_device ; get the device info struct pointer for the selected boot device
+    mov RC, [BP + 0] ; store the device info pointer in a local variable for later use in logging after the boot attempt
+    mov RD, [BP + 1]
+    push RC ; push the device info pointer, whose first field is the device name string pointer
+    push RD
+    add  RD, 12 ; point to device subindex
+    push [RC:RD] ; push the device subindex
+    dec  RD
+    push [RC:RD] ; push the device index
+    lcall log_prefix_info
+    mov (BOOT_ATTEMPT_FMT >> 8)::byte, RC
+    mov (BOOT_ATTEMPT_FMT & 0xFF)::byte, RD
+    lcall printf
+    sub   SP, 6 ; clean up arguments from stack
+_boot:
+    mov [BP + 0], RC ; restore the device info pointer
+    mov [BP + 1], RD
+    mov [BP + 2], RA ; restore the boot mode
+    cmp RA, 0
+    jz  _boot_xip
+_boot_lnfs:
+    mov BIOS_CRIT_LNFS_NOT_SUPPORTED, RB ; set return status for rescue sequence
+    goto _ret
+_boot_xip:
+    add RD, 10 ; point to device start page
+    mov [RC:RD], RA ; save device start page in RA
+    sub RD, 2 ; point to device descriptor pointer
+    push [RC:RD] ; dererence the pointer
+    inc RD
+    mov [RC:RD], RD
+    pop RC
+    add RD, 8 ; point to boot target start
+    push [RC:RD] ; dereference the pointer to get the boot target start page and push it as argument for the boot call
+    inc RD
+    mov [RC:RD], RD
+    pop RC
+    add RC, RA ; add the device start page to get the absolute boot target
+    mov 0, SP ; set stack pointer to 0 for the boot call, since the boot target expects an empty stack
+    lgoto RC:RD ; jump to the boot target
+_ret:
+    mov BP, SP
+    pop BP
+    pop RD
+    pop RC
+    pop RA
+    ret
+
 .section BIOS_DATA
 boot_devices_count:
     .res 1 ; Number of bootable devices found during the boot sequence.
@@ -55,6 +133,10 @@ boot_devices_table:
     .res 16 ; Space for up to 8 boot devices, each represented by a byte indicating the index in the device table. A value of 0xFF indicates an empty slot.
 
 .section BIOS_CONST
+LNFS_MODE:
+    .data "LNFS" 0
+XIP_MODE:
+    .data "XIP" 0
 LOOK_FOR_BOOT_DEVICE:
     .data "Looking for boot device(s)...\n" 0
 
@@ -63,10 +145,14 @@ NO_BOOT_DEVICE:
 
 BOOT_MENU:
     .data "Bootable devices found:\n" 0
+
 SELECT_BOOT_DEVICE:
     .data "Please select a boot device by entering its number: \n" 0
 
-BOOT_FAILED_FOR_DEVICE:
-    .data "Boot failed for device.\n" 0
+BOOT_FAILED_FOR_DEVICE_FMT:
+    .data "Boot failed for device with code 0x%x.\n" 0
+
+BOOT_ATTEMPT_FMT:
+    .data "Attempting to boot from device %x.%x (%s, %s mode).\n" 0
 
 %endif

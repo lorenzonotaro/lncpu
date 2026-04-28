@@ -1,56 +1,8 @@
 ; Device Discovery Interface (DDI) for LN-BIOS
 %include "mem"
-
+%include "ddi_defs"
 %ifndef DDI_F
 %define DDI_F
-
-; ==== DEVICE TYPE IDENTIFIERS ====
-
-; 00-07: MEMORY DEVICES
-
-; ID for a read only memory device, 8KB
-%define DEV_TYPE_ROM8K 0x00
-
-; ID for a random access RW memory device, 8KB
-%define DEV_TYPE_RAM8K 0x01
-
-; 08-0F: I/O DEVICES
-
-; ID for a serial TTY device, emulated
-%define DEV_TYPE_TTYE 0x08
-
-; 10-13: ADDRESS SPACE MANAGERS / SPLITTERS
-
-; ID for a 31x256 address space manager (ASM) or splitter device
-%define DEV_TYPE_ASM31 0x10
-
-; ID for a 15x512 address space manager (ASM) or splitter device
-%define DEV_TYPE_ASM15 0x11
-
-; ID for a 7x1024 address space manager (ASM) or splitter device
-%define DEV_TYPE_ASM7 0x12
-
-
-; ==== DEVICE FLAGS ====
-; Bit 0: Writable (1) / Read-only (0)
-; Bit 1: Non-executable (1) / Executable (0)
-; Bit 2: Bootable (1) / Non-bootable (0)
-; Bit 3: Boot mode LNFS (1) / Boot mode static jump (0)
-; Bit 4: Has control page (1) / No control page (0)
-; Bits 5-7: Reserved (must be 0)
-
-%define DEV_FLAG_WRITABLE        0b00000001
-%define DEV_FLAG_EXECUTABLE      0b00000010
-%define DEV_FLAG_BOOTABLE        0b00000100
-%define DEV_FLAG_LNFS            0b00001000
-%define DEV_FLAG_HAS_CPAGE       0b00010000
-
-%define DEV_CTRL_BYTE 0xA5  ; must be 0xA5
-
-%define DDI_STATUS_VALID 0x00
-%define DDI_STATUS_INVALID 0x01
-%define DDI_STATUS_BUILDING 0x02
-
 
 .section BIOS_DDI
 

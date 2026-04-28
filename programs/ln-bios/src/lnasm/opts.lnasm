@@ -3,6 +3,9 @@
 %ifndef BIOS_OPTS_F
 %define BIOS_OPTS_F
 
+%define BIOS_VERSION_MAJOR 0
+%define BIOS_VERSION_MINOR 1
+
 ; If defined, the BIOS will halt if no standard text device is found during device discovery.
 %define HALT_ON_NO_STDTXT
 
@@ -12,6 +15,6 @@
 
 ; If defined, the BIOS will enter a rescue state if no bootable device is found during the boot process.
 ; If not defined, the BIOS will halt if no bootable device is found.
-%define RESCUE_ON_NO_BOOTABLE
+;%define RESCUE_ON_NO_BOOTABLE
 
 %endif

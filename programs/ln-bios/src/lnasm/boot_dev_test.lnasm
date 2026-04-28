@@ -1,9 +1,0 @@
-.section BOOT_DEV_TEST
-    .data 'LNDI' 0x1            ; 'LNDI' signature and version 1
-    .data DEV_TYPE_ROM8K        ; ROM device type
-    .data DEV_FLAG_BOOTABLE     ; device flags
-    .data 0x20                  ; 8KB size (in 256-byte pages)
-    .data 0x00 0x00             ; boot target start (none)
-    .data 0x00 0x00             ; no control page
-    .data 0x00 0x00 0x00        ; reserved
-    .data 0xA5                  ; control byte (must be 0xA5)

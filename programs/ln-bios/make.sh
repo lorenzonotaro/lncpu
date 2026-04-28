@@ -1,1 +1,1 @@
-lnc $(find src/lnasm/*/*.lnasm src/lnasm/*.lnasm src/lnc/*.lnc src/lnc/*/*.lnc -type f -nowarn | xargs echo) -lf linker.cfg -oD="ROM,RAM,D0" -oB bios.out -oS bios.sym -oI bios.immediate.txt -oA="__lncout.lnasm" -I="include/"
+lnc $(find src/lnasm/*/*.lnasm src/lnasm/*.lnasm src/lnc/*.lnc src/lnc/*/*.lnc -type f -nowarn | xargs echo) -lf linker.cfg -oD="ROM,RAM,D1" -oA bios.lnasm -oB bios.out -oS bios.sym -oI bios.immediate.txt -oA="__lncout.lnasm" -I="include/"

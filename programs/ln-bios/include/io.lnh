@@ -9,6 +9,8 @@ extern void putc(const char c);
 
 extern void puts(const char far *str);
 
+extern void printf(const char far *format, ...);
+
 extern void stdtxt_set_opts(unsigned int opts);
 
 extern char format_hex(unsigned int val);
