@@ -425,8 +425,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand visit(StringExpression stringExpression) {
-        return new StaticSymbolLocation(resolveConstant(
-                stringExpression.token.lexeme));
+        return new AddressOf(new StaticSymbolLocation(resolveConstant(
+                stringExpression.token.lexeme)));
     }
 
     private BaseSymbol resolveConstant(String lexeme) {

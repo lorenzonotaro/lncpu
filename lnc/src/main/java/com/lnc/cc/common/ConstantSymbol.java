@@ -17,7 +17,7 @@ public class ConstantSymbol extends BaseSymbol {
     private final EncodedData value;
 
     protected ConstantSymbol(Token token, TypeSpecifier typeSpecifier, EncodedData value) {
-        super(token, typeSpecifier, StorageQualifier.NONE, false, -1);
+        super(token, typeSpecifier, new StorageQualifier(false, false, false, typeSpecifier.storageLocation), false, -1);
         this.value = value;
     }
 
@@ -26,6 +26,6 @@ public class ConstantSymbol extends BaseSymbol {
     }
 
     public static ConstantSymbol string(Token stringToken){
-        return new ConstantSymbol(stringToken, new PointerType(new CharType(), true, StorageLocation.FAR), EncodedData.ofString(stringToken.literal.toString()));
+        return new ConstantSymbol(stringToken, new CharType().withStorageLocation(StorageLocation.FAR), EncodedData.ofString(stringToken.literal.toString()));
     }
 }
