@@ -60,11 +60,12 @@ public class LinkerConfig{
                 if(sectionMap.containsKey(section.getName())){
                     switch(conflictResolutionMode){
                         case KEEP_FIRST -> {}
-                        case KEEP_LAST -> sectionMap.remove(section.getName());
+                        case KEEP_LAST -> sectionMap.put(section.getName(), section);
                         case ERROR -> throw new IllegalArgumentException("section name must be unique");
                     }
+                }else{
+                    sectionMap.put(section.getName(), section);
                 }
-                sectionMap.put(section.getName(), section);
             }
         }
         return new LinkerConfig(sectionMap.values().toArray(SectionInfo[]::new));
