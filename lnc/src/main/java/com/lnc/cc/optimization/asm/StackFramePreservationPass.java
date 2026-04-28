@@ -79,7 +79,7 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
         discoveryPass.runPass(code);
 
         var registers = discoveryPass.registers;
-        registers.removeIf(r -> returnRegisters.contains(r.toString()));
+        registers.removeIf(r -> returnRegisters.contains(r.toString()) || r.equals(RegisterId.SP));
 
         var registersList = new ArrayList<>(registers);
 
