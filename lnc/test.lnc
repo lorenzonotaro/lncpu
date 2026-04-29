@@ -4,5 +4,5 @@ extern int bios_version_minor;
 extern void printf(const char far *format, ...);
 
 void main(){
-    printf("Hello world from XIP code! BIOS version is v%d.%d .\n", bios_version_major, bios_version_minor);
+    unsigned long int i = (unsigned long int) bios_version_major + bios_version_minor;
 }

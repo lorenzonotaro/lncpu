@@ -4,8 +4,8 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 
 public class BinaryExpression extends Expression {
-    public final Expression left;
-    public final Expression right;
+    public Expression left;
+    public Expression right;
 
     public Operator operator;
 

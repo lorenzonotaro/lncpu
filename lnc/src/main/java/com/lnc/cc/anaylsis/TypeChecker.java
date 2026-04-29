@@ -99,11 +99,29 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     public TypeSpecifier visit(BinaryExpression binaryExpression) {
 
         TypeSpecifier leftType = binaryExpression.left.accept(this);
-
         TypeSpecifier rightType = binaryExpression.right.accept(this);
+        TypeSpecifier binType = leftType;
+        leftType = coerceNumericCompatibility(binaryExpression.left, leftType, rightType);
+        rightType = coerceNumericCompatibility(binaryExpression.right, rightType, leftType);
 
-        leftType = coerceNumericLiteral(binaryExpression.left, leftType, rightType);
-        rightType = coerceNumericLiteral(binaryExpression.right, rightType, leftType);
+        if(leftType.allocSize() == 2 && rightType.allocSize() == 1){
+            if(rightType.type == TypeSpecifier.Type.I8){
+                binaryExpression.right = new CastExpression(binaryExpression.token, new I16Type(), binaryExpression.right);
+                rightType = binaryExpression.left.accept(this);
+            } else {
+                binaryExpression.right = new CastExpression(binaryExpression.token, new UI16Type(), binaryExpression.right);
+                rightType = binaryExpression.accept(this);
+            }
+        }else if(leftType.allocSize() == 1 && rightType.allocSize() == 2){
+            if(leftType.type == TypeSpecifier.Type.I8){
+                binaryExpression.left = new CastExpression(binaryExpression.token, new I16Type(), binaryExpression.left);
+                leftType = binaryExpression.right.accept(this);
+            } else {
+                binaryExpression.left = new CastExpression(binaryExpression.token, new UI16Type(), binaryExpression.left);
+                leftType = binaryExpression.right.accept(this);
+            }
+            binType = leftType;
+        }
 
         checkTypeCompleteness(leftType, true);
         checkTypeCompleteness(rightType, true);
@@ -119,12 +137,12 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         check(leftType, rightType, binaryExpression.token);
 
-        binaryExpression.setTypeSpecifier(leftType);
+        binaryExpression.setTypeSpecifier(binType);
 
-        return leftType;
+        return binType;
     }
 
-    private TypeSpecifier coerceNumericLiteral(Expression expression, TypeSpecifier expressionType, TypeSpecifier oppositeType) {
+    private TypeSpecifier coerceNumericCompatibility(Expression expression, TypeSpecifier expressionType, TypeSpecifier oppositeType) {
         if (!(expression instanceof NumericalExpression numerical) || !isIntegerType(expressionType) || !isIntegerType(oppositeType)) {
             return expressionType;
         }
