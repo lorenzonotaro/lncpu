@@ -37,18 +37,18 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public Void visit(VariableDeclaration variableDeclaration) {
 
-        checkTypeCompleteness(variableDeclaration.declarator.typeSpecifier());
+        checkTypeCompleteness(variableDeclaration.declarator.typeSpecifier(), true);
 
         return super.visit(variableDeclaration);
     }
 
-    private void checkTypeCompleteness(TypeSpecifier type) {
+    private void checkTypeCompleteness(TypeSpecifier type, boolean pointersCanBeIncomplete) {
         if (type.type == TypeSpecifier.Type.STRUCT) {
             checkStructCompleteness((StructType) type);
         }else if(type.type == TypeSpecifier.Type.ARRAY){
-            checkTypeCompleteness(((ArrayType)type).getBaseType());
-        }else if(type.type == TypeSpecifier.Type.POINTER){
-            checkTypeCompleteness(((PointerType)type).getBaseType());
+            checkTypeCompleteness(((ArrayType)type).getBaseType(), pointersCanBeIncomplete);
+        }else if(type.type == TypeSpecifier.Type.POINTER && !pointersCanBeIncomplete){
+            checkTypeCompleteness(((PointerType)type).getBaseType(), false);
         }
     }
 
@@ -84,6 +84,10 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier rightType = assignmentExpression.right.accept(this);
 
+        checkTypeCompleteness(leftType, true);
+
+        checkTypeCompleteness(rightType, true);
+
         check(leftType, rightType, assignmentExpression.operator);
 
         assignmentExpression.setTypeSpecifier(leftType);
@@ -100,6 +104,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         leftType = coerceNumericLiteral(binaryExpression.left, leftType, rightType);
         rightType = coerceNumericLiteral(binaryExpression.right, rightType, leftType);
+
+        checkTypeCompleteness(leftType, true);
+        checkTypeCompleteness(rightType, true);
 
         if (binaryExpression.operator == BinaryExpression.Operator.SHL || binaryExpression.operator == BinaryExpression.Operator.SHR) {
             if (!isIntegerType(leftType) || !isIntegerType(rightType)) {
@@ -210,7 +217,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
                 throw new CompileException("base operand of '->' operator has non-struct type '" + baseType + "'", memberAccessExpression.token);
             }
 
-            checkTypeCompleteness(baseType);
+            checkTypeCompleteness(baseType, false);
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) baseType);
 
@@ -223,7 +230,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
                 throw new CompileException("base operand of '.' operator has non-struct type '" + left + "'", memberAccessExpression.token);
             }
 
-            checkTypeCompleteness(left);
+            checkTypeCompleteness(left, true);
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) left);
 
@@ -294,6 +301,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             if(operandType.type == TypeSpecifier.Type.POINTER){
 
                 TypeSpecifier baseType = ((PointerType) operandType).getBaseType();
+
+                checkTypeCompleteness(baseType, false);
+
                 unaryExpression.setTypeSpecifier(baseType);
 
                 return baseType;
@@ -319,6 +329,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public TypeSpecifier visit(CastExpression castExpression) {
         TypeSpecifier operandType = castExpression.operand.accept(this);
+        checkTypeCompleteness(operandType, false);
         castExpression.setTypeSpecifier(castExpression.targetType);
         if(operandType.compatible(castExpression.targetType)){
             return castExpression.targetType;
@@ -334,11 +345,11 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public TypeSpecifier visit(SizeofExpression sizeofExpression) {
         if(sizeofExpression.targetType == SizeofExpression.TargetType.TYPE){
-            checkTypeCompleteness(sizeofExpression.type);
+            checkTypeCompleteness(sizeofExpression.type, true);
             sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(sizeofExpression.type.typeSize()));
         }else{
             TypeSpecifier operandType = sizeofExpression.expression.accept(this);
-            checkTypeCompleteness(operandType);
+            checkTypeCompleteness(operandType, false);
             sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(operandType.typeSize()));
         }
         return sizeofExpression.getTypeSpecifier();
@@ -347,6 +358,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public TypeSpecifier visit(VaPopExpression vaPopExpression) {
         TypeSpecifier typeSpecifier = vaPopExpression.getTypeSpecifier();
+        checkTypeCompleteness(typeSpecifier, true);
         int allocSize = typeSpecifier.allocSize();
         if(allocSize == 0 || allocSize > 2){
             throw new CompileException("va_pop() can only be used on variables of size 1 or 2 bytes", vaPopExpression.token);
@@ -383,6 +395,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier expectedReturnType = currentFunction.declarator.typeSpecifier();
 
+        checkTypeCompleteness(expectedReturnType, true);
+
         if(returnType == null && expectedReturnType.type == TypeSpecifier.Type.VOID){
             return null;
         }else if(returnType == null){
@@ -404,7 +418,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         int offset = 0;
         for(VariableDeclaration field : definition.getFields()){
-            checkTypeCompleteness(field.declarator.typeSpecifier());
+            checkTypeCompleteness(field.declarator.typeSpecifier(), true);
             if(fieldMap.containsKey(field.name.lexeme)){
                 throw new CompileException("duplicate field name '" + field.name.lexeme + "' in struct '" + name.lexeme + "'", field.name);
             }
