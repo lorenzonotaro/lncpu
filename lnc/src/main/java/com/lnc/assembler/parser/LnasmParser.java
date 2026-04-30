@@ -116,8 +116,8 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
             return EncodedData.of(new byte[value]);
         } else if (match(TokenType.DIR_EXPORT)){
             Token label = consume("expected identifier", TokenType.IDENTIFIER), exportAs;
-            if(match(TokenType.IDENTIFIER) && previous().lexeme.equalsIgnoreCase("as")){
-                exportAs = previous();
+            if(match(TokenType.COLON)){
+                exportAs = consume("expected identifier", TokenType.IDENTIFIER);
             }else{
                 exportAs = label;
             }
