@@ -4,5 +4,5 @@ extern int bios_version_minor;
 extern void printf(const char far *format, ...);
 
 void main(){
-    unsigned long int i = (unsigned long int) bios_version_major + bios_version_minor;
+    printf("BIOS version: %u", (unsigned long int) (bios_version_major << 8) + bios_version_minor);
 }

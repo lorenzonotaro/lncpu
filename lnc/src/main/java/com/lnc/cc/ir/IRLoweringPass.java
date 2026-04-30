@@ -309,6 +309,13 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         throw new IllegalStateException("Unsupported sized cast in lowering: " + sourceSize + " -> " + targetSize);
     }
 
+    @Override
+    public IROperand visit(ComposeOperand composeOperand) {
+        composeOperand.high = composeOperand.high.accept(this);
+        composeOperand.low = composeOperand.low.accept(this);
+        return composeOperand;
+    }
+
     private static int selectByte(int value, SizedCast.ByteSelection byteSelection) {
         return byteSelection == SizedCast.ByteSelection.HIGH ? (value >>> 8) & 0xFF : value & 0xFF;
     }

@@ -16,4 +16,6 @@ public interface IIROperandVisitor<T> {
     default T visit(VaPop vaPop){
         return null; // TODO: implement va_pop
     }
+
+    T visit(ComposeOperand composeOperand);
 }

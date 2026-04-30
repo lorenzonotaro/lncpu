@@ -51,4 +51,9 @@ public class ConstantPropagationEvaluator implements IIROperandVisitor<PropValue
 
         return PropValue.unknown();
     }
+
+    @Override
+    public PropValue visit(ComposeOperand composeOperand) {
+        return PropValue.unknown();
+    }
 }

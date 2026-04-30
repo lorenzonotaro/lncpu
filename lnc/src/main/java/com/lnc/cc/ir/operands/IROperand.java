@@ -41,6 +41,10 @@ public abstract class IROperand {
         VIRTUAL_REGISTER,
         ADDRESS_OF,
         DEREF,
-        LOCATION, SIZED_CAST, VA_POP,
+        LOCATION,
+        SIZED_CAST,
+        VA_POP,
+
+        COMPOSE,
     }
 }

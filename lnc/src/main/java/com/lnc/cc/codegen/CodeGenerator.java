@@ -517,7 +517,15 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
 
     @Override
     public Void visit(Push push) {
-        instrf(TokenType.PUSH, push.getArg().accept(this));
+        var arg = push.getArg().accept(this);
+        if(push.getArg().getTypeSpecifier().allocSize() == 2){
+            var split = CodeGenUtils.splitWord(arg);
+            instrf(TokenType.PUSH, split[0]);
+            instrf(TokenType.PUSH, split[1]);
+            return null;
+        }else{
+            instrf(TokenType.PUSH, arg);
+        }
         return null;
     }
 
@@ -711,6 +719,15 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         }
 
         throw new UnsupportedOperationException("Unsupported sized cast in codegen: " + sourceSize + " -> " + targetSize);
+    }
+
+    @Override
+    public Argument visit(ComposeOperand composeOperand) {
+        return new Composite(
+                composeOperand.high.accept(this),
+                composeOperand.low.accept(this),
+                false
+        );
     }
 
     private Argument toStackFrameAddress(StackFrameLocation location, boolean dereference) {

@@ -309,6 +309,12 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(BinaryExpression binaryExpression) {
 
+        IROperand composeOp = tryCaptureCompose(binaryExpression);
+
+        if(composeOp != null){
+            return composeOp;
+        }
+
         IROperand left = binaryExpression.left.accept(this);
         IROperand right = binaryExpression.right.accept(this);
         IROperand target = allocVR(left.getTypeSpecifier());
@@ -325,6 +331,56 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         emit(new Bin(target, left, right, binaryExpression.operator));
 
         return target;
+    }
+
+    private IROperand tryCaptureCompose(BinaryExpression binaryExpression) {
+        if (binaryExpression.operator != BinaryExpression.Operator.ADD) {
+            return null;
+        }
+
+        BinaryExpression shiftExpr = null;
+        CastExpression castExpr = null;
+        Expression lowExpr = null;
+
+        // Check left = cast(high << 8), right = low
+        if (binaryExpression.left instanceof CastExpression leftCast
+                && leftCast.targetType.allocSize() == 2
+                && leftCast.operand instanceof BinaryExpression leftShift
+                && leftShift.operator == BinaryExpression.Operator.SHL) {
+            shiftExpr = leftShift;
+            castExpr = leftCast;
+            lowExpr = binaryExpression.right;
+        }
+        // Or vice versa
+        else if (binaryExpression.right instanceof CastExpression rightCast
+                && rightCast.targetType.allocSize() == 2
+                && rightCast.operand instanceof BinaryExpression rightShift
+                && rightShift.operator == BinaryExpression.Operator.SHL) {
+            shiftExpr = rightShift;
+            castExpr = rightCast;
+            lowExpr = binaryExpression.left;
+        }
+
+        if (shiftExpr == null) return null;
+
+        // Validate shift amount is 8
+        if (!(shiftExpr.right instanceof NumericalExpression shiftAmt) || shiftAmt.value != 8) {
+            return null;
+        }
+
+        if(lowExpr instanceof CastExpression lowCast && lowCast.operand.typeSpecifier.allocSize() == 1){
+            // Special case for what TypeChecker does for type coercion for binary ops
+            lowExpr = lowCast.operand;
+        }
+
+        if (shiftExpr.left.getTypeSpecifier().allocSize() != 1 || lowExpr.getTypeSpecifier().allocSize() != 1) {
+            return null;
+        }
+
+        IROperand high = shiftExpr.left.accept(this);
+        IROperand low = lowExpr.accept(this);
+
+        return new ComposeOperand(high, low, castExpr.typeSpecifier);
     }
 
     @Override
