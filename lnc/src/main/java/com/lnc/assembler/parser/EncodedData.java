@@ -2,10 +2,18 @@ package com.lnc.assembler.parser;
 
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
+import com.lnc.assembler.parser.argument.Byte;
+import com.lnc.assembler.parser.argument.NumericalArgument;
 import com.lnc.cc.codegen.CodeElementVisitor;
 import com.lnc.common.ExtendedListIterator;
+import com.lnc.common.frontend.Token;
+import com.lnc.common.frontend.TokenType;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * EncodedData represents a specific implementation of CodeElement that holds
@@ -17,24 +25,37 @@ import java.util.Arrays;
  */
 public class EncodedData extends CodeElement{
 
-    protected final byte[] data;
+    protected final NumericalArgument[] data;
 
-    protected EncodedData(byte[] data) {
+    protected EncodedData(NumericalArgument[] data) {
         this.data = data;
     }
 
     @Override
     public int size(ILabelSectionLocator sectionLocator) {
-        return data.length;
+        return Arrays.stream(data).reduce(0, (acc, arg) -> acc + arg.size(sectionLocator), Integer::sum);
     }
 
     @Override
     public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
-        return data;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for(NumericalArgument arg : data){
+            try {
+                baos.write(arg.encode(labelResolver, instructionAddress));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return baos.toByteArray();
     }
 
     public static EncodedData of(byte[] data){
-        return new EncodedData(data);
+        List<NumericalArgument> args = new ArrayList<>();
+        for(byte datum : data){
+            args.add(new Byte(Token.__internal(TokenType.INTEGER, (int) datum)));
+        }
+
+        return new EncodedData(args.toArray(NumericalArgument[]::new));
     }
 
     public static EncodedData ofString(String string) {
@@ -44,7 +65,7 @@ public class EncodedData extends CodeElement{
         // Null-terminate the string
         data[string.length()] = 0;
 
-        return new EncodedData(data);
+        return of(data);
     }
 
     @Override
@@ -56,8 +77,8 @@ public class EncodedData extends CodeElement{
     public String toString() {
         StringBuilder val = new StringBuilder(".data ");
 
-        for (byte datum : data) {
-            val.append(String.format("0x%02x ", datum & 0xFF));
+        for (NumericalArgument datum : data) {
+            val.append(datum.toString()).append(" ");
         }
         return val.toString();
     }

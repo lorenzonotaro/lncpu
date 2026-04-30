@@ -92,28 +92,28 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
     private CodeElement directive() {
         if (match(TokenType.DIR_DATA)) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            while (check(TokenType.INTEGER, TokenType.STRING)) {
-                Token t = advance();
-                switch (t.type) {
-                    case INTEGER:
-                        intToBytes(baos, t);
-                        break;
-                    case STRING:
-                        String s = (String) t.literal;
-                        byte[] bytes = s.getBytes(StandardCharsets.US_ASCII);
-                        baos.write(bytes, 0, bytes.length);
-                        break;
+            List<NumericalArgument> data = new ArrayList<>();
+            while(!isAtEnd()){
+                if(match(TokenType.STRING)){
+                    String str = (String) previous().literal;
+                    for(int i = 0; i < str.length(); i++){
+                        data.add(new Byte(Token.__internal(TokenType.INTEGER, (int) str.charAt(i))));
+                    }
                 }
+                Argument arg = argument();
+                if(!(arg instanceof NumericalArgument)){
+                    throw error(arg.token, "expected numerical argument");
+                }
+                data.add((NumericalArgument) arg);
             }
-            return EncodedData.of(baos.toByteArray());
+            return new EncodedData(data.toArray(NumericalArgument[]::new));
         } else if (match(TokenType.DIR_RES)) {
             Token t = consume("expected integer", TokenType.INTEGER);
             int value = (Integer) t.literal;
             if (value < 0) {
                 throw error(t, "value must be positive");
             }
-            return EncodedData.of(new byte[value]);
+            return new ReservedSpace(value);
         } else if (match(TokenType.DIR_EXPORT)){
             Token label = consume("expected identifier", TokenType.IDENTIFIER), exportAs;
             if(match(TokenType.COLON)){

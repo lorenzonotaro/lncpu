@@ -9,4 +9,8 @@ public interface CodeElementVisitor<T> {
     T visit(EncodedData encodedData, ExtendedListIterator<CodeElement> iterator);
 
     T visit(Instruction instruction, ExtendedListIterator<CodeElement> iterator);
+
+    default T visit(CodeElementVisitor<T> visitor, ExtendedListIterator<CodeElement> iterator) {
+        return null;
+    }
 }
