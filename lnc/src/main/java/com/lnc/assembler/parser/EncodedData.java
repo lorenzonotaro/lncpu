@@ -33,7 +33,7 @@ public class EncodedData extends CodeElement{
 
     @Override
     public int size(ILabelSectionLocator sectionLocator) {
-        return Arrays.stream(data).reduce(0, (acc, arg) -> acc + arg.size(sectionLocator), Integer::sum);
+        return Arrays.stream(data).mapToInt(arg -> arg.size(sectionLocator)).sum();
     }
 
     @Override

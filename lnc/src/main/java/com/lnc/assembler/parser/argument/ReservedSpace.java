@@ -35,6 +35,6 @@ public class ReservedSpace extends CodeElement {
 
     @Override
     public byte[] encode(ILabelResolver labelResolver, int instructionAddress) {
-        return new byte[0];
+        return new byte[length];
     }
 }
