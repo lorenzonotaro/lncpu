@@ -428,7 +428,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         return null;
     }
 
-    private void checkStructCompleteness(StructDefinitionType definition, Token name) {
+    private void checkStructCompleteness(StructDefinitionType definition, Token name, boolean pointersCanBeIncomplete) {
         if(definition.isComplete())
             return;
 
@@ -436,7 +436,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         int offset = 0;
         for(VariableDeclaration field : definition.getFields()){
-            checkTypeCompleteness(field.declarator.typeSpecifier(), true);
+            checkTypeCompleteness(field.declarator.typeSpecifier(), pointersCanBeIncomplete);
             if(fieldMap.containsKey(field.name.lexeme)){
                 throw new CompileException("duplicate field name '" + field.name.lexeme + "' in struct '" + name.lexeme + "'", field.name);
             }
@@ -444,19 +444,19 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             offset += field.declarator.typeSpecifier().allocSize();
         }
 
-        definition.setFieldMap(fieldMap);
+        definition.setFieldMap(fieldMap, !pointersCanBeIncomplete);
     }
 
     @Override
     public void defineStruct(Token name, StructDefinitionType definition) {
-        checkStructCompleteness(definition, name);
+        checkStructCompleteness(definition, name, true);
         super.defineStruct(name, definition);
     }
 
     @Override
     public StructDefinitionType resolveStruct(Token token) {
         StructDefinitionType struct = super.resolveStruct(token);
-        checkStructCompleteness(struct, token);
+        checkStructCompleteness(struct, token, false);
         return struct;
     }
 

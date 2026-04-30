@@ -12,6 +12,7 @@ public class StructDefinitionType{
     private final Token defToken;
     private final List<VariableDeclaration> fields;
     private Map<String, StructFieldEntry> fieldMap;
+    private boolean definitionComplete = false;
 
     public StructDefinitionType(Token defToken, List<VariableDeclaration> fields) {
         this.defToken = defToken;
@@ -31,11 +32,12 @@ public class StructDefinitionType{
     }
 
     public boolean isComplete() {
-        return fieldMap != null;
+        return fieldMap != null && definitionComplete;
     }
 
-    public void setFieldMap(Map<String, StructFieldEntry> fieldMap) {
+    public void setFieldMap(Map<String, StructFieldEntry> fieldMap, boolean complete) {
         this.fieldMap = fieldMap;
+        this.definitionComplete = complete;
     }
 
     @Override
