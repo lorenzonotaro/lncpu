@@ -21,7 +21,7 @@ public class ReservedSpace extends CodeElement {
 
     @Override
     public <T> T accept(CodeElementVisitor<T> visitor, ExtendedListIterator<CodeElement> iterator) {
-        return visitor.visit(visitor, iterator);
+        return visitor.visit(this, iterator);
     }
 
     public String toString(){

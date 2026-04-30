@@ -69,6 +69,11 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
     }
 
     @Override
+    public Boolean visit(ReservedSpace reservedSpace, ExtendedListIterator<CodeElement> iterator) {
+        return false;
+    }
+
+    @Override
     public Boolean visit(Instruction instruction, ExtendedListIterator<CodeElement> iterator) {
         return false;
     }
@@ -141,6 +146,11 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
 
         @Override
         public Boolean visit(EncodedData encodedData, ExtendedListIterator<CodeElement> iterator) {
+            return false;
+        }
+
+        @Override
+        public Boolean visit(ReservedSpace reservedSpace, ExtendedListIterator<CodeElement> iterator) {
             return false;
         }
 
@@ -223,6 +233,11 @@ public class StackFramePreservationPass extends AbstractAsmLevelLinearPass{
 
         @Override
         public Boolean visit(EncodedData encodedData, ExtendedListIterator<CodeElement> iterator) {
+            return false;
+        }
+
+        @Override
+        public Boolean visit(ReservedSpace reservedSpace, ExtendedListIterator<CodeElement> iterator) {
             return false;
         }
 

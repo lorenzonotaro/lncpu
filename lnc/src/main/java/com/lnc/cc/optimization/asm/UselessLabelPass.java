@@ -6,6 +6,7 @@ import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.argument.Argument;
 import com.lnc.assembler.parser.argument.LabelRef;
+import com.lnc.assembler.parser.argument.ReservedSpace;
 import com.lnc.common.ExtendedListIterator;
 
 import java.util.HashMap;
@@ -18,6 +19,11 @@ public class UselessLabelPass extends AbstractAsmLevelLinearPass {
 
     @Override
     public Boolean visit(EncodedData encodedData, ExtendedListIterator<CodeElement> iterator) {
+        return false;
+    }
+
+    @Override
+    public Boolean visit(ReservedSpace reservedSpace, ExtendedListIterator<CodeElement> iterator) {
         return false;
     }
 

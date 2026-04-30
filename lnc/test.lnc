@@ -1,32 +1,10 @@
 extern int bios_version_major;
 extern int bios_version_minor;
 
-struct ddi_device_descriptor {
-    char magic[4];
-    unsigned int version;
-    unsigned int type;
-    unsigned int flags;
-    unsigned int size_pages;
-    void far * boot_start;
-    void far *control_page;
-    unsigned int reserved[3];
-    unsigned int control_byte;
-};
-
-struct ddi_device {
-    char name[8];
-    struct ddi_device_descriptor far *descriptor;
-    unsigned int start_page;
-    unsigned int device_idx;
-    unsigned int device_subidx;
-    unsigned int reserved[3];
-};
-
-extern void printf(const char far *format, ...);
-
-struct ddi_device far *device;
-
-void main(){
-    int flags = device->descriptor->flags;
-    printf("BIOS version: %u", flags);
+int i;
+int main(){
+    if(i != 0){
+        return 42;
+    }
+    return 12;
 }

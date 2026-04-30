@@ -215,7 +215,7 @@ public record LivenessInfo(
             return false;
         }
 
-        if(inst instanceof Call){ // Calls never get direct reads
+        if(inst instanceof Call || inst instanceof Ret){ // Callss and Rets require params to be in registers, so they can never be optimized
             return false;
         }
 

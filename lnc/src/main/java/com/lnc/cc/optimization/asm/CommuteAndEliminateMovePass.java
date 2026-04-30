@@ -4,6 +4,7 @@ import com.lnc.assembler.parser.CodeElement;
 import com.lnc.assembler.parser.EncodedData;
 import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.argument.Argument;
+import com.lnc.assembler.parser.argument.ReservedSpace;
 import com.lnc.common.ExtendedListIterator;
 import com.lnc.common.frontend.TokenType;
 
@@ -11,6 +12,11 @@ public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
 
     @Override
     public Boolean visit(EncodedData encodedData, ExtendedListIterator<CodeElement> iterator) {
+        return false;
+    }
+
+    @Override
+    public Boolean visit(ReservedSpace reservedSpace, ExtendedListIterator<CodeElement> iterator) {
         return false;
     }
 

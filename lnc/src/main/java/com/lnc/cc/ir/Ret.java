@@ -31,6 +31,7 @@ public class Ret extends IRInstruction {
         return List.of();
     }
 
+
     @Override
     public void replaceOperand(IROperand oldOp, IROperand newOp) {
         if (value != null && value.equals(oldOp)) {
