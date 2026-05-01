@@ -113,8 +113,8 @@ public final class CompilerOutput {
         exportedLabels.add(label);
     }
 
-    public Set<String> exportedLabels() {
-        return exportedLabels;
+    public HashMap<String, String> exportedLabels() {
+        return exportedLabels.stream().collect(HashMap::new, (m, label) -> m.put(label, label), HashMap::putAll);
     }
 
     public void setUnit(IRUnit unit) {

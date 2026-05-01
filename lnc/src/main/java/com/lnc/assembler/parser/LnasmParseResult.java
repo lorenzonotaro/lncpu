@@ -3,6 +3,7 @@ package com.lnc.assembler.parser;
 import com.lnc.assembler.linker.LinkException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,20 +18,18 @@ import java.util.Set;
  * - Supporting the joining of additional parse results with validation of label uniqueness.
  *
  * @param blocks          A list of parsed blocks from the assembly source.
- * @param exportedLabels  A set of labels that are exported from the parsed blocks.
+ * @param exportedLabels  A map of labels that are exported from the parsed blocks, where the key is the exported name and the name is the actual name in the unit.
  */
-public record LnasmParseResult(List<LnasmParsedBlock> blocks, Set<String> exportedLabels) {
-    public LnasmParseResult join(List<LnasmParsedBlock> results, List<String> list) {
+public record LnasmParseResult(List<LnasmParsedBlock> blocks, Map<String, String> exportedLabels) {
+    public LnasmParseResult join(List<LnasmParsedBlock> results, Map<String, String> exportedLabels) {
 
         blocks.addAll(results);
 
-        for (String s : list) {
-            if(s == null || s.isEmpty())
-                continue;
-            if(this.exportedLabels.contains(s)){
+        for (String s : exportedLabels.keySet()) {
+            if(this.exportedLabels.containsKey(s)){
                 throw new LinkException("Label '" + s + "' is exported multiple times");
             }
-            exportedLabels.add(s);
+            this.exportedLabels.put(s, exportedLabels.get(s));
         }
 
         return this;

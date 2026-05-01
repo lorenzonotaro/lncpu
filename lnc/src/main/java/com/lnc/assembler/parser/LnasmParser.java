@@ -42,7 +42,7 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
 
     private final List<LnasmParsedBlock> blocks = new ArrayList<>();
 
-    private final Set<String> exportedLabels = new HashSet<>();
+    private final HashMap<String, String> exportedLabels = new HashMap<>();
 
     @Override
     protected void parseLine() {
@@ -123,11 +123,11 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
             }
 
             String exportName = exportAs.lexeme;
-            if(exportedLabels.contains(exportName)) {
+            if(exportedLabels.containsKey(exportName)) {
                 throw error(exportAs, "label already exported");
             }
 
-            exportedLabels.add(exportName);
+            exportedLabels.put(exportName, label.lexeme);
 
             return null; // exports are handled in the linker, no need to add anything to the instruction list
         }

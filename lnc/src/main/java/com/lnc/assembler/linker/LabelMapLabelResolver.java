@@ -110,11 +110,12 @@ public class LabelMapLabelResolver implements ILabelResolver {
         return reverseSymbolTable;
     }
 
-    public Map<String, LabelMapEntry> getEntriesFor(Set<String> exportedLabels) {
+    public Map<String, LabelMapEntry> getEntriesFor(Map<String, String> exportedLabels) {
         var map = new HashMap<String, LabelMapEntry>();
-        for(var label : exportedLabels){
+        for(var label : exportedLabels.keySet()){
             var entry = globalLabelMap.get(label);
-            if(entry == null){
+            var realName = exportedLabels.get(label);
+            if(realName == null){
                 throw new RuntimeException("cannot export unresolved label '%s'".formatted(label));
             }
             map.put(label, entry);

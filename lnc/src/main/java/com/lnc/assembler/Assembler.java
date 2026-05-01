@@ -54,7 +54,7 @@ public class Assembler {
     private final List<CompilerOutput> compilerOutputs;
     private final LinkTarget[] requestedOutputs;
     private BinaryLinker linker;
-    private Set<String> exportedLabels;
+    private Map<String, String> exportedLabels;
 
     public Assembler(List<Path> sourceFiles, String linkerConfig, List<CompilerOutput> compilerOutputs, LinkTarget[] requestedOutputs) {
         this.sourceFiles = sourceFiles;
@@ -126,7 +126,8 @@ public class Assembler {
         LnasmParseResult parseResult = parser.getResult();
 
         if (compilerOutputs != null) {
-            parseResult.join(compilerOutputs.stream().map(LnasmParsedBlock::fromCompilerOutput).toList(), compilerOutputs.stream().flatMap(c -> c.exportedLabels().stream()).toList());
+            parseResult.join(compilerOutputs.stream().map(LnasmParsedBlock::fromCompilerOutput).toList(), compilerOutputs.stream()
+                    .collect(HashMap::new, (m, c) -> m.putAll(c.exportedLabels()), HashMap::putAll));
         }
 
         this.exportedLabels = parseResult.exportedLabels();
