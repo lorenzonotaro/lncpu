@@ -48,7 +48,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             lreg = moveOrLoadIntoVR(lreg);
         }
 
-        if(rreg.type != IROperand.Type.VIRTUAL_REGISTER && rreg.type != IROperand.Type.IMMEDIATE){
+        if(lreg.getTypeSpecifier().allocSize() > 1 || (rreg.type != IROperand.Type.VIRTUAL_REGISTER && rreg.type != IROperand.Type.IMMEDIATE)){
             rreg = moveOrLoadIntoVR(rreg);
         }
 

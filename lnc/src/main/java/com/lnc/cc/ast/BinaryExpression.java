@@ -22,33 +22,34 @@ public class BinaryExpression extends Expression {
     }
 
     public enum Operator {
-        ADD(true, false),
-        SUB(false, false),
-        MUL(true, false),
-        DIV(false, false),
-        AND(true, false),
-        OR(true, false),
-        XOR(true, false),
-        EQ(true, true),
-        NE(true, true),
-        SHL(false, true),
-        SHR(false, true),
-        LT(false, true),
-        GT(false, true),
-        LE(false, true),
-        GE(false, true);
+        ADD(Type.ARITHMETIC_LOGICAL, true),
+        SUB(Type.ARITHMETIC_LOGICAL, false),
+        MUL(Type.ARITHMETIC_LOGICAL, true),
+        DIV(Type.ARITHMETIC_LOGICAL, false),
+        AND(Type.ARITHMETIC_LOGICAL, true),
+        OR(Type.ARITHMETIC_LOGICAL, true),
+        XOR(Type.ARITHMETIC_LOGICAL, true),
+        EQ(Type.COMPARISON, true),
+        NE(Type.COMPARISON, true),
+        SHL(Type.ARITHMETIC_LOGICAL, false),
+        SHR(Type.ARITHMETIC_LOGICAL, false),
+        LT(Type.COMPARISON, false),
+        GT(Type.COMPARISON, false),
+        LE(Type.COMPARISON, false),
+        GE(Type.COMPARISON, false);
+
+        public enum Type {
+            ARITHMETIC_LOGICAL,
+            COMPARISON
+        };
+        public final Type type;
 
         private final boolean commutative;
 
-        private final boolean comparison;
 
-        Operator(){
-            this(false, false);
-        }
-
-        Operator(boolean commutative, boolean comparison) {
+        Operator(Type type, boolean commutative) {
             this.commutative = commutative;
-            this.comparison = comparison;
+            this.type = type;
         }
 
         public static Operator fromTokenType(Token token) {
@@ -74,10 +75,6 @@ public class BinaryExpression extends Expression {
 
         public boolean isCommutative() {
             return commutative;
-        }
-
-        public boolean isComparison() {
-            return comparison;
         }
     }
 }

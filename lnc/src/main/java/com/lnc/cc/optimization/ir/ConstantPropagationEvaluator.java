@@ -54,6 +54,13 @@ public class ConstantPropagationEvaluator implements IIROperandVisitor<PropValue
 
     @Override
     public PropValue visit(ComposeOperand composeOperand) {
+        var high = composeOperand.high.accept(this);
+        var low = composeOperand.low.accept(this);
+        if (high.isConstant() && low.isConstant()) {
+            int highValue = high.valueOr(0);
+            int lowValue = low.valueOr(0);
+            return PropValue.constant((highValue << 8) | lowValue);
+        }
         return PropValue.unknown();
     }
 }

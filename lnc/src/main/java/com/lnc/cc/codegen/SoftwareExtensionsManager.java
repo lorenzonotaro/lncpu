@@ -41,6 +41,25 @@ public class SoftwareExtensionsManager {
         return require(ExtensionKind.SUB_WORD_WORD, dstWord, srcWord);
     }
 
+    public String requireCmpWordByte(Register leftReg, Register rightReg, TokenType targetFlag) {
+        ExtensionKind extensionKind = switch (targetFlag){
+            case JZ -> ExtensionKind.CMP_Z_WORD_BYTE;
+            case JN -> ExtensionKind.CMP_N_WORD_BYTE;
+            case JC -> ExtensionKind.CMP_C_WORD_BYTE;
+            default -> throw new IllegalArgumentException("Invalid target flag: " + targetFlag);
+        };
+        return require(extensionKind, leftReg, rightReg);
+    }
+    public String requireCmpWordWord(Register leftReg, Register rightReg, TokenType targetFlag) {
+        ExtensionKind extensionKind = switch (targetFlag){
+            case JZ -> ExtensionKind.CMP_Z_WORD_WORD;
+            case JN -> ExtensionKind.CMP_N_WORD_WORD;
+            case JC -> ExtensionKind.CMP_C_WORD_WORD;
+            default -> throw new IllegalArgumentException("Invalid target flag: " + targetFlag);
+        };
+        return require(extensionKind, leftReg, rightReg);
+    }
+
     public String requireIncWord(Register dstWord) {
         return require(ExtensionKind.INC_WORD, dstWord, null);
     }
@@ -67,8 +86,8 @@ public class SoftwareExtensionsManager {
         List<ExtensionRequest> ordered = new ArrayList<>(requiredExtensions);
         ordered.sort(Comparator
                 .comparing((ExtensionRequest req) -> req.kind)
-                .thenComparing(req -> req.dstWord.ordinal())
-                .thenComparing(req -> req.src == null ? -1 : req.src.ordinal()));
+                .thenComparing(req -> req.a.ordinal())
+                .thenComparing(req -> req.b == null ? -1 : req.b.ordinal()));
 
         for (var request : ordered) {
             emitRoutine(output, request);
@@ -77,9 +96,9 @@ public class SoftwareExtensionsManager {
         return output;
     }
 
-    private String require(ExtensionKind kind, Register dstWord, Register src) {
-        validateRequest(kind, dstWord, src);
-        ExtensionRequest request = new ExtensionRequest(kind, dstWord, src);
+    private String require(ExtensionKind kind, Register a, Register b) {
+        validateRequest(kind, a, b);
+        ExtensionRequest request = new ExtensionRequest(kind, a, b);
         requiredExtensions.add(request);
         return request.symbolName();
     }
@@ -90,12 +109,12 @@ public class SoftwareExtensionsManager {
         }
 
         switch (kind) {
-            case ADD_WORD_BYTE, SUB_WORD_BYTE -> {
+            case ADD_WORD_BYTE, SUB_WORD_BYTE, CMP_C_WORD_BYTE, CMP_Z_WORD_BYTE, CMP_N_WORD_BYTE -> {
                 if (src == null || src.isCompound()) {
                     throw new IllegalArgumentException(kind + " requires a byte source register");
                 }
             }
-            case ADD_WORD_WORD, SUB_WORD_WORD -> {
+            case ADD_WORD_WORD, SUB_WORD_WORD, CMP_C_WORD_WORD, CMP_Z_WORD_WORD,  CMP_N_WORD_WORD -> {
                 if (src == null || !src.isCompound()) {
                     throw new IllegalArgumentException(kind + " requires a word source register");
                 }
@@ -112,13 +131,145 @@ public class SoftwareExtensionsManager {
         output.addLabel(request.symbolName());
 
         switch (request.kind) {
-            case ADD_WORD_BYTE -> emitAddWordByte(output, request.dstWord, request.src);
-            case ADD_WORD_WORD -> emitAddWordWord(output, request.dstWord, request.src);
-            case SUB_WORD_BYTE -> emitSubWordByte(output, request.dstWord, request.src);
-            case SUB_WORD_WORD -> emitSubWordWord(output, request.dstWord, request.src);
-            case INC_WORD -> emitIncWord(output, request.dstWord);
-            case DEC_WORD -> emitDecWord(output, request.dstWord);
+            case ADD_WORD_BYTE -> emitAddWordByte(output, request.a, request.b);
+            case ADD_WORD_WORD -> emitAddWordWord(output, request.a, request.b);
+            case SUB_WORD_BYTE -> emitSubWordByte(output, request.a, request.b);
+            case SUB_WORD_WORD -> emitSubWordWord(output, request.a, request.b);
+            case INC_WORD -> emitIncWord(output, request.a);
+            case DEC_WORD -> emitDecWord(output, request.a);
+            case CMP_C_WORD_BYTE -> emitCmpCWordByte(output, request.a, request.b);
+            case CMP_C_WORD_WORD -> emitCmpCWordWord(output, request.a, request.b);
+            case CMP_Z_WORD_BYTE -> emitCmpZWordByte(output, request.a, request.b);
+            case CMP_Z_WORD_WORD -> emitCmpZWordWord(output, request.a, request.b);
+            case CMP_N_WORD_BYTE -> emitCmpNWordByte(output, request.a, request.b);
+            case CMP_N_WORD_WORD -> emitCmpNWordWord(output, request.a, request.b);
         }
+    }
+
+    private void emitCmpNWordWord(CompilerOutput output, Register a, Register b) {
+        var aLow = reg(low(a));
+        var aHigh = reg(high(a));
+        var bLow = reg(low(b));
+        var bHigh = reg(high(b));
+
+        var chkLow = routineLabel("chklow");
+        var carryHigh = routineLabel("carryhigh");
+
+        emit(output, TokenType.CMP, aHigh, bHigh);
+        emit(output, TokenType.JN, CodeGenUtils.labelRef(carryHigh));
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(chkLow));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(chkLow);
+        emit(output, TokenType.CMP, aLow, bLow);
+        emit(output, TokenType.JN, CodeGenUtils.labelRef(carryHigh));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(carryHigh);
+        emit(output, TokenType.SEC);
+        emit(output, TokenType.RET);
+    }
+
+    private void emitCmpNWordByte(CompilerOutput output, Register a, Register b) {
+        var aLow = reg(low(a));
+        var aHigh = reg(high(a));
+        var src = reg(b);
+
+        var chkLow = routineLabel("chklow");
+        var carryHigh = routineLabel("carryhigh");
+
+        emit(output, TokenType.CMP, aHigh, CodeGenUtils.immByte(0));
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(chkLow));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(chkLow);
+        emit(output, TokenType.CMP, aLow, src);
+        emit(output, TokenType.JN, CodeGenUtils.labelRef(carryHigh));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(carryHigh);
+        emit(output, TokenType.SEC);
+        emit(output, TokenType.RET);
+    }
+
+    private void emitCmpZWordWord(CompilerOutput output, Register a, Register b) {
+        var aLow = reg(low(a));
+        var aHigh = reg(high(a));
+        var bLow = reg(low(a));
+        var bHigh = reg(high(a));
+
+        var chkLow = routineLabel("chklow");
+        var carryHigh = routineLabel("carryhigh");
+
+        emit(output, TokenType.CMP, aHigh, bHigh);
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(chkLow));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(chkLow);
+        emit(output, TokenType.CMP, aLow, bLow);
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(carryHigh));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(carryHigh);
+        emit(output, TokenType.SEC);
+        emit(output, TokenType.RET);
+    }
+
+    private void emitCmpZWordByte(CompilerOutput output, Register a, Register b) {
+        var aLow = reg(low(a));
+        var aHigh = reg(high(a));
+        var src = reg(b);
+
+        var chklow = routineLabel("chklow");
+        var carryHigh = routineLabel("carryhigh");
+
+        emit(output, TokenType.AND, aHigh, aHigh);
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(chklow));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(chklow);
+        //check low
+        emit(output, TokenType.CMP, aLow, src);
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(carryHigh));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        //carry high
+        output.addLabel(carryHigh);
+        emit(output, TokenType.SEC);
+        emit(output, TokenType.RET);
+    }
+
+    private void emitCmpCWordWord(CompilerOutput output, Register a, Register b) {
+        var aLow = reg(low(a));
+        var bLow = reg(low(b));
+        var aHigh = reg(high(a));
+        var bHigh = reg(high(b));
+
+        var carry = routineLabel("carry");
+
+        emit(output, TokenType.CMP, aHigh, bHigh);
+        emit(output, TokenType.JC, CodeGenUtils.labelRef(carry));
+        emit(output, TokenType.CMP, aLow, bLow);
+        emit(output, TokenType.RET);
+        output.addLabel(carry);
+        emit(output, TokenType.SEC);
+        emit(output, TokenType.RET);
+    }
+
+    private void emitCmpCWordByte(CompilerOutput output, Register a, Register b) {
+        var low = reg(low(a));
+        var high = reg(high(a));
+        var src = reg(b);
+
+        var checkLow = routineLabel("chklow");
+
+        emit(output, TokenType.AND, high, high);
+        emit(output, TokenType.JZ, CodeGenUtils.labelRef(checkLow));
+        emit(output, TokenType.CLC);
+        emit(output, TokenType.RET);
+        output.addLabel(checkLow);
+        emit(output, TokenType.CMP, low, src);
+        emit(output, TokenType.RET);
     }
 
     private void emitAddWordByte(CompilerOutput output, Register dstWord, Register srcByte) {
@@ -243,20 +394,32 @@ public class SoftwareExtensionsManager {
         SUB_WORD_BYTE,
         SUB_WORD_WORD,
         INC_WORD,
-        DEC_WORD
+        DEC_WORD,
+        CMP_C_WORD_BYTE,
+        CMP_C_WORD_WORD,
+        CMP_Z_WORD_BYTE,
+        CMP_Z_WORD_WORD,
+        CMP_N_WORD_BYTE,
+        CMP_N_WORD_WORD
     }
 
-    private record ExtensionRequest(ExtensionKind kind, Register dstWord, Register src) {
+    private record ExtensionRequest(ExtensionKind kind, Register a, Register b) {
 
         private String symbolName() {
-            String dst = normalizeWord(dstWord);
+            String normA = normalizeWord(a);
             return switch (kind) {
-                case ADD_WORD_BYTE -> "add_" + dst + "_" + normalize(src);
-                case ADD_WORD_WORD -> "add_" + dst + "_" + normalizeWord(src);
-                case SUB_WORD_BYTE -> "sub_" + dst + "_" + normalize(src);
-                case SUB_WORD_WORD -> "sub_" + dst + "_" + normalizeWord(src);
-                case INC_WORD -> "inc_" + dst;
-                case DEC_WORD -> "dec_" + dst;
+                case ADD_WORD_BYTE -> "add_" + normA + "_" + normalize(b);
+                case ADD_WORD_WORD -> "add_" + normA + "_" + normalizeWord(b);
+                case SUB_WORD_BYTE -> "sub_" + normA + "_" + normalize(b);
+                case SUB_WORD_WORD -> "sub_" + normA + "_" + normalizeWord(b);
+                case INC_WORD -> "inc_" + normA;
+                case DEC_WORD -> "dec_" + normA;
+                case CMP_C_WORD_BYTE -> "cmp_c_" + normA + "_" + normalize(b);
+                case CMP_C_WORD_WORD -> "cmp_c_" + normA + "_" + normalizeWord(b);
+                case CMP_Z_WORD_BYTE -> "cmp_z_" + normA + "_" + normalize(b);
+                case CMP_Z_WORD_WORD -> "cmp_z_" + normA + "_" + normalizeWord(b);
+                case CMP_N_WORD_BYTE -> "cmp_n_" + normA + "_" + normalize(b);
+                case CMP_N_WORD_WORD -> "cmp_n_" + normA + "_" + normalizeWord(b);
             };
         }
     }

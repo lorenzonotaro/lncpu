@@ -1,9 +1,9 @@
 package com.lnc.cc.types;
 
-public class UI8Type extends TypeSpecifier {
+public class UI8Type extends NumericalTypeSpecifier {
 
     public UI8Type(){
-        super(Type.UI8);
+        super(Type.UI8, true, false);
     }
 
     @Override

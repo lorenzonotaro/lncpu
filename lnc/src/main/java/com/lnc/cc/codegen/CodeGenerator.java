@@ -143,8 +143,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         var left = condJump.getLeft().accept(this);
         var right = condJump.getRight().accept(this);
 
-        instrf(TokenType.CMP, left, right);
-
         IRBlock trueTarget = condJump.getTarget();
         IRBlock falseTarget = condJump.getFalseTarget();
         IRBlock continueTo = condJump.getContinueTo();
@@ -152,8 +150,9 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         // Emit minimal conditional jumps and schedule targets using LIFO (push in reverse order)
         switch(condJump.getCond()){
             case EQ -> {
+                boolean softwareCmp = visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JZ);
                 // Z == 1 => true; fallthrough to false
-                instrf(TokenType.JZ, CodeGenUtils.labelRef(trueTarget));
+                instrf(softwareCmp ? TokenType.JC : TokenType.JZ, CodeGenUtils.labelRef(trueTarget));
 
                 enqueue(trueTarget);   // push first
                 enqueue(falseTarget);  // so false is visited next (fallthrough)
@@ -161,14 +160,16 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 instrf(TokenType.GOTO, CodeGenUtils.labelRef(falseTarget));
             }
             case NE -> {
+                boolean softwareCmp = visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JZ);
                 // complement via JZ to false; fallthrough to true
-                instrf(TokenType.JZ, CodeGenUtils.labelRef(falseTarget));
+                instrf(softwareCmp ? TokenType.JC : TokenType.JZ, CodeGenUtils.labelRef(falseTarget));
                 enqueue(falseTarget);
                 enqueue(trueTarget);
 
                 instrf(TokenType.GOTO, CodeGenUtils.labelRef(trueTarget));
             }
             case LT -> {
+               visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JC);
                 // C == 1 => true; fallthrough to false
                 instrf(TokenType.JC, CodeGenUtils.labelRef(trueTarget));
                 enqueue(trueTarget);
@@ -177,6 +178,7 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
                 instrf(TokenType.GOTO, CodeGenUtils.labelRef(falseTarget));
             }
             case GE -> {
+                visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JC);
                 // complement via JC to false; fallthrough to true
                 instrf(TokenType.JC, CodeGenUtils.labelRef(falseTarget));
                 enqueue(falseTarget);
@@ -186,8 +188,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             }
             case LE -> {
                 // C == 1 or Z == 1 => true; fallthrough to false
+                visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JC);
                 instrf(TokenType.JC, CodeGenUtils.labelRef(trueTarget));
-                instrf(TokenType.JZ, CodeGenUtils.labelRef(trueTarget));
+                var softwareCmp = visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JZ);
+                instrf(softwareCmp ? TokenType.JC : TokenType.JZ, CodeGenUtils.labelRef(trueTarget));
                 enqueue(trueTarget);
                 enqueue(falseTarget);
 
@@ -195,8 +199,10 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
             }
             case GT -> {
                 // complement via (JC || JZ) to false; fallthrough to true
+                visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JC);
                 instrf(TokenType.JC, CodeGenUtils.labelRef(falseTarget));
-                instrf(TokenType.JZ, CodeGenUtils.labelRef(falseTarget));
+                var softwareCmp = visitCmp(left, condJump.getLeft().getTypeSpecifier().allocSize(), right, condJump.getRight().getTypeSpecifier().allocSize(), TokenType.JZ);
+                instrf(softwareCmp ? TokenType.JC : TokenType.JZ, CodeGenUtils.labelRef(falseTarget));
                 enqueue(falseTarget);
                 enqueue(trueTarget);
 
@@ -209,6 +215,24 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         }
 
         return null;
+    }
+
+    private boolean visitCmp(Argument left, int leftSize, Argument right, int rightSize, TokenType targetFlag) {
+        if(leftSize == 1){
+            instrf(TokenType.CMP, left, right);
+        }else{
+            Register leftReg = asWordRegister(left);
+            Register rightReg = rightSize == 1 ? asByteRegister(right) : asWordRegister(right);
+            if(rightSize == 1){
+                String label = softwareExtensionsManager.requireCmpWordByte(leftReg, rightReg, targetFlag);
+                instrf(TokenType.LCALL, CodeGenUtils.labelRef(label));
+            }else{
+                String label = softwareExtensionsManager.requireCmpWordWord(leftReg, rightReg, targetFlag);
+                instrf(TokenType.LCALL, CodeGenUtils.labelRef(label));
+            }
+            return true;
+        }
+        return false;
     }
 
 

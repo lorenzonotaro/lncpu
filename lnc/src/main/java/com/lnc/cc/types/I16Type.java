@@ -1,8 +1,8 @@
 package com.lnc.cc.types;
 
-public class I16Type extends TypeSpecifier {
+public class I16Type extends NumericalTypeSpecifier {
     public I16Type() {
-        super(Type.I16, true);
+        super(Type.I16, true, true);
     }
 
     @Override
@@ -17,6 +17,6 @@ public class I16Type extends TypeSpecifier {
 
     @Override
     public String toString() {
-        return "word";
+        return "long int";
     }
 }

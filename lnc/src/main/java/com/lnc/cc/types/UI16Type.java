@@ -1,8 +1,8 @@
 package com.lnc.cc.types;
 
-public class UI16Type extends TypeSpecifier {
+public class UI16Type extends NumericalTypeSpecifier {
     public UI16Type() {
-        super(Type.UI16, true);
+        super(Type.UI16, true, false);
     }
 
     @Override
@@ -17,6 +17,8 @@ public class UI16Type extends TypeSpecifier {
 
     @Override
     public String toString() {
-        return "unsigned word";
+        return "unsigned long int";
     }
+
+
 }

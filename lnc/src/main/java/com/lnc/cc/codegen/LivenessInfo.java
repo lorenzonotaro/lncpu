@@ -219,6 +219,10 @@ public record LivenessInfo(
             return false;
         }
 
+        if(inst instanceof CondJump condJump && condJump.getLeft().getTypeSpecifier().allocSize() > 1){
+            return false;
+        }
+
         if (!(inst instanceof Bin bin)) {
             return true;
         }
@@ -230,7 +234,7 @@ public record LivenessInfo(
             return false;
         }
 
-        if (!isWordAddOrSub(bin)) {
+        if (!isWordSoftwareInstr(bin)) {
             return true;
         }
 
@@ -254,13 +258,11 @@ public record LivenessInfo(
         return false;
     }
 
-    private static boolean isWordAddOrSub(Bin bin) {
+    private static boolean isWordSoftwareInstr(Bin bin) {
         if (bin.getDest().getTypeSpecifier().typeSize() != 2) {
             return false;
         }
-
-        return bin.getOperator() == BinaryExpression.Operator.ADD
-                || bin.getOperator() == BinaryExpression.Operator.SUB;
+        return true;
     }
 
     public Set<VirtualRegister> getLiveAfter(IRInstruction instr) {

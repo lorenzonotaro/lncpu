@@ -63,6 +63,8 @@ public class ConstantFoldingPass extends IRPass {
 
     @Override
     public Void visit(Bin bin) {
+        var left = bin.getLeft().accept(evaluator);
+        var right = bin.getRight().accept(evaluator);
         // TODO
         return null;
     }

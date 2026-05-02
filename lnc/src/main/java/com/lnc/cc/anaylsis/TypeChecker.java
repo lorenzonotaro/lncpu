@@ -100,46 +100,28 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier leftType = binaryExpression.left.accept(this);
         TypeSpecifier rightType = binaryExpression.right.accept(this);
-        TypeSpecifier binType = leftType;
-        leftType = coerceNumericCompatibility(binaryExpression.left, leftType, rightType);
-        rightType = coerceNumericCompatibility(binaryExpression.right, rightType, leftType);
 
-        if(leftType.allocSize() == 2 && rightType.allocSize() == 1){
-            if(rightType.type == TypeSpecifier.Type.I8){
-                binaryExpression.right = new CastExpression(binaryExpression.token, new I16Type(), binaryExpression.right);
-                rightType = binaryExpression.left.accept(this);
-            } else {
-                binaryExpression.right = new CastExpression(binaryExpression.token, new UI16Type(), binaryExpression.right);
-                rightType = binaryExpression.accept(this);
-            }
-        }else if(leftType.allocSize() == 1 && rightType.allocSize() == 2){
-            if(leftType.type == TypeSpecifier.Type.I8){
-                binaryExpression.left = new CastExpression(binaryExpression.token, new I16Type(), binaryExpression.left);
-                leftType = binaryExpression.right.accept(this);
-            } else {
-                binaryExpression.left = new CastExpression(binaryExpression.token, new UI16Type(), binaryExpression.left);
-                leftType = binaryExpression.right.accept(this);
-            }
-            binType = leftType;
+        if(!(leftType instanceof NumericalTypeSpecifier numLeft) || !(rightType instanceof NumericalTypeSpecifier numRight)){
+            throw new CompileException("binary operator '" + binaryExpression.operator + "' cannot be applied to '" + leftType + "' and '" + rightType + "'", binaryExpression.token);
+        }
+
+        if(numLeft.isSigned() != numRight.isSigned()){
+            Logger.compileWarning("binary operator '" + binaryExpression.operator + "' applied to signed and unsigned types '" + leftType + "' and '" + rightType + "'.", binaryExpression.token);
+        }
+
+        if(numLeft.allocSize() == 1 && numRight.allocSize() == 2){
+            // promote the left operand if the right operand is a word
+            binaryExpression.left = new CastExpression(binaryExpression.token,
+                    numLeft.isSigned() ? new I16Type() : new UI16Type(), binaryExpression.left);
+            leftType = binaryExpression.left.accept(this);
         }
 
         checkTypeCompleteness(leftType, true);
         checkTypeCompleteness(rightType, true);
+        
+        binaryExpression.setTypeSpecifier(leftType);
 
-        if (binaryExpression.operator == BinaryExpression.Operator.SHL || binaryExpression.operator == BinaryExpression.Operator.SHR) {
-            if (!isIntegerType(leftType) || !isIntegerType(rightType)) {
-                throw new CompileException("shift operands must be integer types", binaryExpression.token);
-            }
-
-            binaryExpression.setTypeSpecifier(leftType);
-            return leftType;
-        }
-
-        check(leftType, rightType, binaryExpression.token);
-
-        binaryExpression.setTypeSpecifier(binType);
-
-        return binType;
+        return leftType;
     }
 
     private TypeSpecifier coerceNumericCompatibility(Expression expression, TypeSpecifier expressionType, TypeSpecifier oppositeType) {

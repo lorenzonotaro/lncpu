@@ -1,10 +1,11 @@
 extern int bios_version_major;
 extern int bios_version_minor;
 
-int i;
-int main(){
-    if(i != 0){
-        return 42;
+unsigned long int i;
+unsigned int main(){
+    if(i > 15){
+        return 1;
+    }else{
+        return 0;
     }
-    return 12;
 }
