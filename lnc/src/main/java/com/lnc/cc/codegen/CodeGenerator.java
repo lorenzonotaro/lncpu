@@ -54,7 +54,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     public boolean run(){
-
         outputDataSections();
 
         outputConstSection();

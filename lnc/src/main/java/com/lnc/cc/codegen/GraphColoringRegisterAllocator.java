@@ -2,18 +2,18 @@ package com.lnc.cc.codegen;
 
 
 import com.lnc.LNC;
-import com.lnc.cc.ir.IRBlock;
-import com.lnc.cc.ir.IRInstruction;
-import com.lnc.cc.ir.IRUnit;
-import com.lnc.cc.ir.Pop;
-import com.lnc.cc.ir.Move;
-import com.lnc.cc.ir.Push;
+import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.ImmediateOperand;
 import com.lnc.cc.ir.operands.StackFrameLocation;
 import com.lnc.cc.ir.operands.VirtualRegister;
 import com.lnc.cc.optimization.ir.StageOneIROptimizer;
+import com.lnc.common.Logger;
 import com.mxgraph.view.mxGraph;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -555,9 +555,11 @@ public class GraphColoringRegisterAllocator {
 
     public static AllocationInfo run(IRUnit unit){
 
+        clearRegAllocIterFiles(unit);
+
         int maxIter = LNC.settings.get("--reg-alloc-max-iter", Double.class).intValue();
 
-        InterferenceGraph.Node spillCandidate;
+        InterferenceGraph.Node spillCandidate = null;
         List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores = new ArrayList<>();
         List<AbstractMap.SimpleEntry<VirtualRegister, Move>>  spillLoads  = new ArrayList<>();
 
@@ -572,16 +574,25 @@ public class GraphColoringRegisterAllocator {
         // into a fresh run.
         unit.getVirtualRegisterManager().clearAssignedPhysicalRegisters();
 
+        int iterCnt = 0;
         do{
 
-            if(maxIter-- <= 0) {
+            if(iterCnt >= maxIter) {
                 throw new RuntimeException("Exceeded maximum iterations for register allocation for unit " + unit.getFunctionDeclaration().name.lexeme);
             }
+
 
             // 1) Build graph & run allocator
             unit.getVirtualRegisterManager().clearAssignedPhysicalRegisters();
             ig = InterferenceGraph.buildInterferenceGraph(unit);
             InterferenceGraphVisualizer.setGraph(ig.getVirtualNodes());
+
+            String outputRegAllocPath = LNC.settings.get("--output-reg-alloc-iter", String.class);
+            if(!outputRegAllocPath.isEmpty()){
+                saveStep(unit, iterCnt, ig, spillCandidate, outputRegAllocPath);
+            }
+
+            iterCnt++;
 
             GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
             allocator.allocate();
@@ -642,6 +653,56 @@ public class GraphColoringRegisterAllocator {
         unit.setUsedRegisters(usedRegisters);
 
         return new AllocationInfo(ig, livenessInfo);
+    }
+
+    private static void clearRegAllocIterFiles(IRUnit unit) {
+        if(!LNC.settings.get("--output-reg-alloc-iter", String.class).isEmpty()){
+            // Clear files matching the unit prefix in the folder;
+            Path dir = Path.of(LNC.settings.get("--output-reg-alloc-iter", String.class));
+            if(Files.isDirectory(dir)) {
+                for (File file : Objects.requireNonNull(dir.toFile().listFiles())) {
+                    if (file.getName().startsWith(unit.getFunctionDeclaration().name.lexeme)) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void saveStep(IRUnit unit, int i, InterferenceGraph ig, InterferenceGraph.Node previousSpilledCandidate, String outputRegAllocPath) {
+        Path path = Path.of(outputRegAllocPath);
+        if(!(Files.exists(path) && Files.isDirectory(path))){
+            try {
+                Files.createDirectory(path);
+            } catch (IOException e) {
+                Logger.error("Failed to create directory for output reg alloc path: " + outputRegAllocPath);
+                LNC.settings.set("--output-reg-alloc-iter", ""); // reset the flag
+            }
+        }
+        var irPrinter = new IRPrinter();
+
+        irPrinter.visit(unit);
+
+        try {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("#### IR of register allocation n°").append(i).append(" for unit ").append(unit.getFunctionDeclaration().name.lexeme).append(" ####\n\n");
+
+            if(previousSpilledCandidate != null) {
+                sb.append("#### Previous iteration chose to spill the following register: ").append(previousSpilledCandidate.vr).append("\n\n");
+            }
+
+            if(ig != null) {
+                sb.append("#### Interference graph at the start of this iteration: ####\n\n");
+                sb.append(ig).append("\n\n");
+            }
+
+            sb.append(irPrinter.getResult());
+            Files.writeString(Path.of(outputRegAllocPath, String.format("%s_%d.immediate.txt", unit.getFunctionDeclaration().name.lexeme, i)),
+                    sb.toString());
+        } catch (IOException e) {
+            Logger.error("Failed to write IR to file: " + e.getMessage());
+        }
     }
 
     private static boolean tryFoldImmediateSpillStore(IRInstruction inst,

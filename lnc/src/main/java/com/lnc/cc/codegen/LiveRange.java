@@ -21,12 +21,6 @@ public final class LiveRange {
     public LiveRange() {
     }
 
-    // Backwards compatibility constructor; creates an empty range and sets legacy bounds
-    public LiveRange(int start, int end) {
-        this.minStart = start;
-        this.maxEnd   = end;
-    }
-
     public static final class Segment {
         public int start; // inclusive
         public int end;   // inclusive
@@ -161,7 +155,7 @@ public final class LiveRange {
         for (Map.Entry<IRBlock, List<Segment>> e : segmentsByBlock.entrySet()) {
             if (!firstB) sb.append(", ");
             firstB = false;
-            sb.append("B@").append(Integer.toHexString(System.identityHashCode(e.getKey()))).append(":");
+            sb.append("_l").append(e.getKey().getId()).append(":");
             sb.append(e.getValue());
         }
         sb.append("}");

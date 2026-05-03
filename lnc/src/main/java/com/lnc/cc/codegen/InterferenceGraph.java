@@ -381,12 +381,12 @@ public class InterferenceGraph {
             sb.append("No live ranges computed.\n");
         }
 
-        sb.append("Virtual Nodes:\n");
+        sb.append("Virtual Nodes interference:\n");
         for (Node node : vregNodes.values()) {
             sb.append("  ").append(node.vr).append(" -> ");
             sb.append(node.adj.stream().map(n -> n.vr != null ? n.vr.toString() : "").toList()).append("\n");
         }
-        sb.append("Physical Nodes:\n");
+        sb.append("Physical Nodes interference:\n");
         for (Node node : physNodes.values()) {
             sb.append("  ").append(node.phys).append(" -> ");
             sb.append(node.adj.stream().map(n -> n.phys != null ? n.phys.toString() : "").toList()).append("\n");
