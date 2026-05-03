@@ -1,0 +1,11 @@
+#include "lnfs.lnh"
+
+struct lnfs_block far *lnfs_get_kernel_block(struct lnfs_superblock far *sb, unsigned int start_page){
+    struct lnfs_inode far *root = sb + sizeof(struct lnfs_superblock); // Root block is located immediately after the superblock
+    if(memcmp(root, "ROOT\0", 5) != 0){
+        lnfs_error_code = LNFS_ERROR_FIRST_INODE_NOT_ROOT;
+        return (struct lnfs_block far *) 0;
+    }
+    struct lnfs_block far *root_blk = lnfs_device_offset(root->block, start_page);
+    return root_blk;
+}

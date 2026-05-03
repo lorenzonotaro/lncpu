@@ -1,0 +1,41 @@
+#ifndef LNFS_LNH
+#define LNFS_LNH
+
+#define LNFS_ERROR_FIRST_INODE_NOT_ROOT 0x01
+
+#define SUPERBLOCK_SIGNATURE "LNFS"
+
+#define SUPERBLOCK_FLAG_READONLY 0x01
+
+struct lnfs_superblock {
+    char signature[4]; // "LNFS"
+    unsigned int version;
+    unsigned int flags;
+};
+
+#define LNFS_INODE_FLAG_DIR 0x01
+#define LNFS_INODE_FLAG_READONLY 0x02
+#define LNFS_INODE_FLAG_HIDDEN 0x04
+#define LNFS_INODE_FLAG_ROOT 0x08
+
+struct lnfs_inode {
+    char name[8];
+    unsigned int flags;
+    struct lnfs_block far *block;
+};
+
+#define LNFS_BLOCK_FLAG_FREE 0x01
+
+struct lnfs_block {
+    struct lnfs_block far *next;
+    struct lnfs_block far *prev;
+    struct lnfs_inode far *inode;
+    unsigned int flags;
+    unsigned long int size;
+};
+
+extern unsigned int lnfs_error_code;
+
+extern void far *lnfs_device_offset(void far *block, unsigned int dev_start_page); 
+struct lnfs_block far *lnfs_get_kernel_block(struct lnfs_superblock far *sb, unsigned int start_page);
+#endif

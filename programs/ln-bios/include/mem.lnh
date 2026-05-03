@@ -1,6 +1,7 @@
 #ifndef MEM_LNH
 #define MEM_LNH
 
+extern int memcmp(void far *ptr1, void far *ptr2, unsigned int length);
 
 extern void memzero(void far *dest, unsigned int length);
 

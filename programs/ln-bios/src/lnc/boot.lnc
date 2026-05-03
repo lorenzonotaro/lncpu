@@ -1,6 +1,9 @@
-#include "boot.lnh"
 #include "ddi.lnh"
+#include "boot.lnh"
 #include "mem.lnh"
+#include "mem.lnh"
+#include "lnfs.lnh"
+
 void find_boot_devices() {
 
     memfill(&boot_devices_table, sizeof(boot_devices_table), 0xFF);
@@ -21,4 +24,17 @@ void find_boot_devices() {
         }
     }
     boot_devices_count = count;
+}
+
+int lnfs_boot(struct ddi_device far *dev){
+    int start_page = dev->start_page;
+    struct lnfs_superblock far *sb = (struct lnfs_superblock far *) (dev->start_page << 8) + 0;
+    if(memcmp(sb, SUPERBLOCK_SIGNATURE, 4) != 0){
+        return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
+    }
+    struct lnfs_block far * kblock = lnfs_get_kernel_block(sb, start_page);
+    if(kblock == 0){
+        return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
+    }
+    return 0;
 }

@@ -64,7 +64,7 @@ boot_attempt:
     mov (boot_devices_table >> 8)::byte, RC
     mov (boot_devices_table & 0xFF)::byte, RD
     add RD, RA ; no need for word/long addressing since we don't cross any pages
-    inc RD ; get the boot mode: 0 for XIP, 1 for LNFS
+    inc RD ; point to the boot mode: 0 for XIP, 1 for LNFS
     mov [RC:RD], RA
     and RA, RA ; do an ALU NOP to set the flags based on the boot mode
     jz  _xip ; push mode accordingly as last argument to printf
@@ -100,7 +100,8 @@ _boot:
     cmp RA, 0
     jz  _boot_xip
 _boot_lnfs:
-    mov BIOS_CRIT_LNFS_NOT_SUPPORTED, RB ; set return status for rescue sequence
+    lcall lnfs_boot ; attempt to boot using LNFS
+    mov RB, [bios_status]
     goto _ret
 _boot_xip:
     add RD, 10 ; point to device start page
@@ -130,7 +131,9 @@ _ret:
 boot_devices_count:
     .res 1 ; Number of bootable devices found during the boot sequence.
 boot_devices_table:
-    .res 16 ; Space for up to 8 boot devices, each represented by a byte indicating the index in the device table. A value of 0xFF indicates an empty slot.
+    .res 16 ; Space for up to 8 boot devices, each represented by a byte indicating the index in the device table. A value of 0xFF indicates an empty slot.ù
+lnfs_error_code:
+    .res 1 ; Any lnfs function will return a critical error code here
 
 .section BIOS_CONST
 LNFS_MODE:
@@ -150,7 +153,7 @@ SELECT_BOOT_DEVICE:
     .data "Please select a boot device by entering its number: \n" 0
 
 BOOT_FAILED_FOR_DEVICE_FMT:
-    .data "Boot failed for device with code 0x%x.\n" 0
+    .data "Boot failed for device with code 0x%x (refer to bios_utils.lnasm).\n" 0
 
 BOOT_ATTEMPT_FMT:
     .data "Attempting to boot from device %x.%x (%s, %s mode).\n" 0

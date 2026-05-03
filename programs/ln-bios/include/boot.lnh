@@ -1,6 +1,8 @@
 #ifndef BOOT_LNH
 #define BOOT_LNH
 
+#define BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS 0x12
+
 struct boot_device {
     unsigned int device_idx;
     unsigned int boot_mode;
@@ -10,5 +12,7 @@ extern far unsigned int boot_devices_count;
 extern far struct boot_device boot_devices_table[8];
 
 extern void find_boot_devices();
+
+extern int lnfs_boot(struct ddi_device far *dev);
 
 #endif

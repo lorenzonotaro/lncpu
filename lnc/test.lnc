@@ -1,12 +1,58 @@
-#define LNFS_BLOCK_FLAG_FREE 0x01
 
-struct block {
-    struct block far *next;
-    struct block far *prev;
+
+#define BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS 0x12
+#define LNFS_ERROR_FIRST_INODE_NOT_ROOT 0x01
+
+#define SUPERBLOCK_SIGNATURE "LNFS"
+
+struct ddi_device_descriptor {
+    char magic[4];
+    unsigned int version;
+    unsigned int type;
+    unsigned int flags;
+    unsigned int size_pages;
+    void far * boot_start;
+    void far *control_page;
+    unsigned int reserved[3];
+    unsigned int control_byte;
 };
 
-struct block far *node;
+struct ddi_device {
+    char name[8];
+    struct ddi_device_descriptor far *descriptor;
+    unsigned int start_page;
+    unsigned int device_idx;
+    unsigned int device_subidx;
+    unsigned int reserved[3];
+};
 
-struct block far * main(){
-    return node->prev->next;
+struct lnfs_inode {
+    char name[8];
+    unsigned int flags;
+    struct lnfs_block far *block;
+};
+
+struct lnfs_block {
+    struct lnfs_block far *next;
+    struct lnfs_block far *prev;
+    struct lnfs_inode far *inode;
+    unsigned int flags;
+    unsigned long int size;
+};
+
+extern int memcmp(void far *ptr1, void far *ptr2, unsigned int length);
+
+extern struct lnfs_block far *lnfs_get_kernel_block(struct lnfs_superblock far *sb, unsigned int start_page);
+
+int lnfs_boot(struct ddi_device far *dev){
+    int start_page = dev->start_page;
+    struct lnfs_superblock far *sb = (struct lnfs_superblock far *) (dev->start_page << 8) + 0;
+    if(memcmp(sb, SUPERBLOCK_SIGNATURE, 4) != 0){
+        return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
+    }
+    struct lnfs_block far * kblock = lnfs_get_kernel_block(sb, start_page);
+    if(kblock == 0){
+        return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
+    }
+    return 0;
 }

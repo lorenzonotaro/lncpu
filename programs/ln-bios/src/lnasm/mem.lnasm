@@ -162,7 +162,6 @@ _done:
 memcmp:
     ; ---- Prologue ----
     push        RA
-    push        RB
     push        RC
     push        RD
     push        BP
@@ -175,9 +174,9 @@ memcmp:
     mov         RC, [BP + 4]    ; store src_hi
 
     ; Load buf2 pointer (stack-passed) into locals: [BP-8]=lo, [BP-7]=hi
-    mov         [BP - 8], RB
+    mov         [BP - 7], RB
     mov         RB, [BP + 0]
-    mov         [BP - 9], RB
+    mov         [BP - 8], RB
     mov         RB, [BP + 1]
 
     ; Fast path: length==0 => equal (true)
@@ -215,8 +214,9 @@ _src_ok:
     jz          _bytes_equal
 
     ; Mismatch -> false
-    goto        _unequal_return
-
+    sub         SP, 0x05
+    mov         1, RB  ; set RB=1 to indicate not equal (false)
+    goto        _done
 _bytes_equal:
     ; dst++
     inc         RD
@@ -238,18 +238,12 @@ _dst_ok:
 
 _equal_return:
     sub         SP, 0x05
-    clc                         ; return true (equal)
-    goto        _done
-_unequal_return:
-    sub         SP, 0x05
-    sec                         ; return false (not equal)
-    goto        _done
+    xor         RB, RB ; set RB=0 to indicate equal (true)
 _done:
     ; ---- Epilogue ----
     pop         BP
     pop         RD
     pop         RC
-    pop         RB
     pop         RA
     ret         0x02            ; discard 2-byte stack arg (buf2)
 

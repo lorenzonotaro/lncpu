@@ -1,0 +1,5 @@
+#include "lnbios.lnh"
+#include "io.lnh"
+void main(){
+    printf("Hello world from XIP code! BIOS version is v%x.%x.\n", bios_version_major, bios_version_minor);
+}

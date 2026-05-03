@@ -120,8 +120,11 @@ inspect_device:
     push    (DDI_MAGIC_BYTES >> 8)::byte
     push    (DDI_MAGIC_BYTES & 0xFF)::byte
 
-    lcall   memcmp               ; compare last 4 bytes with 'LNDI': memcmp returns C set if different
-    jc      _ret                  ; not equal, return
+    lcall   memcmp               ; compare last 4 bytes with 'LNDI': memcmp returns != 0 if not equal, 0 if equal
+    cmp     RB, 0
+    jz      _valid_device          ; if equal, valid device found
+    goto      _ret                  ; not equal, return
+_valid_device:
     ; valid device found
     push    DS                    ; save DS
     mov     (ddi_device_table >> 8)::byte, DS   ; make DS temporarily point to ddi_device_table

@@ -23,7 +23,8 @@
 ; Code indicating that BIOS found a boot device but it does not support the required boot mode (e.g. LNFS boot attempted on a device that only supports XIP)
 %define BIOS_STATUS_CRIT_NO_BOOTABLE 0x11
 
-%define BIOS_CRIT_LNFS_NOT_SUPPORTED 0x12
+; Code indicating that a device marked as LNFS does not contain a valid superblock.
+%define BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS 0x12
 
 ; Code indicating that an interrupt was received but no device could handle it
 %define BIOS_STATUS_CRIT_INT_NO_DEV 0x81
