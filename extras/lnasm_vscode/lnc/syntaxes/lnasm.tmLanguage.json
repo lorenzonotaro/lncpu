@@ -50,12 +50,15 @@
 		"anywhere": {
 			"patterns": [
 				{
-					"match": "(\\.export)\\s*([A-Za-z_]+[A-Za-z_0-9]*)",
+					"match": "(\\.export)\\s*([A-Za-z_]+[A-Za-z_0-9]*)\\s*:?\\s*([A-Za-z_]+[A-Za-z_0-9]*)?",
 					"captures": {
 						"1": {
 							"name": "keyword.other.lnasm"
 						},
 						"2": {
+							"name": "entity.name.function.lnasm"
+						},
+						"3": {
 							"name": "entity.name.function.lnasm"
 						}
 					}
