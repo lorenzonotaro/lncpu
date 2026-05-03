@@ -6,7 +6,7 @@ public class ArrayType extends AbstractSubscriptableType {
     public final int size;
 
     public ArrayType(TypeSpecifier baseType, int size) {
-        super(Type.ARRAY, baseType);
+        super(Type.ARRAY, baseType, false);
         this.baseType = baseType;
         this.size = size;
     }

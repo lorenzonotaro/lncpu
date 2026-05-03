@@ -22,21 +22,21 @@ public class BinaryExpression extends Expression {
     }
 
     public enum Operator {
-        ADD(Type.ARITHMETIC_LOGICAL, true),
-        SUB(Type.ARITHMETIC_LOGICAL, false),
-        MUL(Type.ARITHMETIC_LOGICAL, true),
-        DIV(Type.ARITHMETIC_LOGICAL, false),
-        AND(Type.ARITHMETIC_LOGICAL, true),
-        OR(Type.ARITHMETIC_LOGICAL, true),
-        XOR(Type.ARITHMETIC_LOGICAL, true),
-        EQ(Type.COMPARISON, true),
-        NE(Type.COMPARISON, true),
-        SHL(Type.ARITHMETIC_LOGICAL, false),
-        SHR(Type.ARITHMETIC_LOGICAL, false),
-        LT(Type.COMPARISON, false),
-        GT(Type.COMPARISON, false),
-        LE(Type.COMPARISON, false),
-        GE(Type.COMPARISON, false);
+        ADD("+", Type.ARITHMETIC_LOGICAL, true),
+        SUB("-", Type.ARITHMETIC_LOGICAL, false),
+        MUL("*", Type.ARITHMETIC_LOGICAL, true),
+        DIV("/", Type.ARITHMETIC_LOGICAL, false),
+        AND("&", Type.ARITHMETIC_LOGICAL, true),
+        OR("|", Type.ARITHMETIC_LOGICAL, true),
+        XOR("^", Type.ARITHMETIC_LOGICAL, true),
+        EQ("==", Type.COMPARISON, true),
+        NE("!=", Type.COMPARISON, true),
+        SHL("<<", Type.ARITHMETIC_LOGICAL, false),
+        SHR(">>", Type.ARITHMETIC_LOGICAL, false),
+        LT("<", Type.COMPARISON, false),
+        GT(">", Type.COMPARISON, false),
+        LE("<=", Type.COMPARISON, false),
+        GE(">=", Type.COMPARISON, false);
 
         public enum Type {
             ARITHMETIC_LOGICAL,
@@ -44,10 +44,12 @@ public class BinaryExpression extends Expression {
         };
         public final Type type;
 
+        private final String str;
         private final boolean commutative;
 
 
-        Operator(Type type, boolean commutative) {
+        Operator(String str, Type type, boolean commutative) {
+            this.str = str;
             this.commutative = commutative;
             this.type = type;
         }
@@ -75,6 +77,11 @@ public class BinaryExpression extends Expression {
 
         public boolean isCommutative() {
             return commutative;
+        }
+
+        @Override
+        public String toString() {
+            return str;
         }
     }
 }

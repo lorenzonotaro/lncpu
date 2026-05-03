@@ -1,11 +1,12 @@
-extern int bios_version_major;
-extern int bios_version_minor;
+#define LNFS_BLOCK_FLAG_FREE 0x01
 
-unsigned long int i;
-unsigned int main(){
-    if(i > 15){
-        return 1;
-    }else{
-        return 0;
-    }
+struct block {
+    struct block far *next;
+    struct block far *prev;
+};
+
+struct block far *node;
+
+struct block far * main(){
+    return node->prev->next;
 }

@@ -13,7 +13,7 @@ public class PointerType extends AbstractSubscriptableType {
     }
 
     public PointerType(TypeSpecifier baseType, boolean isPointerConst, StorageLocation kind) {
-        super(Type.POINTER, baseType.withStorageLocation(kind));
+        super(Type.POINTER, baseType.withStorageLocation(kind), false);
         this.pointerKind = kind;
         this.isConst = isPointerConst;
     }
@@ -32,7 +32,7 @@ public class PointerType extends AbstractSubscriptableType {
     @Override
     public boolean compatible(TypeSpecifier other) {
         if (other instanceof PointerType otherPointer) {
-            return baseType.compatible(otherPointer.baseType);
+            return baseType.compatible(otherPointer.baseType) || baseType.type == Type.VOID || otherPointer.baseType.type == Type.VOID;
         }
 
         if(other instanceof ArrayType otherArray) {

@@ -453,15 +453,32 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
     }
 
-    private static StructDefinitionType getStructDefinitionType(IROperand left, Token operatorToken) {
+    private StructDefinitionType getStructDefinitionType(IROperand left, Token operatorToken) {
         if(left.getTypeSpecifier().type == TypeSpecifier.Type.STRUCT){
             StructType structType = (StructType) left.getTypeSpecifier();
-            return structType.getDefinition();
+            StructDefinitionType def = structType.getDefinition();
+            if(def == null){
+                // try to resolve from the global scope as a fallback and bind it so later passes see it
+                StructDefinitionType resolved = globalScope.resolveStruct(structType.getName().lexeme);
+                if(resolved != null){
+                    structType.bindDefinition(resolved);
+                    return resolved;
+                }
+            }
+            return def;
         }else if (left.getTypeSpecifier().type == TypeSpecifier.Type.POINTER){
             PointerType pointerType = (PointerType) left.getTypeSpecifier();
             if(pointerType.getBaseType().type == TypeSpecifier.Type.STRUCT){
                 StructType structType = (StructType) pointerType.getBaseType();
-                return structType.getDefinition();
+                StructDefinitionType def = structType.getDefinition();
+                if(def == null){
+                    StructDefinitionType resolved = globalScope.resolveStruct(structType.getName().lexeme);
+                    if(resolved != null){
+                        structType.bindDefinition(resolved);
+                        return resolved;
+                    }
+                }
+                return def;
             }
         }
 

@@ -37,25 +37,27 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public Void visit(VariableDeclaration variableDeclaration) {
 
-        checkTypeCompleteness(variableDeclaration.declarator.typeSpecifier(), true);
+        checkTypeCompleteness(variableDeclaration.declarator.typeSpecifier());
 
         return super.visit(variableDeclaration);
     }
 
-    private void checkTypeCompleteness(TypeSpecifier type, boolean pointersCanBeIncomplete) {
+    private void checkTypeCompleteness(TypeSpecifier type) {
         if (type.type == TypeSpecifier.Type.STRUCT) {
             checkStructCompleteness((StructType) type);
         }else if(type.type == TypeSpecifier.Type.ARRAY){
-            checkTypeCompleteness(((ArrayType)type).getBaseType(), pointersCanBeIncomplete);
-        }else if(type.type == TypeSpecifier.Type.POINTER && !pointersCanBeIncomplete){
-            checkTypeCompleteness(((PointerType)type).getBaseType(), false);
+            checkTypeCompleteness(((ArrayType)type).getBaseType());
         }
     }
 
     private void checkStructCompleteness(StructType structType) {
         if (structType.hasDefinition()) {
             if(structType.providesDefinition()){
-                defineStruct(structType.getName(), structType.getDefinition());
+                // The StructType carries its own definition inline (e.g. "struct X { ... }" used directly).
+                // We should ensure the definition is completed (field map built) but avoid registering the
+                // definition in the scope at this point. Registration is performed when visiting the
+                // corresponding `StructDeclaration` node to avoid duplicate defines and scope-order issues.
+                checkStructCompleteness(structType.getDefinition(), structType.getName());
             }
         } else {
             StructDefinitionType type = resolveStruct(structType.getName());
@@ -71,8 +73,13 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         if(structDefinition == null){
             return null;
         }
+        // Ensure the struct definition is completed (compute field map). Then register it in the
+        // global scope so it's visible across top-level declarations and subsequent statements.
+        checkStructCompleteness(structDefinition, structDeclaration.name);
 
-        defineStruct(structDeclaration.name, structDefinition);
+        if (getAST().getGlobalScope().resolveStruct(structDeclaration.name.lexeme) == null) {
+            getAST().getGlobalScope().defineStruct(structDeclaration.name, structDefinition);
+        }
         return null;
     }
 
@@ -84,9 +91,9 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier rightType = assignmentExpression.right.accept(this);
 
-        checkTypeCompleteness(leftType, true);
+        checkTypeCompleteness(leftType);
 
-        checkTypeCompleteness(rightType, true);
+        checkTypeCompleteness(rightType);
 
         check(leftType, rightType, assignmentExpression.operator);
 
@@ -116,8 +123,8 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             leftType = binaryExpression.left.accept(this);
         }
 
-        checkTypeCompleteness(leftType, true);
-        checkTypeCompleteness(rightType, true);
+        checkTypeCompleteness(leftType);
+        checkTypeCompleteness(rightType);
         
         binaryExpression.setTypeSpecifier(leftType);
 
@@ -217,11 +224,12 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
                 throw new CompileException("base operand of '->' operator has non-struct type '" + baseType + "'", memberAccessExpression.token);
             }
 
-            checkTypeCompleteness(baseType, false);
+            checkTypeCompleteness(baseType);
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) baseType);
 
             TypeSpecifier typeSpecifier = fieldEntry.getField().declarator.typeSpecifier().copy().withStorageLocation(left.storageLocation);;
+
             memberAccessExpression.setTypeSpecifier(typeSpecifier);
 
             return typeSpecifier;
@@ -230,7 +238,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
                 throw new CompileException("base operand of '.' operator has non-struct type '" + left + "'", memberAccessExpression.token);
             }
 
-            checkTypeCompleteness(left, true);
+            checkTypeCompleteness(left);
 
             StructFieldEntry fieldEntry = getStructFieldEntry(memberAccessExpression, (StructType) left);
 
@@ -302,7 +310,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
                 TypeSpecifier baseType = ((PointerType) operandType).getBaseType();
 
-                checkTypeCompleteness(baseType, false);
+                checkTypeCompleteness(baseType);
 
                 unaryExpression.setTypeSpecifier(baseType);
 
@@ -329,7 +337,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public TypeSpecifier visit(CastExpression castExpression) {
         TypeSpecifier operandType = castExpression.operand.accept(this);
-        checkTypeCompleteness(operandType, false);
+        checkTypeCompleteness(operandType);
         castExpression.setTypeSpecifier(castExpression.targetType);
         if(operandType.compatible(castExpression.targetType)){
             return castExpression.targetType;
@@ -345,11 +353,11 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public TypeSpecifier visit(SizeofExpression sizeofExpression) {
         if(sizeofExpression.targetType == SizeofExpression.TargetType.TYPE){
-            checkTypeCompleteness(sizeofExpression.type, true);
+            checkTypeCompleteness(sizeofExpression.type);
             sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(sizeofExpression.type.typeSize()));
         }else{
             TypeSpecifier operandType = sizeofExpression.expression.accept(this);
-            checkTypeCompleteness(operandType, false);
+            checkTypeCompleteness(operandType);
             sizeofExpression.setTypeSpecifier(IntUtils.getTypeFor(operandType.typeSize()));
         }
         return sizeofExpression.getTypeSpecifier();
@@ -358,7 +366,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     @Override
     public TypeSpecifier visit(VaPopExpression vaPopExpression) {
         TypeSpecifier typeSpecifier = vaPopExpression.getTypeSpecifier();
-        checkTypeCompleteness(typeSpecifier, true);
+        checkTypeCompleteness(typeSpecifier);
         int allocSize = typeSpecifier.allocSize();
         if(allocSize == 0 || allocSize > 2){
             throw new CompileException("va_pop() can only be used on variables of size 1 or 2 bytes", vaPopExpression.token);
@@ -395,7 +403,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         TypeSpecifier expectedReturnType = currentFunction.declarator.typeSpecifier();
 
-        checkTypeCompleteness(expectedReturnType, true);
+        checkTypeCompleteness(expectedReturnType);
 
         if(returnType == null && expectedReturnType.type == TypeSpecifier.Type.VOID){
             return null;
@@ -410,7 +418,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
         return null;
     }
 
-    private void checkStructCompleteness(StructDefinitionType definition, Token name, boolean pointersCanBeIncomplete) {
+    private void checkStructCompleteness(StructDefinitionType definition, Token name) {
         if(definition.isComplete())
             return;
 
@@ -418,7 +426,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         int offset = 0;
         for(VariableDeclaration field : definition.getFields()){
-            checkTypeCompleteness(field.declarator.typeSpecifier(), pointersCanBeIncomplete);
+            checkTypeCompleteness(field.declarator.typeSpecifier());
             if(fieldMap.containsKey(field.name.lexeme)){
                 throw new CompileException("duplicate field name '" + field.name.lexeme + "' in struct '" + name.lexeme + "'", field.name);
             }
@@ -426,19 +434,19 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             offset += field.declarator.typeSpecifier().allocSize();
         }
 
-        definition.setFieldMap(fieldMap, !pointersCanBeIncomplete);
+        definition.setFieldMap(fieldMap);
     }
 
     @Override
     public void defineStruct(Token name, StructDefinitionType definition) {
-        checkStructCompleteness(definition, name, true);
+        checkStructCompleteness(definition, name);
         super.defineStruct(name, definition);
     }
 
     @Override
     public StructDefinitionType resolveStruct(Token token) {
         StructDefinitionType struct = super.resolveStruct(token);
-        checkStructCompleteness(struct, token, false);
+        checkStructCompleteness(struct, token);
         return struct;
     }
 

@@ -106,6 +106,13 @@ public class Scope {
         return null;
     }
 
+    /**
+     * Returns true if a struct with the given name is defined in this scope (local only).
+     */
+    public boolean hasLocalStruct(String name) {
+        return structs.containsKey(name);
+    }
+
     public static Scope createRoot(String rootName){
         return new Scope(rootName);
     }
