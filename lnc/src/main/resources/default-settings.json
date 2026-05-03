@@ -103,6 +103,11 @@
     "value": 10
   },
 
+  "--output-reg-alloc-iter": {
+    "help": "Outputs the register allocation result of each iteration. Must specify a folder in which to store all the RA IR attempts in the form <function name>_<iter number>.intermediate.txt. Element with number 0 will be the first IR passed onto the register allocator.",
+    "value": ""
+  },
+
   "--reg-alloc-no-coalesce": {
     "help": "Disables coalesce optimization in the register allocator.",
     "value": false
