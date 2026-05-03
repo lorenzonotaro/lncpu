@@ -3,9 +3,7 @@ package com.lnc.cc.codegen;
 
 import com.lnc.LNC;
 import com.lnc.cc.ir.*;
-import com.lnc.cc.ir.operands.ImmediateOperand;
-import com.lnc.cc.ir.operands.StackFrameLocation;
-import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.cc.ir.operands.*;
 import com.lnc.cc.optimization.ir.StageOneIROptimizer;
 import com.lnc.common.Logger;
 import com.mxgraph.view.mxGraph;
@@ -756,20 +754,9 @@ public class GraphColoringRegisterAllocator {
                     continue;
                 }
 
-                int segmentStart = touchIndices.get(0);
-                int segmentEnd = segmentStart;
-
-                for (int i = 1; i < touchIndices.size(); i++) {
-                    int nextTouch = touchIndices.get(i);
-                    if (canExtendSpillSegment(vr, instructions, livenessInfo, spillNode, segmentStart, nextTouch)) {
-                        segmentEnd = nextTouch;
-                    } else {
-                        segments.add(new SpillSegment(block, instructions, segmentStart, segmentEnd));
-                        segmentStart = segmentEnd = nextTouch;
-                    }
+                for (int touchIndex : touchIndices) {
+                    segments.add(new SpillSegment(block, instructions, touchIndex, touchIndex));
                 }
-
-                segments.add(new SpillSegment(block, instructions, segmentStart, segmentEnd));
             }
 
             spillSegments.put(vr, segments);
@@ -850,7 +837,7 @@ public class GraphColoringRegisterAllocator {
         for (int i = segment.startIndex(); i <= segment.endIndex(); i++) {
             IRInstruction inst = segment.instructions().get(i);
             if (inst.getReads().contains(vr) || inst.getWrites().contains(vr)) {
-                inst.replaceOperand(vr, temp);
+                replaceSpilledVirtualRegister(inst, vr, temp);
             }
         }
 
@@ -871,6 +858,88 @@ public class GraphColoringRegisterAllocator {
             }
         }
         return false;
+    }
+
+    private static void replaceSpilledVirtualRegister(IRInstruction inst,
+                                                      VirtualRegister oldVr,
+                                                      VirtualRegister newVr) {
+        // Some instructions can both read and write the same operand. A second pass
+        // lets existing replaceOperand implementations update the write after the read.
+        inst.replaceOperand(oldVr, newVr);
+        inst.replaceOperand(oldVr, newVr);
+
+        for (IROperand operand : inst.getReadOperands()) {
+            replaceNestedVirtualRegister(operand, oldVr, newVr);
+        }
+        replaceNestedVirtualRegisterInWriteOperands(inst, oldVr, newVr);
+    }
+
+    private static void replaceNestedVirtualRegisterInWriteOperands(IRInstruction inst,
+                                                                    VirtualRegister oldVr,
+                                                                    VirtualRegister newVr) {
+        if (inst instanceof Move move) {
+            replaceNestedVirtualRegister(move.getDest(), oldVr, newVr);
+        } else if (inst instanceof Bin bin) {
+            replaceNestedVirtualRegister(bin.getDest(), oldVr, newVr);
+        } else if (inst instanceof Unary unary) {
+            replaceNestedVirtualRegister(unary.getTarget(), oldVr, newVr);
+        } else if (inst instanceof Pop pop) {
+            replaceNestedVirtualRegister(pop.getArg(), oldVr, newVr);
+        } else if (inst instanceof Call call && oldVr.equals(call.getReturnTarget())) {
+            call.setReturnTarget(newVr);
+        }
+    }
+
+    private static void replaceNestedVirtualRegister(IROperand operand,
+                                                     VirtualRegister oldVr,
+                                                     VirtualRegister newVr) {
+        if (operand instanceof DerefLocation deref) {
+            if (deref.getTarget().equals(oldVr)) {
+                deref.setTarget(newVr);
+            } else {
+                replaceNestedVirtualRegister(deref.getTarget(), oldVr, newVr);
+            }
+            return;
+        }
+
+        if (operand instanceof SizedCast cast) {
+            if (cast.getOperand().equals(oldVr)) {
+                cast.setOperand(newVr);
+            } else {
+                replaceNestedVirtualRegister(cast.getOperand(), oldVr, newVr);
+            }
+            return;
+        }
+
+        if (operand instanceof ComposeOperand compose) {
+            if (compose.high.equals(oldVr)) {
+                compose.high = newVr;
+            } else {
+                replaceNestedVirtualRegister(compose.high, oldVr, newVr);
+            }
+
+            if (compose.low.equals(oldVr)) {
+                compose.low = newVr;
+            } else {
+                replaceNestedVirtualRegister(compose.low, oldVr, newVr);
+            }
+            return;
+        }
+
+        if (operand instanceof AddressOf addressOf) {
+            replaceNestedVirtualRegister(addressOf.getOperand(), oldVr, newVr);
+            return;
+        }
+
+        if (operand instanceof StructMemberAccess memberAccess) {
+            replaceNestedVirtualRegister(memberAccess.getBase(), oldVr, newVr);
+            return;
+        }
+
+        if (operand instanceof ArrayIndexLocation arrayIndex) {
+            replaceNestedVirtualRegister(arrayIndex.getBase(), oldVr, newVr);
+            replaceNestedVirtualRegister(arrayIndex.getIndex(), oldVr, newVr);
+        }
     }
 
     private static boolean maybeRunPostSpillIROptimizer(IRUnit unit) {
