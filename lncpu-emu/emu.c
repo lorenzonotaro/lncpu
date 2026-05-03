@@ -5,11 +5,9 @@
 #include "emu.h"
 
 #include <ctype.h>
-#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
 
 #include "opcodes.h"
 #include "utlist.h"

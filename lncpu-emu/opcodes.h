@@ -4,8 +4,7 @@
 #include <stdint.h>
 
 struct opcode_info_t {
-	const uint8_t opcode; 
-	const char *mnemonic;
+	const uint8_t opcode; const char *mnemonic;
 	const uint8_t data_length;
 	const uint8_t clock_cycles;
 };

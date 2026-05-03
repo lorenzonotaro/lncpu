@@ -121,23 +121,23 @@ if [ $build_lnc = true ] ; then
 
     python3 gen_language_docs.py
 
+    cd ..
 fi
 
 # === make lncpu-emu ===
 if [ $make_emu = true ] ; then
 
+    echo "Building lncpu-emu..."
+
     cd lncpu-emu
+
+    python ./gen_opcodes_h.py
 
     #if build dir does not exists, create it
     mkdir -p build
     cd build
 
     cmake ..
-
-    echo "Building lncpu-emu..."
-
-    python gen_opcodes_h.py
-
     if [ $? -ne 0 ]; then
         echo "Error: gen_opcodes_h.py failed"
         exit 1
@@ -151,14 +151,14 @@ if [ $make_emu = true ] ; then
     fi
 
     # copy the executable to output
-    if [ -f Release/lncpu-emu.exe ]; then
-        cp Release/lncpu-emu.exe ../../output/lncpu-emu.exe
-    elif [ -f lncpu-emu.exe ]; then
-        cp lncpu-emu.exe ../../output/lncpu-emu.exe
-    elif [ -f Release/lncpu-emu ]; then
-        cp Release/lncpu-emu ../../output/lncpu-emu
-    elif [ -f lncpu-emu ]; then
-        cp lncpu-emu ../../output/lncpu-emu
+    if [ -f Release/lncpu_emu.exe ]; then
+        cp Release/lncpu_emu.exe ../../output/lncpu_emu.exe
+    elif [ -f lncpu_emu.exe ]; then
+        cp lncpu_emu.exe ../../output/lncpu_emu.exe
+    elif [ -f Release/lncpu_emu ]; then
+        cp Release/lncpu_emu ../../output/lncpu_emu
+    elif [ -f lncpu_emu ]; then
+        cp lncpu_emu ../../output/lncpu_emu
     else
         echo "Error: lncpu-emu executable not found"
         exit 1

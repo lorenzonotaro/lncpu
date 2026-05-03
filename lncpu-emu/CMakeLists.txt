@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.30)
 project(lncpu_emu C)
 
 set(CMAKE_C_STANDARD 17)

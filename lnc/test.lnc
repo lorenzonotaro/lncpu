@@ -54,5 +54,6 @@ int lnfs_boot(struct ddi_device far *dev){
     if(kblock == 0){
         return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
     }
+    // rest of the implementation.
     return 0;
 }
