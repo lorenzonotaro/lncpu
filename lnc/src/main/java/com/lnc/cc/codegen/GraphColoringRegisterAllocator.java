@@ -419,6 +419,7 @@ public class GraphColoringRegisterAllocator {
         }
 
         return blockers.stream()
+                .filter(neighbor -> spillCost.getOrDefault(neighbor.vr, Integer.MAX_VALUE) < spillCost.getOrDefault(failedNode.vr, Integer.MAX_VALUE)) // take all nodes whose spill cost is less than the failed node
                 .min(Comparator
                         .comparingInt((InterferenceGraph.Node m) -> spillCost.getOrDefault(m.vr, Integer.MAX_VALUE))
                         .thenComparingInt(InterferenceGraph.Node::degree)
@@ -574,7 +575,7 @@ public class GraphColoringRegisterAllocator {
         do{
 
             if(maxIter-- <= 0) {
-                throw new RuntimeException("Exceeded maximum iterations for register allocation.");
+                throw new RuntimeException("Exceeded maximum iterations for register allocation for unit " + unit.getFunctionDeclaration().name.lexeme);
             }
 
             // 1) Build graph & run allocator
