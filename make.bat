@@ -1,6 +1,8 @@
 @echo off
 cd /d "%~dp0"
 
+setlocal enabledelayedexpansion
+
 REM config variables
 set build_lnc=true
 set build_eeprom_serial_loader=true
@@ -129,8 +131,9 @@ if "%build_lnc%"=="true" (
     REM generate run cmd/bash for lnc
     echo java -jar %%~dp0\lnc.jar %%* > "..\output\lnc.bat"
     copy "..\output\lnc.bat" "..\output\lnasm.bat"
-    echo #!/bin/bash > "..\output\lnc"
-    echo java -jar "$(dirname "$0")/lnc.jar" "$@" >> "..\output\lnc"
+    
+    echo #!/bin/bash > "../output/lnc"
+    echo java -jar "$(dirname "$0")/lnc.jar" "$@" >> "../output/lnc"
     copy "..\output\lnc" "..\output\lnasm"
 
     REM === generate lnasm documentation ===
