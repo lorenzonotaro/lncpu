@@ -1,0 +1,12 @@
+export int result;
+
+void main() {
+    int score = 0;
+    if (5 == 5) score = score + 1;
+    if (5 != 4) score = score + 2;
+    if (3 < 4) score = score + 4;
+    if (4 <= 4) score = score + 8;
+    if (6 > 2) score = score + 16;
+    if (6 >= 6) score = score + 32;
+    result = score;
+}

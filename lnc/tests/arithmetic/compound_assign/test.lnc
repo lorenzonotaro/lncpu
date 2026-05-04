@@ -1,0 +1,11 @@
+export int result;
+
+void main() {
+    int value = 4;
+    value += 9;
+    value -= 2;
+    value = value ^ 0x0f;
+    value = value & 0x1f;
+    value = value | 0x40;
+    result = value;
+}

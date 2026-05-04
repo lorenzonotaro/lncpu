@@ -1,0 +1,14 @@
+export int result;
+
+struct Pair {
+    int left;
+    int right;
+};
+
+struct Pair pair;
+
+void main() {
+    pair.left = 12;
+    pair.right = 30;
+    result = pair.left + pair.right;
+}

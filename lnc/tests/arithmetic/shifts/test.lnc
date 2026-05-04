@@ -1,0 +1,8 @@
+export int result;
+
+void main() {
+    int value = 3;
+    value <<= 3;
+    value >>= 1;
+    result = value;
+}

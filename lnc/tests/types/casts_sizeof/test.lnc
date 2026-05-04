@@ -1,0 +1,7 @@
+export int result;
+
+void main() {
+    long int wide = 0x1234;
+    int narrow = (int)wide;
+    result = narrow + sizeof(char) + sizeof(int) + sizeof(long int);
+}

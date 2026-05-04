@@ -1,0 +1,16 @@
+export int result;
+
+void main() {
+    int value = 0;
+    if (3 < 4) {
+        value = 17;
+    } else {
+        value = 99;
+    }
+    if (4 < 3) {
+        value = 99;
+    } else {
+        value = value + 2;
+    }
+    result = value;
+}

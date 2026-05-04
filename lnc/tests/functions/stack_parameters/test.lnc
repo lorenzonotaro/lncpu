@@ -1,0 +1,9 @@
+export int result;
+
+int add6(int a, int b, int c, int d, int e, int f) {
+    return a + b + c + d + e + f;
+}
+
+void main() {
+    result = add6(1, 2, 3, 4, 5, 6);
+}

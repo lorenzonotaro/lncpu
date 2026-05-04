@@ -1,0 +1,11 @@
+export int result;
+
+void main() {
+    int value = 0x0f;
+    value = ~value;
+    value = value & 0xff;
+    if (!0) {
+        value = value + 1;
+    }
+    result = value;
+}

@@ -1,0 +1,16 @@
+export int result;
+
+int add3(int a, int b, int c) {
+    return a + b + c;
+}
+
+int adjust(int value) {
+    if (value > 10) {
+        return value - 4;
+    }
+    return value + 4;
+}
+
+void main() {
+    result = adjust(add3(4, 5, 6));
+}

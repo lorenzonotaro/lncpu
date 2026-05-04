@@ -1,0 +1,8 @@
+export int result;
+int value;
+
+void main() {
+    int *ptr = &value;
+    *ptr = 42;
+    result = value;
+}

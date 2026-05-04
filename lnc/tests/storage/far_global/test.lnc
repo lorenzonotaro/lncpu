@@ -1,0 +1,7 @@
+export int result;
+far int far_value;
+
+void main() {
+    far_value = 33;
+    result = far_value + 9;
+}

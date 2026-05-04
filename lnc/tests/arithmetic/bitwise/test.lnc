@@ -1,0 +1,9 @@
+export int result;
+
+void main() {
+    int value = 0x3c;
+    value = value & 0x2a;
+    value = value | 0x80;
+    value = value ^ 0x0f;
+    result = value;
+}

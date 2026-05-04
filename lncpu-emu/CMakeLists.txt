@@ -22,6 +22,8 @@ add_executable(lncpu_emu main.c
         config/cmdline.c
         emu.c
         emu.h
+        emu_expect.c
+        emu_expect.h
         vm.h
         vm.c
         emu_device.h

@@ -11,6 +11,7 @@
 
 #include "opcodes.h"
 #include "utlist.h"
+#include "emu_expect.h"
 #include "vm.h"
 #include "config/cmdline.h"
 
@@ -326,6 +327,11 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
         memdump_bin(vm, cmdline_params->dump_address_space);
     }
 
+    int expectation_status = 0;
+    if (cmdline_params->expect_file != NULL) {
+        expectation_status = check_expectations(vm, cmdline_params->expect_file);
+    }
+
     // delete breakpoints
     struct bp *bp = emu->bp_list;
     while (bp != NULL) {
@@ -340,5 +346,5 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
 
     set_emu(NULL);
 
-    return 0;
+    return expectation_status;
 }

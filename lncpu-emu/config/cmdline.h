@@ -15,6 +15,7 @@ struct emu_cmdline_params {
     const char *no_pause_on_halt; /* Don't pause on halt. */
     const char *dump_status; /* Dump status on exit. */
     const char *dump_address_space; /* Dump address space on exit. */
+    const char *expect_file; /* Check final machine state against this file. */
 
     /* Emulator options */
     const char *emu_tty_device; /* Device (D0-D5) for emulating tty. */
