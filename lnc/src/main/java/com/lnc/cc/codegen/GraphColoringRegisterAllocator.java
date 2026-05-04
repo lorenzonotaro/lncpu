@@ -43,6 +43,7 @@ public class GraphColoringRegisterAllocator {
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
     private final Map<VirtualRegister, Integer> spillCost = new LinkedHashMap<>();
+    private static final long SPILL_SCORE_SCALE = 1024L;
 
     // simplify work graph (rebuilt when the interference graph changes via coalescing)
     private LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>> simplifyWork = new LinkedHashMap<>();
@@ -77,16 +78,11 @@ public class GraphColoringRegisterAllocator {
             int classWt = Math.max(1, K / classSize);
             int hotness = Math.max(1, base + span);
 
-            // Prefer spilling low-utility nodes, but discount nodes that are already
-            // highly constrained: they are more likely to be the source of color pressure.
-            int degreePressure = Math.max(1, node.degree() - classSize + 1);
-
             // Copy-related nodes are more expensive to spill because spilling them can
             // destroy coalescing opportunities and introduce extra reloads.
             int movePenalty = Math.max(1, node.movePartners.size() + 1);
 
             long cost = (long) loopWeight + hotness * 5 + size * 2 + classWt * 2 + movePenalty;
-            cost = Math.max(1L, cost / degreePressure);
             spillCost.put(node.vr, (int) Math.min(Integer.MAX_VALUE, cost));
         }
     }
@@ -358,9 +354,7 @@ public class GraphColoringRegisterAllocator {
                         .max(Comparator.comparingInt(n -> n.allowedColors().size()));
 
         InterferenceGraph.Node n = maybe.orElseGet(() -> simplifyWork.keySet().stream()
-                .min(Comparator
-                        .comparingInt((InterferenceGraph.Node m) -> spillCost.get(m.vr))
-                        .thenComparingInt(m -> m.vr.getRegisterNumber()))
+                .min(spillSelectionComparator())
                 .orElseThrow());
 
         for (var neighbor : simplifyWork.get(n)) {
@@ -417,12 +411,167 @@ public class GraphColoringRegisterAllocator {
         }
 
         return blockers.stream()
-                .filter(neighbor -> spillCost.getOrDefault(neighbor.vr, Integer.MAX_VALUE) < spillCost.getOrDefault(failedNode.vr, Integer.MAX_VALUE)) // take all nodes whose spill cost is less than the failed node
-                .min(Comparator
-                        .comparingInt((InterferenceGraph.Node m) -> spillCost.getOrDefault(m.vr, Integer.MAX_VALUE))
-                        .thenComparingInt(InterferenceGraph.Node::degree)
-                        .thenComparingInt(m -> m.vr.getRegisterNumber()))
+                .filter(neighbor -> spillSelectionComparator().compare(neighbor, failedNode) < 0)
+                .min(spillSelectionComparator())
                 .orElse(failedNode);
+    }
+
+    private Comparator<InterferenceGraph.Node> spillSelectionComparator() {
+        return Comparator
+                .comparingLong(this::spillSelectionScore)
+                .thenComparing(Comparator.comparingInt(this::pressureRelief).reversed())
+                .thenComparingInt(n -> spillCost.getOrDefault(n.vr, Integer.MAX_VALUE))
+                .thenComparingInt(n -> n.movePartners.size())
+                .thenComparingInt(n -> n.vr.getRegisterNumber());
+    }
+
+    private long spillSelectionScore(InterferenceGraph.Node n) {
+        if (n == null || n.isPhysical() || n.vr == null) {
+            return Long.MAX_VALUE;
+        }
+
+        long utility = Math.max(1, spillCost.getOrDefault(n.vr, Integer.MAX_VALUE));
+        return Math.max(1L, (utility * SPILL_SCORE_SCALE) / Math.max(1, pressureRelief(n)));
+    }
+
+    private int pressureRelief(InterferenceGraph.Node n) {
+        if (n == null || n.isPhysical()) {
+            return 1;
+        }
+
+        int relief = Math.max(1, ownPaletteExcess(n) * classScarcityWeight(n));
+        for (InterferenceGraph.Node neighbor : activeNeighbors(n)) {
+            neighbor = getAlias(neighbor);
+            if (neighbor == n || neighbor.isPhysical() || neighbor.vr == null || !palettesOverlap(n, neighbor)) {
+                continue;
+            }
+
+            int before = effectivePaletteDegree(neighbor);
+            int after = Math.max(0, before - overlappingNeighborPressure(neighbor, n));
+            int budget = effectivePaletteBudget(neighbor);
+            int beforeExcess = Math.max(0, before - budget + 1);
+            int afterExcess = Math.max(0, after - budget + 1);
+            int neighborRelief = Math.max(0, beforeExcess - afterExcess);
+
+            if (neighborRelief == 0 && before >= budget && after < before) {
+                neighborRelief = 1;
+            }
+
+            relief += neighborRelief * classScarcityWeight(neighbor);
+        }
+
+        return Math.max(1, relief);
+    }
+
+    private int ownPaletteExcess(InterferenceGraph.Node n) {
+        return Math.max(1, effectivePaletteDegree(n) - effectivePaletteBudget(n) + 1);
+    }
+
+    private int effectivePaletteDegree(InterferenceGraph.Node n) {
+        Set<Register> fixedPressure = new LinkedHashSet<>();
+        int virtualPressure = 0;
+
+        for (InterferenceGraph.Node neighbor : activeNeighbors(n)) {
+            neighbor = getAlias(neighbor);
+            if (neighbor == n || !palettesOverlap(n, neighbor)) {
+                continue;
+            }
+
+            if (neighbor.isPhysical() || neighbor.isPseudoPhysical()) {
+                for (Register color : neighbor.allowedColors()) {
+                    if (paletteContainsOverlap(n.allowedColors(), color)) {
+                        fixedPressure.add(color);
+                    }
+                }
+            } else {
+                virtualPressure++;
+            }
+        }
+
+        return virtualPressure + maxNonOverlappingColors(fixedPressure);
+    }
+
+    private int effectivePaletteBudget(InterferenceGraph.Node n) {
+        return Math.max(1, maxNonOverlappingColors(n.allowedColors()));
+    }
+
+    private int overlappingNeighborPressure(InterferenceGraph.Node target, InterferenceGraph.Node neighbor) {
+        if (!palettesOverlap(target, neighbor)) {
+            return 0;
+        }
+        if (neighbor.isPhysical() || neighbor.isPseudoPhysical()) {
+            Set<Register> overlappingColors = neighbor.allowedColors().stream()
+                    .filter(color -> paletteContainsOverlap(target.allowedColors(), color))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            return Math.max(1, maxNonOverlappingColors(overlappingColors));
+        }
+        return 1;
+    }
+
+    private int classScarcityWeight(InterferenceGraph.Node n) {
+        int budget = effectivePaletteBudget(n);
+        return Math.max(1, (maxPaletteBudget() * paletteRegisterWidth(n)) / Math.max(1, budget));
+    }
+
+    private int maxPaletteBudget() {
+        return graph.getVirtualNodes().stream()
+                .map(this::getAlias)
+                .mapToInt(this::effectivePaletteBudget)
+                .max()
+                .orElse(Math.max(1, K));
+    }
+
+    private int paletteRegisterWidth(InterferenceGraph.Node n) {
+        return n.allowedColors().stream()
+                .mapToInt(color -> Math.max(1, color.getComponents().length))
+                .max()
+                .orElse(1);
+    }
+
+    private Set<InterferenceGraph.Node> activeNeighbors(InterferenceGraph.Node n) {
+        Set<InterferenceGraph.Node> neighbors = simplifyWork.get(n);
+        if (neighbors == null) {
+            neighbors = n.adj;
+        }
+
+        return neighbors.stream()
+                .map(this::getAlias)
+                .filter(neighbor -> neighbor != n)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private static boolean palettesOverlap(InterferenceGraph.Node a, InterferenceGraph.Node b) {
+        for (Register ac : a.allowedColors()) {
+            if (paletteContainsOverlap(b.allowedColors(), ac)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean paletteContainsOverlap(Set<Register> palette, Register color) {
+        return palette.stream().anyMatch(candidate -> overlaps(candidate, color));
+    }
+
+    private static int maxNonOverlappingColors(Collection<Register> colors) {
+        List<Register> ordered = colors.stream().sorted().toList();
+        return maxNonOverlappingColors(ordered, 0, new ArrayList<>());
+    }
+
+    private static int maxNonOverlappingColors(List<Register> colors, int index, List<Register> chosen) {
+        if (index >= colors.size()) {
+            return chosen.size();
+        }
+
+        int best = maxNonOverlappingColors(colors, index + 1, chosen);
+        Register candidate = colors.get(index);
+        boolean canUse = chosen.stream().noneMatch(existing -> overlaps(existing, candidate));
+        if (canUse) {
+            chosen.add(candidate);
+            best = Math.max(best, maxNonOverlappingColors(colors, index + 1, chosen));
+            chosen.remove(chosen.size() - 1);
+        }
+        return best;
     }
 
     private Register chooseColor(InterferenceGraph.Node n,
@@ -546,8 +695,7 @@ public class GraphColoringRegisterAllocator {
 
     public InterferenceGraph.Node getSpillCandidate() {
         return spillCandidates.stream().filter(Objects::nonNull).min(
-                Comparator.comparingInt((InterferenceGraph.Node n) -> spillCost.get(n.vr))
-                .thenComparingInt(n -> n.vr.getRegisterNumber())).orElse(null);
+                spillSelectionComparator()).orElse(null);
     }
 
 
