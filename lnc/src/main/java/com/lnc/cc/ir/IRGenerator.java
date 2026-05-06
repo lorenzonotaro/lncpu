@@ -317,7 +317,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         IROperand left = binaryExpression.left.accept(this);
         IROperand right = binaryExpression.right.accept(this);
-        IROperand target = allocVR(left.getTypeSpecifier());
+        IROperand target = (IROperand) allocVR(left.getTypeSpecifier());
 
         if(binaryExpression.operator == BinaryExpression.Operator.SHL || binaryExpression.operator == BinaryExpression.Operator.SHR){
             if((right instanceof ImmediateOperand io) && (right.getTypeSpecifier().type == TypeSpecifier.Type.I8 || right.getTypeSpecifier().type == TypeSpecifier.Type.UI8) && (io.getValue() < 0 || io.getValue() > 7)) {
@@ -402,8 +402,8 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
 
         // 3) allocate a destination VR *only* if returnType != VOID
-        VirtualRegister dest = callExpression.getTypeSpecifier().type != TypeSpecifier.Type.VOID
-                ? allocVR(returnType)
+        IROperand dest = callExpression.getTypeSpecifier().type != TypeSpecifier.Type.VOID
+                ? (IROperand) allocVR(returnType)
                 : null;
 
         // 4) emit the abstract Call node
@@ -544,18 +544,18 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         if((unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
             unaryExpression.operator == UnaryExpression.Operator.DECREMENT) && unaryExpression.unaryPosition == UnaryExpression.UnaryPosition.POST){
-            VirtualRegister target = allocVR(operand.getTypeSpecifier());
+            IROperand target = (IROperand) allocVR(operand.getTypeSpecifier());
             // load into a temporary VR
-            VirtualRegister vr = moveOrLoadIntoVR(operand);
+            IROperand vr = moveOrLoadIntoVR(operand);
 
             emit(new Unary(target, operand, unaryExpression.operator));
 
             returnVal = vr;
         }else if(unaryExpression.operator == UnaryExpression.Operator.NOT ||
-                  unaryExpression.operator == UnaryExpression.Operator.NEGATE ||
-                unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
-                unaryExpression.operator == UnaryExpression.Operator.DECREMENT){
-            VirtualRegister target = allocVR(operand.getTypeSpecifier());
+                 unaryExpression.operator == UnaryExpression.Operator.NEGATE ||
+                 unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
+                 unaryExpression.operator == UnaryExpression.Operator.DECREMENT){
+            IROperand target = (IROperand) allocVR(operand.getTypeSpecifier());
             emit(new Unary(target, operand, unaryExpression.operator));
             returnVal = target;
         }else if(unaryExpression.operator == UnaryExpression.Operator.DEREFERENCE) {
@@ -657,23 +657,15 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         throw new CompileException("va_pop() is not supported", vaPopExpression.token);
     }
 
-    private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
+    private IROperand allocVR(TypeSpecifier typeSpecifier) {
         return currentUnit.getVrManager().getRegister(typeSpecifier);
     }
 
-    private void emit(IRInstruction instruction){
-        currentUnit.emit(instruction);
-    }
-
-    public IR getResult() {
-        return new IR(blocks, globalSymbolTable);
-    }
-
-    private VirtualRegister moveOrLoadIntoVR(IROperand operand) {
+    private IROperand moveOrLoadIntoVR(IROperand operand) {
         return moveOrLoadIntoVR(operand, operand.getTypeSpecifier().allocSize() == 1 ? RegisterClass.ANY : RegisterClass.WORD);
     }
 
-    private VirtualRegister moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
+    private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
             VirtualRegister vr = (VirtualRegister) operand;
             if(registerClass == RegisterClass.ANY || vr.getRegisterClass() == registerClass) {
@@ -683,20 +675,38 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             }
         } else if(operand.type == IROperand.Type.IMMEDIATE) {
             VirtualRegisterManager vrm = currentUnit.getVrManager();
-            VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
-            vr.setRegisterClass(registerClass);
-            emit(new Move(operand, vr));
-            return vr;
+            IROperand temp = vrm.getRegister(operand.getTypeSpecifier());
+            if (temp instanceof VirtualRegister vr) {
+                vr.setRegisterClass(registerClass);
+            } else if (temp instanceof CompoundVirtualRegister cvr) {
+                cvr.getHigh().setRegisterClass(RegisterClass.ANY);
+                cvr.getLow().setRegisterClass(RegisterClass.ANY);
+            }
+            emit(new Move(operand, temp));
+            return temp;
         } else {
             return moveToVr(operand, registerClass);
         }
     }
 
-    private VirtualRegister moveToVr(IROperand operand, RegisterClass registerClass) {
-        VirtualRegister vr = allocVR(operand.getTypeSpecifier());
-        vr.setRegisterClass(registerClass);
-        emit(new Move(operand, vr));
-        return vr;
+    private IROperand moveToVr(IROperand operand, RegisterClass registerClass) {
+        IROperand temp = allocVR(operand.getTypeSpecifier());
+        if (temp instanceof VirtualRegister vr) {
+            vr.setRegisterClass(registerClass);
+        } else if (temp instanceof CompoundVirtualRegister cvr) {
+            cvr.getHigh().setRegisterClass(RegisterClass.ANY);
+            cvr.getLow().setRegisterClass(RegisterClass.ANY);
+        }
+        emit(new Move(operand, (IROperand) temp));
+        return (IROperand) temp;
+    }
+
+    private void emit(IRInstruction instruction){
+        currentUnit.emit(instruction);
+    }
+
+    public IR getResult() {
+        return new IR(blocks, globalSymbolTable);
     }
 
 }

@@ -17,5 +17,7 @@ public interface IIROperandVisitor<T> {
         return null; // TODO: implement va_pop
     }
 
+    T visit(CompoundVirtualRegister cvr);
+
     T visit(ComposeOperand composeOperand);
 }

@@ -44,6 +44,7 @@ public abstract class IROperand {
         LOCATION,
         SIZED_CAST,
         VA_POP,
+        COMPOUND_VIRTUAL_REGISTER,
 
         COMPOSE,
     }

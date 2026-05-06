@@ -1,5 +1,6 @@
 package com.lnc.cc.ir;
 
+import com.lnc.cc.ir.operands.CompoundVirtualRegister;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
 
@@ -9,18 +10,18 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Call extends IRInstruction {
-    private VirtualRegister returnTarget;
+    private IROperand returnTarget;
     private IROperand callee;
     private IROperand[] arguments;
 
-    public Call(VirtualRegister returnTarget, IROperand callee, IROperand[] arguments) {
+    public Call(IROperand returnTarget, IROperand callee, IROperand[] arguments) {
         super();
         this.returnTarget = returnTarget;
         this.callee = callee;
         this.arguments = arguments;
     }
 
-    public VirtualRegister getReturnTarget() {
+    public IROperand getReturnTarget() {
         return returnTarget;
     }
 
@@ -93,10 +94,10 @@ public class Call extends IRInstruction {
     }
 
     public void setReturnTarget(IROperand returnTarget) {
-        if (!(returnTarget instanceof VirtualRegister)) {
-            throw new IllegalArgumentException("Return target must be a VirtualRegister");
+        if (!(returnTarget instanceof VirtualRegister || returnTarget instanceof CompoundVirtualRegister)) {
+            throw new IllegalArgumentException("Return target must be a VirtualRegister or CompoundVirtualRegister");
         }
-        this.returnTarget = (VirtualRegister) returnTarget;
+        this.returnTarget = returnTarget;
     }
 
     public void setArguments(IROperand[] array) {

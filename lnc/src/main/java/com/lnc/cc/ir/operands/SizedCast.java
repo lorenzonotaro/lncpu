@@ -59,6 +59,13 @@ public class SizedCast extends IROperand {
 
     @Override
     public List<VirtualRegister> getVRReads() {
-        return operand instanceof VirtualRegister vr ? List.of(vr) : operand.getVRReads();
+        if(operand.type == Type.VIRTUAL_REGISTER) {
+            return List.of((VirtualRegister) operand);
+        }else if(operand.type == Type.COMPOUND_VIRTUAL_REGISTER){
+            var cmp = (CompoundVirtualRegister) operand;
+            return byteSelection == ByteSelection.LOW ? List.of(cmp.getLow()) : List.of(cmp.getHigh());
+        }else{
+            return operand.getVRReads();
+        }
     }
 }

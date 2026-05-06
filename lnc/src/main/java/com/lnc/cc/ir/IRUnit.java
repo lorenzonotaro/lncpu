@@ -246,10 +246,16 @@ public class IRUnit implements Iterable<IRBlock>{
                 int offset = parameter.stackOffset();
                 operand = new StackFrameLocation(parameter.type(), StackFrameLocation.OperandType.PARAMETER, offset);
             }else{
-                VirtualRegister originalReg = vrManager.getRegister(parameter.type());
-                originalReg.setRegisterClass(parameter.regClass());
-
-                originalRegParamMappings.put(parameter.name(), originalReg);
+                IROperand temp = vrManager.getRegister(parameter.type());
+                if (temp instanceof VirtualRegister vr) {
+                    vr.setRegisterClass(parameter.regClass());
+                    originalRegParamMappings.put(parameter.name(), vr);
+                } else if (temp instanceof CompoundVirtualRegister cvr) {
+                    cvr.getHigh().setRegisterClass(RegisterClass.ANY);
+                    cvr.getLow().setRegisterClass(RegisterClass.ANY);
+                    // For compound params, we can't directly track in originalRegParamMappings (expects VR)
+                    // This is handled elsewhere or needs special logic
+                }
 
                 operand = vrManager.getRegister(parameter.type());
             }
@@ -267,8 +273,14 @@ public class IRUnit implements Iterable<IRBlock>{
             if(symbol.getStorageQualifier().isStatic()){
                 mappings.put(symbol.getName(), new StaticSymbolLocation(symbol));
             }else if(symbol.canResideInRegister()){
-                var vr = vrManager.getRegister(symbol.getTypeSpecifier());
-                vr.setRegisterClass(symbol.getTypeSpecifier().allocSize() == 1 ? RegisterClass.ANY : RegisterClass.WORD);
+                IROperand temp = vrManager.getRegister(symbol.getTypeSpecifier());
+                IROperand vr = temp;
+                if (temp instanceof VirtualRegister v) {
+                    v.setRegisterClass(symbol.getTypeSpecifier().allocSize() == 1 ? RegisterClass.ANY : RegisterClass.WORD);
+                } else if (temp instanceof CompoundVirtualRegister cvr) {
+                    cvr.getHigh().setRegisterClass(RegisterClass.ANY);
+                    cvr.getLow().setRegisterClass(RegisterClass.ANY);
+                }
                 mappings.put(symbol.getName(), vr);
             }else{
                 // If the symbol is not a parameter and not static, we create a StackFrameOperand
