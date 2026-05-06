@@ -3,7 +3,6 @@ package com.lnc.cc.codegen;
 import com.lnc.cc.ir.*;
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
-import com.lnc.cc.ir.operands.CompoundVirtualRegister;
 
 import java.util.*;
 
@@ -170,9 +169,6 @@ public class InterferenceGraph {
         for (IROperand op : operands) {
             if (op instanceof VirtualRegister vr) {
                 out.add(vr);
-            } else if (op instanceof CompoundVirtualRegister cvr) {
-                out.add(cvr.getHigh());
-                out.add(cvr.getLow());
             }
         }
         return out;
@@ -329,27 +325,10 @@ public class InterferenceGraph {
                     var ret = call.getReturnTarget();
 
                     if(ret != null){ // if the function returns void, no registers are clobbered
-                        // Extract component VRs from return target
-                        List<VirtualRegister> retVRs = new ArrayList<>();
-                        if (ret instanceof VirtualRegister vr) {
-                            retVRs.add(vr);
-                            Set<Register> returnRegs = vr.getRegisterClass().getRegisters();
-                            for (VirtualRegister vrLive : liveAcrossCall) {
-                                for (Register retReg : returnRegs) {
-                                    graph.addEdge(vrLive, retReg);
-                                }
-                            }
-                        } else if (ret instanceof CompoundVirtualRegister cvr) {
-                            retVRs.add(cvr.getHigh());
-                            retVRs.add(cvr.getLow());
-                            // For compound, add edges for both components
-                            for (VirtualRegister retVR : retVRs) {
-                                Set<Register> returnRegs = retVR.getRegisterClass().getRegisters();
-                                for (VirtualRegister vrLive : liveAcrossCall) {
-                                    for (Register retReg : returnRegs) {
-                                        graph.addEdge(vrLive, retReg);
-                                    }
-                                }
+                        Set<Register> returnRegs = ret.getRegisterClass().getRegisters();
+                        for (VirtualRegister vr : liveAcrossCall) {
+                            for (Register retReg : returnRegs) {
+                                graph.addEdge(vr, retReg);
                             }
                         }
                     }

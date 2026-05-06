@@ -243,10 +243,6 @@ lnc is (and probably will never be) neither C-standard compliant nor a simple su
 
 (This is the main reason why I didn't simply build a backend for an existing compiler such as `clang/llvm`; it would have been very challenging if not outright impossible.)
 
-lnc is mostly a subset of C, with a few added features, the most important of which is the existence of **two types of pointers**:
-- `near` pointers (default): 1 byte in size, point to a location in the datapage. They use data page addressing modes in LNASM.
-- `far` pointers: 2 bytes in size, point to any location in the address space. They use absolute addressing modes in LNASM.
-
 ### Features
 
  - [x] Basic arithmetic expressions (currently add/sub)

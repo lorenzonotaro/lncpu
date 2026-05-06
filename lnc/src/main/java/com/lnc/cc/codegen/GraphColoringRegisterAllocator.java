@@ -970,15 +970,8 @@ public class GraphColoringRegisterAllocator {
             return;
         }
 
-        IROperand tempOp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
-        VirtualRegister temp;
-        if (tempOp instanceof VirtualRegister vt) {
-            temp = vt;
-            temp.setRegisterClass(vr.getRegisterClass());
-        } else {
-            // Should not happen - spilling only operates on simple VRs extracted from CompoundVirtualRegister
-            throw new IllegalStateException("Spilling of CompoundVirtualRegister not supported");
-        }
+        VirtualRegister temp = unit.getVirtualRegisterManager().getRegister(vr.getTypeSpecifier());
+        temp.setRegisterClass(vr.getRegisterClass());
 
         if (start.getReads().contains(vr)) {
             Move load = new Move(
@@ -1186,7 +1179,7 @@ public class GraphColoringRegisterAllocator {
         IRInstruction pushSite = pushBeforeIndex < 0 ? block.getFirst() : instructions.get(pushBeforeIndex);
         IRInstruction popSite = instructions.get(popBeforeIndex);
 
-        VirtualRegister restored = (VirtualRegister) unit.getVirtualRegisterManager().getRegister(outer.getTypeSpecifier());
+        VirtualRegister restored = unit.getVirtualRegisterManager().getRegister(outer.getTypeSpecifier());
         restored.setRegisterClass(outer.getRegisterClass());
 
         if (pushBeforeIndex < 0) {

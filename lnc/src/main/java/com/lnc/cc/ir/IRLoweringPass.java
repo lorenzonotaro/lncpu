@@ -62,7 +62,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         return moveOrLoadIntoVR(operand, operand.getTypeSpecifier().allocSize() > 1 ? RegisterClass.WORD : RegisterClass.ANY);
     }
 
-    private IROperand moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
+    private VirtualRegister moveOrLoadIntoVR(IROperand operand, RegisterClass registerClass) {
         if(operand.type == IROperand.Type.VIRTUAL_REGISTER) {
             VirtualRegister vr = (VirtualRegister) operand;
             if(registerClass == RegisterClass.ANY || vr.getRegisterClass() == registerClass) {
@@ -72,33 +72,19 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             }
         } else if(operand.type == IROperand.Type.IMMEDIATE) {
             VirtualRegisterManager vrm = getUnit().getVrManager();
-            IROperand temp = vrm.getRegister(operand.getTypeSpecifier());
-            if (temp instanceof VirtualRegister vr) {
-                vr.setRegisterClass(registerClass);
-                emitBefore(new Move(operand, vr));
-                return vr;
-            } else if (temp instanceof CompoundVirtualRegister cvr) {
-                cvr.getHigh().setRegisterClass(RegisterClass.ANY);
-                cvr.getLow().setRegisterClass(RegisterClass.ANY);
-                emitBefore(new Move(operand, cvr));
-                return cvr;
-            }
-            return (IROperand) temp;
+            VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
+            vr.setRegisterClass(registerClass);
+            emitBefore(new Move(operand, vr));
+            return vr;
         } else {
             return move(operand, registerClass);
         }
     }
 
-    private IROperand move(IROperand operand, RegisterClass registerClass) {
+    private VirtualRegister move(IROperand operand, RegisterClass registerClass) {
         VirtualRegisterManager vrm = getUnit().getVrManager();
-        IROperand temp = vrm.getRegister(operand.getTypeSpecifier());
-        IROperand vr = temp;
-        if (temp instanceof VirtualRegister v) {
-            v.setRegisterClass(registerClass);
-        } else if (temp instanceof CompoundVirtualRegister cvr) {
-            cvr.getHigh().setRegisterClass(RegisterClass.ANY);
-            cvr.getLow().setRegisterClass(RegisterClass.ANY);
-        }
+        VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
+        vr.setRegisterClass(registerClass);
         emitBefore(new Move(operand, vr));
         return vr;
     }
@@ -204,16 +190,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         if(funType.returnType.type != TypeSpecifier.Type.VOID){
             RegisterClass retRC = CallingConvention.returnRegisterFor(call.getReturnTarget().getTypeSpecifier());
-            IROperand userTarget = call.getReturnTarget(); //
+            VirtualRegister userTarget = call.getReturnTarget(); //
             // the register that will be used for the rest of the function
-            IROperand temp = getUnit().getVrManager().getRegister(userTarget.getTypeSpecifier());
-            IROperand constrainedTarget = temp;
-            if (temp instanceof VirtualRegister vr) {
-                vr.setRegisterClass(retRC);
-            } else if (temp instanceof CompoundVirtualRegister cvr) {
-                cvr.getHigh().setRegisterClass(RegisterClass.ANY);
-                cvr.getLow().setRegisterClass(RegisterClass.ANY);
-            }
+            VirtualRegister constrainedTarget = getUnit().getVrManager().getRegister(userTarget.getTypeSpecifier());
+            constrainedTarget.setRegisterClass(retRC);
 
             call.setReturnTarget(constrainedTarget);
             call.insertAfter(new Move(constrainedTarget, userTarget));
@@ -336,11 +316,6 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         return composeOperand;
     }
 
-    @Override
-    public IROperand visit(CompoundVirtualRegister cvr) {
-        return cvr;
-    }
-
     private static int selectByte(int value, SizedCast.ByteSelection byteSelection) {
         return byteSelection == SizedCast.ByteSelection.HIGH ? (value >>> 8) & 0xFF : value & 0xFF;
     }
@@ -428,7 +403,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         int log2 = Integer.numberOfTrailingZeros(Integer.highestOneBit(stride));
 
-        VirtualRegister acc = (VirtualRegister) getUnit().getVrManager().getRegister(index.getTypeSpecifier());
+        VirtualRegister acc = getUnit().getVrManager().getRegister(index.getTypeSpecifier());
         emitBefore(new Move(index, acc));
         acc.setRegisterClass(log2 > 0 ? RegisterClass.SHIFT : RegisterClass.ANY);
 
@@ -450,7 +425,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             return baseAddress;
         }
 
-        VirtualRegister pointerVr = (VirtualRegister) getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
+        VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
         pointerVr.setRegisterClass(pointerKind == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF);
         emitBefore(new Move(baseAddress, pointerVr));
 
@@ -467,13 +442,13 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             return baseAddress;
         }
 
-        VirtualRegister pointerVr = (VirtualRegister) getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
+        VirtualRegister pointerVr = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
         RegisterClass registerClass = baseAddress.getTypeSpecifier() instanceof PointerType pointerType
                 && pointerType.getPointerKind() == StorageLocation.FAR ? RegisterClass.FAR_DEREF : RegisterClass.NEAR_DEREF;
         pointerVr.setRegisterClass(registerClass);
         emitBefore(new Move(baseAddress, pointerVr));
         if(offset == 1){
-            VirtualRegister dest = (VirtualRegister) getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
+            VirtualRegister dest = getUnit().getVrManager().getRegister(baseAddress.getTypeSpecifier());
             dest.setRegisterClass(registerClass);
             emitBefore(new Move(pointerVr, dest));
             emitBefore(new Unary(dest, dest, UnaryExpression.Operator.INCREMENT));

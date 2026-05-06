@@ -753,15 +753,6 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         );
     }
 
-    @Override
-    public Argument visit(CompoundVirtualRegister cvr) {
-        return new Composite(
-                cvr.getHigh().accept(this),
-                cvr.getLow().accept(this),
-                false
-        );
-    }
-
     private Argument toStackFrameAddress(StackFrameLocation location, boolean dereference) {
         TokenType operator = location.getOperandType() == StackFrameLocation.OperandType.PARAMETER
                 ? TokenType.MINUS
