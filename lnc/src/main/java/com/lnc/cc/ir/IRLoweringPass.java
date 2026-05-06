@@ -185,7 +185,11 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         stackArgs.sort((a, b) -> Integer.compare(b.offset, a.offset));
 
         for(StackArg sa : stackArgs) {
-            call.insertBefore(new Push(sa.operand));
+            var operand = sa.operand;
+            if(operand instanceof StackFrameLocation){
+                operand = moveOrLoadIntoVR(operand);
+            }
+            call.insertBefore(new Push(operand));
         }
 
         if(funType.returnType.type != TypeSpecifier.Type.VOID){
