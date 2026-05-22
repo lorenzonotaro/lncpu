@@ -1,11 +1,31 @@
 #include "lnfs.lnh"
 
-struct lnfs_block far *lnfs_get_kernel_block(struct lnfs_superblock far *sb, unsigned int start_page){
-    struct lnfs_inode far *root = sb + sizeof(struct lnfs_superblock); // Root block is located immediately after the superblock
+struct lnfs_inode far *lnfs_find_file(struct lnfs_inode far *dir, const char far *name, unsigned int length, unsigned int start_page){
+    int sp = start_page;
+    if((dir->flags & LNFS_INODE_FLAG_DIR) == 0){
+        lnfs_error_code = LNFS_ERROR_NOT_A_DIRECTORY;
+        return (struct lnfs_inode far *) 0; // Not a directory
+    }
+    struct lnfs_block far *block = dir->block;
+    unsigned long int size = block->size;
+    struct lnfs_inode far *node = block + sizeof(struct lnfs_block); // First inode is located immediately after the block header
+    node = ddi_device_offset(node, sp); // Adjust for the actual location in memory
+    for(int i = 0; i < size; i+=2 /*sizeof(struct lnfs_inode far *)*/){
+        node += i;
+        if(memcmp(&node->name, name, length) == 0){
+            return node; // File found
+        }
+    }
+    lnfs_error_code = LNFS_ERROR_FILE_NOT_FOUND;
+    return (struct lnfs_inode far *) 0; // File not found
+}
+
+struct lnfs_inode far *lnfs_get_kernel_inode(struct lnfs_superblock far *sb, unsigned int start_page){
+    struct lnfs_inode far *root = sb + sizeof(struct lnfs_superblock); // Root inode is located immediately after the superblock
     if(memcmp(root, "ROOT\0", 5) != 0){
         lnfs_error_code = LNFS_ERROR_FIRST_INODE_NOT_ROOT;
-        return (struct lnfs_block far *) 0;
+        return (struct lnfs_inode far *) 0;
     }
-    struct lnfs_block far *root_blk = lnfs_device_offset(root->block, start_page);
-    return root_blk;
+    struct lnfs_inode far *kernel_node = lnfs_find_file(root, "KERNEL", 6, start_page);
+    return kernel_node;
 }

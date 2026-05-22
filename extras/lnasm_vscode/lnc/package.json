@@ -3,15 +3,13 @@
   "displayName": "lnasm",
   "description": "LNASM/LNC syntax highlighting and basic editor features for Visual Studio Code.",
   "version": "0.0.1",
-  "publisher": "Lorenzo Notaro",
+  "publisher": "LorenzoNotaro",
   "engines": {
     "vscode": "^1.96.0"
   },
   "activationEvents": [
     "workspaceContains:**/*.lnasm",
-    "workspaceContains:**/*.lnc",
-    "onLanguage:lnasm",
-    "onLanguage:lnc"
+    "workspaceContains:**/*.lnc"
   ],
   "categories": [
     "Programming Languages"

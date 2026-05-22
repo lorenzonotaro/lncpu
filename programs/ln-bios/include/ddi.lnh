@@ -28,7 +28,11 @@ struct ddi_device {
 #define DEV_FLAG_LNFS            0b00001000
 #define DEV_FLAG_HAS_CPAGE       0b00010000
 
+
 extern struct ddi_device far * ddi_get_device(unsigned int idx);
+
+extern void far *ddi_device_offset(void far *offset, unsigned int dev_start_page); 
+
 extern unsigned int ddi_num_devices;
 
 #endif

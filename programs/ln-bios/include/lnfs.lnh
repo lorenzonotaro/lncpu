@@ -1,7 +1,13 @@
 #ifndef LNFS_LNH
 #define LNFS_LNH
 
-#define LNFS_ERROR_FIRST_INODE_NOT_ROOT 0x01
+#define LNFS_ERROR_INVALID_SUPERBLOCK 0x01
+
+#define LNFS_ERROR_FIRST_INODE_NOT_ROOT 0x02
+
+#define LNFS_ERROR_NOT_A_DIRECTORY 0x03
+
+#define LNFS_ERROR_FILE_NOT_FOUND 0x04
 
 #define SUPERBLOCK_SIGNATURE "LNFS"
 
@@ -36,6 +42,5 @@ struct lnfs_block {
 
 extern unsigned int lnfs_error_code;
 
-extern void far *lnfs_device_offset(void far *block, unsigned int dev_start_page); 
-struct lnfs_block far *lnfs_get_kernel_block(struct lnfs_superblock far *sb, unsigned int start_page);
+struct lnfs_block far *lnfs_get_kernel_inode(struct lnfs_superblock far *sb, unsigned int start_page);
 #endif

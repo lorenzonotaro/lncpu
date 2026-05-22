@@ -93,7 +93,7 @@ void get_instruction_mnemonic(const uint8_t *addr_space, uint16_t cspc, char *de
             }
         }
     }
-    sprintf(dest + index, "\t(0x%02x)\n\0", addr_space[cspc]);
+    sprintf(dest + index, "\t(0x%02x)\n", addr_space[cspc]);
 }
 
 void pause(struct emulator *emu) {

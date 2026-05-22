@@ -221,6 +221,16 @@ _ret:
     pop RA
     ret
 
+; lnc-compliant
+; helper function to get the absolute address of an offset into a device, given the offset and the device start page.
+; lnc signature: 
+;   ```lnc 
+;    void far *ddi_device_offset(void far *offset, unsigned int dev_start_page);
+;   ```
+ddi_device_offset:
+    add RC, RA ; add device start page (in RA) to offset high byte (in RC)
+    ret
+
 .section BIOS_DATA
 ; Status of the DDI device table
 ddi_status:

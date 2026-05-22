@@ -26,6 +26,9 @@
 ; Code indicating that a device marked as LNFS does not contain a valid superblock.
 %define BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS 0x12
 
+; Code indicating that a device marked as LNFS does not contain a valid kernel inode or the kernel inode is malformed in some way
+%define BIOS_STATUS_CRIT_LNFS_KERNEL_LOAD_FAILURE 0x13
+
 ; Code indicating that an interrupt was received but no device could handle it
 %define BIOS_STATUS_CRIT_INT_NO_DEV 0x81
 

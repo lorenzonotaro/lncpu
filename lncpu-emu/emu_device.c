@@ -10,6 +10,7 @@
     #include <unistd.h>
     #include <termios.h>
     #include <fcntl.h>
+    #include <errno.h>
 #endif
 #include "emu_device.h"
 
@@ -21,7 +22,7 @@
 #define EMU_TTY_SIGNATURE "LNDI\x01\x08\x00\x20\x00\x00\x00\x00\x00\x00\x00\xA5"
 
 struct emu_tty_data {
-    uint8_t wptr, rptr;
+    uint16_t wptr, rptr;
     uint8_t buffer[EMU_TTY_BUFFER_SIZE];
 #ifdef _WIN32
     DWORD orig_mode;
@@ -48,6 +49,8 @@ void emu_tty_init(struct lncpu_vm *vm, struct emu_device *device) {
     m &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
     data->direct_mode = m;
     SetConsoleMode(data->g_conin, m);
+#else
+    emu_tty_resume(vm, device, data);
 #endif
 }
 
@@ -74,6 +77,8 @@ void emu_tty_pause(struct lncpu_vm *vm, struct emu_device *device, void *dev_dat
     tcsetattr(STDIN_FILENO, TCSANOW, &data->orig_termios);
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags & ~O_NONBLOCK);
+    fflush(stdout);
+    tcdrain(STDOUT_FILENO);
     #endif
 }
 
@@ -88,6 +93,7 @@ void emu_tty_resume(struct lncpu_vm *vm, struct emu_device *device, void *dev_da
     newt.c_cc[VMIN] = 0;
     newt.c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    setvbuf(stdin, NULL, _IONBF, 0);
 
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
@@ -98,15 +104,23 @@ void emu_tty_step(struct lncpu_vm *vm, struct emu_device *device, void *dev_data
     int c;
 #ifdef _WIN32
     if ((c = tty_try_char(((struct emu_tty_data *)dev_data)->g_conin)) != -1) {
-        struct emu_tty_data *data = device->data;
-        data->buffer[data->wptr++] = c;
+        struct emu_tty_data *data = (struct emu_tty_data *)dev_data;
+        data->buffer[data->wptr] = (uint8_t)c;
+        data->wptr = (data->wptr + 1) % EMU_TTY_BUFFER_SIZE;
         device->irq_req = true;
     }
 #else
-    if ((c = getchar()) != EOF) {
-        struct emu_tty_data *data = device->data;
-        data->buffer[data->wptr++] = c;
+    unsigned char ch;
+    ssize_t r = read(STDIN_FILENO, &ch, 1);
+    if (r == 1) {
+        struct emu_tty_data *data = (struct emu_tty_data *)dev_data;
+        data->buffer[data->wptr] = ch;
+        data->wptr = (data->wptr + 1) % EMU_TTY_BUFFER_SIZE;
         device->irq_req = true;
+    } else if (r == -1) {
+        if (errno != EAGAIN && errno != EWOULDBLOCK) {
+            // non-recoverable read error - ignore for now
+        }
     }
 #endif
 }
@@ -116,12 +130,15 @@ uint8_t emu_tty_addr_read(struct lncpu_vm *vm, struct emu_device *device, void *
     if (addr - device->start == 0) {
         // return whether data is available
         struct emu_tty_data *data = device->data;
-        return data->wptr - data->rptr > 0 ? 1 : 0;
+        uint16_t available = (data->wptr + EMU_TTY_BUFFER_SIZE - data->rptr) % EMU_TTY_BUFFER_SIZE;
+        return available > 0 ? 1 : 0;
     }else if (addr - device->start == 1) {
         // return data
         struct emu_tty_data *data = device->data;
-        uint8_t d = data->buffer[data->rptr++];
-        if (data->rptr == data->wptr) {
+        uint8_t d = data->buffer[data->rptr];
+        data->rptr = (data->rptr + 1) % EMU_TTY_BUFFER_SIZE;
+        uint16_t available = (data->wptr + EMU_TTY_BUFFER_SIZE - data->rptr) % EMU_TTY_BUFFER_SIZE;
+        if (available == 0) {
             device->irq_req = false;
         }
         return d;
@@ -132,14 +149,17 @@ uint8_t emu_tty_addr_read(struct lncpu_vm *vm, struct emu_device *device, void *
     return 0;
 }
 
-void putch(char c){
+void putch(int c){
     #ifdef _WIN32
+    char ch = (char)c;
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD written;
-    WriteConsoleA(h, &c, 1, &written, NULL);
+    WriteConsoleA(h, &ch, 1, &written, NULL);
     #else
-    putchar(c);
-    fflush(stdout);
+    char ch = (char)c;
+    ssize_t r = write(STDOUT_FILENO, &ch, 1);
+    (void)r;
+    tcdrain(STDOUT_FILENO);
     #endif
 }
 

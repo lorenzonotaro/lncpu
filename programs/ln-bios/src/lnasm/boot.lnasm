@@ -102,6 +102,12 @@ _boot:
 _boot_lnfs:
     lcall lnfs_boot ; attempt to boot using LNFS
     mov RB, [bios_status]
+    push [lnfs_error_code] ; push the LNFS error code as argument for logging in case of boot failure
+    lcall log_prefix_crit
+    mov (LNFS_BOOT_FAILED_FMT >> 8)::byte, RC
+    mov (LNFS_BOOT_FAILED_FMT & 0xFF)::byte, RD
+    lcall printf
+    sub SP, 1 ; clean up stack from pushed LNFS error code
     goto _ret
 _boot_xip:
     add RD, 10 ; point to device start page
@@ -154,6 +160,9 @@ SELECT_BOOT_DEVICE:
 
 BOOT_FAILED_FOR_DEVICE_FMT:
     .data "Boot failed for device with code 0x%x (refer to bios_utils.lnasm).\n" 0
+
+LNFS_BOOT_FAILED_FMT:
+    .data "LNFS boot failed with LNFS error code 0x%x (refer to lnfs.lnh).\n" 0
 
 BOOT_ATTEMPT_FMT:
     .data "Attempting to boot from device %x.%x (%s, %s mode).\n" 0
