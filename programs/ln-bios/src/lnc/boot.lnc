@@ -30,16 +30,19 @@ int lnfs_boot(struct ddi_device far *dev){
     lnfs_error_code = 0; // Reset error code before starting boot process
     int start_page = dev->start_page;
     struct lnfs_superblock far *sb = (struct lnfs_superblock far *) (dev->start_page << 8) + 0;
+
     if(memcmp(sb, SUPERBLOCK_SIGNATURE, 4) != 0){
         lnfs_error_code = LNFS_ERROR_INVALID_SUPERBLOCK;
         return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
     }
+
     struct lnfs_inode far *knode = lnfs_get_kernel_inode(sb, start_page);
     if(knode == 0){
         // lnfs_error_code is already set by lnfs_get_kernel_inode
         return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
     }
-    unsigned int result = lnxe_load(knode, LNFS_KERNEL_LOAD_ADDRESS);
+
+    unsigned int result = lnxe_load(knode->block, LNFS_KERNEL_LOAD_ADDRESS);
 
     if(result != 0){
         return BIOS_STATUS_CRIT_LNFS_KERNEL_LOAD_FAILURE;

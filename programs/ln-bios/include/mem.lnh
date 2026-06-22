@@ -7,6 +7,8 @@ extern void memzero(void far *dest, unsigned int length);
 
 extern void memfill(void far *dest, unsigned int length, unsigned int value);
 
+extern void lmemcpy(void far *src, void far *dest, unsigned long int length);
+
 extern void memcpy(void far *src, void far *dest, unsigned int length);
 
 #endif

@@ -29,3 +29,21 @@ struct lnfs_inode far *lnfs_get_kernel_inode(struct lnfs_superblock far *sb, uns
     struct lnfs_inode far *kernel_node = lnfs_find_file(root, "KERNEL", 6, start_page);
     return kernel_node;
 }
+
+unsigned int lnxe_load(struct lnfs_block far *block, void far *load_address){
+    if(block->flags & LNFS_BLOCK_FLAG_FREE){
+        lnfs_error_code = LNFS_ERROR_INVALID_KERNEL_FILE;
+        return 1; // Block is marked as free, invalid kernel file
+    }
+
+    struct lnxe_header far *data = block + sizeof(struct lnfs_block); // Data is located immediately after the block header
+
+    if(memcmp(data, "LNXE", 4) != 0){
+        lnfs_error_code = LNFS_ERROR_INVALID_KERNEL_FILE;
+        return 1; // Invalid LNXE header
+    }
+
+    lmemcpy(data + sizeof(struct lnxe_header), load_address, block->size - sizeof(struct lnxe_header)); // Copy the actual code/data to the load address
+
+    return 1;
+}

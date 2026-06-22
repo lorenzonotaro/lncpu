@@ -9,6 +9,8 @@
 
 #define LNFS_ERROR_FILE_NOT_FOUND 0x04
 
+#define LNFS_ERROR_INVALID_KERNEL_FILE 0x05
+
 #define SUPERBLOCK_SIGNATURE "LNFS"
 
 #define SUPERBLOCK_FLAG_READONLY 0x01
@@ -40,7 +42,17 @@ struct lnfs_block {
     unsigned long int size;
 };
 
+struct lnxe_header {
+    char signature[4]; // "LNXE"
+    unsigned int version;
+    unsigned int reloc_table_size;
+    // follows a relocation table of unsigned int entries, then the actual code/data
+};
+
 extern unsigned int lnfs_error_code;
 
 struct lnfs_block far *lnfs_get_kernel_inode(struct lnfs_superblock far *sb, unsigned int start_page);
+
+unsigned int lnxe_load(struct lnfs_block far *kblock, void far *load_address);
+
 #endif

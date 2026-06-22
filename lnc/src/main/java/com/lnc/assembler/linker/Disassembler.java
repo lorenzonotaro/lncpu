@@ -59,7 +59,8 @@ public class Disassembler{
                         opCodeImmediate = OpcodeMap.getImmediateName(opcode);
                         instructionLength = OpcodeMap.getCodeLength(opCodeImmediate);
                     }catch(IllegalArgumentException e){
-                        throw new LinkException("invalid opcode: %02x".formatted(opcode));
+                        opCodeImmediate = "UNKNOWN";
+                        instructionLength = 1;
                     }
 
                     String instructionDesc = "%02x (%s)".formatted(opcode, opCodeImmediate);
