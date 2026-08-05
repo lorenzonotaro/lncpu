@@ -149,7 +149,7 @@ uint8_t emu_tty_addr_read(struct lncpu_vm *vm, struct emu_device *device, void *
     return 0;
 }
 
-void putch(int c){
+void dev_putchar(int c){
     #ifdef _WIN32
     char ch = (char)c;
     HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -175,11 +175,11 @@ void emu_tty_addr_write(struct lncpu_vm *vm, struct emu_device *device, void *de
     else if (addr - device->start == 2) {
         // write char
         if (value == '\b') {
-            putch('\b');
-            putch(' ');
-            putch('\b');
+            dev_putchar('\b');
+            dev_putchar(' ');
+            dev_putchar('\b');
         }else {
-            putch(value);
+            dev_putchar(value);
         }
     }
 }
