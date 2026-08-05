@@ -122,7 +122,7 @@ public class ProgramSettings {
     }
 
     private static class Entry{
-        private final String help;
+        private String help;
         private Object value;
 
         private Entry(String help, Object value) {
