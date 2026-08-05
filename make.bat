@@ -193,8 +193,12 @@ if "%make_emu%"=="true" (
         if exist Release\lncpu-emu (
             copy Release\lncpu-emu ..\..\output\lncpu_emu
         ) else (
-            echo Error: lncpu-emu executable not found
-            exit /b 1
+            if exist lncpu_emu.exe (
+                copy lncpu_emu.exe ..\..\output\lncpu_emu.exe
+            ) else (
+                echo Error: lncpu-emu executable not found
+                exit /b 1
+            )
         )
     )
 )
