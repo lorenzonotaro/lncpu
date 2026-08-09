@@ -1,0 +1,6 @@
+{
+  "--version" : {
+    "help": "Prints the version of the program and quits.",
+    "value": ""
+  }
+}

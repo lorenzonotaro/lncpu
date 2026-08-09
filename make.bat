@@ -129,7 +129,8 @@ if "%build_lnc%"=="true" (
     xcopy lib\ ..\output\lib\ /E /Y
 
     REM generate run cmd/bash for lnc
-    echo java -jar %%~dp0\lnc.jar %%* > "..\output\lnc.bat"
+    echo @echo off > "..\output\lnc.bat"
+    echo java -jar %%~dp0\lnc.jar %%* >> "..\output\lnc.bat"
     copy "..\output\lnc.bat" "..\output\lnasm.bat"
     
     echo #!/bin/bash > "../output/lnc"

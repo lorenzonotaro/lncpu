@@ -21,10 +21,11 @@ struct lnfs_superblock {
     unsigned int flags;
 };
 
-#define LNFS_INODE_FLAG_DIR 0x01
-#define LNFS_INODE_FLAG_READONLY 0x02
-#define LNFS_INODE_FLAG_HIDDEN 0x04
-#define LNFS_INODE_FLAG_ROOT 0x08
+#define LNFS_INODE_FLAG_FREE 0x01
+#define LNFS_INODE_FLAG_DIR 0x02
+#define LNFS_INODE_FLAG_READONLY 0x04
+#define LNFS_INODE_FLAG_HIDDEN 0x08
+#define LNFS_INODE_FLAG_ROOT 0x10
 
 struct lnfs_inode {
     char name[8];
