@@ -1,4 +1,4 @@
-package com.lncpu.lnfs;
+package com.lnfsutils;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -91,7 +91,7 @@ public class ProgramSettings {
     }
 
     public void help() {
-        System.out.println("Usage: lnfsutils [options] <source files>\n" +
+        System.out.println("Usage: lnfsutils [<--option>|<source directory>...]\n" +
                 "Options:");
 
         for (Map.Entry<String, Entry> entry : entries.entrySet()) {
@@ -115,8 +115,10 @@ public class ProgramSettings {
                     } else if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
                         parseAndSet(arg, args[++i]);
                     } else set(arg, true);
-                } else {
+                } else if (!arg.isBlank()) {
                     addSourceFile(arg);
+                }else {
+                    throw new IllegalArgumentException("Invalid argument: " + arg);
                 }
             }
 
@@ -125,6 +127,10 @@ public class ProgramSettings {
             return false;
         }
         return true;
+    }
+
+    public List<String> getSourceFiles() {
+        return sourceFiles;
     }
 
 

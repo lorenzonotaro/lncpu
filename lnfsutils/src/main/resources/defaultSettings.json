@@ -1,6 +1,34 @@
 {
   "--version" : {
     "help": "Prints the version of the program and quits.",
+    "value": false
+  },
+  "--help": {
+    "help": "Prints this help message and quits.",
+    "value": false
+  },
+  "--size" : {
+    "help": "Sets the size of the partition in pages (256 bytes each).",
+    "value": 32
+  },
+  "--charset" : {
+    "help": "Sets the charset to use for encoding file names.",
+    "value": "US-ASCII"
+  },
+  "--max-inodes": {
+    "help": "Sets the maximum number of inodes. Total size of the inode table is max-inodes * 12 bytes.",
+    "value": 127
+  },
+  "--readonly": {
+    "help": "Sets the FS to be read-only.",
+    "value": false
+  },
+  "--out": {
+    "help": "Sets the output file name.",
     "value": ""
+  },
+  "--stdout": {
+    "help": "Prints the FS to stdout instead of writing it to a file.",
+    "value": false
   }
 }

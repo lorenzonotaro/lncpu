@@ -1,4 +1,4 @@
-package com.lncpu.lnfs;
+package com.lnfsutils;
 
 import java.io.PrintStream;
 
