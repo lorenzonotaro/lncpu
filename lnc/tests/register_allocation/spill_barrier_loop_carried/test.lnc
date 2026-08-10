@@ -1,0 +1,25 @@
+export int result;
+
+int loop_carried_pressure(int limit) {
+    int i = 0;
+    int a = 1;
+    int b = 2;
+    int c = 3;
+    int d = 4;
+    int e = 5;
+
+    while (i < limit) {
+        a = a + b;
+        b = b + c;
+        c = c + d;
+        d = d + e;
+        e = e + 1;
+        i = i + 1;
+    }
+
+    return a + b + c + d + e;
+}
+
+void main() {
+    result = loop_carried_pressure(3);
+}

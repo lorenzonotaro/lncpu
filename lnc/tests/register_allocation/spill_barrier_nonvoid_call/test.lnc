@@ -1,0 +1,21 @@
+export int result;
+
+int bump(int value) {
+    return value + 7;
+}
+
+int pressure_across_call(int seed) {
+    int a = seed + 1;
+    int b = seed + 2;
+    int c = seed + 3;
+    int d = seed + 4;
+    int e = seed + 5;
+    int f = seed + 6;
+    int called = bump(seed + 9);
+
+    return a + b + c + d + e + f + called;
+}
+
+void main() {
+    result = pressure_across_call(3);
+}

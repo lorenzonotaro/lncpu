@@ -1,0 +1,19 @@
+export int result;
+
+int write_then_read_pressure(int seed) {
+    int carried = seed + 1;
+    int a = seed + 2;
+    int b = seed + 3;
+    int c = seed + 4;
+    int d = seed + 5;
+    int e = seed + 6;
+
+    carried = carried + a;
+    a = b + c;
+    b = d + e;
+    return carried + a + b + c + d + e;
+}
+
+void main() {
+    result = write_then_read_pressure(2);
+}

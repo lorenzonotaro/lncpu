@@ -1,0 +1,22 @@
+export int result;
+int value;
+
+int component_overlap_pressure() {
+    int *ptr = &value;
+    long int wide = 261;
+    int a = 5;
+    int b = 6;
+    int c = 7;
+    int loaded;
+
+    *ptr = 15;
+    loaded = *ptr;
+    a = a + (int) wide;
+    b = b + (int) wide;
+    c = c + (int) wide;
+    return loaded + a + b + c;
+}
+
+void main() {
+    result = component_overlap_pressure();
+}
