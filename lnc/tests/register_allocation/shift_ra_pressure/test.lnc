@@ -1,0 +1,15 @@
+export int result;
+
+int shift_ra_pressure(int seed) {
+    int a = seed + 1;
+    int b = seed + 2;
+    int c = seed + 3;
+    int d = seed + 4;
+    int shifted = a << 2;
+
+    return shifted + b + c + d;
+}
+
+void main() {
+    result = shift_ra_pressure(3);
+}

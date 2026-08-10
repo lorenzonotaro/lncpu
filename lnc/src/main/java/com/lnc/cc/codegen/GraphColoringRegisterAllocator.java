@@ -785,7 +785,7 @@ public class GraphColoringRegisterAllocator {
                         .filter(e -> spilledVirtuals.contains(e.getKey()))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                 slotAssigner.assignSlots(spillRanges);
-                patchSpillOffsets(spillStores, spillLoads, slotAssigner.slotOffset);
+                patchSpillOffsets(spillStores, spillLoads, slotAssigner.slotOffset, unit.getLocalMappingInfo().forcedStackFrameLocalsSize());
 
                 maybeRunPostSpillIROptimizer(unit);
             }
@@ -1269,19 +1269,19 @@ public class GraphColoringRegisterAllocator {
         }
     }
 
-    private static void patchSpillOffsets(List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores, List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillLoads, Map<VirtualRegister, Integer> slotOf) {
+    private static void patchSpillOffsets(List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores, List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillLoads, Map<VirtualRegister, Integer> slotOf, int spillBaseOffset) {
         for(var entry : spillStores) {
             VirtualRegister vr = entry.getKey();
             Move store = entry.getValue();
             StackFrameLocation sfOp = (StackFrameLocation) store.getDest();
-            sfOp.setOffset(slotOf.get(vr));
+            sfOp.setOffset(spillBaseOffset + slotOf.get(vr));
         }
 
         for(var entry : spillLoads) {
             VirtualRegister vr = entry.getKey();
             Move load = entry.getValue();
             StackFrameLocation sfOp = (StackFrameLocation) load.getSource();
-            sfOp.setOffset(slotOf.get(vr));
+            sfOp.setOffset(spillBaseOffset + slotOf.get(vr));
         }
     }
 

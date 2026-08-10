@@ -1,0 +1,21 @@
+export int result;
+
+int sum4(int a, int b, int c, int d) {
+    return a + b + c + d;
+}
+
+int forced_local_spill(int seed) {
+    int guard[2];
+    int a = seed + 1;
+    int b = seed + 2;
+    int c = seed + 3;
+    int d = seed + 4;
+
+    guard[0] = 91;
+    guard[1] = 37;
+    return guard[0] + guard[1] + sum4(a, b, c, d);
+}
+
+void main() {
+    result = forced_local_spill(3);
+}

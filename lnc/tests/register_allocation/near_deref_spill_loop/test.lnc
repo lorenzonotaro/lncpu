@@ -1,0 +1,17 @@
+export int result;
+unsigned int arr[24];
+
+void main() {
+    unsigned int i;
+    unsigned int j;
+    unsigned int t;
+    unsigned int s;
+    s = 7;
+    for (i = 0; i < 24; i++) { s = (s << 2) + s + 3; arr[i] = s; }
+    for (i = 0; i < 23; i++) {
+        for (j = 0; j < 23 - i; j++) {
+            if (arr[j] > arr[j+1]) { t = arr[j]; arr[j] = arr[j+1]; arr[j+1] = t; }
+        }
+    }
+    result = arr[0] + arr[23];
+}

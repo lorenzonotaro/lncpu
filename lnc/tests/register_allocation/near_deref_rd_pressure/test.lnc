@@ -1,0 +1,16 @@
+export int result;
+int value;
+
+int near_deref_rd_pressure(int seed) {
+    int a = seed + 1;
+    int b = seed + 2;
+    int c = seed + 3;
+    int *ptr = &value;
+
+    *ptr = seed + 9;
+    return *ptr + a + b + c;
+}
+
+void main() {
+    result = near_deref_rd_pressure(4);
+}
