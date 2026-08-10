@@ -5,10 +5,47 @@ build_lnc=true
 build_eeprom_serial_loader=true
 make_eeproms=true
 make_emu=true
+make_lnfsutils=true
 
 for arg in "$@"; do
 
-    if [ "$arg" == "--no-lnc" ]; then
+    if [ $arg == "--all" ]; then
+        build_lnc=true
+        build_eeprom_serial_loader=true
+        make_eeproms=true
+        make_emu=true
+        make_lnfsutils=true
+    elif [ $arg == "--lnc-only" ]; then
+        build_lnc=true
+        build_eeprom_serial_loader=false
+        make_eeproms=false
+        make_emu=false
+        make_lnfsutils=false
+    elif [ $arg == "--eeprom-serial-loader-only" ] || [ $arg == "--esl-only" ]; then
+        build_lnc=false
+        build_eeprom_serial_loader=true
+        make_eeproms=false
+        make_emu=false
+        make_lnfsutils=false
+    elif [ $arg == "--eeproms-only" ]; then
+        build_lnc=false
+        build_eeprom_serial_loader=false
+        make_eeproms=true
+        make_emu=false
+        make_lnfsutils=false
+    elif [ $arg == "--lncpu-emu-only" ] || [ $arg == "--emu-only" ]; then
+        build_lnc=false
+        build_eeprom_serial_loader=false
+        make_eeproms=false
+        make_emu=true
+        make_lnfsutils=false
+    elif [ $arg == "--lnfsutils-only" ] || [ $arg == "--lnfs-only" ]; then
+        build_lnc=false
+        build_eeprom_serial_loader=false
+        make_eeproms=false
+        make_emu=false
+        make_lnfsutils=true
+    elif [ "$arg" == "--no-lnc" ]; then
         build_lnc=false
     elif [ "$arg" == "--no-eeprom-serial-loader" ] || [ "$arg" == "--no-esl" ]; then
         build_eeprom_serial_loader=false
@@ -16,6 +53,8 @@ for arg in "$@"; do
         make_eeproms=false
     elif [ "$arg" == "--no-lncpuemu" ] || [ "$arg" == "--no-emu" ]; then
         make_emu=false
+    elif [ "$arg" == "--no-lnfsutils" ] || [ "$arg" == "--no-lnfs" ]; then
+        make_lnfsutils=false
     else
         echo "Unknown argument: $arg"
         echo "Usage: make.sh [--no-lnc] [--no-eeprom-serial-loader|--no-esl] [--no-eeproms] [--no-lncpuemu]"
@@ -47,6 +86,8 @@ if [ $build_eeprom_serial_loader = true ] ; then
     # generate run cmd/bash for eeprom-serial-loader
     echo "java -jar %~dp0\eeprom-serial-loader.jar %*" > "../output/eeprom-serial-loader.bat"
     echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/eeprom-serial-loader.jar\" \"\$@\"" > "../output/eeprom-serial-loader"
+
+    chmod +x ../output/eeprom-serial-loader
 
     cd ..
 fi
@@ -113,8 +154,9 @@ if [ $build_lnc = true ] ; then
     echo "java -jar %~dp0\lnc.jar %*" > "../output/lnc.bat"
     cp ../output/lnc.bat ../output/lnasm.bat
     echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lnc.jar\" \"\$@\"" > "../output/lnc"
+    chmod +x ../output/lnc
     cp ../output/lnc ../output/lnasm
-
+    chmod +x ../output/lnasm
     # === generate lnasm documentation ===
 
     echo "Generating lnasm instruction set documentation..."
