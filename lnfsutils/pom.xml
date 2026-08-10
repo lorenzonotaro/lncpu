@@ -45,7 +45,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.lncpu.lnfs.Main</mainClass>
+                            <mainClass>com.lnfsutils.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -62,7 +62,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.lncpu.lnfs.Main</mainClass>
+                            <mainClass>com.lnfsutils.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
