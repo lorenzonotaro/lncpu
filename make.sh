@@ -57,7 +57,7 @@ for arg in "$@"; do
         make_lnfsutils=false
     else
         echo "Unknown argument: $arg"
-        echo "Usage: make.sh [--no-lnc] [--no-eeprom-serial-loader|--no-esl] [--no-eeproms] [--no-lncpuemu]"
+        echo "Usage: make.sh [--no-lnc] [--no-eeprom-serial-loader|--no-esl] [--no-eeproms] [--no-lncpuemu] [--no-lnfsutils|--no-lnfs] [--lnc-only] [--eeprom-serial-loader-only|--esl-only] [--eeproms-only] [--lncpu-emu-only|--emu-only] [--lnfsutils-only|--lnfs-only] [--all]"
         exit 1
     fi
 
@@ -162,6 +162,29 @@ if [ $build_lnc = true ] ; then
     echo "Generating lnasm instruction set documentation..."
 
     python3 gen_language_docs.py
+
+    cd ..
+fi
+
+if [ $make_lnfsutils = true ] ; then
+
+    cd lnfsutils
+
+    echo "Building lnfsutils..."
+
+    mvn package
+
+    if [ $? -ne 0 ]; then
+        echo "Error: lnfsutils build failed"
+        exit 1
+    fi
+
+    cp target/lnfsutils.jar ../output/
+
+    # generate run cmd/bash for lnfsutils
+    echo "java -jar %~dp0\lnfsutils.jar %*" > "../output/lnfsutils.bat"
+    echo -e "#!/bin/bash\njava -jar \"\$(dirname "\$0")/lnfsutils.jar\" \"\$@\"" > "../output/lnfsutils"
+    chmod +x ../output/lnfsutils
 
     cd ..
 fi

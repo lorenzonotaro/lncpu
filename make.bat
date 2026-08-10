@@ -8,10 +8,93 @@ set build_lnc=true
 set build_eeprom_serial_loader=true
 set make_eeproms=true
 set make_emu=true
+set make_lnfsutils=true
 
 REM parse command line arguments
 :parse_args
 if "%~1"=="" goto args_done
+if "%~1"=="--lnc-only" (
+    set build_lnc=true
+    set build_eeprom_serial_loader=false
+    set make_eeproms=false
+    set make_emu=false
+    set make_lnfsutils=false
+    shift
+    goto parse_args
+)
+if "%~1"=="--eeprom-serial-loader-only" (
+    set build_lnc=false
+    set make_eeproms=false
+    set make_emu=false
+    set make_lnfsutils=false
+    set build_eeprom_serial_loader=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--esl-only" (
+    set build_lnc=false
+    set make_eeproms=false
+    set make_emu=false
+    set make_lnfsutils=false
+    set build_eeprom_serial_loader=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--emu-only" (
+    set build_lnc=false
+    set build_eeprom_serial_loader=false
+    set make_eeproms=false
+    set make_lnfsutils=false
+    set make_emu=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--eeproms-only" (
+    set build_lnc=false
+    set build_eeprom_serial_loader=false
+    set make_emu=false
+    set make_lnfsutils=false
+    set make_eeproms=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--lnfsutils-only" (
+    set build_lnc=false
+    set build_eeprom_serial_loader=false
+    set make_emu=false
+    set make_eeproms=false
+    set make_lnfsutils=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--lnfs-only" (
+    set build_lnc=false
+    set build_eeprom_serial_loader=false
+    set make_emu=false
+    set make_eeproms=false
+    set make_lnfsutils=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--all" (
+    set build_lnc=true
+    set build_eeprom_serial_loader=true
+    set make_eeproms=true
+    set make_emu=true
+    set make_lnfsutils=true
+    shift
+    goto parse_args
+)
+if "%~1"=="--no-lnfsutils" (
+    set make_lnfsutils=false
+    shift
+    goto parse_args
+)
+if "%~1"=="--no-lnfs" (
+    set make_lnfsutils=false
+    shift
+    goto parse_args
+)
 if "%~1"=="--no-lnc" (
     set build_lnc=false
     shift
@@ -142,6 +225,33 @@ if "%build_lnc%"=="true" (
     echo Generating lnasm instruction set documentation...
 
     python gen_language_docs.py
+
+    cd ..
+)
+
+REM === make lnfsutils ===
+
+if "%make_lnfsutils%"=="true" (
+
+    cd lnfsutils
+
+    echo Building lnfsutils...
+
+    call mvn package
+
+    if errorlevel 1 (
+        echo Error: lnfsutils build failed
+        exit /b 1
+    )
+
+    copy target\lnfsutils.jar ..\output\
+
+    REM generate run cmd/bash for lnfsutils
+    echo @echo off > "..\output\lnfsutils.bat"
+    echo java -jar %%~dp0\lnfsutils.jar %%* >> "..\output\lnfsutils.bat"
+    
+    echo #!/bin/bash > "../output/lnfsutils"
+    echo java -jar "$(dirname "$0")/lnfsutils.jar" "$@" >> "../output/lnfsutils"
 
     cd ..
 )
