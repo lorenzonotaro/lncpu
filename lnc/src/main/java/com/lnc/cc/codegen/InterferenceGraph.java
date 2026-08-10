@@ -310,6 +310,13 @@ public class InterferenceGraph {
                     }
                 }
 
+                // A shift is emitted in place, so it also defs its left operand. The shifted-in-place
+                // operand and the destination want the same register, so suppress that one edge.
+                if (inst instanceof Bin shift && shift.clobbersLeftOperand()
+                        && shift.getDest() instanceof VirtualRegister shiftDest) {
+                    work.remove(shiftDest);
+                }
+
                 // Add interference for defs against current live (or live minus src for moves)
                 for (VirtualRegister d : defsHere) {
                     for (VirtualRegister v : work) {

@@ -2,6 +2,7 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ast.BinaryExpression;
 import com.lnc.cc.ir.operands.IROperand;
+import com.lnc.cc.ir.operands.VirtualRegister;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -42,9 +43,21 @@ public class Bin extends IRInstruction {
         return List.of(left, right);
     }
 
+    /**
+     * Code generation emits shifts in place on the left operand and copies the result out
+     * afterwards ({@code shl left; mov left, dest}), so a shift clobbers its left operand as well as
+     * its destination. Reporting that write keeps liveness, copy propagation and register allocation
+     * from assuming the pre-shift value survives the instruction.
+     */
     @Override
     public Collection<IROperand> getWriteOperands() {
-        return Collections.singleton(dest);
+        return clobbersLeftOperand() ? List.of(dest, left) : Collections.singleton(dest);
+    }
+
+    public boolean clobbersLeftOperand() {
+        return (operator == BinaryExpression.Operator.SHL || operator == BinaryExpression.Operator.SHR)
+                && left instanceof VirtualRegister
+                && !left.equals(dest);
     }
 
     @Override

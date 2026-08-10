@@ -195,8 +195,8 @@ public class SoftwareExtensionsManager {
     private void emitCmpZWordWord(CompilerOutput output, Register a, Register b) {
         var aLow = reg(low(a));
         var aHigh = reg(high(a));
-        var bLow = reg(low(a));
-        var bHigh = reg(high(a));
+        var bLow = reg(low(b));
+        var bHigh = reg(high(b));
 
         var chkLow = routineLabel("chklow");
         var carryHigh = routineLabel("carryhigh");

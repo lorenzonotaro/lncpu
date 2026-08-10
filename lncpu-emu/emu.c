@@ -50,6 +50,17 @@ void reg_dump(struct lncpu_vm *vm, FILE *f) {
            (vm->flags & FLAGS_N) ? 'N' : '-',
            (vm->flags & FLAGS_Z) ? 'Z' : '-',
            (vm->flags & FLAGS_C) ? 'C' : '-');
+    fprintf(f, "INSTRUCTIONS  CYCLES\n");
+    fprintf(f, "%llu    %llu\n\n", (unsigned long long)vm->instr_count, (unsigned long long)vm->cycle_count);
+
+    fprintf(f, "OPCODE PROFILE (mnemonic count cycles)\n");
+    for (size_t op = 0; op < sizeof(opcode_info) / sizeof(opcode_info[0]); op++) {
+        if (vm->opcode_hist[op] == 0) continue;
+        fprintf(f, "%s\t%llu\t%llu\n", opcode_info[op].mnemonic,
+                (unsigned long long)vm->opcode_hist[op],
+                (unsigned long long)(vm->opcode_hist[op] * opcode_info[op].clock_cycles));
+    }
+    fprintf(f, "END PROFILE\n\n");
 }
 
 void memdump(struct lncpu_vm * vm, uint16_t start, uint16_t end) {

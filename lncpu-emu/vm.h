@@ -31,6 +31,10 @@ struct lncpu_vm {
     size_t emu_device_count;
 
     bool halted;
+
+    uint64_t instr_count;
+    uint64_t cycle_count;
+    uint64_t opcode_hist[256];
 };
 
 bool vm_init(struct lncpu_vm *vm, const struct emu_cmdline_params *cmdline_params);

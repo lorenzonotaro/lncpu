@@ -1,7 +1,9 @@
 package com.lnc.cc.optimization.asm;
 
+import com.lnc.LNC;
 import com.lnc.cc.codegen.CompilerOutput;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,14 +21,28 @@ import java.util.List;
  * generated code when certain transformations are applied.
  */
 public class AsmLevelOptimizer {
-    private final List<AbstractAsmLevelLinearPass> passes = List.of(
+    private final List<AbstractAsmLevelLinearPass> passes = buildPasses();
+
+    private static List<AbstractAsmLevelLinearPass> buildPasses() {
+        List<AbstractAsmLevelLinearPass> passes = new ArrayList<>(basePasses());
+        if (LNC.settings.get("--opt-loop-rotation", Boolean.class)) {
+            passes.add(new LoopRotationPass());
+        }
+        return passes;
+    }
+
+    private static List<AbstractAsmLevelLinearPass> basePasses() {
+        return List.of(
             new RedundantGotoEliminationPass(),
+            new StrengthReductionPass(),
             new RedundantRegisterMoveEliminationPass(),
             new TwoWayMoveEliminationPass(),
             new CommuteAndEliminateMovePass(),
+            new RedundantStackTrafficPass(),
             new UselessLabelPass(),
             new RedundantCmpPass()
-    );
+        );
+    }
 
     public void optimize(CompilerOutput output) {
         boolean changed;

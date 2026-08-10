@@ -186,6 +186,10 @@ public class IRBlock implements Iterable<IRInstruction> {
         return last;
     }
 
+    public boolean isTerminated() {
+        return last instanceof Goto || last instanceof Ret;
+    }
+
     public void setLast(IRInstruction last) {
         if (last == null) {
             throw new IllegalArgumentException("Last instruction cannot be null.");

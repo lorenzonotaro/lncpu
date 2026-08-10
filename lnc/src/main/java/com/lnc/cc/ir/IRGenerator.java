@@ -43,7 +43,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         visitStatement(whileStatement.body);
 
-        emit(new Goto(header));
+        emitGotoIfOpen(header);
 
         currentUnit.exitLoop();
 
@@ -65,7 +65,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         visitStatement(doStmt.body);
 
-        currentUnit.continueTo(header);
+        continueToIfOpen(header);
         branchIfTrue(doStmt.condition, body, exit, null);
         currentUnit.exitLoop();
 
@@ -119,6 +119,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         //    exit:   continuation after the loop
         IRBlock header = currentUnit.newBlock();
         IRBlock body   = currentUnit.newBlock();
+        // `continue` must still run the increment, so it needs its own block to jump to. Loops
+        // without a `continue` keep the increment inline in the body and avoid the extra branch.
+        boolean incrementNeedsOwnBlock = forStmt.increment != null
+                && ContinueTargetScanner.bindsContinue(forStmt.body);
+        IRBlock incr   = incrementNeedsOwnBlock ? currentUnit.newBlock() : null;
         IRBlock exit   = currentUnit.newBlock();
 
         // 3) Link pre-header → header, then switch into header
@@ -134,18 +139,23 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
 
         // 5) Enter the loop and emit the body
-        currentUnit.enterLoop(new LoopInfo(header, exit));
+        currentUnit.enterLoop(new LoopInfo(incr != null ? incr : header, exit));
         currentUnit.setCurrentBlock(body);
 
         visitStatement(forStmt.body);
 
 
-        // after the body, unconditionally go to the incr block
+        // after the body, run the increment - in its own block when `continue` needs to reach it
         if (forStmt.increment != null) {
-            forStmt.increment.accept(this);
+            if (incr != null) {
+                continueToIfOpen(incr);
+            }
+            if (!isCurrentBlockTerminated()) {
+                forStmt.increment.accept(this);
+            }
         }
         // then loop back to the header for the next test
-        emit(new Goto(header));
+        emitGotoIfOpen(header);
 
         // 7) Finish up
         currentUnit.exitLoop();
@@ -198,13 +208,13 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         currentUnit.setCurrentBlock(thenBlk);
         visitStatement(ifStmt.thenStatement);
         // after then, unconditionally jump to exit
-        emit(new Goto(exitBlk));
+        emitGotoIfOpen(exitBlk);
 
         // 5) Optionally build the “else” block
         if (elseBlk != null) {
             currentUnit.setCurrentBlock(elseBlk);
             visitStatement(ifStmt.elseStatement);
-            emit(new Goto(exitBlk));
+            emitGotoIfOpen(exitBlk);
         }
 
         // 6) Continue in the exit block
@@ -659,6 +669,22 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     private VirtualRegister allocVR(TypeSpecifier typeSpecifier) {
         return currentUnit.getVrManager().getRegister(typeSpecifier);
+    }
+
+    private boolean isCurrentBlockTerminated(){
+        IRBlock current = currentUnit.getCurrentBlock();
+        return current != null && current.isTerminated();
+    }
+
+    private void emitGotoIfOpen(IRBlock target){
+        if(!isCurrentBlockTerminated()){
+            emit(new Goto(target));
+        }
+    }
+
+    private void continueToIfOpen(IRBlock target){
+        emitGotoIfOpen(target);
+        currentUnit.setCurrentBlock(target);
     }
 
     private void emit(IRInstruction instruction){

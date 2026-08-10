@@ -93,7 +93,36 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     public Void visit(Move move) {
         move.setSource(move.getSource().accept(this));
         move.setDest(move.getDest().accept(this));
+
+        if (needsScratchRegister(move.getSource(), move.getDest())) {
+            move.setSource(moveOrLoadIntoVR(move.getSource()));
+        }
+
         return null;
+    }
+
+    /**
+     * The only memory-to-memory form the lncpu provides is the byte
+     * {@code mov [<data page>], [<data page>]}. Every other combination - anything involving an
+     * absolute, stack-frame or register-indirect operand, or a 16-bit value - has no encoding, so
+     * the source has to be staged through a register before code generation.
+     */
+    private static boolean needsScratchRegister(IROperand source, IROperand dest) {
+        if (!isMemory(source) || !isMemory(dest)) {
+            return false;
+        }
+        return !(isDataPageByte(source) && isDataPageByte(dest));
+    }
+
+    private static boolean isMemory(IROperand operand) {
+        return operand.type == IROperand.Type.LOCATION || operand.type == IROperand.Type.DEREF;
+    }
+
+    private static boolean isDataPageByte(IROperand operand) {
+        return operand instanceof Location location
+                && location.locType == Location.LocationType.SYMBOL
+                && location.getPointerKind() == StorageLocation.NEAR
+                && location.getTypeSpecifier().allocSize() == 1;
     }
 
     @Override

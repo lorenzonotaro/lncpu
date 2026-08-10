@@ -3,37 +3,30 @@
     "help": "Output binary. This parameter must be followed by the output filename. ",
     "value": ""
   },
-
   "-oI": {
     "help": "Output immediate code. This parameter must be followed by the output filename. ",
     "value": ""
   },
-
   "-oA": {
     "help": "Output assembly code from lnc. This parameter must be followed by the output filename. ",
     "value": ""
   },
-
   "-oM": {
     "help": "Output intermediate representation code. This parameter must be followed by the output filename. ",
     "value": ""
   },
-
   "-oS": {
     "help": "Output symbol table. This parameter must be followed by the output filename. ",
     "value": ""
   },
-
   "-oD": {
     "help": "A comma separated list of the devices to output (options: ROM, RAM, D0 through D5). A separate output file for each output mode will be generated (Ex. if -oB=a.out a-D0.out will be generated for device D0). Default: ROM. ",
     "value": "ROM"
   },
-
   "--version": {
     "help": "Prints the program version and quits.",
     "value": false
   },
-
   "--help": {
     "help": "Displays help text",
     "value": false
@@ -42,82 +35,70 @@
     "help": "Syntax check only (no output). ",
     "value": false
   },
-
   "-I": {
     "help": "Set the include path (directories separated by ';'). ",
     "value": ""
   },
-
   "-S": {
     "help": "Load the given symbol table file(s) (separated by ';'). ",
     "value": ""
   },
-
   "-lf": {
     "help": "Set the linker config file.",
     "value": ""
   },
-
   "-lc": {
     "help": "Provide a linker configuration script as a command line parameter.",
     "value": ""
   },
-
   "--standalone": {
     "help": "(lnc) - Standalone mode. Generates assembly code from the input lnasm that can be ran as is (adds a setup section, requires main() function).",
     "value": false
   },
-
   "--no-ir-opt": {
     "help": "Disables IR level optimization.",
     "value": false
   },
-
   "--no-asm-opt": {
     "help": "Disables assembly level optimization.",
     "value": false
   },
-
+  "--opt-loop-rotation": {
+    "help": "Rotates counted loops so the back edge is a conditional jump instead of an unconditional goto. Saves ~3 clock cycles per loop iteration at a cost of 4 bytes per rotated loop.",
+    "value": false
+  },
   "-Wdata-page-access-before-setup": {
     "help": "Disables data page access before setup compile warning.",
     "value": true
   },
-
   "-Wstack-access-before-setup": {
     "help": "Disables stack access before setup compile warning.",
     "value": true
   },
-
   "-Wshort-jump-out-of-range": {
     "help": "Disables short jump out of range compile warning.",
     "value": false
   },
-
   "--print-ig": {
     "help": "Prints the interference graph after of the register allocator.",
     "value": false
   },
-
   "--reg-alloc-max-iter": {
     "help": "Sets the maximum number of iterations for the register allocator.",
     "value": 10
   },
-
   "--output-reg-alloc-iter": {
     "help": "Outputs the register allocation result of each iteration. Must specify a folder in which to store all the RA IR attempts in the form <function name>_<iter number>.intermediate.txt. Element with number 0 will be the first IR passed onto the register allocator.",
     "value": ""
   },
-
   "--reg-alloc-no-coalesce": {
     "help": "Disables coalesce optimization in the register allocator.",
     "value": false
   },
-
   "--first-pass-opt-max-iter": {
     "help": "Sets the maximum number of iterations for the first pass optimizer.",
     "value": 20
   },
-
   "--reg-alloc-post-spill-ir-opt": {
     "help": "Runs stage-one IR optimizer after spill code insertion before the next register-allocation iteration.",
     "value": false

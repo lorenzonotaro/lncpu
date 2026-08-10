@@ -216,9 +216,25 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
         return null;
     }
 
+    /**
+     * {@code and R, R} leaves N and Z identical to {@code cmp R, 0} while being one byte and one
+     * cycle cheaper. It is only interchangeable when the caller consumes Z alone: the two forms are
+     * not guaranteed to agree on C, so this must never be widened to the JC/JN comparisons.
+     */
+    private static boolean isRegisterZeroTest(Argument left, Argument right, TokenType targetFlag) {
+        return targetFlag == TokenType.JZ
+                && left.type == Argument.Type.REGISTER
+                && right instanceof Byte immediate
+                && immediate.value == 0;
+    }
+
     private boolean visitCmp(Argument left, int leftSize, Argument right, int rightSize, TokenType targetFlag) {
         if(leftSize == 1){
-            instrf(TokenType.CMP, left, right);
+            if(isRegisterZeroTest(left, right, targetFlag)){
+                instrf(TokenType.AND, left, left);
+            }else{
+                instrf(TokenType.CMP, left, right);
+            }
         }else{
             Register leftReg = asWordRegister(left);
             Register rightReg = rightSize == 1 ? asByteRegister(right) : asWordRegister(right);

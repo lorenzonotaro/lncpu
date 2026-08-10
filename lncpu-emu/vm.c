@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "opcodes.h"
 #include "vm.h"
@@ -178,6 +179,9 @@ bool vm_init(struct lncpu_vm *vm, const struct emu_cmdline_params *cmdline_param
     vm->cspc = 0;
     vm->emu_device_count = 0;
     vm->halted = 0;
+    vm->instr_count = 0;
+    vm->cycle_count = 0;
+    memset(vm->opcode_hist, 0, sizeof(vm->opcode_hist));
 
     if (!init_addr_space(vm->addr_space, cmdline_params)) {
         return false;
@@ -228,6 +232,12 @@ void vm_step(struct lncpu_vm *vm) {
         opcode = OP__BRK_;
     }else {
         opcode = fetch_byte(vm);
+    }
+
+    vm->instr_count++;
+    vm->opcode_hist[opcode & 0xFF]++;
+    if (opcode < sizeof(opcode_info) / sizeof(opcode_info[0])) {
+        vm->cycle_count += opcode_info[opcode].clock_cycles;
     }
 
     switch (opcode) {
@@ -1184,44 +1194,44 @@ void vm_step(struct lncpu_vm *vm) {
             set_flags(vm, vm->rd, false);
             break;
         case OP_INC_RA:
-            temp1 = (uint16_t) vm->ra + 1;
-            set_flags(vm, temp1, true);
-            vm->ra = temp1;
+            temp16 = (uint16_t) vm->ra + 1;
+            set_flags(vm, temp16, true);
+            vm->ra = (uint8_t) temp16;
             break;
         case OP_INC_RB:
-            temp1 = (uint16_t) vm->rb + 1;
-            set_flags(vm, temp1, true);
-            vm->rb = temp1;
+            temp16 = (uint16_t) vm->rb + 1;
+            set_flags(vm, temp16, true);
+            vm->rb = (uint8_t) temp16;
             break;
         case OP_INC_RC:
-            temp1 = (uint16_t) vm->rc + 1;
-            set_flags(vm, temp1, true);
-            vm->rc = temp1;
+            temp16 = (uint16_t) vm->rc + 1;
+            set_flags(vm, temp16, true);
+            vm->rc = (uint8_t) temp16;
             break;
         case OP_INC_RD:
-            temp1 = (uint16_t) vm->rd + 1;
-            set_flags(vm, temp1, true);
-            vm->rd = temp1;
+            temp16 = (uint16_t) vm->rd + 1;
+            set_flags(vm, temp16, true);
+            vm->rd = (uint8_t) temp16;
             break;
         case OP_DEC_RA:
-            temp1 = (uint16_t) vm->ra - 1;
-            set_flags(vm, temp1, true);
-            vm->ra = temp1;
+            temp16 = (uint16_t) vm->ra - 1;
+            set_flags(vm, temp16, true);
+            vm->ra = (uint8_t) temp16;
             break;
         case OP_DEC_RB:
-            temp1 = (uint16_t) vm->rb - 1;
-            set_flags(vm, temp1, true);
-            vm->rb = temp1;
+            temp16 = (uint16_t) vm->rb - 1;
+            set_flags(vm, temp16, true);
+            vm->rb = (uint8_t) temp16;
             break;
         case OP_DEC_RC:
-            temp1 = (uint16_t) vm->rc - 1;
-            set_flags(vm, temp1, true);
-            vm->rc = temp1;
+            temp16 = (uint16_t) vm->rc - 1;
+            set_flags(vm, temp16, true);
+            vm->rc = (uint8_t) temp16;
             break;
         case OP_DEC_RD:
-            temp1 = (uint16_t) vm->rd - 1;
-            set_flags(vm, temp1, true);
-            vm->rd = temp1;
+            temp16 = (uint16_t) vm->rd - 1;
+            set_flags(vm, temp16, true);
+            vm->rd = (uint8_t) temp16;
             break;
         case OP_SHL_RA:
             vm->ra <<= 1;
