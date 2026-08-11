@@ -313,6 +313,7 @@ _cmp_equal:
     xor         RB, RB
 
 _cmp_done:
+    sub         SP, 0x05        ; free locals
     pop         BP
     pop         RD
     pop         RC

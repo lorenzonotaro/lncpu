@@ -111,10 +111,6 @@ if [ $make_eeproms = true ] ; then
     echo "Copying opcodes.tsv to lnc..."
     cp opcodes.tsv ../../lnc/src/main/resources/
 
-    # === generate /lncpu-emu/opcodes.h ===
-    echo "Generating lncpu-emu/opcodes.h..."
-    python3 ../../lncpu-emu/gen_opcodes_h.py opcodes.tsv
-
     # === generate EEPROM binary files ===
 
     echo "Generating EEPROM binary files..."

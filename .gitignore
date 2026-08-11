@@ -58,7 +58,7 @@ v1/controlunit/*.eeprom
 v1/controlunit/*.bin
 v1/Datasheets
 
-output/*
+output/
 
 Documents/
 
