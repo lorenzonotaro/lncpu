@@ -1,0 +1,4 @@
+{
+  "asm_must_match": "(?m)^\\s*add\\s+(R[ABCD]),\\s*\\1\\s*$",
+  "asm_must_not_match": "(?m)^\\s*shl\\b"
+}

@@ -1,0 +1,19 @@
+export int result;
+
+struct Triple {
+    int first;
+    int selected;
+    int last;
+};
+
+void main() {
+    struct Triple values[3];
+    int index;
+
+    values[0].selected = 17;
+    values[1].selected = 42;
+    values[2].selected = 99;
+    result = 1;
+    index = result;
+    result = values[index].selected;
+}

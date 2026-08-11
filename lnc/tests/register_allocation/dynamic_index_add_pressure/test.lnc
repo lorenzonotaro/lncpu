@@ -1,0 +1,23 @@
+export int result;
+
+void main() {
+    long int values[3];
+    int index;
+    int shifted;
+    int a;
+    int b;
+    int c;
+    int d;
+
+    values[0] = 0x0109;
+    values[1] = 0x010f;
+    values[2] = 0x0115;
+    result = 1;
+    index = result;
+    shifted = result << 1;
+    a = result + 3;
+    b = result + 4;
+    c = result + 5;
+    d = result + 9;
+    result = shifted + (int)values[index] + a + b + c + d;
+}

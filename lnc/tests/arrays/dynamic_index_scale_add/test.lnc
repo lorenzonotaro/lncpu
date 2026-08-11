@@ -1,0 +1,13 @@
+export int result;
+
+void main() {
+    long int values[3];
+    int index;
+
+    values[0] = 0x0111;
+    values[1] = 0x012a;
+    values[2] = 0x0163;
+    result = 1;
+    index = result;
+    result = (int)values[index];
+}

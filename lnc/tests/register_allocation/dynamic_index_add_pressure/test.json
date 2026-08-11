@@ -1,0 +1,3 @@
+{
+  "asm_must_match": "(?ms)(?=.*^\\s*add\\s+(R[ABCD]),\\s*\\1\\s*$)(?=.*^\\s*shl\\s+RA\\s*$)"
+}

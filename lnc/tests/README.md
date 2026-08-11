@@ -25,6 +25,20 @@ Compile-failure tests add `test.json`:
 }
 ```
 
+Executable tests may also add assembly-shape assertions to `test.json`. Both
+values are non-empty Python regular-expression strings evaluated against the
+emitted `program.lnasm` after compilation and before emulation:
+
+```json
+{
+  "asm_must_match": "(?m)^\\s*add\\s+(R[ABCD]),\\s*\\1\\s*$",
+  "asm_must_not_match": "(?m)^\\s*shl\\b"
+}
+```
+
+`asm_must_match` must match at least once; `asm_must_not_match` must not
+match. An invalid or empty regex fails the case.
+
 Run the full suite from this directory or the repository root:
 
 ```sh

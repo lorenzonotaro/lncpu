@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -100,6 +101,22 @@ def run_case(jar: Path, emulator: Path, tests_root: Path, case_dir: Path, timeou
 
         if compile_proc.returncode != 0:
             return CaseResult(name, "COMPILE_ERROR", compile_output)
+
+        assembly = (work_dir / "program.lnasm").read_text(encoding="utf-8")
+        for key, requires_match in (("asm_must_match", True), ("asm_must_not_match", False)):
+            pattern = metadata.get(key)
+            if pattern is None:
+                continue
+            if not isinstance(pattern, str) or not pattern:
+                return CaseResult(name, "FAILED", f"{key} must be a non-empty regex string")
+            try:
+                matched = re.search(pattern, assembly) is not None
+            except re.error as exc:
+                return CaseResult(name, "FAILED", f"invalid {key} regex: {exc}")
+            if requires_match and not matched:
+                return CaseResult(name, "FAILED", f"assembly missing required pattern: {pattern}")
+            if not requires_match and matched:
+                return CaseResult(name, "FAILED", f"assembly matched forbidden pattern: {pattern}")
 
         pass_file = case_dir / "pass.txt"
         if not pass_file.exists():

@@ -438,10 +438,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
 
         VirtualRegister acc = getUnit().getVrManager().getRegister(index.getTypeSpecifier());
         emitBefore(new Move(index, acc));
-        acc.setRegisterClass(log2 > 0 ? RegisterClass.SHIFT : RegisterClass.ANY);
+        acc.setRegisterClass(RegisterClass.ANY);
 
-        if(log2 > 0) {
-            emitBefore(new Bin(acc, acc, new ImmediateOperand(log2, new UI8Type()), BinaryExpression.Operator.SHL));
+        for (int i = 0; i < log2; i++) {
+            emitLoweredAdd(acc, acc, acc);
         }
         stride = stride - (1 << log2);
         if(stride > 0){
