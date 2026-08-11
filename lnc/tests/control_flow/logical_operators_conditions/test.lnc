@@ -1,0 +1,15 @@
+export int result;
+
+void main() {
+    int side = 0;
+    if (0 && (side = side + 1)) {
+        side = side + 10;
+    }
+    if (1 || (side = side + 2)) {
+        side = side + 3;
+    }
+    if (!0 && (side = side + 4)) {
+        side = side + 5;
+    }
+    result = side;
+}

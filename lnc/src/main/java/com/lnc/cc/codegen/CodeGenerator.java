@@ -406,6 +406,26 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     private void emitWordMove(Argument source, Argument target) {
+        if (source instanceof RegisterOffset stackAddress
+                && target instanceof Composite splitTarget) {
+            boolean isFarPointerTarget = splitTarget.high instanceof com.lnc.assembler.parser.argument.Register high
+                    && high.reg == com.lnc.assembler.parser.RegisterId.RC
+                    && splitTarget.low instanceof com.lnc.assembler.parser.argument.Register low
+                    && low.reg == com.lnc.assembler.parser.RegisterId.RD;
+            if (!isFarPointerTarget) {
+                throw new IllegalArgumentException("Stack-frame addresses must materialize into RC:RD");
+            }
+
+            instrf(TokenType.MOV, CodeGenUtils.reg(TokenType.SS), CodeGenUtils.reg(TokenType.RD));
+            instrf(TokenType.MOV, CodeGenUtils.reg(TokenType.RD), CodeGenUtils.reg(TokenType.RC));
+            instrf(TokenType.PUSH, CodeGenUtils.reg(TokenType.BP));
+            instrf(TokenType.POP, CodeGenUtils.reg(TokenType.RD));
+            if (stackAddress.offset.value(null, 0) != 0) {
+                instrf(stackAddress.getOperator().type, CodeGenUtils.reg(TokenType.RD), stackAddress.offset);
+            }
+            return;
+        }
+
         if (source instanceof Dereference derefSource
                 && target instanceof Composite splitTarget) {
             if(derefSource.inner instanceof com.lnc.assembler.parser.argument.Register pointer){

@@ -1,0 +1,11 @@
+export int result;
+
+void main() {
+    int side = 0;
+    int both = 1 && (side = side + 1);
+    int skip_and = 0 && (side = side + 10);
+    int either = 0 || (side = side + 2);
+    int skip_or = 1 || (side = side + 20);
+    int negated = !0;
+    result = side + both + skip_and + either + skip_or + negated;
+}

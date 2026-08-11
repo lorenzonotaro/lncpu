@@ -1,0 +1,12 @@
+export int result;
+
+void main() {
+    int values[3];
+    int index;
+    values[0] = 17;
+    values[1] = 42;
+    values[2] = 99;
+    result = 1;
+    index = result;
+    result = values[index];
+}

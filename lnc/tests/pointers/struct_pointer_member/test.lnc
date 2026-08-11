@@ -1,0 +1,15 @@
+export int result;
+
+struct Pair {
+    int left;
+    int right;
+};
+
+struct Pair pair;
+
+void main() {
+    struct Pair *ptr = &pair;
+    ptr->left = 19;
+    ptr->right = 23;
+    result = ptr->left + ptr->right;
+}

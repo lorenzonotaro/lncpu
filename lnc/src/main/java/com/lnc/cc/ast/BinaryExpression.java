@@ -29,6 +29,8 @@ public class BinaryExpression extends Expression {
         AND("&", Type.ARITHMETIC_LOGICAL, true),
         OR("|", Type.ARITHMETIC_LOGICAL, true),
         XOR("^", Type.ARITHMETIC_LOGICAL, true),
+        LOGICAL_AND("&&", Type.ARITHMETIC_LOGICAL, false),
+        LOGICAL_OR("||", Type.ARITHMETIC_LOGICAL, false),
         EQ("==", Type.COMPARISON, true),
         NE("!=", Type.COMPARISON, true),
         SHL("<<", Type.ARITHMETIC_LOGICAL, false),
@@ -63,6 +65,8 @@ public class BinaryExpression extends Expression {
                 case AMPERSAND, BITWISE_AND_EQUALS -> AND;
                 case BITWISE_OR, BITWISE_OR_EQUALS -> OR;
                 case BITWISE_XOR, BITWISE_XOR_EQUALS -> XOR;
+                case LOGICAL_AND -> LOGICAL_AND;
+                case LOGICAL_OR -> LOGICAL_OR;
                 case DOUBLE_EQUALS -> EQ;
                 case NOT_EQUALS -> NE;
                 case LESS_THAN -> LT;

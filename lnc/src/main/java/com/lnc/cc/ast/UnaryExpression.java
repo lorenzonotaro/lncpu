@@ -22,6 +22,7 @@ public class    UnaryExpression extends Expression {
     public enum Operator {
         NEGATE,
         NOT,
+        LOGICAL_NOT,
         DEREFERENCE,
         ADDRESS_OF,
         INCREMENT,
@@ -30,7 +31,8 @@ public class    UnaryExpression extends Expression {
         public static Operator fromTokenType(Token token) {
             return switch (token.type) {
                 case MINUS -> NEGATE;
-                case LOGICAL_NOT, BITWISE_NOT -> NOT;
+                case BITWISE_NOT -> NOT;
+                case LOGICAL_NOT -> LOGICAL_NOT;
                 case STAR -> DEREFERENCE;
                 case AMPERSAND -> ADDRESS_OF;
                 case DOUBLE_PLUS -> INCREMENT;

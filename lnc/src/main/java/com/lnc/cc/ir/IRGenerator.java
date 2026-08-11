@@ -228,6 +228,27 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         IROperand left, right;
         CondJump.Cond originalCond;
 
+        if (condExpr instanceof BinaryExpression be && be.operator == BinaryExpression.Operator.LOGICAL_AND) {
+            IRBlock rightBlock = currentUnit.newBlock();
+            branchIfTrue(be.left, rightBlock, takenIfFalse, null);
+            currentUnit.setCurrentBlock(rightBlock);
+            branchIfTrue(be.right, takenIfTrue, takenIfFalse, continueTo);
+            return;
+        }
+
+        if (condExpr instanceof BinaryExpression be && be.operator == BinaryExpression.Operator.LOGICAL_OR) {
+            IRBlock rightBlock = currentUnit.newBlock();
+            branchIfTrue(be.left, takenIfTrue, rightBlock, null);
+            currentUnit.setCurrentBlock(rightBlock);
+            branchIfTrue(be.right, takenIfTrue, takenIfFalse, continueTo);
+            return;
+        }
+
+        if (condExpr instanceof UnaryExpression ue && ue.operator == UnaryExpression.Operator.LOGICAL_NOT) {
+            branchIfTrue(ue.operand, takenIfFalse, takenIfTrue, continueTo);
+            return;
+        }
+
         if (condExpr instanceof BinaryExpression be && be.operator.type == BinaryExpression.Operator.Type.COMPARISON) {
             left  = be.left .accept(this);
             right = be.right.accept(this);
@@ -319,6 +340,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
     @Override
     public IROperand visit(BinaryExpression binaryExpression) {
 
+        if (binaryExpression.operator == BinaryExpression.Operator.LOGICAL_AND
+                || binaryExpression.operator == BinaryExpression.Operator.LOGICAL_OR) {
+            return materializeLogicalValue(binaryExpression);
+        }
+
         IROperand composeOp = tryCaptureCompose(binaryExpression);
 
         if(composeOp != null){
@@ -340,6 +366,26 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
         emit(new Bin(target, left, right, binaryExpression.operator));
 
+        return target;
+    }
+
+    private IROperand materializeLogicalValue(Expression expression) {
+        VirtualRegister target = allocVR(expression.getTypeSpecifier());
+        IRBlock trueBlock = currentUnit.newBlock();
+        IRBlock falseBlock = currentUnit.newBlock();
+        IRBlock joinBlock = currentUnit.newBlock();
+
+        branchIfTrue(expression, trueBlock, falseBlock, null);
+
+        currentUnit.setCurrentBlock(trueBlock);
+        emit(new Move(new ImmediateOperand(1, target.getTypeSpecifier()), target));
+        emit(new Goto(joinBlock));
+
+        currentUnit.setCurrentBlock(falseBlock);
+        emit(new Move(new ImmediateOperand(0, target.getTypeSpecifier()), target));
+        emit(new Goto(joinBlock));
+
+        currentUnit.setCurrentBlock(joinBlock);
         return target;
     }
 
@@ -547,6 +593,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     @Override
     public IROperand visit(UnaryExpression unaryExpression) {
+        if (unaryExpression.operator == UnaryExpression.Operator.LOGICAL_NOT) {
+            return materializeLogicalValue(unaryExpression);
+        }
+
         IROperand operand = unaryExpression.operand.accept(this);
 
         IROperand returnVal = null;

@@ -97,6 +97,9 @@ public class CodeGenUtils {
                     new Dereference(splitWord[1])
             };
         } else if(argument.type == Argument.Type.REGISTER_OFFSET) {
+            if (!insideDeref) {
+                throw new IllegalArgumentException("Cannot split a bare register-offset address");
+            }
             var regOffset = (RegisterOffset) argument;
             return new Argument[] {
                     regOffset,
