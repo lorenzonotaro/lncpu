@@ -92,6 +92,11 @@ public class LNC {
                 assembler.writeSymTable(symOut);
             }
 
+            String debugOut = settings.get("-oG", String.class);
+            if(!debugOut.isEmpty()){
+                assembler.writeDebugMap(debugOut);
+            }
+
 
 
         } catch (IllegalStateException | IOException e) {

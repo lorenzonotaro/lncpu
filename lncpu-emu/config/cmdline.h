@@ -12,6 +12,8 @@
 struct emu_cmdline_params {
     /* Debugger options */
     int pause_on_start; /* Pause before start. */
+    int debug_server;
+    int stop_on_entry;
     const char *no_pause_on_halt; /* Don't pause on halt. */
     const char *dump_status; /* Dump status on exit. */
     const char *dump_address_space; /* Dump address space on exit. */

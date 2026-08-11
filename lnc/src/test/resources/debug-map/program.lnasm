@@ -1,0 +1,4 @@
+.section CODE
+start:
+    mov 1, RA
+    hlt

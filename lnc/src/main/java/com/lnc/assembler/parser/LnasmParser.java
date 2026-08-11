@@ -60,8 +60,10 @@ public class LnasmParser extends AbstractLineParser<LnasmParseResult> {
                 }
                 currentInstructionLabels.add(new LabelInfo(labelToken, label));
             }else{
+                Token sourceToken = peek();
                 CodeElement codeElement = directive();
                 if(codeElement != null){
+                    codeElement.setSourceToken(sourceToken);
                     codeElement.setLabels(currentInstructionLabels);
                     currentInstructions.add(codeElement);
                     currentInstructionLabels = new ArrayList<>();

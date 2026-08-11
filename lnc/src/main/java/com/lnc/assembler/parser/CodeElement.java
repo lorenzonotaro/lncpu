@@ -4,6 +4,7 @@ import com.lnc.assembler.common.IEncodeable;
 import com.lnc.assembler.common.LabelInfo;
 import com.lnc.cc.codegen.CodeElementVisitor;
 import com.lnc.common.ExtendedListIterator;
+import com.lnc.common.frontend.Token;
 
 import java.util.*;
 
@@ -18,6 +19,7 @@ import java.util.*;
 public abstract class CodeElement implements IEncodeable {
 
     private List<LabelInfo> labels = new ArrayList<>();
+    private Token sourceToken;
 
     public List<LabelInfo> getLabels() {
         return labels;
@@ -25,6 +27,14 @@ public abstract class CodeElement implements IEncodeable {
 
     public void setLabels(List<LabelInfo> labels) {
         this.labels = labels;
+    }
+
+    public Token getSourceToken() {
+        return sourceToken;
+    }
+
+    public void setSourceToken(Token sourceToken) {
+        this.sourceToken = sourceToken;
     }
 
     public abstract <T> T accept(CodeElementVisitor<T> visitor, ExtendedListIterator<CodeElement> iterator);

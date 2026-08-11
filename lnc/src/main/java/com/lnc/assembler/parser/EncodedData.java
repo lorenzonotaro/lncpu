@@ -29,6 +29,9 @@ public class EncodedData extends CodeElement{
 
     protected EncodedData(NumericalArgument[] data) {
         this.data = data;
+        if (data.length > 0) {
+            setSourceToken(data[0].token);
+        }
     }
 
     @Override

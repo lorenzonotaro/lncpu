@@ -231,4 +231,12 @@ public class Assembler {
             Logger.error("unable to write symbol table to file %s: %s".formatted(symOut, e.getMessage()));
         }
     }
+
+    public void writeDebugMap(String debugOut) {
+        try {
+            DebugMapIO.write(Path.of(debugOut), linker.createDebugMap());
+        } catch (Exception e) {
+            Logger.error("unable to write debug map to file %s: %s".formatted(debugOut, e.getMessage()));
+        }
+    }
 }

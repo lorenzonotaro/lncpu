@@ -38,6 +38,7 @@ public class Instruction extends CodeElement {
     public Instruction(Token opcode, Argument[] arguments) {
         this.opcode = opcode;
         this.arguments = arguments;
+        setSourceToken(opcode);
     }
 
     @Override

@@ -14,6 +14,7 @@
 #include "emu_expect.h"
 #include "vm.h"
 #include "config/cmdline.h"
+#include "debug_server.h"
 
 static struct emulator *emulator;
 
@@ -264,7 +265,10 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
         return 1;
     }
 
-    if (cmdline_params->pause_on_start) {
+    int debug_server_status = 0;
+    if (cmdline_params->debug_server) {
+        debug_server_status = run_debug_server(emu, cmdline_params->stop_on_entry);
+    } else if (cmdline_params->pause_on_start) {
 
         for (int i = 0; i < vm->emu_device_count; i++) {
             if (vm->emu_devices[i].pause) {
@@ -281,7 +285,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
         }
     }
     
-    while (!vm->halted && emu->status != EMU_STATUS_TERMINATED) {
+    while (!cmdline_params->debug_server && !vm->halted && emu->status != EMU_STATUS_TERMINATED) {
 
         for (int i = 0; i < vm->emu_device_count; i++) {
             if (vm->emu_devices[i].step) {
@@ -311,7 +315,7 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
 
     emu->status = EMU_STATUS_TERMINATED;
 
-    if (vm->halted && !cmdline_params->no_pause_on_halt){
+    if (!cmdline_params->debug_server && vm->halted && !cmdline_params->no_pause_on_halt){
         printf("LNCPU has halted. Type 'c' or 'continue' to exit. \n");
 
         for (int i = 0; i < vm->emu_device_count; i++) {
@@ -357,5 +361,5 @@ int run_emu(const struct emu_cmdline_params *cmdline_params) {
 
     set_emu(NULL);
 
-    return expectation_status;
+    return debug_server_status != 0 ? debug_server_status : expectation_status;
 }

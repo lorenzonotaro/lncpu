@@ -277,4 +277,11 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
     public LabelMapLabelResolver getLabelResolver() {
         return labelResolver;
     }
+
+    public DebugMapIO.DebugMap createDebugMap() {
+        if (sectionBuilders == null) {
+            throw new IllegalStateException("linker not setup");
+        }
+        return DebugMapIO.create(sectionBuilders.values());
+    }
 }

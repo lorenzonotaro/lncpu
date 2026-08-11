@@ -7,6 +7,7 @@ import com.lnc.assembler.parser.CodeElement;
 import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.assembler.parser.LnasmParsedBlock;
 import com.lnc.common.io.ByteArrayChannel;
+import com.lnc.common.frontend.Token;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -152,6 +153,20 @@ public class SectionBuilder {
         return new Descriptor(sectionInfo, sectionStart, codeLength);
     }
 
+    public List<DebugEntry> getDebugEntries() {
+        if (sectionStart == -1) {
+            throw new IllegalStateException("section start not set");
+        }
+        return instructions.stream()
+                .map(entry -> new DebugEntry(
+                        sectionStart + entry.index,
+                        entry.size,
+                        sectionInfo.getName(),
+                        entry.instruction.getSourceToken(),
+                        List.copyOf(entry.instruction.getLabels())))
+                .toList();
+    }
+
     public Map<String,SectionBuilder> splitByTopLevelLabel() {
         return this.getTopLevelLabelSpans().stream().collect(
                 HashMap::new,
@@ -201,6 +216,10 @@ public class SectionBuilder {
     }
 
     public record Descriptor(SectionInfo sectionInfo, int start, int length) {
+    }
+
+    public record DebugEntry(int address, int size, String section, Token sourceToken,
+                             List<com.lnc.assembler.common.LabelInfo> labels) {
     }
 
     public record TopLevelLabelSpan(String labelName, int startOffset, int endOffsetExclusive) {
