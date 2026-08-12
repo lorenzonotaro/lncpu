@@ -17,7 +17,7 @@ test("compiles, handshakes with a hermetic emulator, and terminates cleanly", as
   await writeFile(compiler, `#!/usr/bin/env node
 const fs=require("node:fs"); const path=require("node:path");
 const value=(name)=>{const i=process.argv.findIndex((v)=>v===name); const eq=process.argv.find((v)=>v.startsWith(name+"=")); return eq?eq.slice(name.length+1):process.argv[i+1]};
-const bin=value("-oB"), map=value("-oG"); fs.mkdirSync(path.dirname(bin),{recursive:true}); fs.writeFileSync(bin,Buffer.from([0])); fs.writeFileSync(map,JSON.stringify({version:1,files:[${JSON.stringify(source)}],lines:[{a:0,s:1,f:0,l:1,c:1,sec:"text"}],labels:[{name:"main",a:0,sec:"text"}]}));
+const bin=value("-oB"), map=value("-oG"), immediate=value("-oI"); fs.mkdirSync(path.dirname(bin),{recursive:true}); fs.writeFileSync(bin,Buffer.from([0])); fs.writeFileSync(map,JSON.stringify({version:1,files:[${JSON.stringify(source)}],lines:[{a:0,s:1,f:0,l:1,c:1,sec:"text"}],labels:[{name:"main",a:0,sec:"text"}]})); fs.writeFileSync(immediate,"######## Section 'text', origin at 0x000000 (size = 0x1)\\nmain: 000000: 01");
 `);
   await writeFile(emulator, `#!/usr/bin/env node
 const net=require("node:net"); const server=net.createServer((socket)=>{let data=""; socket.on("data",(chunk)=>{data+=chunk; for(;;){const i=data.indexOf("\\n"); if(i<0)break; const line=data.slice(0,i); data=data.slice(i+1); const [id,cmd]=line.split(/\\s+/); if(cmd==="hello")socket.write(id+" ok LNDBG 1\\n"); if(cmd==="quit"){socket.write(id+" ok\\n! exited 0\\n"); server.close();}}});}); server.listen(0,"127.0.0.1",()=>console.log("LNDBG-LISTEN "+server.address().port));

@@ -103,7 +103,7 @@
                 "type": "array",
                 "items": { "type": "string" },
                 "default": [],
-                "description": "Additional lnc arguments."
+                "description": "Additional lnc arguments. -oB, -oG, and -oI outputs are honored; omitted outputs are generated for debugging."
               },
               "emulatorOptions": {
                 "type": "array",
@@ -136,6 +136,11 @@
       }
     ],
     "commands": [
+      {
+        "command": "lncpu.openMemoryAtSymbol",
+        "title": "LNCPU: Open Symbol in Memory Inspector",
+        "category": "LNCPU"
+      },
       {
         "command": "lnasm.peekDefinition",
         "title": "lnasm: Peek Definition",

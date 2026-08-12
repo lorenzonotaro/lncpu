@@ -20,6 +20,7 @@ export type CompilationPlan = {
   readonly args: readonly string[];
   readonly binaryPath: string;
   readonly debugMapPath: string;
+  readonly immediatePath: string;
   readonly artifacts: readonly Artifact[];
 };
 
@@ -75,13 +76,16 @@ export function planCompilation(input: CompilationInput): CompilationPlan {
   }
   const binaryOption = option(input.compilerOptions, "-oB");
   const mapOption = option(input.compilerOptions, "-oG");
+  const immediateOption = option(input.compilerOptions, "-oI");
   const targetsOption = option(input.compilerOptions, "-oD");
   const binaryPath = absolute(input.cwd, binaryOption?.value ?? join(input.outputDirectory, "program.bin"));
   const debugMapPath = absolute(input.cwd, mapOption?.value ?? join(input.outputDirectory, "program.lndbg.json"));
+  const immediatePath = absolute(input.cwd, immediateOption?.value ?? join(input.outputDirectory, "program.immediate.txt"));
   const targets = parseTargets(targetsOption?.value ?? "ROM");
   const injected = [...input.compilerOptions];
   if (binaryOption === undefined) injected.push(`-oB=${binaryPath}`);
   if (mapOption === undefined) injected.push(`-oG=${debugMapPath}`);
+  if (immediateOption === undefined) injected.push(`-oI=${immediatePath}`);
   if (targetsOption === undefined) injected.push("-oD=ROM");
   const compiler = absolute(input.cwd, input.lncPath);
   const prefix = compiler.toLowerCase().endsWith(".jar") ? ["-jar", compiler] : [];
@@ -91,6 +95,7 @@ export function planCompilation(input: CompilationInput): CompilationPlan {
     args: [...prefix, ...injected, ...input.sourceFiles.map((path) => absolute(input.cwd, path))],
     binaryPath,
     debugMapPath,
+    immediatePath,
     artifacts: targets.map((target) => ({ target, path: targetPath(binaryPath, target) })),
   };
 }

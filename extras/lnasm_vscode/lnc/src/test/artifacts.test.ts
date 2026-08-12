@@ -19,6 +19,8 @@ test("injects omitted binary and map outputs and plans requested device artifact
   assert.deepEqual(plan.args.slice(0, 2), ["-jar", "/tools/lnc.jar"]);
   assert.ok(plan.args.includes("-oB=/work/.lncpu-debug/program.bin"));
   assert.ok(plan.args.includes("-oG=/work/.lncpu-debug/program.lndbg.json"));
+  assert.ok(plan.args.includes("-oI=/work/.lncpu-debug/program.immediate.txt"));
+  assert.equal(plan.immediatePath, "/work/.lncpu-debug/program.immediate.txt");
   assert.deepEqual(plan.artifacts, [
     { target: "ROM", path: "/work/.lncpu-debug/program.bin" },
     { target: "RAM", path: "/work/.lncpu-debug/program_RAM.bin" },
@@ -34,12 +36,13 @@ test("honors split output options and rejects suppressed binary output", () => {
     lncPath: "/tools/lnc",
     javaPath: "java",
     sourceFiles: ["main.lnasam"],
-    compilerOptions: ["-oB", "custom.bin", "-oG=custom.map", "-oD", "D0,D5"],
+    compilerOptions: ["-oB", "custom.bin", "-oG=custom.map", "-oI", "custom.immediate", "-oD", "D0,D5"],
   });
 
   // Then
   assert.equal(plan.binaryPath, "/work/custom.bin");
   assert.equal(plan.debugMapPath, "/work/custom.map");
+  assert.equal(plan.immediatePath, "/work/custom.immediate");
   assert.throws(() => planCompilation({
     cwd: "/work",
     outputDirectory: "/work/out",
@@ -64,6 +67,8 @@ test("rejects duplicate and empty managed compiler output options", () => {
   assert.throws(() => planCompilation({ ...base, compilerOptions: ["-oB=a.bin", "-oB", "b.bin"] }), /duplicate -oB/);
   assert.throws(() => planCompilation({ ...base, compilerOptions: ["-oG="] }), /-oG requires a value/);
   assert.throws(() => planCompilation({ ...base, compilerOptions: ["-oD=ROM", "-oD=RAM"] }), /duplicate -oD/);
+  assert.throws(() => planCompilation({ ...base, compilerOptions: ["-oI=a.txt", "-oI", "b.txt"] }), /duplicate -oI/);
+  assert.throws(() => planCompilation({ ...base, compilerOptions: ["-oI="] }), /-oI requires a value/);
 });
 
 test("uses the configured Java command unchanged for a JAR compiler", () => {

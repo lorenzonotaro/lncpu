@@ -3,8 +3,10 @@ import { mkdir, readFile } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
 
 import { emulatorArtifactArgs, planCompilation, validateEmulatorOptions, type CompilationPlan } from "./artifacts";
+import { activeAddresses } from "./address-registry";
 import { DebugMapIndex } from "./debug-map";
 import { ProcessFailureError, ProtocolError } from "./errors";
+import { parseImmediateListing } from "./immediate-listing";
 import { LineFramer, LnDbgClient, type LnDbgEvent } from "./protocol";
 
 export type LaunchSettings = {
@@ -59,6 +61,7 @@ export class DebugRuntime {
   }
 
   async launch(settings: LaunchSettings): Promise<LaunchResult> {
+    activeAddresses.clear();
     this.terminalEmitted = false;
     validateEmulatorOptions(settings.emulatorOptions);
     const outputDirectory = join(settings.cwd, ".lncpu-debug");
@@ -67,6 +70,7 @@ export class DebugRuntime {
     await runCompiler(plan, settings);
     const rawMap: unknown = JSON.parse(await readFile(plan.debugMapPath, "utf8"));
     const map = DebugMapIndex.parse(rawMap, settings.cwd);
+    const addresses = parseImmediateListing(await readFile(plan.immediatePath, "utf8"));
     const emulatorPath = isAbsolute(settings.emulatorPath) ? settings.emulatorPath : resolve(settings.cwd, settings.emulatorPath);
     const args = [
       ...emulatorArtifactArgs(plan.artifacts),
@@ -86,6 +90,7 @@ export class DebugRuntime {
       });
       this.client.onFatal(() => this.emitTerminal(1));
       await this.client.hello();
+      activeAddresses.replace(addresses);
       return { plan, map };
     } catch (error: unknown) {
       await this.terminate();
@@ -99,6 +104,7 @@ export class DebugRuntime {
   }
 
   async terminate(): Promise<void> {
+    activeAddresses.clear();
     const client = this.client;
     this.client = undefined;
     if (client !== undefined) {
@@ -117,6 +123,7 @@ export class DebugRuntime {
   private emitTerminal(code: number): void {
     if (this.terminalEmitted) return;
     this.terminalEmitted = true;
+    activeAddresses.clear();
     for (const listener of this.eventListeners) listener({ kind: "exited", code });
   }
 }
