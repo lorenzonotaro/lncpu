@@ -9,6 +9,7 @@ import com.lnc.assembler.common.LinkMode;
 import com.lnc.assembler.common.SectionInfo;
 import com.lnc.assembler.parser.Instruction;
 import com.lnc.assembler.parser.LnasmParsedBlock;
+import com.lnc.cc.Compiler;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 import org.junit.Test;
@@ -17,11 +18,96 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DebugMapIOTest {
+    @Test
+    public void compilerInstructionsRetainLncSourceLocations() throws Exception {
+        Path directory = Path.of("target", "test-temp", "compiler-debug-map");
+        Files.createDirectories(directory);
+        Path source = directory.resolve("program.lnc").toAbsolutePath().normalize();
+        Path debugMap = directory.resolve("program.debug.json");
+        Files.writeString(source, String.join("\n",
+                "int adjust(int value) {",
+                "    value = value + 1;",
+                "    return value;",
+                "}",
+                ""));
+
+        LNC.settings.set("-S", "");
+        Compiler compiler = new Compiler(List.of(source));
+        assertTrue(compiler.compile());
+
+        Assembler assembler = new Assembler(
+                List.of(),
+                "SECTIONS[DUMMY: mode = fixed, start = 0x1fff;]",
+                compiler.getOutput(),
+                new LinkTarget[]{LinkTarget.ROM});
+        assertTrue(assembler.assemble());
+        assembler.writeDebugMap(debugMap.toString());
+
+        JsonObject root = JsonParser.parseString(Files.readString(debugMap)).getAsJsonObject();
+        assertEquals(1, root.get("version").getAsInt());
+        assertEquals(source.toString(), root.getAsJsonArray("files").get(0).getAsString());
+
+        Set<Integer> mappedLines = root.getAsJsonArray("lines").asList().stream()
+                .map(element -> element.getAsJsonObject())
+                .filter(line -> line.get("f").getAsInt() == 0)
+                .map(line -> line.get("l").getAsInt())
+                .filter(line -> line > 0)
+                .collect(Collectors.toSet());
+        assertTrue(mappedLines.contains(2));
+        assertTrue(mappedLines.contains(3));
+    }
+
+    @Test
+    public void callLineStartsAtItsStackArgumentPush() throws Exception {
+        Path directory = Path.of("target", "test-temp", "compiler-call-debug-map");
+        Files.createDirectories(directory);
+        Path source = directory.resolve("program.lnc").toAbsolutePath().normalize();
+        Path debugMap = directory.resolve("program.debug.json");
+        Files.writeString(source, String.join("\n",
+                "int callee(...) {",
+                "    return 1;",
+                "}",
+                "int invoke() {",
+                "    return callee(5);",
+                "}",
+                ""));
+
+        LNC.settings.set("-S", "");
+        Compiler compiler = new Compiler(List.of(source));
+        assertTrue(compiler.compile());
+
+        Assembler assembler = new Assembler(
+                List.of(),
+                "SECTIONS[DUMMY: mode = fixed, start = 0x1fff;]",
+                compiler.getOutput(),
+                new LinkTarget[]{LinkTarget.ROM});
+        assertTrue(assembler.assemble());
+        assembler.writeDebugMap(debugMap.toString());
+
+        JsonObject root = JsonParser.parseString(Files.readString(debugMap)).getAsJsonObject();
+        List<JsonObject> invokeEntries = root.getAsJsonArray("lines").asList().stream()
+                .map(element -> element.getAsJsonObject())
+                .filter(line -> "LNCCODE#invoke".equals(line.get("sec").getAsString()))
+                .toList();
+        int callLineStart = invokeEntries.stream()
+                .filter(line -> line.get("l").getAsInt() == 5)
+                .mapToInt(line -> line.get("a").getAsInt())
+                .min()
+                .orElseThrow();
+
+        assertEquals(invokeEntries.get(0).get("a").getAsInt(), callLineStart);
+        assertTrue(invokeEntries.stream()
+                .filter(line -> line.get("l").getAsInt() == 5)
+                .count() >= 3);
+    }
+
     @Test
     public void assemblerWritesFinalAddressesAndOriginalInstructionLocations() throws Exception {
         Path directory = Files.createTempDirectory("lnc-debug-map-test");

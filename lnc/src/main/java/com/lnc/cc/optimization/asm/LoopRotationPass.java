@@ -102,6 +102,8 @@ public class LoopRotationPass extends AbstractAsmLevelLinearPass {
 
         Instruction testCopy = new Instruction(test.getOpcode(), test.getArguments());
         Instruction condCopy = new Instruction(cond.getOpcode(), cond.getArguments());
+        testCopy.setSourceToken(test.getSourceToken());
+        condCopy.setSourceToken(cond.getSourceToken());
         testCopy.setLabels(instruction.getLabels());
         instruction.setLabels(new ArrayList<>());
 

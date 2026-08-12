@@ -2,6 +2,7 @@ package com.lnc.cc.ir;
 
 import com.lnc.cc.ir.operands.IROperand;
 import com.lnc.cc.ir.operands.VirtualRegister;
+import com.lnc.common.frontend.Token;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,7 @@ public abstract class IRInstruction {
 
     protected IRInstruction next;
     private IRBlock parentBlock;
+    private Token sourceToken;
 
     public abstract <E> E accept(IIRInstructionVisitor<E> visitor);
 
@@ -52,6 +54,14 @@ public abstract class IRInstruction {
 
     public void setNext(IRInstruction next) {
         this.next = next;
+    }
+
+    public Token getSourceToken() {
+        return sourceToken;
+    }
+
+    public void setSourceToken(Token sourceToken) {
+        this.sourceToken = sourceToken;
     }
 
     public IRInstruction() {
@@ -83,6 +93,7 @@ public abstract class IRInstruction {
     public abstract String toString();
 
     void replaceWith(IRInstruction other) {
+        other.sourceToken = this.sourceToken;
         other.prev = this.prev;
         other.next = this.next;
         if (this.prev != null) this.prev.next = other;

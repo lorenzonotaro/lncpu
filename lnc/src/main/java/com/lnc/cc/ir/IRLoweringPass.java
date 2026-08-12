@@ -74,7 +74,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             VirtualRegisterManager vrm = getUnit().getVrManager();
             VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
             vr.setRegisterClass(registerClass);
-            emitBefore(new Move(operand, vr));
+            emitBeforeWithOrigin(new Move(operand, vr));
             return vr;
         } else {
             return move(operand, registerClass);
@@ -85,7 +85,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
         VirtualRegisterManager vrm = getUnit().getVrManager();
         VirtualRegister vr = vrm.getRegister(operand.getTypeSpecifier());
         vr.setRegisterClass(registerClass);
-        emitBefore(new Move(operand, vr));
+        emitBeforeWithOrigin(new Move(operand, vr));
         return vr;
     }
 
@@ -218,7 +218,9 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             if(operand instanceof StackFrameLocation){
                 operand = moveOrLoadIntoVR(operand);
             }
-            call.insertBefore(new Push(operand));
+            Push push = new Push(operand);
+            push.setSourceToken(call.getSourceToken());
+            call.insertBefore(push);
         }
 
         if(funType.returnType.type != TypeSpecifier.Type.VOID){
@@ -229,7 +231,9 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             constrainedTarget.setRegisterClass(retRC);
 
             call.setReturnTarget(constrainedTarget);
-            call.insertAfter(new Move(constrainedTarget, userTarget));
+            Move returnMove = new Move(constrainedTarget, userTarget);
+            returnMove.setSourceToken(call.getSourceToken());
+            call.insertAfter(returnMove);
         }
 
         return null;
@@ -524,5 +528,10 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
      * */
     public void emitAfter(IRInstruction... instrs){
         getCurrentInstruction().insertAfter(List.of(instrs));
+    }
+
+    private void emitBeforeWithOrigin(IRInstruction instruction) {
+        instruction.setSourceToken(getCurrentInstruction().getSourceToken());
+        emitBefore(instruction);
     }
 }

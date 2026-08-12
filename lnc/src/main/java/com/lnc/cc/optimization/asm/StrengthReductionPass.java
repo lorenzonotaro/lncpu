@@ -52,6 +52,7 @@ public class StrengthReductionPass extends AbstractAsmLevelLinearPass {
         Instruction rewritten = new Instruction(
                 Token.__internal(replacement, replacement.toString()),
                 new Argument[]{args[0]});
+        rewritten.setSourceToken(instruction.getSourceToken());
         rewritten.setLabels(instruction.getLabels());
         iterator.set(rewritten);
         return true;

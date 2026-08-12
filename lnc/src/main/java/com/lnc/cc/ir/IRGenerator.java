@@ -82,7 +82,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("continue statement outside of loop", continueStatement.token);
         }
 
-        emit(new Goto(loopInfo.continueTarget()));
+        emit(new Goto(loopInfo.continueTarget()), continueStatement.token);
 
         return null;
     }
@@ -95,7 +95,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("break statement outside of loop", breakStatement.token);
         }
 
-        emit(new Goto(loopInfo.breakTarget()));
+        emit(new Goto(loopInfo.breakTarget()), breakStatement.token);
 
         return null;
     }
@@ -173,9 +173,9 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
         }
 
         if(value == null) {
-            emit(new Ret(null));
+            emit(new Ret(null), returnStatement.token);
         }else{
-            emit(new Ret(value));
+            emit(new Ret(value), returnStatement.token);
         }
 
         return null;
@@ -267,7 +267,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 /* true→ */ takenIfTrue,
                 /* false→*/ takenIfFalse,
                 continueTo
-        ));
+        ), condExpr.token);
     }
 
     @Override
@@ -332,7 +332,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("assignment to constant lvalue", assignmentExpression.left.token);
         }
 
-        emit(new Move(value, dest));
+        emit(new Move(value, dest), assignmentExpression.token);
 
         return dest;
     }
@@ -364,7 +364,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             }
         }
 
-        emit(new Bin(target, left, right, binaryExpression.operator));
+        emit(new Bin(target, left, right, binaryExpression.operator), binaryExpression.token);
 
         return target;
     }
@@ -463,7 +463,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 : null;
 
         // 4) emit the abstract Call node
-        emit(new Call(dest, callee, args.toArray(new IROperand[0])));
+        emit(new Call(dest, callee, args.toArray(new IROperand[0])), callExpression.token);
 
         return dest;
     }
@@ -608,7 +608,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             // load into a temporary VR
             VirtualRegister vr = moveOrLoadIntoVR(operand);
 
-            emit(new Unary(target, operand, unaryExpression.operator));
+            emit(new Unary(target, operand, unaryExpression.operator), unaryExpression.token);
 
             returnVal = vr;
         }else if(unaryExpression.operator == UnaryExpression.Operator.NOT ||
@@ -616,7 +616,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
                 unaryExpression.operator == UnaryExpression.Operator.INCREMENT ||
                 unaryExpression.operator == UnaryExpression.Operator.DECREMENT){
             VirtualRegister target = allocVR(operand.getTypeSpecifier());
-            emit(new Unary(target, operand, unaryExpression.operator));
+            emit(new Unary(target, operand, unaryExpression.operator), unaryExpression.token);
             returnVal = target;
         }else if(unaryExpression.operator == UnaryExpression.Operator.DEREFERENCE) {
             if(operand.getTypeSpecifier().type != TypeSpecifier.Type.POINTER){
@@ -739,6 +739,11 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
 
     private void emit(IRInstruction instruction){
         currentUnit.emit(instruction);
+    }
+
+    private void emit(IRInstruction instruction, Token sourceToken){
+        instruction.setSourceToken(sourceToken);
+        emit(instruction);
     }
 
     public IR getResult() {

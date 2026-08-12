@@ -860,7 +860,12 @@ public class CodeGenerator extends GraphicalIRVisitor implements IIROperandVisit
     }
 
     private void instrf(TokenType opcode, Argument... args) {
-        currentOutput.append(CodeGenUtils.instr(opcode, args));
+        var instruction = CodeGenUtils.instr(opcode, args);
+        IRInstruction sourceInstruction = getCurrentInstruction();
+        if(sourceInstruction != null && sourceInstruction.getSourceToken() != null){
+            instruction.setSourceToken(sourceInstruction.getSourceToken());
+        }
+        currentOutput.append(instruction);
     }
 
     public List<CompilerOutput> getOutputs() {

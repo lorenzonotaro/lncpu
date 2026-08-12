@@ -43,6 +43,7 @@ public class CommuteAndEliminateMovePass extends AbstractAsmLevelLinearPass {
                         }
                 );
 
+                commuted.setSourceToken(inst.getSourceToken());
                 commuted.setLabels(inst.getLabels());
                 inst.clearLabels();
 

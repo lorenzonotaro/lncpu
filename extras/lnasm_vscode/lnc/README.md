@@ -1,65 +1,63 @@
-# lnasm README
+# LNASM / LNC for Visual Studio Code
 
-This is the README for your extension "lnasm". After writing up a brief description, we recommend including the following sections.
+Language support for LNASM and LNC, plus an inline `lncpu` debugger that compiles source files and controls `lncpu-emu` through LNDBG v1.
 
-## Features
+## Language features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Syntax highlighting for `.lnasm`, `.lnc`, and `.lnh` files.
+- LNASM label, sublabel, macro, and section indexing.
+- Definitions, hovers, workspace symbols, and opcode documentation.
+- Source breakpoints in LNASM and LNC files.
 
-For example if there is an image subfolder under your extension project workspace:
+## Debugging
 
-\!\[feature X\]\(images/feature-x.png\)
+Create `.vscode/launch.json`:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lncpu",
+      "request": "launch",
+      "name": "Debug LNCPU program",
+      "cwd": "${workspaceFolder}",
+      "lncPath": "${workspaceFolder}/tools/lnc.jar",
+      "javaPath": "java",
+      "emulatorPath": "${workspaceFolder}/build/lncpu-emu",
+      "sourceFiles": [
+        "src/main.lnc",
+        "src/start.lnasm"
+      ],
+      "compilerOptions": ["-lf", "linker.cfg", "-oD=ROM,RAM,D0"],
+      "emulatorOptions": []
+    }
+  ]
+}
+```
 
-## Requirements
+All relative paths are resolved from `cwd`. `lncPath` may name a JAR, launched with `javaPath`, or a directly executable compiler.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Before each launch, the extension compiles `sourceFiles`. It uses `.lncpu-debug/program.bin` and `.lncpu-debug/program.lndbg.json` unless `compilerOptions` supplies `-oB` and `-oG`. Both split (`-oB file.bin`) and equals (`-oB=file.bin`) forms are supported. If `-oD` is omitted, `ROM` is requested. `ROM`, `RAM`, and `D0` through `D5` outputs are passed to the corresponding emulator options; non-ROM output names use lnc's `_RAM` or `_D0`-`_D5` suffix. `-s` is rejected because debugging requires a binary.
 
-## Extension Settings
+The emulator is always launched with `--debug-server --stop-on-entry --nopauseonhalt`. The extension waits for `LNDBG-LISTEN`, connects only to localhost, and requires LNDBG protocol version 1 or newer.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Supported debugger operations:
 
-For example:
+- Exact-or-next-line source breakpoints from debug map v1.
+- Continue, pause, step in, step over, and step out. These actions are hardware instruction-level operations because LNDBG v1 exposes CPU instruction stepping, not source-level stepping.
+- One synthetic LNCPU thread and source-mapped stack frame.
+- Register inspection and editing.
+- Memory reads and writes from the VS Code memory viewer.
+- Clean terminate and disconnect.
 
-This extension contributes the following settings:
+Attach sessions, conditional breakpoints, expression evaluation, and source locals are not supported by LNDBG v1 and are intentionally omitted.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Development
 
-## Known Issues
+```sh
+npm install
+npm test
+```
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+`npm test` compiles the strict CommonJS TypeScript project and runs focused protocol, debug-map, artifact-planning, and hermetic lifecycle tests.
