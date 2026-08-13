@@ -293,10 +293,12 @@ ddi_device_table:
 .section BIOS_CONST
 ; 4 bytes: 'LNDI' magic bytes for device descriptors
 DDI_MAGIC_BYTES:
-
+    .data "LNDI" 0 
+    ; we need to repeat it because BIOS_CONST is linked in page_fit_labels,
+    ; so DDI_MAGIC_BYTES is not guaranteed to point to the same location as RAM_SIGNATURE;
 ; RAM device signature to be placed at 0x3ff0 (last 16 bytes of 8KB RAM)
 RAM_SIGNATURE:
-    .data 'LNDI' 0x1            ; 'LNDI' signature and version 1
+    .data "LNDI" 0x1            ; 'LNDI' signature and version 1
     .data DEV_TYPE_RAM8K        ; RAM device type
     .data DEV_FLAG_WRITABLE     ; device flags
     .data 0x20                  ; 8KB size (in 256-byte pages)

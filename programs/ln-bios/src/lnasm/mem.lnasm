@@ -255,9 +255,9 @@ memcmp:
     ; Save the current pointers and byte count.
     mov         RD, [BP + 0]
     mov         RC, [BP + 1]
-    mov         [BP - 8], RB
-    mov         RB, [BP + 2]
     mov         [BP - 7], RB
+    mov         RB, [BP + 2]
+    mov         [BP - 8], RB
     mov         RB, [BP + 3]
     mov         RA, [BP + 4]
 
@@ -289,7 +289,7 @@ _cmp_src1_ok:
     mov         [BP + 3], RC
     mov         [RC:RD], RA
 
-    xor         RB, RA
+    cmp         RB, RA
     jz          _cmp_bytes_equal
 
     mov         1, RB
@@ -305,8 +305,7 @@ _cmp_src2_hi_carry:
 _cmp_src2_ok:
     mov         RD, [BP + 2]
     mov         RC, [BP + 3]
-
-    mov         RA, [BP + 4]
+    
     goto        _cmp_loop
 
 _cmp_equal:

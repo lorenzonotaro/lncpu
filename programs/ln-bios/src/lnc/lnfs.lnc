@@ -1,4 +1,6 @@
 #include "lnfs.lnh"
+#include "ddi.lnh"
+#include "mem.lnh"
 
 struct lnfs_inode far *lnfs_find_file(struct lnfs_inode far *dir, const char far *name, unsigned int length, unsigned int start_page){
     int sp = start_page;
