@@ -100,3 +100,7 @@ lncpu-emu/cmake-build-debug
 # python
 __pycache__/
 *.py[cod]
+
+# lncpu extension
+.lncpu-debug
+*.vsix

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="4.0.3dev" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v4.0.3dev(https://github.com/logisim-evolution/).
+<project source="4.2.1dev" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v4.2.1dev(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Splitter">
@@ -31,16 +31,17 @@
       <a name="width" val="5"/>
     </tool>
   </lib>
-  <lib desc="#Memory" name="4"/>
-  <lib desc="#I/O" name="5"/>
-  <lib desc="#TTL" name="6"/>
-  <lib desc="#TCL" name="7"/>
-  <lib desc="#Base" name="8"/>
-  <lib desc="#BFH-Praktika" name="9"/>
-  <lib desc="#Input/Output-Extra" name="10"/>
-  <lib desc="#Soc" name="11"/>
-  <lib desc="file#Devices.circ" name="12"/>
+  <lib desc="#FPArithmetic" name="4"/>
+  <lib desc="#Memory" name="5"/>
+  <lib desc="#I/O" name="6"/>
+  <lib desc="#TTL" name="7"/>
+  <lib desc="#TCL" name="8"/>
+  <lib desc="#Base" name="9"/>
+  <lib desc="#BFH-Praktika" name="10"/>
+  <lib desc="#Input/Output-Extra" name="11"/>
+  <lib desc="#Soc" name="12"/>
   <lib desc="file#C8BComponents.circ" name="13"/>
+  <lib desc="file#Devices.circ" name="14"/>
   <main name="main"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
@@ -48,37 +49,37 @@
     <a name="simrand" val="0"/>
   </options>
   <mappings>
-    <tool lib="8" map="Button2" name="Menu Tool"/>
-    <tool lib="8" map="Button3" name="Menu Tool"/>
-    <tool lib="8" map="Ctrl Button1" name="Menu Tool"/>
+    <tool map="Button2" name="Menu Tool"/>
+    <tool map="Button3" name="Menu Tool"/>
+    <tool map="Ctrl Button1" name="Menu Tool"/>
   </mappings>
   <toolbar>
-    <tool lib="8" name="Poke Tool"/>
-    <tool lib="8" name="Edit Tool"/>
-    <tool lib="8" name="Wiring Tool"/>
-    <tool lib="8" name="Text Tool"/>
+    <tool name="Poke Tool"/>
+    <tool name="Edit Tool"/>
+    <tool name="Wiring Tool"/>
+    <tool name="Text Tool"/>
     <sep/>
-    <tool lib="0" name="Pin"/>
-    <tool lib="0" name="Pin">
+    <tool name="Pin"/>
+    <tool name="Pin">
       <a name="facing" val="west"/>
       <a name="type" val="output"/>
     </tool>
     <sep/>
-    <tool lib="1" name="NOT Gate"/>
-    <tool lib="1" name="AND Gate"/>
-    <tool lib="1" name="OR Gate"/>
-    <tool lib="1" name="XOR Gate"/>
-    <tool lib="1" name="NAND Gate"/>
-    <tool lib="1" name="NOR Gate"/>
+    <tool name="NOT Gate"/>
+    <tool name="AND Gate"/>
+    <tool name="OR Gate"/>
+    <tool name="XOR Gate"/>
+    <tool name="NAND Gate"/>
+    <tool name="NOR Gate"/>
     <sep/>
-    <tool lib="4" name="D Flip-Flop"/>
-    <tool lib="4" name="Register"/>
+    <tool name="D Flip-Flop"/>
+    <tool name="Register"/>
   </toolbar>
   <circuit name="main">
     <a name="appearance" val="logisim_evolution"/>
     <a name="circuit" val="main"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
-    <a name="simulationFrequency" val="2048000.0"/>
+    <a name="simulationFrequency" val="2048.0"/>
     <comp lib="0" loc="(1000,1030)" name="Tunnel">
       <a name="facing" val="east"/>
       <a name="label" val="DBUS"/>
@@ -1594,34 +1595,34 @@
     <comp lib="1" loc="(840,1750)" name="NOR Gate">
       <a name="size" val="30"/>
     </comp>
-    <comp lib="10" loc="(70,470)" name="Digital Oscilloscope">
+    <comp lib="11" loc="(70,470)" name="Digital Oscilloscope">
       <a name="frontlines" val="no"/>
       <a name="showclock" val="false"/>
     </comp>
-    <comp lib="10" loc="(730,210)" name="Switch">
+    <comp lib="11" loc="(730,210)" name="Switch">
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="12" loc="(1030,1790)" name="TTYAdapter"/>
-    <comp lib="12" loc="(2220,1850)" name="RGBScreenAdapter"/>
-    <comp lib="12" loc="(2830,1870)" name="JoystickAdapter"/>
-    <comp lib="4" loc="(1080,680)" name="Register">
+    <comp lib="14" loc="(1030,1790)" name="TTYAdapter"/>
+    <comp lib="14" loc="(2220,1850)" name="RGBScreenAdapter"/>
+    <comp lib="14" loc="(2830,1870)" name="JoystickAdapter"/>
+    <comp lib="5" loc="(1080,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABH"/>
     </comp>
-    <comp lib="4" loc="(1190,680)" name="Register">
+    <comp lib="5" loc="(1190,680)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="ABL"/>
     </comp>
-    <comp lib="5" loc="(1010,220)" name="Hex Digit Display">
+    <comp lib="6" loc="(1010,220)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(1060,220)" name="Hex Digit Display">
+    <comp lib="6" loc="(1060,220)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(1110,220)" name="Hex Digit Display">
+    <comp lib="6" loc="(1110,220)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2040,2260)" name="RGB Video">
+    <comp lib="6" loc="(2040,2260)" name="RGB Video">
       <a name="color" val="XTerm256 (8 bit)"/>
       <a name="cursor" val="No Cursor"/>
       <a name="height" val="32"/>
@@ -1629,365 +1630,365 @@
       <a name="scale" val="8"/>
       <a name="width" val="64"/>
     </comp>
-    <comp lib="5" loc="(2380,500)" name="Hex Digit Display">
+    <comp lib="6" loc="(2380,500)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2380,710)" name="Hex Digit Display">
+    <comp lib="6" loc="(2380,710)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2420,500)" name="Hex Digit Display">
+    <comp lib="6" loc="(2420,500)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2420,710)" name="Hex Digit Display">
+    <comp lib="6" loc="(2420,710)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2600,2090)" name="Joystick"/>
-    <comp lib="5" loc="(2720,2140)" name="Hex Digit Display"/>
-    <comp lib="5" loc="(2800,710)" name="Hex Digit Display">
+    <comp lib="6" loc="(2600,2090)" name="Joystick"/>
+    <comp lib="6" loc="(2720,2140)" name="Hex Digit Display"/>
+    <comp lib="6" loc="(2800,710)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2810,500)" name="Hex Digit Display">
+    <comp lib="6" loc="(2810,500)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2840,710)" name="Hex Digit Display">
+    <comp lib="6" loc="(2840,710)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(2850,500)" name="Hex Digit Display">
+    <comp lib="6" loc="(2850,500)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(3090,1190)" name="LED">
+    <comp lib="6" loc="(3090,1190)" name="LED">
       <a name="color" val="#1300f0"/>
       <a name="facing" val="north"/>
     </comp>
-    <comp lib="5" loc="(3110,1190)" name="LED">
+    <comp lib="6" loc="(3110,1190)" name="LED">
       <a name="color" val="#1300f0"/>
       <a name="facing" val="north"/>
     </comp>
-    <comp lib="5" loc="(3130,1190)" name="LED">
+    <comp lib="6" loc="(3130,1190)" name="LED">
       <a name="color" val="#1300f0"/>
       <a name="facing" val="north"/>
     </comp>
-    <comp lib="5" loc="(3150,1190)" name="LED">
+    <comp lib="6" loc="(3150,1190)" name="LED">
       <a name="color" val="#1300f0"/>
       <a name="facing" val="north"/>
     </comp>
-    <comp lib="5" loc="(710,190)" name="DipSwitch">
+    <comp lib="6" loc="(710,190)" name="DipSwitch">
       <a name="facing" val="south"/>
       <a name="labelvisible" val="false"/>
     </comp>
-    <comp lib="5" loc="(800,2390)" name="TTY">
+    <comp lib="6" loc="(800,2390)" name="TTY">
       <a name="bg" val="#000000"/>
       <a name="color" val="#ffffff"/>
       <a name="cols" val="56"/>
       <a name="rows" val="24"/>
     </comp>
-    <comp lib="5" loc="(810,2450)" name="Keyboard"/>
-    <comp lib="5" loc="(820,220)" name="Hex Digit Display">
+    <comp lib="6" loc="(810,2450)" name="Keyboard"/>
+    <comp lib="6" loc="(820,220)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(840,1010)" name="LED">
+    <comp lib="6" loc="(840,1010)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1030)" name="LED">
+    <comp lib="6" loc="(840,1030)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1050)" name="LED">
+    <comp lib="6" loc="(840,1050)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1070)" name="LED">
+    <comp lib="6" loc="(840,1070)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1090)" name="LED">
+    <comp lib="6" loc="(840,1090)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1110)" name="LED">
+    <comp lib="6" loc="(840,1110)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1130)" name="LED">
+    <comp lib="6" loc="(840,1130)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1150)" name="LED">
+    <comp lib="6" loc="(840,1150)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1170)" name="LED">
+    <comp lib="6" loc="(840,1170)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1190)" name="LED">
+    <comp lib="6" loc="(840,1190)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1210)" name="LED">
+    <comp lib="6" loc="(840,1210)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1230)" name="LED">
+    <comp lib="6" loc="(840,1230)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1250)" name="LED">
+    <comp lib="6" loc="(840,1250)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1270)" name="LED">
+    <comp lib="6" loc="(840,1270)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1290)" name="LED">
+    <comp lib="6" loc="(840,1290)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1310)" name="LED">
+    <comp lib="6" loc="(840,1310)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1330)" name="LED">
+    <comp lib="6" loc="(840,1330)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1350)" name="LED">
+    <comp lib="6" loc="(840,1350)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1370)" name="LED">
+    <comp lib="6" loc="(840,1370)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1390)" name="LED">
+    <comp lib="6" loc="(840,1390)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1410)" name="LED">
+    <comp lib="6" loc="(840,1410)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1430)" name="LED">
+    <comp lib="6" loc="(840,1430)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1450)" name="LED">
+    <comp lib="6" loc="(840,1450)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,1470)" name="LED">
+    <comp lib="6" loc="(840,1470)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,390)" name="LED">
+    <comp lib="6" loc="(840,390)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,410)" name="LED">
+    <comp lib="6" loc="(840,410)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,430)" name="LED">
+    <comp lib="6" loc="(840,430)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,450)" name="LED">
+    <comp lib="6" loc="(840,450)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,470)" name="LED">
+    <comp lib="6" loc="(840,470)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,490)" name="LED">
+    <comp lib="6" loc="(840,490)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,510)" name="LED">
+    <comp lib="6" loc="(840,510)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,530)" name="LED">
+    <comp lib="6" loc="(840,530)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,550)" name="LED">
+    <comp lib="6" loc="(840,550)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,570)" name="LED">
+    <comp lib="6" loc="(840,570)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,590)" name="LED">
+    <comp lib="6" loc="(840,590)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,610)" name="LED">
+    <comp lib="6" loc="(840,610)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,630)" name="LED">
+    <comp lib="6" loc="(840,630)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,650)" name="LED">
+    <comp lib="6" loc="(840,650)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,670)" name="LED">
+    <comp lib="6" loc="(840,670)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,690)" name="LED">
+    <comp lib="6" loc="(840,690)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,710)" name="LED">
+    <comp lib="6" loc="(840,710)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,730)" name="LED">
+    <comp lib="6" loc="(840,730)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,750)" name="LED">
+    <comp lib="6" loc="(840,750)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,770)" name="LED">
+    <comp lib="6" loc="(840,770)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,790)" name="LED">
+    <comp lib="6" loc="(840,790)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,810)" name="LED">
+    <comp lib="6" loc="(840,810)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,830)" name="LED">
+    <comp lib="6" loc="(840,830)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,850)" name="LED">
+    <comp lib="6" loc="(840,850)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,870)" name="LED">
+    <comp lib="6" loc="(840,870)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,890)" name="LED">
+    <comp lib="6" loc="(840,890)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,910)" name="LED">
+    <comp lib="6" loc="(840,910)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,930)" name="LED">
+    <comp lib="6" loc="(840,930)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,950)" name="LED">
+    <comp lib="6" loc="(840,950)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,970)" name="LED">
+    <comp lib="6" loc="(840,970)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(840,990)" name="LED">
+    <comp lib="6" loc="(840,990)" name="LED">
       <a name="color" val="#00abf0"/>
     </comp>
-    <comp lib="5" loc="(870,220)" name="Hex Digit Display">
+    <comp lib="6" loc="(870,220)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(960,220)" name="Hex Digit Display">
+    <comp lib="6" loc="(960,220)" name="Hex Digit Display">
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="5" loc="(990,310)" name="Button">
+    <comp lib="6" loc="(990,310)" name="Button">
       <a name="label" val="RESET_BTN"/>
     </comp>
-    <comp lib="8" loc="(1045,140)" name="Text">
+    <comp lib="9" loc="(1045,140)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="Address bus"/>
     </comp>
-    <comp lib="8" loc="(1770,500)" name="Text">
+    <comp lib="9" loc="(1770,500)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RAM"/>
     </comp>
-    <comp lib="8" loc="(1830,310)" name="Text">
+    <comp lib="9" loc="(1830,310)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="Clock"/>
     </comp>
-    <comp lib="8" loc="(1910,775)" name="Text">
+    <comp lib="9" loc="(1910,775)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="ROM"/>
     </comp>
-    <comp lib="8" loc="(1920,925)" name="Text">
+    <comp lib="9" loc="(1920,925)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="DATA LATCH"/>
     </comp>
-    <comp lib="8" loc="(1990,1150)" name="Text">
+    <comp lib="9" loc="(1990,1150)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RT"/>
     </comp>
-    <comp lib="8" loc="(2270,360)" name="Text">
+    <comp lib="9" loc="(2270,360)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RC"/>
     </comp>
-    <comp lib="8" loc="(2270,570)" name="Text">
+    <comp lib="9" loc="(2270,570)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RA"/>
     </comp>
-    <comp lib="8" loc="(2495,880)" name="Text">
+    <comp lib="9" loc="(2495,880)" name="Text">
       <a name="font" val="Dialog plain 20"/>
       <a name="text" val="ALU_OPERAND_SELECTORS"/>
     </comp>
-    <comp lib="8" loc="(260,975)" name="Text">
+    <comp lib="9" loc="(260,975)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="INZC"/>
     </comp>
-    <comp lib="8" loc="(2690,360)" name="Text">
+    <comp lib="9" loc="(2690,360)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RD"/>
     </comp>
-    <comp lib="8" loc="(2690,575)" name="Text">
+    <comp lib="9" loc="(2690,575)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="RB"/>
     </comp>
-    <comp lib="8" loc="(270,655)" name="Text">
+    <comp lib="9" loc="(270,655)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="CS_PC"/>
     </comp>
-    <comp lib="8" loc="(275,695)" name="Text">
+    <comp lib="9" loc="(275,695)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="DBUS"/>
     </comp>
-    <comp lib="8" loc="(280,675)" name="Text">
+    <comp lib="9" loc="(280,675)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="ABUS"/>
     </comp>
-    <comp lib="8" loc="(285,715)" name="Text">
+    <comp lib="9" loc="(285,715)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="DL"/>
     </comp>
-    <comp lib="8" loc="(290,615)" name="Text">
+    <comp lib="9" loc="(290,615)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="IR"/>
     </comp>
-    <comp lib="8" loc="(290,775)" name="Text">
+    <comp lib="9" loc="(290,775)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="RA"/>
     </comp>
-    <comp lib="8" loc="(290,795)" name="Text">
+    <comp lib="9" loc="(290,795)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="RB"/>
     </comp>
-    <comp lib="8" loc="(290,815)" name="Text">
+    <comp lib="9" loc="(290,815)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="RC"/>
     </comp>
-    <comp lib="8" loc="(290,835)" name="Text">
+    <comp lib="9" loc="(290,835)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="RD"/>
     </comp>
-    <comp lib="8" loc="(290,855)" name="Text">
+    <comp lib="9" loc="(290,855)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="RT"/>
     </comp>
-    <comp lib="8" loc="(290,875)" name="Text">
+    <comp lib="9" loc="(290,875)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="DL"/>
     </comp>
-    <comp lib="8" loc="(290,915)" name="Text">
+    <comp lib="9" loc="(290,915)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="SS"/>
     </comp>
-    <comp lib="8" loc="(290,935)" name="Text">
+    <comp lib="9" loc="(290,935)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="SP"/>
     </comp>
-    <comp lib="8" loc="(2970,875)" name="Text">
+    <comp lib="9" loc="(2970,875)" name="Text">
       <a name="font" val="Dialog plain 20"/>
       <a name="text" val="ALU_OPERATOR_SELECTOR"/>
     </comp>
-    <comp lib="8" loc="(3085,1230)" name="Text">
+    <comp lib="9" loc="(3085,1230)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="I"/>
     </comp>
-    <comp lib="8" loc="(3105,1230)" name="Text">
+    <comp lib="9" loc="(3105,1230)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="N"/>
     </comp>
-    <comp lib="8" loc="(3125,1230)" name="Text">
+    <comp lib="9" loc="(3125,1230)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="Z"/>
     </comp>
-    <comp lib="8" loc="(3145,1230)" name="Text">
+    <comp lib="9" loc="(3145,1230)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="C"/>
     </comp>
-    <comp lib="8" loc="(495,2445)" name="Text">
+    <comp lib="9" loc="(495,2445)" name="Text">
       <a name="font" val="Monospaced bold 16"/>
       <a name="text" val="Click here with the poke tool to type into the serial port -&gt;"/>
     </comp>
-    <comp lib="8" loc="(665,140)" name="Text">
+    <comp lib="9" loc="(665,140)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="Write to bus"/>
     </comp>
-    <comp lib="8" loc="(845,140)" name="Text">
+    <comp lib="9" loc="(845,140)" name="Text">
       <a name="font" val="Dialog plain 24"/>
       <a name="text" val="Data bus"/>
     </comp>
@@ -2756,7 +2757,7 @@
     <comp lib="1" loc="(560,220)" name="Controlled Buffer">
       <a name="width" val="8"/>
     </comp>
-    <comp lib="4" loc="(340,160)" name="Register">
+    <comp lib="5" loc="(340,160)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
     <wire from="(200,320)" to="(540,320)"/>
@@ -3044,22 +3045,22 @@
     <comp lib="1" loc="(800,450)" name="NOT Gate"/>
     <comp lib="1" loc="(800,570)" name="NOT Gate"/>
     <comp lib="1" loc="(800,690)" name="NOT Gate"/>
-    <comp lib="4" loc="(800,280)" name="Register">
+    <comp lib="5" loc="(800,280)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="C"/>
       <a name="width" val="1"/>
     </comp>
-    <comp lib="4" loc="(800,400)" name="Register">
+    <comp lib="5" loc="(800,400)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="Z"/>
       <a name="width" val="1"/>
     </comp>
-    <comp lib="4" loc="(800,520)" name="Register">
+    <comp lib="5" loc="(800,520)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="N"/>
       <a name="width" val="1"/>
     </comp>
-    <comp lib="4" loc="(800,640)" name="Register">
+    <comp lib="5" loc="(800,640)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="I"/>
       <a name="width" val="1"/>
@@ -3274,7 +3275,7 @@
       <a name="size" val="30"/>
     </comp>
     <comp lib="3" loc="(690,250)" name="Adder"/>
-    <comp lib="8" loc="(970,325)" name="Text">
+    <comp lib="9" loc="(970,325)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="we invert the carry when subtracting, so that the carry flag in a sub operation means &quot;borrow&quot;"/>
     </comp>
@@ -3535,7 +3536,7 @@
     <a name="appearance" val="logisim_evolution"/>
     <a name="circuit" val="InstructionRegister"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
-    <comp lib="4" loc="(410,320)" name="Counter">
+    <comp lib="5" loc="(410,320)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
   </circuit>
@@ -3598,7 +3599,7 @@
       <a name="size" val="30"/>
     </comp>
     <comp lib="1" loc="(820,520)" name="NOT Gate"/>
-    <comp lib="4" loc="(830,470)" name="RAM">
+    <comp lib="5" loc="(830,470)" name="RAM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="asyncread" val="true"/>
@@ -3681,22 +3682,22 @@
     <comp lib="1" loc="(730,380)" name="Controlled Buffer">
       <a name="width" val="8"/>
     </comp>
-    <comp lib="4" loc="(400,210)" name="Counter">
+    <comp lib="5" loc="(400,210)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
-    <comp lib="8" loc="(490,100)" name="Text">
+    <comp lib="9" loc="(490,100)" name="Text">
       <a name="text" val="00 - inactive"/>
     </comp>
-    <comp lib="8" loc="(490,120)" name="Text">
+    <comp lib="9" loc="(490,120)" name="Text">
       <a name="text" val="01 - count up"/>
     </comp>
-    <comp lib="8" loc="(490,140)" name="Text">
+    <comp lib="9" loc="(490,140)" name="Text">
       <a name="text" val="10 - count down"/>
     </comp>
-    <comp lib="8" loc="(490,155)" name="Text">
+    <comp lib="9" loc="(490,155)" name="Text">
       <a name="text" val="11 - load"/>
     </comp>
-    <comp lib="8" loc="(505,65)" name="Text">
+    <comp lib="9" loc="(505,65)" name="Text">
       <a name="text" val="SP_MODE_SEL"/>
     </comp>
     <wire from="(220,230)" to="(250,230)"/>
@@ -3774,11 +3775,387 @@
     <comp lib="1" loc="(1030,450)" name="Controlled Buffer">
       <a name="width" val="8"/>
     </comp>
-    <comp lib="4" loc="(730,390)" name="ROM">
+    <comp lib="5" loc="(730,390)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
-7 a da 1
+fc 9 21 8 0 a 20 f4
+9 0 1 4e 4f 40 20 16
+90 ed 17 ef 17 f0 22 4*eb
+6 22 7 0 6f f0 24 d5
+da 5a 59 f8 42 6f 6f 74
+20 66 61 69 6c 65 64 20
+66 6f 72 20 64 65 76 69
+63 65 20 77 69 74 68 20
+63 6f 64 65 20 30 78 25
+78 20 28 72 65 66 65 72
+20 74 6f 20 62 69 6f 73
+5f 75 74 69 6c 73 2e 6c
+6e 61 73 6d 29 2e a 0
+50 51 41 20 1a 7 2 32
+5c 5b f8 4e 4f 50 51 36
+9f 0 ef 91 50 51 41 20
+1a 7 2 32 5c 5b e6 ed
+8e f0 7a e5 f0 7a 5c 5b
+5a 59 f8 4e 51 36 9f 0
+ef a2 e6 36 f6 3 cf 5c
+59 f8 50 6c 65 61 73 65
+20 73 65 6c 65 63 74 20
+61 20 62 6f 6f 74 20 64
+65 76 69 63 65 20 62 79
+20 65 6e 74 65 72 69 6e
+67 20 69 74 73 20 6e 75
+6d 62 65 72 3a 20 a 0
+5b 45 52 52 20 5d 20 0
+53 52 41 4d 0 45 6e 74
+65 72 69 6e 67 20 72 65
+73 63 75 65 20 6d 6f 64
+65 2e a 0 0 52 4f 4d
+2d 38 4b 20 0 52 41 4d
+2d 38 4b 20 49*0 54 54 59
+2d 45 20 20 57*0 41 53 4d
+2d 33 31 20 0 41 53 4d
+2d 31 35 20 0 41 53 4d
+2d 37 20 20 0 4e 4f 50
+51 57 e 77 3 26 1 27
+2 12 26 0 6c e9 7 f0
+4 4 56 2 56 e1 f6 6
+59 a0 0 ef ba f0 f5 58
+a 22 3f 20 16 4*eb 4e 73
+8 51 13 4b e6 59 49 e6
+21 0 4a e6 21 1 4a e6
+21 2 4a e6 13 5a 76 5
+36 eb eb eb 56 22 4f 6
+1 13 4 8 f6 c 2d 62
+3f 20 16 e3 3b 20 16 8d
+3 61 5c 5b 5a 59 f8 6b
+f8 0 57 4e 4f 8d 6 e
+77 6 36 9f 0 ef 6b 9f
+25 ef 17 f6 3 a4 e6 f0
+8 e6 36 9f 0 ef 6b 9f
+73 ef 36 9f 78 ef 4a 9f
+25 ef 30 4 25 f6 3 a4
+f0 8 f6 3 a4 e6 f0 8
+50 51 22 ff 23 0 f6 3
+b7 d f 8d 2 e 1e 5c
+5b e6 f0 8 20 0 4*ec f6
+2 6f 14 f6 3 a4 20 0
+f6 2 6f 14 f6 3 a4 51
+d f 8d 1 e 1e 5c e6
+f0 8 5a 59 61 f8 11 c8
+f a0 a ee 7b 8a a 74
+41 f8 74 30 f8 4e 4f 3f
+20 1e 40 20 1f 90 ef 8b
+fe f8 fd f8 f6 2 7e ed
+94 f0 8d 50 51 6 23 42
+20 1f 37 e6 3e 20 1f 5c
+5b f8 4e 4f 50 51 a0 0
+ef bc 4f f6 2 8d 95 ef
+bc 33 5a e6 ed b9 f0 a7
+e5 f0 a7 3a 0 5c 5b 5a
+59 f8 42 6f 6f 74 61 62
+6c 65 20 64 65 76 69 63
+65 73 20 66 6f 75 6e 64
+3a a 0 4c 4e 46 53 0
+4c 4e 44 49 1 1 1 20
+7*0 a5 25 73 7c 20 25 78
+2e 25 78 20 7c 20 0 0
+0 4e 4f 50 51 f6 3 59
+a1 0 ef 34 76 a 36 3b
+20 1a e6 36 3b 20 17 e6
+36 3b 20 18 8c 4 36 e6
+37 12 16 3d 20 1b 3e 20
+1c 76 5 36 3b 20 19 43
+20 1d 0 f0 4c 43 20 19
+0 43 20 1b 0 43 20 1c
+0 43 20 1a 0 43 20 17
+0 43 20 18 0 43 20 1e
+0 43 20 1f 0 5c 5b 5a
+59 f8 4e 4f 4 2 40 20
+16 90 ef 72 f6 0 b a1
+0 ef 72 f6 3 77 ed 74
+e3 f0 60 d5 da 5a 59 f8
+4e 4f 50 51 76 8 36 e6
+37 9f 0 ef 8d 12 16 76
+5 36 9f 8 ef 90 fd f0
+91 fe 5c 5b 5a 59 f8 4e
+3f 20 19 9f 0 ef a1 fe
+f0 a2 fd 59 f8 4f 40 20
+19 a0 0 ef b5 a0 8 ef
+b2 f0 b5 f6 0 6b 5a f8
+4f 37 a0 0 ef cd 40 20
+19 a0 0 ef cd a0 8 ef
+ca f0 cd f6 0 76 5a f8
+50 51 6 23 42 20 1e 32
+e6 3e 20 1e 41 20 1d c9
+1 ef e5 f6 3 a4 5c 5b
+f8 3b 20 1d f8 53 52 4f
+4d 0 58 49 50 0 e6 ed
+f9 f8 e5 f8 4c 4e 58 45
+0 4e 50 51 57 e 77 6
+26 0 27 1 4 6 f6 9
+f5 36 c7 1 b7 ef 1e 43
+20 14 5 5 1 f0 79 4
+9 22 0 23 1 f6 9 f5
+4 4 56 3 56 fb f6 6
+59 bc ef 3b 43 20 14 5
+5 1 f0 79 4 6 f6 9
+f5 26 4 27 5 22 0 23
+1 4 7 f6 9 f5 54 f6
+3 f5 39 5b 26 2 27 3
+4 6 f6 5 e7 26 2 27
+3 22 4 23 5 20 2 21
+3 4e 4f 20 f9 21 1 4e
+4f 20 2 21 3 f6 6 0
+5 1 f 61 5c 5b 59 f9
+2 50 51 4e 57 e 77 7
+26 5 27 6 43 20 14 0
+22 5 23 6 26 3 27 4
+28 1 a 20 1 24 2 22
+3 23 4 f6 9 f5 26 3
+27 4 36 24 0 22 5 23
+6 4 a f6 9 f5 38 7
+0 4 4 56 8 56 d0 f6
+6 59 bc ef cc 43 20 14
+1 5 12 f0 f9 20 0 f6
+8 41 4 0 f6 8 c4 ed
+ec 4 9 f6 9 f5 54 f6
+3 f5 39 5b 56 24 56 0
+f6 4 0 f0 f0 5 12 f0
+f9 bc ef f7 5 13 f0 f9
+5 0 f 61 59 5c 5b f8
+0 f6 7 8f 6 8 7 a5
+f6 3 b7 f6 b 0 3f 20
+3 9f 0 ef 32 9f 1 ef
+1c f4 5 3e 1 4 0 f6
+5 46 f6 7 9b 43 20 2
+10 4f 6 0 7 27 f6 2
+0 8d 1 43 20 2 11 6
+a 7 b0 f6 3 b7 1 6
+2 7 c3 f6 3 b7 1 4e
+50 51 57 e 77 3 4*eb 6
+20 7 4 6f e6 36 b7 ef
+64 28 2 1 56 2 56 dc
+f0 6b 28 2 0 56 3 56
+f1 ea 36 f6 0 b 26 0
+27 1 50 51 76 c 54 ea
+54 f6 7 8f 6 6 7 b2
+f6 2 0 8d 6 22 0 23
+1 20 2 9f 0 ef a8 f6
+4 80 3c 20 2 55 20 14
+f6 7 9b 6 8 7 0 f6
+2 0 8d 1 f0 bb 76 a
+36 8c 2 54 e6 39 5b 76
+8 54 e6 39 5b 6b 8 0
+f5 f 61 5c 5b 59 f8 43
+20 15 1 43 20 16 0 6
+2 7 e1 56 3f 56 f0 4
+10 f6 c 2d f8 5b 57 41
+52 4e 5d 20 0 5b 43 52
+49 54 5d 20 0 85 ed eb
+f8 e9 f8 5b 49 4e 46 4f
+5d 20 0 91 ed fa 96 f8
+fe f8 4*0 4e 4f 50 51 57
+e 77 5 27 2 26 3 21
+f8 25 0 21 f7 25 1 20
+f6 21 f5 25 4 9f 0 ef
+20 f0 26 21 4 a0 0 ef
+50 e7 ed 2b f0 30 21 4
+e8 25 4 23 2 22 3 37
+e6 ed 3a f0 3b e5 27 2
+26 3 23 0 22 1 33 e6
+ed 49 f0 4a e5 27 0 26
+1 f0 1a 8d 5 61 5c 5b
+5a 59 f9 4 4e 50 51 57
+e 77 5 27 0 26 1 21
+f8 25 2 21 f9 25 3 24
+4 20 4 9f 0 ef a0 e7
+24 4 23 0 22 1 37 e6
+ed 81 f0 82 e5 27 0 26
+1 23 2 22 3 36 cf ef
+92 5 1 f0 a1 e6 ed 97
+f0 98 e5 27 2 26 3 24
+4 f0 6e d0 61 5c 5b 59
+f9 2 f6 7 9b 6 0 7
+e8 f6 3 b7 1 41 74 74
+65 6d 70 74 69 6e 67 20
+74 6f 20 62 6f 6f 74 20
+66 72 6f 6d 20 64 65 76
+69 63 65 20 25 78 2e 25
+78 20 28 25 73 2c 20 25
+73 20 6d 6f 64 65 29 2e
+a 0 53 74 61 72 74 65
+64 20 4c 4e 2d 42 49 4f
+53 20 76 30 2e 32 a 4*0
+4e 4f 50 51 43 20 15 2
+6 3 7 ec 56 22 56 0
+4 4 f6 c 2d 43 22 8
+1f 43 22 9 f0 43 22 a
+0 43 22 b 0 43 22 c
+0 6 0 7 e3 56 22 56
+10 4 4 f6 c 2d 43 22
+18 3f 43 22 19 f0 43 22
+1a 20 43 22 1b 1 43 22
+1c 0 43 20 16 2 4 40
+5 20 6 2 7 0 f6 1
+98 e5 73 20 9f 0 ef 62
+f0 56 43 20 15 0 5c 5b
+5a 59 f8 50 51 6 7 7
+e8 f6 3 b7 5c 5b f8 50
+51 6 0 7 db f6 3 b7
+5c 5b f8 50 51 6 5 7
+d7 f6 3 b7 5c 5b f8 50
+51 6 5 7 ed f6 3 b7
+5c 5b f8 50 51 6 5 7
+df f6 3 b7 5c 5b f8 69
+6e 74 65 72 72 75 70 74
+20 72 65 63 65 69 76 65
+64 20 62 75 74 20 6e 6f
+20 64 65 76 69 63 65 20
+74 6f 20 68 61 6e 64 6c
+65 20 69 74 2e 20 43 68
+65 63 6b 20 79 6f 75 72
+20 73 65 74 75 70 2e 0
+5b 20 4f 4b 20 5d 20 0
+4b 45 52 4e 45 4c 0 52
+4f 4f 54 5*0 4c 4e 46 53
+20 62 6f 6f 74 20 66 61
+69 6c 65 64 20 77 69 74
+68 20 4c 4e 46 53 20 65
+72 72 6f 72 20 63 6f 64
+65 20 30 78 25 78 20 28
+72 65 66 65 72 20 74 6f
+20 6c 6e 66 73 2e 6c 6e
+68 29 2e a 0 4e 4f 57
+e 77 1 24 0 4 6 f6
+9 f5 4 5 56 7 56 f7
+f6 6 59 bc ef 64 43 20
+14 2 6 0 7 0 f0 6f
+4 6 21 0 56 7 56 f0
+f6 a 0 f 61 5a 59 f8
+44 69 73 63 6f 76 65 72
+65 64 20 49 2f 4f 20 64
+65 76 69 63 65 73 3a a
+20 54 79 70 65 20 20 7c
+20 20 49 44 20 20 20 7c
+20 46 6c 61 67 73 20 a
+0 4c 6f 6f 6b 69 6e 67
+20 66 6f 72 20 62 6f 6f
+74 20 64 65 76 69 63 65
+28 73 29 2e 2e 2e a 0
+c1 ef c9 fd f8 9b ef ce
+fd f8 fe f8 4c 4e 46 53
+0 53 74 61 6e 64 61 72
+64 20 74 65 78 74 20 6f
+75 74 70 75 74 20 64 65
+76 69 63 65 20 69 73 20
+49 44 20 25 78 2e 25 78
+a 0 0 0 43 20 2 0
+43 20 0 0 43 20 1 1
+f6 5 c1 f6 7 0 f6 3
+0 cb b3 1 f6 3 e8 f6
+3 96 ed 25 43 20 2 80
+1 fb f6 7 6b 6 6 7
+e7 f6 3 b7 f6 9 3a f6
+9 d7 f4 5 0 1 4e 4f
+50 51 57 e 77 1 f6 7
+8f 6 8 7 74 f6 3 b7
+28 0 0 40 20 16 20 0
+90 ef d0 f6 0 b 76 c
+36 4e ea 36 4e 8c 3 36
+e6 37 12 16 76 5 36 eb
+eb eb 56 1 4e e6 36 6
+2 7 f1 f6 2 0 8d 2
+11 c7 1 ef 85 4 57 f0
+87 4 2d f6 3 a4 14 c7
+2 ef 93 4 58 f0 95 4
+2d f6 3 a4 14 c7 4 ef
+a1 4 42 f0 a3 4 2d f6
+3 a4 14 c7 8 ef af 4
+46 f0 b1 4 2d f6 3 a4
+14 c7 10 ef bd 4 43 f0
+bf 4 2d f6 3 a4 4 a
+f6 3 a4 5c 5b 20 0 e3
+24 0 f0 4f f 61 5c 5b
+5a 59 f8 f6 3 96 ed de
+f0 f4 50 51 f6 7 8f 55
+20 18 55 20 17 6 8 7
+d5 f6 2 0 8d 2 5c 5b
+f8 6f ed f9 f8 e5 f8 5*0
+4e 4f 57 e 77 d 24 3
+26 b 27 c 14 24 a 4
+8 f6 9 f5 36 c7 2 b7
+ef 5b 22 b 23 c 4 9
+f6 9 f5 54 f6 3 f5 39
+5b 26 4 27 5 4 7 f6
+9 f5 54 f6 3 f5 39 5b
+26 8 27 9 4 9 22 4
+23 5 f6 9 f5 26 4 27
+5 20 a f6 1 fd 26 6
+27 7 26 4 27 5 28 2
+0 f0 65 43 20 14 3 6
+0 7 0 f0 aa 20 2 4
+0 11 22 8 23 9 f6 5
+f5 ed 7d 43 20 14 4 6
+0 7 0 f0 aa 20 2 22
+4 23 5 f6 9 f5 26 4
+27 5 26 0 27 1 20 3
+22 fa 50 51 22 0 23 1
+f6 6 59 bc ef a6 20 2
+73 2 24 2 f0 65 22 4
+23 5 f 61 5a 59 f9 2
+4e 6f 20 62 6f 6f 74 61
+62 6c 65 20 64 65 76 69
+63 65 20 66 6f 75 6e 64
+2e 20 54 68 65 20 43 50
+55 20 77 69 6c 6c 20 6e
+6f 77 20 68 61 6c 74 2e
+a 31*0 50 51 4e 4f 57 e
+77 4 6 20 7 4 4 10
+5 ff f6 c 18 28 2 0
+28 0 2 40 20 16 20 0
+90 ed 28 20 2 3b 20 3
+f0 98 20 0 24 1 f6 0
+b 4 8 f6 9 f5 54 f6
+3 f5 39 5b 4 6 f6 9
+f5 37 14 c7 4 b7 ef 5d
+20 2 9f 8 ed 4e f0 5d
+20 2 63 6 20 7 4 f6
+9 f5 20 0 32 f0 68 20
+0 24 1 e3 24 1 24 0
+f0 19 c8 8 bc ef 7e 20
+2 63 6 20 7 4 f6 9
+f5 f6 3 f5 3a 1 f0 8d
+20 2 63 6 20 7 4 f6
+9 f5 f6 3 f5 3a 0 20
+2 24 3 e3 24 3 24 2
+f0 5d f 61 5a 59 5c 5b
+f8 97*0 4e 4f 50 51 d0 9f
+0 ef 13 33 e7 e6 ed 10
+f0 5 e5 f0 5 5c 5b 5a
+59 f8 4e 50 51 9f 0 ef
+29 33 e7 e6 ed 26 f0 1b
+e5 f0 1b 5c 5b 59 f8 4e
+4f 50 51 57 e 77 4 27
+2 26 3 21 f8 25 0 21
+f7 25 1 9f 0 ef 66 23
+2 22 3 37 e6 ed 4f f0
+50 e5 27 2 26 3 23 0
+22 1 33 e6 ed 5e f0 5f
+e5 27 0 26 1 e7 f0 41
+8d 4 61 5c 5b 5a 59 f9
+2 4753*0 4e 4f 50 51 57 e
+77 1 4 2 40 20 16 a0
+2 ef 42 90 ef 3a 4e 4f
+f6 0 b 76 a 37 4f 8c
+2 36 e6 37 12 16 76 5
+36 5b da 9f 8 ef 2f f0
+35 f6 0 96 28 0 1 5a
+59 e3 f0 11 8d 1 61 5c
+5b 5a 59 fa f6 7 9b 43
+20 2 81 6 7 7 a7 f6
+3 b7 1 159*0 4c 4e 44 49
+1 0 2 20 7*0 a5
 </a>
       <a name="label" val="STORAGE_ROM"/>
     </comp>
@@ -3978,11 +4355,11 @@
       <a name="facing" val="south"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="4" loc="(1390,750)" name="Counter">
+    <comp lib="5" loc="(1390,750)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="CS"/>
     </comp>
-    <comp lib="4" loc="(1680,750)" name="Counter">
+    <comp lib="5" loc="(1680,750)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="PC"/>
     </comp>
@@ -4164,7 +4541,7 @@
       <a name="control" val="left"/>
       <a name="width" val="8"/>
     </comp>
-    <comp lib="4" loc="(430,230)" name="Register">
+    <comp lib="5" loc="(430,230)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
     <wire from="(240,240)" to="(540,240)"/>
@@ -4663,11 +5040,11 @@
     <comp lib="2" loc="(540,230)" name="Multiplexer">
       <a name="width" val="8"/>
     </comp>
-    <comp lib="4" loc="(570,230)" name="Register">
+    <comp lib="5" loc="(570,230)" name="Register">
       <a name="appearance" val="logisim_evolution"/>
       <a name="label" val="IR"/>
     </comp>
-    <comp lib="4" loc="(910,1010)" name="ROM">
+    <comp lib="5" loc="(910,1010)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -4758,7 +5135,7 @@ d8 13*f8 e0 d8 11*f8 d8 15*f8 d8
       <a name="label" val="EEPROM3"/>
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="4" loc="(910,1250)" name="ROM">
+    <comp lib="5" loc="(910,1250)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -4831,7 +5208,7 @@ d3 83 14*c3 c7 83 14*c3 c7 83
 </a>
       <a name="label" val="EEPROM4"/>
     </comp>
-    <comp lib="4" loc="(910,1490)" name="ROM">
+    <comp lib="5" loc="(910,1490)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -4925,7 +5302,7 @@ be 3e 3e 3c 38 11*3c 38 15*3c
       <a name="label" val="EEPROM5"/>
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="4" loc="(910,1730)" name="ROM">
+    <comp lib="5" loc="(910,1730)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -4936,7 +5313,7 @@ be 3e 3e 3c 38 11*3c 38 15*3c
 </a>
       <a name="label" val="EEPROM6"/>
     </comp>
-    <comp lib="4" loc="(910,290)" name="ROM">
+    <comp lib="5" loc="(910,290)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -4981,7 +5358,7 @@ fc 12*7c 6c 6c 6c 4189*7c
       <a name="label" val="EEPROM0"/>
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="4" loc="(910,530)" name="ROM">
+    <comp lib="5" loc="(910,530)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -5048,7 +5425,7 @@ f 12*e f 7 b 4189*e
       <a name="label" val="EEPROM1"/>
       <a name="labelvisible" val="true"/>
     </comp>
-    <comp lib="4" loc="(910,770)" name="ROM">
+    <comp lib="5" loc="(910,770)" name="ROM">
       <a name="addrWidth" val="13"/>
       <a name="appearance" val="logisim_evolution"/>
       <a name="contents">addr/data: 13 8
@@ -5098,11 +5475,11 @@ f 12*e f 7 b 4189*e
 </a>
       <a name="label" val="EEPROM2"/>
     </comp>
-    <comp lib="6" loc="(690,360)" name="74163">
+    <comp lib="7" loc="(690,360)" name="74163">
       <a name="ShowInternalStructure" val="true"/>
       <a name="facing" val="south"/>
     </comp>
-    <comp lib="8" loc="(680,350)" name="Text">
+    <comp lib="9" loc="(680,350)" name="Text">
       <a name="font" val="SansSerif plain 12"/>
       <a name="text" val="Get the 163! Synchronous reset"/>
     </comp>
@@ -5572,19 +5949,19 @@ f 12*e f 7 b 4189*e
       <a name="select" val="2"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="8" loc="(310,545)" name="Text">
+    <comp lib="9" loc="(310,545)" name="Text">
       <a name="font" val="Dialog bold 16"/>
       <a name="text" val="10: SS:SP"/>
     </comp>
-    <comp lib="8" loc="(310,565)" name="Text">
+    <comp lib="9" loc="(310,565)" name="Text">
       <a name="font" val="Dialog bold 16"/>
       <a name="text" val="11: CS:PC"/>
     </comp>
-    <comp lib="8" loc="(315,520)" name="Text">
+    <comp lib="9" loc="(315,520)" name="Text">
       <a name="font" val="Dialog bold 16"/>
       <a name="text" val="01: DS:ABL"/>
     </comp>
-    <comp lib="8" loc="(320,505)" name="Text">
+    <comp lib="9" loc="(320,505)" name="Text">
       <a name="font" val="Dialog bold 16"/>
       <a name="text" val="00: ABH:ABL"/>
     </comp>
@@ -5988,10 +6365,10 @@ f 12*e f 7 b 4189*e
     <comp lib="1" loc="(750,470)" name="NOT Gate"/>
     <comp lib="1" loc="(780,200)" name="NOT Gate"/>
     <comp lib="1" loc="(780,280)" name="NOT Gate"/>
-    <comp lib="4" loc="(230,220)" name="J-K Flip-Flop">
+    <comp lib="5" loc="(230,220)" name="J-K Flip-Flop">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
-    <comp lib="4" loc="(490,220)" name="J-K Flip-Flop">
+    <comp lib="5" loc="(490,220)" name="J-K Flip-Flop">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
     <wire from="(120,300)" to="(180,300)"/>
@@ -6153,7 +6530,7 @@ f 12*e f 7 b 4189*e
       <a name="label" val="RESET_OUT"/>
       <a name="type" val="output"/>
     </comp>
-    <comp lib="4" loc="(670,250)" name="D Flip-Flop">
+    <comp lib="5" loc="(670,250)" name="D Flip-Flop">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
     <wire from="(540,260)" to="(610,260)"/>

@@ -27,7 +27,7 @@ lnc "${SOURCES[@]}" \
     -oD="D0" \
     -oI="test-os.out.imm.txt" \
     -oM="test-os.out.ir.txt" \
-    -oA="test-os.out.lnasm" \
+    -oA="__lncout.lnasm" \
     -oB="test-os.out" \
     -S="../ln-bios/bios.sym" \
     -I="../ln-bios/include" || {
