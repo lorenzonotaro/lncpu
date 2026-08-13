@@ -76,6 +76,9 @@ public class MemoryLayoutManager {
     }
 
     private void allocatePageFit(SectionBuilder sectionBuilder) {
+        if(sectionBuilder.getCodeLength() > 256){
+            unableToPlace(sectionBuilder);
+        }
         Segment current = head;
         while(current != null){
             if(!current.isAllocated() && current.getSize() >= sectionBuilder.getCodeLength()){

@@ -223,7 +223,8 @@ public class BinaryLinker extends AbstractLinker<Map<LinkTarget, ByteArrayChanne
         for (Iterator<SectionBuilder> iterator = sectionBuilders.values().iterator(); iterator.hasNext(); ) {
             var sectionBuilder = iterator.next();
             if(sectionBuilder.getSectionInfo().getMode() == LinkMode.PAGE_FIT_LABELS){
-                childBuilders.putAll(sectionBuilder.splitByTopLevelLabel());
+                Map<String, SectionBuilder> m = sectionBuilder.splitByTopLevelLabel();
+                childBuilders.putAll(m);
                 iterator.remove();
             }
         }
