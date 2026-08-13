@@ -1,5 +1,5 @@
 import { optionalString, record, requiredString, stringArray } from "./dap-values";
-import type { DebugMapIndex } from "./debug-map";
+import type { DebugMapIndex, RamMemoryVariable } from "./debug-map";
 import { DebugConfigurationError } from "./errors";
 import type { LaunchSettings } from "./runtime";
 
@@ -9,9 +9,14 @@ export type DapOutput =
   | { readonly kind: "event"; readonly event: string; readonly body?: Record<string, unknown> };
 
 export interface DapRuntime {
-  launch(settings: LaunchSettings): Promise<DebugMapIndex>;
+  launch(settings: LaunchSettings): Promise<DebugSession>;
   command(command: string): Promise<string>;
 }
+
+export type DebugSession = {
+  readonly map: DebugMapIndex;
+  readonly ramMemoryVariables: readonly RamMemoryVariable[];
+};
 
 export type ParsedLaunch = { readonly settings: LaunchSettings; readonly stopOnEntry: boolean };
 
@@ -37,6 +42,7 @@ export class DapLifecycle {
   private stopOnEntry = true;
   private launched = false;
   map?: DebugMapIndex;
+  ramMemoryVariables: readonly RamMemoryVariable[] = [];
 
   constructor(private readonly runtime: DapRuntime, private readonly output: (message: DapOutput) => void) {}
 
@@ -50,7 +56,9 @@ export class DapLifecycle {
     if (request.command === "launch") {
       const launch = parseLaunch(request.arguments);
       this.stopOnEntry = launch.stopOnEntry;
-      this.map = await this.runtime.launch(launch.settings);
+      const session = await this.runtime.launch(launch.settings);
+      this.map = session.map;
+      this.ramMemoryVariables = session.ramMemoryVariables;
       this.launched = true;
       this.respond(request);
       this.output({ kind: "event", event: "initialized" });

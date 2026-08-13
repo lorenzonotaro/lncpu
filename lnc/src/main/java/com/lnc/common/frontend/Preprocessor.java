@@ -17,30 +17,30 @@ import com.lnc.assembler.linker.LinkerConfig;
  */
 public class Preprocessor {
 
-    private enum Mode { LINE_BASED, FULL_SOURCE }
+    private enum LexerMode { LINE_BASED, FULL_SOURCE }
 
     boolean needsReprocessing = false;
     private final List<List<Token>> lines;
     private final LexerConfig macroIncludeConfig;
     Map<String, List<Token>> defines = new HashMap<>();
     private final LinkerConfig linkerConfig;
-    private final Mode mode;
+    private final LexerMode lexerMode;
     
-    private Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig) {
+    private Preprocessor(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig, LexerMode lexerMode) {
         this.lines = lines;
         this.macroIncludeConfig = macroIncludeConfig;
         this.linkerConfig = linkerConfig;
-        this.mode = Mode.LINE_BASED;
+        this.lexerMode = lexerMode;
 
         defines.put("__VERSION__", List.of(Token.__internal(TokenType.STRING, LNC.PROGRAM_VERSION)));
     }
 
     public static Preprocessor lnasm(List<List<Token>> lines, LexerConfig macroIncludeConfig, LinkerConfig linkerConfig) {
-        return new Preprocessor(lines, macroIncludeConfig, linkerConfig);
+        return new Preprocessor(lines, macroIncludeConfig, linkerConfig,  LexerMode.LINE_BASED);
     }
 
     public static Preprocessor lnc(List<Token> tokens, LexerConfig macroIncludeConfig) {
-        return new Preprocessor(groupByLine(tokens), macroIncludeConfig, null);
+        return new Preprocessor(groupByLine(tokens), macroIncludeConfig, null,  LexerMode.FULL_SOURCE);
     }
 
     private static List<List<Token>> groupByLine(List<Token> tokens) {
@@ -235,7 +235,7 @@ public class Preprocessor {
 
     private List<List<Token>> lexInclude(Path path, Token macroToken) throws IOException {
         String content = Files.readString(path);
-        if (mode == Mode.LINE_BASED) {
+        if (lexerMode == LexerMode.LINE_BASED) {
             LineByLineLexer lexer = new LineByLineLexer(macroToken, macroIncludeConfig); //TODO: file locations aren't accurate? see immediate mode compilation
             if (lexer.parse(content, path)) {
                 return lexer.getResult();

@@ -19,7 +19,11 @@ export type LaunchSettings = {
   readonly emulatorOptions: readonly string[];
   readonly output?: (category: "stdout" | "stderr", text: string) => void;
 };
-export type LaunchResult = { readonly plan: CompilationPlan; readonly map: DebugMapIndex };
+export type LaunchResult = {
+  readonly plan: CompilationPlan;
+  readonly map: DebugMapIndex;
+  readonly ramMemoryVariables: ReturnType<DebugMapIndex["ramMemoryVariables"]>;
+};
 
 function runCompiler(plan: CompilationPlan, settings: LaunchSettings): Promise<void> {
   return new Promise((resolveRun, rejectRun) => {
@@ -95,7 +99,7 @@ export class DebugRuntime {
       this.client.onFatal(() => this.emitTerminal(1));
       await this.client.hello();
       activeAddresses.replace(addresses);
-      return { plan, map };
+      return { plan, map, ramMemoryVariables: map.ramMemoryVariables(loadedTargets) };
     } catch (error: unknown) {
       await this.terminate();
       throw error;

@@ -2,7 +2,7 @@
   "name": "lnasm",
   "displayName": "lnasm",
   "description": "LNASM/LNC language support and LNCPU debugging for Visual Studio Code.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "LorenzoNotaro",
   "engines": {
     "vscode": "^1.96.0"

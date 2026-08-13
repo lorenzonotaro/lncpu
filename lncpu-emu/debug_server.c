@@ -347,7 +347,7 @@ static void handle_readmem(struct lndbg_server *server, const char *sequence,
     char *output = response + written;
     static const char digits[] = "0123456789abcdef";
     for (unsigned long i = 0; i < length; i++) {
-        uint8_t byte = vm->addr_space[address + i];
+        uint8_t byte = vm_read_byte(vm, (uint16_t)(address + i));
         *output++ = digits[byte >> 4];
         *output++ = digits[byte & 0x0f];
     }
@@ -378,7 +378,7 @@ static void handle_writemem(struct lndbg_server *server, const char *sequence,
         char pair[3] = {bytes[i], bytes[i + 1], '\0'};
         unsigned long value;
         parse_hex(pair, UINT8_MAX, &value);
-        vm->addr_space[address + i / 2] = (uint8_t)value;
+        vm_write_byte(vm, (uint16_t)(address + i / 2), (uint8_t)value);
     }
     send_format(server, "%s ok\n", sequence);
 }

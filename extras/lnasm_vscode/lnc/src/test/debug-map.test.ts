@@ -102,6 +102,58 @@ test("filters sections and labels to targets loaded by the launch plan", () => {
   ]);
 });
 
+test("derives deterministic positive RAM label ranges within emitted sections", () => {
+  // Given
+  const index = DebugMapIndex.parse({
+    ...BASE_MAP,
+    sections: [
+      { name: "LATE", target: "RAM", a: 0x2300, s: 0x08 },
+      { name: "DATA", target: "RAM", a: 0x2200, s: 0x20 },
+      { name: "TEXT", target: "ROM", a: 0x1000, s: 0x20 },
+    ],
+    labels: [
+      { name: "second_alias", a: 0x2208, sec: "DATA" },
+      { name: "first", a: 0x2200, sec: "DATA" },
+      { name: "first$member", a: 0x2204, sec: "DATA" },
+      { name: "second", a: 0x2208, sec: "DATA" },
+      { name: "outside", a: 0x2220, sec: "DATA" },
+      { name: "late", a: 0x2302, sec: "LATE" },
+      { name: "rom", a: 0x1000, sec: "TEXT" },
+    ],
+  });
+
+  // When
+  const variables = index.ramMemoryVariables(new Set(["ROM", "RAM"]));
+
+  // Then
+  assert.deepEqual(variables, [
+    { name: "first", address: 0x2200, byteLength: 0x08 },
+    { name: "second", address: 0x2208, byteLength: 0x18 },
+    { name: "late", address: 0x2302, byteLength: 0x06 },
+  ]);
+});
+
+test("omits RAM variables for unloaded RAM and legacy maps", () => {
+  // Given
+  const current = DebugMapIndex.parse({
+    ...BASE_MAP,
+    sections: [{ name: "DATA", target: "RAM", a: 0x2000, s: 4 }],
+    labels: [{ name: "value", a: 0x2000, sec: "DATA" }],
+  });
+  const legacy = DebugMapIndex.parse({
+    ...BASE_MAP,
+    labels: [{ name: "value", a: 0x2000, sec: "DATA" }],
+  });
+
+  // When
+  const unloaded = current.ramMemoryVariables(new Set(["ROM"]));
+  const metadataAbsent = legacy.ramMemoryVariables(new Set(["RAM"]));
+
+  // Then
+  assert.deepEqual(unloaded, []);
+  assert.deepEqual(metadataAbsent, []);
+});
+
 test("distinguishes an empty sections table from a legacy version 1 map", () => {
   // Given
   const current = DebugMapIndex.parse({ ...BASE_MAP, sections: [] });

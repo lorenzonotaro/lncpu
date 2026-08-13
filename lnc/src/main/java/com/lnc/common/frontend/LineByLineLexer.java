@@ -44,9 +44,17 @@ public class LineByLineLexer extends AbstractLexer<List<List<Token>>> {
         List<Token> tokens = new ArrayList<>();
 
         Token t;
+
         while (!isAtEnd() && (t = next()) != null) {
             tokens.add(t);
         }
+        /*
+        while (!isAtEnd()) {
+            t = next();
+            if(t != null)
+                tokens.add(t);
+        }
+*/
 
         return tokens;
     }

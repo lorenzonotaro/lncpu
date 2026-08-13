@@ -15,13 +15,17 @@ import java.util.Locale;
 import java.util.Set;
 
 import static com.lnc.assembler.parser.LnasmParser.SUBLABEL_INITIATOR;
+import static com.lnc.assembler.parser.LnasmParser.SUBLABEL_SEPARATOR;
 
 /**
  * Tracks and emits software extension routines required by code generation.
  */
 public class SoftwareExtensionsManager {
 
-    private static final SectionInfo EXT_SECTION = new SectionInfo("LNCEXT", -1, LinkTarget.ROM, LinkMode.PAGE_FIT, false, false, false);
+    private static final SectionInfo EXT_SECTION = new SectionInfo("LNCEXT", -1, LinkTarget.ROM, LinkMode.PAGE_FIT_LABELS, false, false, false);
+
+
+    private String currentRequestName;
 
     private final Set<ExtensionRequest> requiredExtensions = new LinkedHashSet<>();
 
@@ -128,7 +132,7 @@ public class SoftwareExtensionsManager {
     }
 
     private void emitRoutine(CompilerOutput output, ExtensionRequest request) {
-        output.addLabel(request.symbolName());
+        output.addLabel(currentRequestName = request.symbolName());
 
         switch (request.kind) {
             case ADD_WORD_BYTE -> emitAddWordByte(output, request.a, request.b);
@@ -376,8 +380,8 @@ public class SoftwareExtensionsManager {
         return wordRegister.getComponents()[1];
     }
 
-    private static String routineLabel(String sublabelName) {
-        return SUBLABEL_INITIATOR + sublabelName;
+    private String routineLabel(String sublabelName) {
+        return currentRequestName + SUBLABEL_SEPARATOR + SUBLABEL_INITIATOR + sublabelName;
     }
 
     private static String normalizeWord(Register register) {

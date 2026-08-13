@@ -15,13 +15,19 @@ test("opens a Variables-style memory reference for the active lncpu session", as
   await openMemoryAtSymbol(host, { symbol: "entry", address: 0x1234 });
 
   // Then
-  assert.deepEqual(calls, [{
-    command: "memory-inspector.show-variable",
-    argument: {
-      sessionId: "session-1",
-      variable: { name: "entry", value: "0x1234", type: "address", variablesReference: 0, memoryReference: "0x1234" },
+  assert.deepEqual(calls, [
+    {
+      command: "memory-inspector.show",
+      argument: { sessionId: "session-1", memoryReference: "0x1234" },
     },
-  }]);
+    {
+      command: "memory-inspector.show-variable",
+      argument: {
+        sessionId: "session-1",
+        variable: { name: "entry", value: "0x1234", type: "address", variablesReference: 0, memoryReference: "0x1234" },
+      },
+    },
+  ]);
 });
 
 test("rejects navigation when the active session is not lncpu", async () => {

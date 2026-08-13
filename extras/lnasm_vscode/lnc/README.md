@@ -51,6 +51,8 @@ Install the Eclipse CDT Memory Inspector extension, then add `lncpu` to its supp
 
 During an active `lncpu` launch, the version 1 `-oG` debug map supplies complete physical section and label metadata across `ROM`, `RAM`, and `D0` through `D5`, independently of `-oD`. Navigation exposes only symbols belonging to images loaded into the current emulator session by `-oD`: a ROM-only launch does not expose RAM or device symbols, while a `ROM,RAM` launch does. Virtual sections, labels attached to virtual or unknown sections, and symbols in unloaded targets retain normal source-definition navigation. Labels take precedence over same-named sections.
 
+When RAM is loaded, eligible top-level RAM labels also appear under the debugger's `RAM` Variables scope. Each variable spans from its label address to the next distinct top-level label in the same physical section, or to that section's emitted end. Sublabels are omitted. These Variables entries include memory references and byte lengths so Memory Inspector can open them from its Variables context menu.
+
 For compatibility with older version 1 debug maps that have no `sections` field, the extension falls back to `-oI` and reads the base listing plus each requested target's `_RAM` or `_D0`-`_D5` suffixed listing. A present `sections` table, including an empty one, is authoritative and does not require immediate-listing files. Navigation also falls back to the source definition when no `lncpu` session is active. A Memory Inspector installation or configuration error is reported rather than silently falling back.
 
 The emulator is always launched with `--debug-server --stop-on-entry --nopauseonhalt`. The extension waits for `LNDBG-LISTEN`, connects only to localhost, and requires LNDBG protocol version 1 or newer.
@@ -61,6 +63,7 @@ Supported debugger operations:
 - Continue, pause, step in, step over, and step out. These actions are hardware instruction-level operations because LNDBG v1 exposes CPU instruction stepping, not source-level stepping.
 - One synthetic LNCPU thread and source-mapped stack frame.
 - Register inspection and editing.
+- Top-level labels for loaded RAM images in the RAM Variables scope.
 - Memory reads and writes from the VS Code memory viewer.
 - Clean terminate and disconnect.
 

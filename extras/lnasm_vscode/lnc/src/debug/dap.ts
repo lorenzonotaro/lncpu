@@ -1,8 +1,9 @@
 import { basename } from "node:path";
 import * as vscode from "vscode";
 
-import { integer, parseAddress, parseRegisterPayload, record, requiredString } from "./dap-values";
+import { integer, parseAddress, record, requiredString } from "./dap-values";
 import { DapLifecycle, parseLaunch, type DapOutput } from "./dap-lifecycle";
+import { scopesForRamVariables, variablesForReference, variablesReference } from "./dap-variables";
 import type { DebugMapIndex } from "./debug-map";
 import { DebugConfigurationError, ProtocolError } from "./errors";
 import { DebugRuntime } from "./runtime";
@@ -34,7 +35,7 @@ export class LncpuDebugAdapter implements vscode.DebugAdapter {
 
   constructor() {
     this.lifecycle = new DapLifecycle({
-      launch: async (settings) => (await this.runtime.launch({ ...settings, output: (category, text) => this.event("output", { category, output: text }) })).map,
+      launch: (settings) => this.runtime.launch({ ...settings, output: (category, text) => this.event("output", { category, output: text }) }),
       command: (command) => this.runtime.command(command),
     }, (output) => this.lifecycleOutput(output));
     this.runtime.onEvent((event) => {
@@ -86,7 +87,7 @@ export class LncpuDebugAdapter implements vscode.DebugAdapter {
       case "configurationDone": await this.configurationDone(incoming); return;
       case "threads": this.respond(incoming, { threads: [{ id: 1, name: "LNCPU" }] }); return;
       case "stackTrace": this.stackTrace(incoming); return;
-      case "scopes": this.respond(incoming, { scopes: [{ name: "Registers", variablesReference: 1, expensive: false }] }); return;
+      case "scopes": this.respond(incoming, { scopes: scopesForRamVariables(this.lifecycle.ramMemoryVariables) }); return;
       case "variables": await this.variables(incoming); return;
       case "setVariable": await this.setVariable(incoming); return;
       case "setBreakpoints": await this.setSourceBreakpoints(incoming); return;
@@ -126,8 +127,12 @@ export class LncpuDebugAdapter implements vscode.DebugAdapter {
   }
 
   private async variables(incoming: Request): Promise<void> {
-    const registers = parseRegisterPayload(await this.runtime.command("regs"));
-    this.respond(incoming, { variables: registers.map((register) => ({ ...register, variablesReference: 0, evaluateName: register.name })) });
+    const variables = await variablesForReference(
+      variablesReference(incoming.arguments),
+      this.lifecycle.ramMemoryVariables,
+      () => this.runtime.command("regs"),
+    );
+    this.respond(incoming, { variables });
   }
 
   private async setVariable(incoming: Request): Promise<void> {

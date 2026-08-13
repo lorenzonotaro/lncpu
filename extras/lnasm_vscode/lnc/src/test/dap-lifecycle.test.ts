@@ -7,14 +7,17 @@ import type { LaunchSettings } from "../debug/runtime";
 
 class ControlledRuntime implements DapRuntime {
   readonly commands: string[] = [];
-  private launchResolve?: (map: DebugMapIndex) => void;
+  private launchResolve?: (session: { readonly map: DebugMapIndex; readonly ramMemoryVariables: readonly [] }) => void;
 
-  launch(_settings: LaunchSettings): Promise<DebugMapIndex> {
+  launch(_settings: LaunchSettings): Promise<{ readonly map: DebugMapIndex; readonly ramMemoryVariables: readonly [] }> {
     return new Promise((resolve) => { this.launchResolve = resolve; });
   }
 
   completeLaunch(): void {
-    this.launchResolve?.(DebugMapIndex.parse({ version: 1, files: ["/work/main.lnc"], lines: [{ a: 0, s: 1, f: 0, l: 1, c: 1, sec: "text" }], labels: [] }));
+    this.launchResolve?.({
+      map: DebugMapIndex.parse({ version: 1, files: ["/work/main.lnc"], lines: [{ a: 0, s: 1, f: 0, l: 1, c: 1, sec: "text" }], labels: [] }),
+      ramMemoryVariables: [],
+    });
   }
 
   command(command: string): Promise<string> {

@@ -66,7 +66,7 @@ public class Instruction extends CodeElement {
                 result[0] = OpcodeMap.getOpcode(opcode.lexeme + "_cst");
                 byte[] targetBuffer = arguments[0].encode(labelResolver, instructionAddress);
 
-                if((targetBuffer[0] << 8) != (instructionAddress & 0xFF00) && !LNC.settings.get("-Wshort-jump-out-of-range", Boolean.class)){
+                if(((targetBuffer[0] << 8)) != (instructionAddress & 0xFF00) && !LNC.settings.get("-Wshort-jump-out-of-range", Boolean.class)){
                     Logger.compileWarning("referenced label in short jump is outside of code segment. Use 'l" + opcode.lexeme.toLowerCase() + "' instead (-Wshort-jump-out-of-range)", arguments[0].token);                }
 
                 result[1] = targetBuffer[1];

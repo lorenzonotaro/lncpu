@@ -18,6 +18,7 @@ type LabelEntry = { readonly name: string; readonly a: number; readonly sec: str
 type SectionEntry = { readonly name: string; readonly target: Target; readonly a: number; readonly s: number };
 export type BreakpointLocation = { readonly address: number; readonly line: number; readonly column: number };
 export type SourceLocation = { readonly path: string; readonly line: number; readonly column: number; readonly label?: string };
+export type RamMemoryVariable = { readonly name: string; readonly address: number; readonly byteLength: number };
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -61,6 +62,10 @@ function parseSection(value: unknown): SectionEntry {
   return { name, target, a: address, s: size };
 }
 
+function compareNames(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
 export class DebugMapIndex {
   private constructor(
     private readonly files: readonly string[],
@@ -100,6 +105,28 @@ export class DebugMapIndex {
       if (includedSections.has(label.sec)) symbols.set(label.name, label.a);
     }
     return symbols;
+  }
+
+  ramMemoryVariables(loadedTargets: ReadonlySet<Target>): readonly RamMemoryVariable[] {
+    if (this.sections === undefined || !loadedTargets.has("RAM")) return [];
+    const variables: RamMemoryVariable[] = [];
+    const ramSections = this.sections
+      .filter((section) => section.target === "RAM" && section.s > 0)
+      .sort((left, right) => left.a - right.a || compareNames(left.name, right.name));
+    for (const section of ramSections) {
+      const sectionEnd = section.a + section.s;
+      const labels = this.labels
+        .filter((label) => label.sec === section.name && !label.name.includes("$") && section.a <= label.a && label.a < sectionEnd)
+        .sort((left, right) => left.a - right.a || compareNames(left.name, right.name));
+      const distinct = labels.filter((label, index) => index === 0 || label.a !== labels[index - 1]?.a);
+      for (let index = 0; index < distinct.length; index += 1) {
+        const label = distinct[index];
+        if (label === undefined) continue;
+        const end = distinct[index + 1]?.a ?? sectionEnd;
+        variables.push({ name: label.name, address: label.a, byteLength: end - label.a });
+      }
+    }
+    return variables;
   }
 
   breakpoint(sourcePath: string, requestedLine: number): BreakpointLocation | undefined {
