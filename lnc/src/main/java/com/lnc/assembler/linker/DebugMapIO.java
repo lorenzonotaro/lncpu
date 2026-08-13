@@ -30,6 +30,19 @@ public final class DebugMapIO {
                         .thenComparing(SectionBuilder.DebugEntry::section))
                 .toList();
 
+        List<SectionEntry> physicalSections = sections.stream()
+                .map(SectionBuilder::getDescriptor)
+                .filter(descriptor -> descriptor.sectionInfo().getTarget() != LinkTarget.__VIRTUAL__)
+                .map(descriptor -> new SectionEntry(
+                        descriptor.sectionInfo().getName(),
+                        descriptor.sectionInfo().getTarget(),
+                        descriptor.start(),
+                        descriptor.length()))
+                .sorted(Comparator.comparingInt(SectionEntry::a)
+                        .thenComparing(SectionEntry::target)
+                        .thenComparing(SectionEntry::name))
+                .toList();
+
         Map<String, Integer> fileIndexes = new LinkedHashMap<>();
         List<LineEntry> lines = new ArrayList<>(entries.size());
         List<LabelEntry> labels = new ArrayList<>();
@@ -59,7 +72,7 @@ public final class DebugMapIO {
                 .thenComparing(LabelEntry::sec)
                 .thenComparing(LabelEntry::name));
 
-        return new DebugMap(1, List.copyOf(fileIndexes.keySet()), lines, labels);
+        return new DebugMap(1, List.copyOf(fileIndexes.keySet()), lines, labels, physicalSections);
     }
 
     public static void write(Path output, DebugMap debugMap) throws IOException {
@@ -79,12 +92,15 @@ public final class DebugMapIO {
     }
 
     public record DebugMap(int version, List<String> files, List<LineEntry> lines,
-                           List<LabelEntry> labels) {
+                           List<LabelEntry> labels, List<SectionEntry> sections) {
     }
 
     public record LineEntry(int a, int s, int f, int l, int c, String sec) {
     }
 
     public record LabelEntry(String name, int a, String sec) {
+    }
+
+    public record SectionEntry(String name, LinkTarget target, int a, int s) {
     }
 }

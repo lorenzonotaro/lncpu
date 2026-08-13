@@ -3,7 +3,7 @@ import { isAbsolute, join, parse, resolve } from "node:path";
 import { DebugConfigurationError } from "./errors";
 
 const TARGETS = ["ROM", "RAM", "D0", "D1", "D2", "D3", "D4", "D5"] as const;
-type Target = (typeof TARGETS)[number];
+export type Target = (typeof TARGETS)[number];
 
 export type CompilationInput = {
   readonly cwd: string;
@@ -53,10 +53,14 @@ function absolute(cwd: string, path: string): string {
   return isAbsolute(path) ? path : resolve(cwd, path);
 }
 
-function targetPath(binaryPath: string, target: Target): string {
+export function targetPath(binaryPath: string, target: Target): string {
   if (target === "ROM") return binaryPath;
   const parts = parse(binaryPath);
   return join(parts.dir, `${parts.name}_${target}${parts.ext}`);
+}
+
+export function immediateArtifactPaths(plan: CompilationPlan): readonly string[] {
+  return plan.artifacts.map((artifact) => targetPath(plan.immediatePath, artifact.target));
 }
 
 function parseTargets(raw: string): readonly Target[] {

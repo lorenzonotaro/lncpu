@@ -1,6 +1,10 @@
 import { normalize, resolve } from "node:path";
 
+import type { Target } from "./artifacts";
 import { ProtocolError } from "./errors";
+
+const PHYSICAL_TARGETS: readonly Target[] = ["ROM", "RAM", "D0", "D1", "D2", "D3", "D4", "D5"];
+const TARGET_SIZE = 0x2000;
 
 type LineEntry = {
   readonly a: number;
@@ -11,6 +15,7 @@ type LineEntry = {
   readonly sec: string;
 };
 type LabelEntry = { readonly name: string; readonly a: number; readonly sec: string };
+type SectionEntry = { readonly name: string; readonly target: Target; readonly a: number; readonly s: number };
 export type BreakpointLocation = { readonly address: number; readonly line: number; readonly column: number };
 export type SourceLocation = { readonly path: string; readonly line: number; readonly column: number; readonly label?: string };
 
@@ -40,11 +45,28 @@ function parseLabel(value: unknown): LabelEntry {
   return { name: stringField(value, "name"), a: numberField(value, "a"), sec: stringField(value, "sec") };
 }
 
+function parseSection(value: unknown): SectionEntry {
+  if (!record(value)) throw new ProtocolError("invalid debug map section");
+  const name = stringField(value, "name");
+  const targetName = stringField(value, "target");
+  const target = PHYSICAL_TARGETS.find((candidate) => candidate === targetName);
+  const address = numberField(value, "a");
+  const size = numberField(value, "s");
+  const targetIndex = target === undefined ? undefined : PHYSICAL_TARGETS.indexOf(target);
+  const targetStart = targetIndex === undefined ? undefined : targetIndex * TARGET_SIZE;
+  const targetLimit = targetStart === undefined ? undefined : targetStart + TARGET_SIZE;
+  if (name.length === 0 || target === undefined || targetStart === undefined || targetLimit === undefined || address < targetStart || address >= targetLimit || size < 0 || address + size > targetLimit) {
+    throw new ProtocolError("invalid debug map section");
+  }
+  return { name, target, a: address, s: size };
+}
+
 export class DebugMapIndex {
   private constructor(
     private readonly files: readonly string[],
     private readonly lines: readonly LineEntry[],
     private readonly labels: readonly LabelEntry[],
+    private readonly sections: readonly SectionEntry[] | undefined,
   ) {}
 
   static parse(value: unknown, cwd = process.cwd()): DebugMapIndex {
@@ -55,11 +77,29 @@ export class DebugMapIndex {
       if (typeof file !== "string") throw new ProtocolError("invalid debug map file");
       return normalize(resolve(cwd, file));
     });
+    const rawSections = value["sections"];
+    if (rawSections !== undefined && !Array.isArray(rawSections)) throw new ProtocolError("invalid debug map sections");
     return new DebugMapIndex(
       files,
       value["lines"].map(parseLine).sort((left, right) => left.a - right.a),
       value["labels"].map(parseLabel).sort((left, right) => left.a - right.a),
+      rawSections?.map(parseSection),
     );
+  }
+
+  symbolsForTargets(loadedTargets: ReadonlySet<Target>): ReadonlyMap<string, number> | undefined {
+    if (this.sections === undefined) return undefined;
+    const symbols = new Map<string, number>();
+    const includedSections = new Set<string>();
+    for (const section of this.sections) {
+      if (!loadedTargets.has(section.target)) continue;
+      includedSections.add(section.name);
+      symbols.set(section.name, section.a);
+    }
+    for (const label of this.labels) {
+      if (includedSections.has(label.sec)) symbols.set(label.name, label.a);
+    }
+    return symbols;
   }
 
   breakpoint(sourcePath: string, requestedLine: number): BreakpointLocation | undefined {

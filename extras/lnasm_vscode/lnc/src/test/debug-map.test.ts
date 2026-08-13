@@ -3,6 +3,13 @@ import { test } from "node:test";
 
 import { DebugMapIndex } from "../debug/debug-map";
 
+const BASE_MAP = {
+  version: 1,
+  files: ["/work/main.lnc"],
+  lines: [],
+  labels: [],
+};
+
 test("resolves a breakpoint to the exact or next executable source line", () => {
   // Given
   const index = DebugMapIndex.parse({
@@ -38,4 +45,105 @@ test("maps a program counter to source and its nearest label", () => {
 
   // Then
   assert.deepEqual(location, { path: "/work/main.lnc", line: 12, column: 2, label: "loop" });
+});
+
+test("builds symbols for loaded physical targets with labels winning collisions", () => {
+  // Given
+  const index = DebugMapIndex.parse({
+    ...BASE_MAP,
+    sections: [
+      { name: "TEXT", target: "ROM", a: 0x1000, s: 0x20 },
+      { name: "DATA", target: "RAM", a: 0x2200, s: 0x10 },
+      { name: "DEVICE", target: "D0", a: 0x4040, s: 0x08 },
+    ],
+    labels: [
+      { name: "ram_value", a: 0x2204, sec: "DATA" },
+      { name: "device_value", a: 0x4042, sec: "DEVICE" },
+      { name: "TEXT", a: 0x1002, sec: "TEXT" },
+    ],
+  });
+
+  // When
+  const symbols = index.symbolsForTargets(new Set(["ROM", "RAM", "D0"]));
+
+  // Then
+  assert.deepEqual(symbols === undefined ? undefined : [...symbols], [
+    ["TEXT", 0x1002],
+    ["DATA", 0x2200],
+    ["DEVICE", 0x4040],
+    ["ram_value", 0x2204],
+    ["device_value", 0x4042],
+  ]);
+});
+
+test("filters sections and labels to targets loaded by the launch plan", () => {
+  // Given
+  const index = DebugMapIndex.parse({
+    ...BASE_MAP,
+    sections: [
+      { name: "TEXT", target: "ROM", a: 0x1000, s: 1 },
+      { name: "DATA", target: "RAM", a: 0x2200, s: 1 },
+    ],
+    labels: [
+      { name: "rom_label", a: 0x1000, sec: "TEXT" },
+      { name: "ram_label", a: 0x2200, sec: "DATA" },
+      { name: "virtual_label", a: 0x3000, sec: "__VIRTUAL__" },
+      { name: "missing_section", a: 0x4000, sec: "MISSING" },
+    ],
+  });
+
+  // When
+  const symbols = index.symbolsForTargets(new Set(["ROM"]));
+
+  // Then
+  assert.deepEqual(symbols === undefined ? undefined : [...symbols], [
+    ["TEXT", 0x1000],
+    ["rom_label", 0x1000],
+  ]);
+});
+
+test("distinguishes an empty sections table from a legacy version 1 map", () => {
+  // Given
+  const current = DebugMapIndex.parse({ ...BASE_MAP, sections: [] });
+  const legacy = DebugMapIndex.parse(BASE_MAP);
+
+  // When
+  const currentSymbols = current.symbolsForTargets(new Set(["ROM"]));
+  const legacySymbols = legacy.symbolsForTargets(new Set(["ROM"]));
+
+  // Then
+  assert.deepEqual(currentSymbols === undefined ? undefined : [...currentSymbols], []);
+  assert.equal(legacySymbols, undefined);
+});
+
+test("rejects a present malformed sections table", () => {
+  // Given
+  const malformedSections: readonly unknown[] = [
+    "not-an-array",
+    [{ name: "", target: "ROM", a: 0, s: 1 }],
+    [{ name: "TEXT", target: "__VIRTUAL__", a: 0, s: 1 }],
+    [{ name: "TEXT", target: "VRAM", a: 0, s: 1 }],
+    [{ name: "TEXT", target: "ROM", a: -1, s: 1 }],
+    [{ name: "TEXT", target: "ROM", a: 0x10000, s: 0 }],
+    [{ name: "TEXT", target: "ROM", a: 0xffff, s: 2 }],
+    [{ name: "TEXT", target: "ROM", a: 0, s: -1 }],
+  ];
+
+  // When / Then
+  for (const sections of malformedSections) {
+    assert.throws(() => DebugMapIndex.parse({ ...BASE_MAP, sections }), /debug map/);
+  }
+});
+
+test("rejects sections outside their declared physical target range", () => {
+  // Given
+  const invalidTargetRanges = [
+    [{ name: "RAM_IN_ROM", target: "RAM", a: 0x1000, s: 1 }],
+    [{ name: "D0_OVERFLOW", target: "D0", a: 0x5fff, s: 2 }],
+  ];
+
+  // When / Then
+  for (const sections of invalidTargetRanges) {
+    assert.throws(() => DebugMapIndex.parse({ ...BASE_MAP, sections }), /debug map/);
+  }
 });

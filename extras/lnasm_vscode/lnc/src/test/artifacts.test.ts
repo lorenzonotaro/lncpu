@@ -1,7 +1,7 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 
-import { planCompilation } from "../debug/artifacts";
+import { immediateArtifactPaths, planCompilation } from "../debug/artifacts";
 
 test("injects omitted binary and map outputs and plans requested device artifacts", () => {
   // Given / When
@@ -80,4 +80,26 @@ test("uses the configured Java command unchanged for a JAR compiler", () => {
 
   // Then
   assert.equal(plan.command, "java");
+});
+
+test("derives legacy immediate listing paths for every planned artifact", () => {
+  // Given
+  const plan = planCompilation({
+    cwd: "/work",
+    outputDirectory: "/work/out",
+    lncPath: "/tools/lnc",
+    javaPath: "java",
+    sourceFiles: ["main.lnasm"],
+    compilerOptions: ["-oI=maps/program.listing.txt", "-oD=ROM,RAM,D5"],
+  });
+
+  // When
+  const paths = immediateArtifactPaths(plan);
+
+  // Then
+  assert.deepEqual(paths, [
+    "/work/maps/program.listing.txt",
+    "/work/maps/program.listing_RAM.txt",
+    "/work/maps/program.listing_D5.txt",
+  ]);
 });

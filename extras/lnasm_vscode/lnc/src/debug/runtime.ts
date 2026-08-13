@@ -2,7 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { mkdir, readFile } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
 
-import { emulatorArtifactArgs, planCompilation, validateEmulatorOptions, type CompilationPlan } from "./artifacts";
+import { emulatorArtifactArgs, immediateArtifactPaths, planCompilation, validateEmulatorOptions, type CompilationPlan } from "./artifacts";
 import { activeAddresses } from "./address-registry";
 import { DebugMapIndex } from "./debug-map";
 import { ProcessFailureError, ProtocolError } from "./errors";
@@ -70,7 +70,11 @@ export class DebugRuntime {
     await runCompiler(plan, settings);
     const rawMap: unknown = JSON.parse(await readFile(plan.debugMapPath, "utf8"));
     const map = DebugMapIndex.parse(rawMap, settings.cwd);
-    const addresses = parseImmediateListing(await readFile(plan.immediatePath, "utf8"));
+    const loadedTargets = new Set(plan.artifacts.map((artifact) => artifact.target));
+    const mapAddresses = map.symbolsForTargets(loadedTargets);
+    const addresses = mapAddresses ?? new Map((await Promise.all(immediateArtifactPaths(plan).map(async (path) =>
+      [...parseImmediateListing(await readFile(path, "utf8"))]
+    ))).flat());
     const emulatorPath = isAbsolute(settings.emulatorPath) ? settings.emulatorPath : resolve(settings.cwd, settings.emulatorPath);
     const args = [
       ...emulatorArtifactArgs(plan.artifacts),

@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push({ dispose: () => activeAddresses.clear() });
   context.subscriptions.push(vscode.commands.registerCommand('lncpu.openMemoryAtSymbol', async (raw: unknown) => {
-    const argument = parseMemorySymbolArgument(raw);
+    const argument = parseMemorySymbolArgument(JSON.parse(raw as string));
     if (argument === undefined) {
       await vscode.window.showErrorMessage('Invalid LNCPU memory symbol address.');
       return;
@@ -57,10 +57,8 @@ export function activate(context: vscode.ExtensionContext) {
         const active = vscode.debug.activeDebugSession;
         const memory = active?.type === 'lncpu' ? idx.resolveActiveAddress(doc, pos) : undefined;
         if (memory !== undefined) {
-          const command = encodeURIComponent(JSON.stringify([memory]));
-          const targetUri = vscode.Uri.parse(`command:lncpu.openMemoryAtSymbol?${command}`);
-          const targetRange = new vscode.Range(0, 0, 0, 0);
-          return [{ originSelectionRange: doc.getWordRangeAtPosition(pos), targetUri, targetRange, targetSelectionRange: targetRange }];
+          vscode.commands.executeCommand('lncpu.openMemoryAtSymbol', JSON.stringify(memory));
+          return undefined;
         }
         // Pick the first for now (basic behavior)
         const d = defs[0];

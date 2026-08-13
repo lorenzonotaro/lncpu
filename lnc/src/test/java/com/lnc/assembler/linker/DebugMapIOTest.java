@@ -153,6 +153,75 @@ public class DebugMapIOTest {
     }
 
     @Test
+    public void mapIncludesAllPhysicalTargetsIndependentlyOfRequestedOutputs() throws Exception {
+        Path directory = Files.createTempDirectory("lnc-physical-debug-map-test");
+        Path source = directory.resolve("program.lnasm");
+        Path debugMap = directory.resolve("program.debug.json");
+        Files.writeString(source, String.join("\n",
+                ".section ROM_CODE",
+                "rom_label:",
+                "    hlt",
+                ".section RAM_CODE",
+                "ram_label:",
+                "    hlt",
+                ".section D0_CODE",
+                "d0_label:",
+                "    hlt",
+                ".section VIRTUAL_DATA",
+                "virtual_label:",
+                "    hlt",
+                ""));
+
+        LNC.settings.set("-S", "");
+        Assembler assembler = new Assembler(
+                List.of(source),
+                String.join("\n",
+                        "SECTIONS[",
+                        "ROM_CODE: mode = fixed, start = 0x0100;",
+                        "RAM_CODE: mode = fixed, start = 0x2100;",
+                        "D0_CODE: mode = fixed, start = 0x4100;",
+                        "EMPTY_D0: mode = fixed, start = 0x4200;",
+                        "VIRTUAL_DATA: datapage, virtual;",
+                        "]"),
+                List.of(),
+                new LinkTarget[]{LinkTarget.ROM});
+
+        assertTrue(assembler.assemble());
+        assembler.writeDebugMap(debugMap.toString());
+
+        JsonObject root = JsonParser.parseString(Files.readString(debugMap)).getAsJsonObject();
+        assertEquals(1, root.get("version").getAsInt());
+        assertEquals(4, root.getAsJsonArray("sections").size());
+
+        JsonObject rom = root.getAsJsonArray("sections").get(0).getAsJsonObject();
+        JsonObject ram = root.getAsJsonArray("sections").get(1).getAsJsonObject();
+        JsonObject d0 = root.getAsJsonArray("sections").get(2).getAsJsonObject();
+        JsonObject emptyD0 = root.getAsJsonArray("sections").get(3).getAsJsonObject();
+        assertSection(rom, "ROM_CODE", "ROM", 0x0100, 1);
+        assertSection(ram, "RAM_CODE", "RAM", 0x2100, 1);
+        assertSection(d0, "D0_CODE", "D0", 0x4100, 1);
+        assertSection(emptyD0, "EMPTY_D0", "D0", 0x4200, 0);
+        assertTrue(root.getAsJsonArray("sections").asList().stream()
+                .map(element -> element.getAsJsonObject())
+                .noneMatch(section -> "VIRTUAL_DATA".equals(section.get("name").getAsString())));
+
+        JsonObject ramLabel = root.getAsJsonArray("labels").asList().stream()
+                .map(element -> element.getAsJsonObject())
+                .filter(label -> "ram_label".equals(label.get("name").getAsString()))
+                .findFirst()
+                .orElseThrow();
+        JsonObject d0Label = root.getAsJsonArray("labels").asList().stream()
+                .map(element -> element.getAsJsonObject())
+                .filter(label -> "d0_label".equals(label.get("name").getAsString()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals(0x2100, ramLabel.get("a").getAsInt());
+        assertEquals("RAM_CODE", ramLabel.get("sec").getAsString());
+        assertEquals(0x4100, d0Label.get("a").getAsInt());
+        assertEquals("D0_CODE", d0Label.get("sec").getAsString());
+    }
+
+    @Test
     public void mapSortsByFinalAddressAndMarksInternalInstructionsSynthetic() {
         SectionBuilder later = sectionWithInternalInstruction("LATER", 0x30, "later");
         SectionBuilder earlier = sectionWithInternalInstruction("EARLIER", 0x10, "earlier");
@@ -181,5 +250,12 @@ public class DebugMapIOTest {
         builder.append(new LnasmParsedBlock(Token.__internal(TokenType.IDENTIFIER, name), instructions));
         builder.setSectionStart(start);
         return builder;
+    }
+
+    private static void assertSection(JsonObject section, String name, String target, int address, int size) {
+        assertEquals(name, section.get("name").getAsString());
+        assertEquals(target, section.get("target").getAsString());
+        assertEquals(address, section.get("a").getAsInt());
+        assertEquals(size, section.get("s").getAsInt());
     }
 }

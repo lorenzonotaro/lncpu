@@ -139,7 +139,8 @@
       {
         "command": "lncpu.openMemoryAtSymbol",
         "title": "LNCPU: Open Symbol in Memory Inspector",
-        "category": "LNCPU"
+        "category": "LNCPU",
+        "enablement": "editorLangId == lnasm || editorLangId == lnc"
       },
       {
         "command": "lnasm.peekDefinition",

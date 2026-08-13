@@ -1,3 +1,5 @@
+import * as vscode from 'vscode';
+
 export type MemorySymbolArgument = { readonly symbol: string; readonly address: number };
 export type DebugSessionIdentity = { readonly id: string; readonly type: string };
 
@@ -24,6 +26,7 @@ export async function openMemoryAtSymbol(host: MemoryNavigationHost, argument: M
   const session = host.activeSession();
   if (session?.type !== "lncpu") throw new MemoryNavigationError("Memory navigation requires an active LNCPU debug session");
   const memoryReference = `0x${argument.address.toString(16)}`;
+  await host.execute("memory-inspector.show", { sessionId: session.id, memoryReference });
   await host.execute("memory-inspector.show-variable", {
     sessionId: session.id,
     variable: {
