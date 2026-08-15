@@ -12,6 +12,7 @@ test("injects omitted binary and map outputs and plans requested device artifact
     javaPath: "/jdk/bin/java",
     sourceFiles: ["src/main.lnc"],
     compilerOptions: ["-oD=ROM,RAM,D2"],
+    deviceImages: [],
   });
 
   // Then
@@ -37,6 +38,7 @@ test("honors split output options and rejects suppressed binary output", () => {
     javaPath: "java",
     sourceFiles: ["main.lnasam"],
     compilerOptions: ["-oB", "custom.bin", "-oG=custom.map", "-oI", "custom.immediate", "-oD", "D0,D5"],
+    deviceImages: [],
   });
 
   // Then
@@ -50,6 +52,7 @@ test("honors split output options and rejects suppressed binary output", () => {
     javaPath: "java",
     sourceFiles: ["main.lnc"],
     compilerOptions: ["-s"],
+    deviceImages: [],
   }), /-s/);
 });
 
@@ -61,6 +64,7 @@ test("rejects duplicate and empty managed compiler output options", () => {
     lncPath: "/tools/lnc",
     javaPath: "java",
     sourceFiles: ["main.lnc"],
+    deviceImages: [],
   };
 
   // When / Then
@@ -73,7 +77,7 @@ test("rejects duplicate and empty managed compiler output options", () => {
 
 test("uses the configured Java command unchanged for a JAR compiler", () => {
   // Given
-  const input = { cwd: "/work", outputDirectory: "/work/out", lncPath: "lnc.jar", javaPath: "java", sourceFiles: ["main.lnasm"], compilerOptions: [] };
+  const input = { cwd: "/work", outputDirectory: "/work/out", lncPath: "lnc.jar", javaPath: "java", sourceFiles: ["main.lnasm"], compilerOptions: [], deviceImages: [] };
 
   // When
   const plan = planCompilation(input);
@@ -91,6 +95,7 @@ test("derives legacy immediate listing paths for every planned artifact", () => 
     javaPath: "java",
     sourceFiles: ["main.lnasm"],
     compilerOptions: ["-oI=maps/program.listing.txt", "-oD=ROM,RAM,D5"],
+    deviceImages: [],
   });
 
   // When
@@ -100,6 +105,55 @@ test("derives legacy immediate listing paths for every planned artifact", () => 
   assert.deepEqual(paths, [
     "/work/maps/program.listing.txt",
     "/work/maps/program.listing_RAM.txt",
+    "/work/maps/program.listing_D5.txt",
+  ]);
+});
+
+test("replaces compiler artifacts and appends external targets in stable target order", () => {
+  // Given / When
+  const plan = planCompilation({
+    cwd: "/work",
+    outputDirectory: "/work/out",
+    lncPath: "/tools/lnc",
+    javaPath: "java",
+    sourceFiles: ["main.lnasm"],
+    compilerOptions: ["-oD=D2,ROM,D0"],
+    deviceImages: [
+      { target: "RAM", path: "images/ram.bin" },
+      { target: "D0", path: "images/external-d0.bin" },
+      { target: "D1", path: "/shared/d1.bin" },
+    ],
+  });
+
+  // Then
+  assert.deepEqual(plan.artifacts, [
+    { target: "D2", path: "/work/out/program_D2.bin" },
+    { target: "ROM", path: "/work/out/program.bin" },
+    { target: "D0", path: "/work/images/external-d0.bin" },
+    { target: "RAM", path: "/work/images/ram.bin" },
+    { target: "D1", path: "/shared/d1.bin" },
+  ]);
+  assert.deepEqual(plan.debugTargets, ["D2", "ROM"]);
+});
+
+test("omits external replacements from legacy immediate listings", () => {
+  // Given
+  const plan = planCompilation({
+    cwd: "/work",
+    outputDirectory: "/work/out",
+    lncPath: "/tools/lnc",
+    javaPath: "java",
+    sourceFiles: ["main.lnasm"],
+    compilerOptions: ["-oI=maps/program.listing.txt", "-oD=ROM,RAM,D5"],
+    deviceImages: [{ target: "RAM", path: "external/ram.bin" }],
+  });
+
+  // When
+  const paths = immediateArtifactPaths(plan);
+
+  // Then
+  assert.deepEqual(paths, [
+    "/work/maps/program.listing.txt",
     "/work/maps/program.listing_D5.txt",
   ]);
 });

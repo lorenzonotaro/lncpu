@@ -254,3 +254,4 @@ Opcode	Name	Data length	Clock cycles	Description	Flags modified
 0xfc	sid	1	1	Sets the interrupt disable flag	I
 0xfd	clc	1	1	Clears the carry flag	C
 0xfe	sec	1	1	Sets the carry flag	C
+0xff	push_ibpoffset	2	4	Pushes a location in the address space (stack frame offset addressing mode) onto the stack	-

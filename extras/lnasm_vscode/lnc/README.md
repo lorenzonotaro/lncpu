@@ -31,6 +31,10 @@ Create `.vscode/launch.json`:
         "src/start.lnasm"
       ],
       "compilerOptions": ["-lf", "linker.cfg", "-oD=ROM,RAM,D0"],
+      "deviceImages": {
+        "D0": "assets/d0.bin",
+        "D2": "assets/d2.bin"
+      },
       "emulatorOptions": []
     }
   ]
@@ -41,6 +45,8 @@ All relative paths are resolved from `cwd`. `lncPath` may name a JAR, launched w
 
 Before each launch, the extension compiles `sourceFiles`. It uses `.lncpu-debug/program.bin`, `.lncpu-debug/program.lndbg.json`, and `.lncpu-debug/program.immediate.txt` unless `compilerOptions` supplies `-oB`, `-oG`, and `-oI`. Split (`-oI file.txt`) and equals (`-oI=file.txt`) forms are supported. If `-oD` is omitted, `ROM` is requested. `ROM`, `RAM`, and `D0` through `D5` outputs are passed to the corresponding emulator options; non-ROM output names use lnc's `_RAM` or `_D0`-`_D5` suffix. `-s` is rejected because debugging requires a binary.
 
+`deviceImages` accepts explicit `ROM`, `RAM`, and `D0` through `D5` image paths, resolved relative to `cwd`. An external image replaces the emulator image for the same `-oD` target without changing compiler output generation; a target absent from `-oD` is added after compiler targets in `ROM`/`RAM`/`D0`-`D5` order. The emulator receives exactly one image option per target. Raw image options such as `--rom`, `--ram`, and `--d0` remain invalid in `emulatorOptions`.
+
 ### Memory Inspector symbol navigation
 
 Install the Eclipse CDT Memory Inspector extension, then add `lncpu` to its supported debug types in user settings. Preserve any existing entries:
@@ -49,7 +55,7 @@ Install the Eclipse CDT Memory Inspector extension, then add `lncpu` to its supp
 "memory-inspector.debugTypes": ["lncpu"]
 ```
 
-During an active `lncpu` launch, the version 1 `-oG` debug map supplies complete physical section and label metadata across `ROM`, `RAM`, and `D0` through `D5`, independently of `-oD`. Navigation exposes only symbols belonging to images loaded into the current emulator session by `-oD`: a ROM-only launch does not expose RAM or device symbols, while a `ROM,RAM` launch does. Virtual sections, labels attached to virtual or unknown sections, and symbols in unloaded targets retain normal source-definition navigation. Labels take precedence over same-named sections.
+During an active `lncpu` launch, the version 1 `-oG` debug map supplies complete physical section and label metadata across `ROM`, `RAM`, and `D0` through `D5`, independently of `-oD`. Navigation exposes compiler symbols only for `-oD` targets not replaced by `deviceImages`. External images never infer source maps: replaced or externally added targets expose no compiler symbols, legacy immediate-listing symbols, or RAM Variables, while unaffected compiler targets remain navigable. Virtual sections, labels attached to virtual or unknown sections, and symbols in unloaded targets retain normal source-definition navigation. Labels take precedence over same-named sections.
 
 When RAM is loaded, eligible top-level RAM labels also appear under the debugger's `RAM` Variables scope. Each variable spans from its label address to the next distinct top-level label in the same physical section, or to that section's emitted end. Sublabels are omitted. These Variables entries include memory references and byte lengths so Memory Inspector can open them from its Variables context menu.
 

@@ -2,8 +2,9 @@ import { isAbsolute, join, parse, resolve } from "node:path";
 
 import { DebugConfigurationError } from "./errors";
 
-const TARGETS = ["ROM", "RAM", "D0", "D1", "D2", "D3", "D4", "D5"] as const;
+export const TARGETS = ["ROM", "RAM", "D0", "D1", "D2", "D3", "D4", "D5"] as const;
 export type Target = (typeof TARGETS)[number];
+export type DeviceImage = { readonly target: Target; readonly path: string };
 
 export type CompilationInput = {
   readonly cwd: string;
@@ -12,6 +13,7 @@ export type CompilationInput = {
   readonly javaPath: string;
   readonly sourceFiles: readonly string[];
   readonly compilerOptions: readonly string[];
+  readonly deviceImages: readonly DeviceImage[];
 };
 
 export type Artifact = { readonly target: Target; readonly path: string };
@@ -22,6 +24,7 @@ export type CompilationPlan = {
   readonly debugMapPath: string;
   readonly immediatePath: string;
   readonly artifacts: readonly Artifact[];
+  readonly debugTargets: readonly Target[];
 };
 
 type ParsedOption = { readonly value: string };
@@ -60,17 +63,19 @@ export function targetPath(binaryPath: string, target: Target): string {
 }
 
 export function immediateArtifactPaths(plan: CompilationPlan): readonly string[] {
-  return plan.artifacts.map((artifact) => targetPath(plan.immediatePath, artifact.target));
+  return plan.debugTargets.map((target) => targetPath(plan.immediatePath, target));
 }
 
 function parseTargets(raw: string): readonly Target[] {
   const values = raw.split(",").map((value) => value.trim().toUpperCase()).filter((value) => value.length > 0);
   if (values.length === 0) throw new DebugConfigurationError("-oD requires at least one target");
-  return values.map((value) => {
+  const targets = values.map((value) => {
     const target = TARGETS.find((candidate) => candidate === value);
     if (target === undefined) throw new DebugConfigurationError(`unsupported -oD target: ${value}`);
     return target;
   });
+  if (new Set(targets).size !== targets.length) throw new DebugConfigurationError("duplicate -oD target");
+  return targets;
 }
 
 export function planCompilation(input: CompilationInput): CompilationPlan {
@@ -85,7 +90,14 @@ export function planCompilation(input: CompilationInput): CompilationPlan {
   const binaryPath = absolute(input.cwd, binaryOption?.value ?? join(input.outputDirectory, "program.bin"));
   const debugMapPath = absolute(input.cwd, mapOption?.value ?? join(input.outputDirectory, "program.lndbg.json"));
   const immediatePath = absolute(input.cwd, immediateOption?.value ?? join(input.outputDirectory, "program.immediate.txt"));
-  const targets = parseTargets(targetsOption?.value ?? "ROM");
+  const compilerTargets = parseTargets(targetsOption?.value ?? "ROM");
+  const externalByTarget = new Map(input.deviceImages.map((image) => [image.target, absolute(input.cwd, image.path)]));
+  const debugTargets = compilerTargets.filter((target) => !externalByTarget.has(target));
+  const compilerArtifacts = compilerTargets.map((target) => ({ target, path: externalByTarget.get(target) ?? targetPath(binaryPath, target) }));
+  const externalArtifacts = TARGETS.flatMap((target): readonly Artifact[] => {
+    const path = externalByTarget.get(target);
+    return path === undefined || compilerTargets.includes(target) ? [] : [{ target, path }];
+  });
   const injected = [...input.compilerOptions];
   if (binaryOption === undefined) injected.push(`-oB=${binaryPath}`);
   if (mapOption === undefined) injected.push(`-oG=${debugMapPath}`);
@@ -100,7 +112,8 @@ export function planCompilation(input: CompilationInput): CompilationPlan {
     binaryPath,
     debugMapPath,
     immediatePath,
-    artifacts: targets.map((target) => ({ target, path: targetPath(binaryPath, target) })),
+    artifacts: [...compilerArtifacts, ...externalArtifacts],
+    debugTargets,
   };
 }
 
@@ -109,7 +122,7 @@ export function emulatorArtifactArgs(artifacts: readonly Artifact[]): readonly s
 }
 
 export function validateEmulatorOptions(options: readonly string[]): void {
-  const managed = new Set(["--debug-server", "--stop-on-entry", "--nopauseonhalt", "--rom", "--ram", "--d0", "--d1", "--d2", "--d3", "--d4", "--d5", "-p", "--pause"]);
+  const managed = new Set(["--debug-server", "--stop-on-entry", "--nopauseonhalt", "--pause"]);
   const conflict = options.find((option) => managed.has(option.split("=", 1)[0] ?? option));
   if (conflict !== undefined) throw new DebugConfigurationError(`${conflict} is managed by the debugger`);
 }

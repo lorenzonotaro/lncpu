@@ -1,4 +1,5 @@
 import { optionalString, record, requiredString, stringArray } from "./dap-values";
+import { TARGETS, type DeviceImage } from "./artifacts";
 import type { DebugMapIndex, RamMemoryVariable } from "./debug-map";
 import { DebugConfigurationError } from "./errors";
 import type { LaunchSettings } from "./runtime";
@@ -20,6 +21,24 @@ export type DebugSession = {
 
 export type ParsedLaunch = { readonly settings: LaunchSettings; readonly stopOnEntry: boolean };
 
+export function parseDeviceImages(value: unknown): readonly DeviceImage[] {
+  if (value === undefined) return [];
+  if (!record(value) || Array.isArray(value)) throw new DebugConfigurationError("deviceImages must be an object");
+  const images = new Map<DeviceImage["target"], string>();
+  for (const [rawTarget, path] of Object.entries(value)) {
+    const normalized = rawTarget.toUpperCase();
+    const target = TARGETS.find((candidate) => candidate === normalized);
+    if (target === undefined) throw new DebugConfigurationError(`unsupported deviceImages target: ${rawTarget}`);
+    if (images.has(target)) throw new DebugConfigurationError(`duplicate deviceImages target: ${target}`);
+    if (typeof path !== "string" || path.trim().length === 0) throw new DebugConfigurationError(`deviceImages.${rawTarget} must be a non-empty string`);
+    images.set(target, path);
+  }
+  return TARGETS.flatMap((target): readonly DeviceImage[] => {
+    const path = images.get(target);
+    return path === undefined ? [] : [{ target, path }];
+  });
+}
+
 export function parseLaunch(args: Record<string, unknown>): ParsedLaunch {
   const stopOnEntry = args["stopOnEntry"];
   if (stopOnEntry !== undefined && typeof stopOnEntry !== "boolean") throw new DebugConfigurationError("stopOnEntry must be a boolean");
@@ -32,6 +51,7 @@ export function parseLaunch(args: Record<string, unknown>): ParsedLaunch {
       sourceFiles: stringArray(args, "sourceFiles"),
       compilerOptions: stringArray(args, "compilerOptions"),
       emulatorOptions: stringArray(args, "emulatorOptions"),
+      deviceImages: parseDeviceImages(args["deviceImages"]),
     },
     stopOnEntry: stopOnEntry ?? true,
   };

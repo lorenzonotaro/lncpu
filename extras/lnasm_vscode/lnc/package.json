@@ -2,7 +2,7 @@
   "name": "lnasm",
   "displayName": "lnasm",
   "description": "LNASM/LNC language support and LNCPU debugging for Visual Studio Code.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "LorenzoNotaro",
   "engines": {
     "vscode": "^1.96.0"
@@ -111,6 +111,22 @@
                 "default": [],
                 "description": "Additional lncpu-emu arguments."
               },
+              "deviceImages": {
+                "type": "object",
+                "properties": {
+                  "ROM": { "type": "string" },
+                  "RAM": { "type": "string" },
+                  "D0": { "type": "string" },
+                  "D1": { "type": "string" },
+                  "D2": { "type": "string" },
+                  "D3": { "type": "string" },
+                  "D4": { "type": "string" },
+                  "D5": { "type": "string" }
+                },
+                "additionalProperties": false,
+                "default": {},
+                "description": "External ROM, RAM, or D0-D5 images. Relative paths resolve from cwd and replace compiler images for the same target."
+              },
               "stopOnEntry": {
                 "type": "boolean",
                 "default": true,
@@ -130,7 +146,8 @@
             "emulatorPath": "${workspaceFolder}/lncpu-emu",
             "sourceFiles": ["${file}"],
             "compilerOptions": [],
-            "emulatorOptions": []
+            "emulatorOptions": [],
+            "deviceImages": {}
           }
         ]
       }

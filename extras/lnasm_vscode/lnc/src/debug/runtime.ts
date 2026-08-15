@@ -3,6 +3,7 @@ import { mkdir, readFile } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
 
 import { emulatorArtifactArgs, immediateArtifactPaths, planCompilation, validateEmulatorOptions, type CompilationPlan } from "./artifacts";
+import type { DeviceImage } from "./artifacts";
 import { activeAddresses } from "./address-registry";
 import { DebugMapIndex } from "./debug-map";
 import { ProcessFailureError, ProtocolError } from "./errors";
@@ -17,6 +18,7 @@ export type LaunchSettings = {
   readonly sourceFiles: readonly string[];
   readonly compilerOptions: readonly string[];
   readonly emulatorOptions: readonly string[];
+  readonly deviceImages: readonly DeviceImage[];
   readonly output?: (category: "stdout" | "stderr", text: string) => void;
 };
 export type LaunchResult = {
@@ -74,8 +76,8 @@ export class DebugRuntime {
     await runCompiler(plan, settings);
     const rawMap: unknown = JSON.parse(await readFile(plan.debugMapPath, "utf8"));
     const map = DebugMapIndex.parse(rawMap, settings.cwd);
-    const loadedTargets = new Set(plan.artifacts.map((artifact) => artifact.target));
-    const mapAddresses = map.symbolsForTargets(loadedTargets);
+    const debugTargets = new Set(plan.debugTargets);
+    const mapAddresses = map.symbolsForTargets(debugTargets);
     const addresses = mapAddresses ?? new Map((await Promise.all(immediateArtifactPaths(plan).map(async (path) =>
       [...parseImmediateListing(await readFile(path, "utf8"))]
     ))).flat());
@@ -99,7 +101,7 @@ export class DebugRuntime {
       this.client.onFatal(() => this.emitTerminal(1));
       await this.client.hello();
       activeAddresses.replace(addresses);
-      return { plan, map, ramMemoryVariables: map.ramMemoryVariables(loadedTargets) };
+      return { plan, map, ramMemoryVariables: map.ramMemoryVariables(debugTargets) };
     } catch (error: unknown) {
       await this.terminate();
       throw error;
