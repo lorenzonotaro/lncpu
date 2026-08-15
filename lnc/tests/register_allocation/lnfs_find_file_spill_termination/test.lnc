@@ -1,0 +1,71 @@
+#define LNFS_ERROR_NOT_A_DIRECTORY 1
+#define LNFS_ERROR_FILE_NOT_FOUND 2
+#define LNFS_INODE_FLAG_DIR 0x02
+
+struct lnfs_superblock {
+    char signature[4]; // "LNFS"
+    unsigned int version;
+    unsigned int size_pages;
+    unsigned int _reserved;
+    unsigned int max_inodes;
+    unsigned int _reserved2;
+    unsigned int first_free_inode;
+    unsigned int flags;
+    unsigned int _magic;
+};
+
+struct lnfs_inode {
+    char name[8];
+    unsigned int parent_inode;
+    unsigned int flags;
+    struct lnfs_block far *block;
+};
+
+struct lnfs_block {
+    struct lnfs_block far *prev;
+    struct lnfs_block far *next;
+    unsigned int flags;
+    unsigned int inode_index;
+    unsigned long int size;
+};
+
+struct lnxe_header {
+    char signature[4]; // "LNXE"
+    unsigned int version;
+    unsigned int reloc_table_size;
+    // follows a relocation table of unsigned int entries, then the actual code/data
+};
+
+
+unsigned int lnfs_error_code;
+
+struct lnfs_inode far *lnfs_get_inode_by_index(unsigned int index, unsigned int start_page){
+    return (struct lnfs_inode far *) 0;
+}
+
+int memcmp(const void far *s1, const void far *s2, unsigned int n){
+    return 0;
+}
+
+struct lnfs_inode far *lnfs_find_file(struct lnfs_inode far *dir, const char far *name, unsigned int length, unsigned int start_page){
+    int sp = start_page;
+    if((dir->flags & LNFS_INODE_FLAG_DIR) == 0){
+        lnfs_error_code = LNFS_ERROR_NOT_A_DIRECTORY;
+        return (struct lnfs_inode far *) 0; // Not a directory
+    }
+    unsigned int inode_count = *((unsigned int far *) (dir->block + sizeof(struct lnfs_block))); // The first byte of the block after the header is the inode count
+
+    unsigned int far *inode_index = (unsigned int far *) (dir->block + sizeof(struct lnfs_block) + sizeof(unsigned int)); // The inode indices start immediately after the inode count
+
+    for(unsigned int i = 0; i < inode_count; i++){
+        struct lnfs_inode far *inode = lnfs_get_inode_by_index(*inode_index, sp);
+        if(inode && memcmp(&inode->name, name, length) == 0){
+            return inode;
+        }
+        inode_index++; // Move to the next inode index
+    }
+
+
+    lnfs_error_code = LNFS_ERROR_FILE_NOT_FOUND;
+    return (struct lnfs_inode far *) 0; // File not found
+}

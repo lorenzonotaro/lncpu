@@ -1,0 +1,5 @@
+{
+  "kind": "compile",
+  "standalone": false,
+  "compile_args": ["-lc", "SECTIONS[LNCCODE: start=0x0, multi=true]"]
+}

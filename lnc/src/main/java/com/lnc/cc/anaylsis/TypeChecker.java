@@ -9,7 +9,9 @@ import com.lnc.common.frontend.CompileException;
 import com.lnc.common.frontend.Token;
 import com.lnc.common.frontend.TokenType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,8 @@ import java.util.Map;
  */
 public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
+    private final Map<String, List<StructType>> unresolvedPointerBaseStructs = new HashMap<>();
+
     public TypeChecker(AST ast) {
         super(ast);
     }
@@ -47,6 +51,45 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
             checkStructCompleteness((StructType) type);
         }else if(type.type == TypeSpecifier.Type.ARRAY){
             checkTypeCompleteness(((ArrayType)type).getBaseType());
+        }else if(type.type == TypeSpecifier.Type.POINTER){
+            checkPointerBaseCompleteness(((PointerType)type).getBaseType());
+        }
+    }
+
+    private void checkPointerBaseCompleteness(TypeSpecifier baseType) {
+        if (!(baseType instanceof StructType structType)) {
+            checkTypeCompleteness(baseType);
+            return;
+        }
+
+        if (structType.hasDefinition()) {
+            checkStructCompleteness(structType);
+            return;
+        }
+
+        StructDefinitionType definition = currentScope.resolveStruct(structType.getName().lexeme);
+        if (definition == null) {
+            definition = getAST().getGlobalScope().resolveStruct(structType.getName().lexeme);
+        }
+
+        if (definition == null) {
+            unresolvedPointerBaseStructs
+                    .computeIfAbsent(structType.getName().lexeme, ignored -> new ArrayList<>())
+                    .add(structType);
+            return;
+        }
+
+        structType.bindDefinition(definition);
+    }
+
+    private void bindQueuedPointerBases(Token name, StructDefinitionType definition) {
+        List<StructType> pointerBases = unresolvedPointerBaseStructs.remove(name.lexeme);
+        if (pointerBases == null) {
+            return;
+        }
+
+        for (StructType pointerBase : pointerBases) {
+            pointerBase.bindDefinition(definition);
         }
     }
 
@@ -79,6 +122,7 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
 
         if (getAST().getGlobalScope().resolveStruct(structDeclaration.name.lexeme) == null) {
             getAST().getGlobalScope().defineStruct(structDeclaration.name, structDefinition);
+            bindQueuedPointerBases(structDeclaration.name, structDefinition);
         }
         return null;
     }
@@ -461,4 +505,3 @@ public class TypeChecker extends ScopedASTVisitor<TypeSpecifier> {
     }
 
 }
-

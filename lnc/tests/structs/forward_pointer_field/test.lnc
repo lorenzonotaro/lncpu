@@ -1,0 +1,13 @@
+struct ForwardPointerField {
+    struct Node far *node;
+};
+
+struct Node {
+    struct Node far *next;
+};
+
+struct ForwardPointerField holder;
+
+void main() {
+    struct Node copy = *holder.node;
+}

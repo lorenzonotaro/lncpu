@@ -1,0 +1,20 @@
+struct lnfs_block {
+    struct lnfs_block far *prev;
+    struct lnfs_block far *next;
+    unsigned int flags;
+    unsigned int inode_index;
+    unsigned long int size;
+};
+
+struct lnfs_directory {
+    unsigned int flags;
+    struct lnfs_block far *block;
+};
+
+unsigned int read_inode_count(struct lnfs_directory far *dir) {
+    unsigned int value = *((unsigned int far *)(dir->block + sizeof(struct lnfs_block)));
+    return value;
+}
+
+void main() {
+}

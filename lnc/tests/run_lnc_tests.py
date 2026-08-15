@@ -61,34 +61,56 @@ def discover_cases(tests_root: Path) -> list[Path]:
     return sorted(path.parent for path in tests_root.glob("**/test.lnc"))
 
 
-def load_metadata(case_dir: Path) -> dict[str, object]:
+def load_metadata(case_dir: Path) -> dict[str, object] | None:
     meta = case_dir / "test.json"
     if not meta.exists():
         return {"kind": "run"}
     with meta.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        metadata = json.load(f)
+    return metadata if isinstance(metadata, dict) else None
 
 
-def compile_case(jar: Path, case_dir: Path, work_dir: Path, timeout: int) -> subprocess.CompletedProcess[str]:
-    return run([
+def compile_case(
+    jar: Path,
+    case_dir: Path,
+    work_dir: Path,
+    timeout: int,
+    standalone: bool,
+    compile_args: list[str],
+) -> subprocess.CompletedProcess[str]:
+    command = [
         "java", "-jar", str(jar), str(case_dir / "test.lnc"),
-        "--standalone",
-        "-lc", LINKER_CONFIG,
+    ]
+    if standalone:
+        command.append("--standalone")
+    if "-lc" not in compile_args:
+        command.extend(["-lc", LINKER_CONFIG])
+    command.extend(compile_args)
+    command.extend([
         "-oB", str(work_dir / "program.bin"),
         "-oA", str(work_dir / "program.lnasm"),
         "-oM", str(work_dir / "program.ir"),
         "-oS", str(work_dir / "program.sym"),
-    ], case_dir, timeout)
+    ])
+    return run(command, case_dir, timeout)
 
 
 def run_case(jar: Path, emulator: Path, tests_root: Path, case_dir: Path, timeout: int) -> CaseResult:
     name = str(case_dir.relative_to(tests_root))
     metadata = load_metadata(case_dir)
+    if metadata is None:
+        return CaseResult(name, "FAILED", "test.json must be an object")
     kind = str(metadata.get("kind", "run"))
+    standalone = metadata.get("standalone", True)
+    if not isinstance(standalone, bool):
+        return CaseResult(name, "FAILED", "standalone must be a boolean")
+    compile_args = metadata.get("compile_args", [])
+    if not isinstance(compile_args, list) or not all(isinstance(arg, str) for arg in compile_args):
+        return CaseResult(name, "FAILED", "compile_args must be a list of strings")
 
     with tempfile.TemporaryDirectory(prefix="lnc-test-") as td:
         work_dir = Path(td)
-        compile_proc = compile_case(jar, case_dir, work_dir, timeout)
+        compile_proc = compile_case(jar, case_dir, work_dir, timeout, standalone, compile_args)
         compile_output = (compile_proc.stdout + compile_proc.stderr).strip()
 
         if kind == "compile_fail":
@@ -101,6 +123,9 @@ def run_case(jar: Path, emulator: Path, tests_root: Path, case_dir: Path, timeou
 
         if compile_proc.returncode != 0:
             return CaseResult(name, "COMPILE_ERROR", compile_output)
+
+        if kind == "compile":
+            return CaseResult(name, "PASSED")
 
         assembly = (work_dir / "program.lnasm").read_text(encoding="utf-8")
         for key, requires_match in (("asm_must_match", True), ("asm_must_not_match", False)):
