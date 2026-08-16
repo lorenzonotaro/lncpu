@@ -1,9 +1,56 @@
 %include "ddi_defs"
-.section OS_START
-_start:
-    lcall main
-hlt_:
-    hlt
+%include "lnfs_defs"
+.section LNFS_PART
+    .data 'LNFS' 0x1            ; 'LNFS' signature and version 1
+    .data 31                    ; 31 pages
+    .data 0x00                  ; reserved
+    .data 127
+    .data 0x00                  ; reserved
+    .data 0x00                  ; first free inode
+    .data 0x00                  ; flags
+    .data 0xA5                  ; magic number
+
+; ROOT inode
+.data "ROOT" 0 0 0 0
+.data 0x0 ; no parent
+.data LNFS_INODE_FLAG_USED | LNFS_INODE_FLAG_DIR | LNFS_INODE_FLAG_READONLY | LNFS_INODE_FLAG_ROOT
+.data fs_root_blk ;
+
+; KERNEL
+.data "KERNEL" 0 0
+.data 0x0 ; parent is root
+.data LNFS_INODE_FLAG_USED | LNFS_INODE_FLAG_EXECUTABLE
+.data fs_kernel_blk 
+
+.res 1500 ; 12 * 125 : go to first block
+
+fs_root_blk:
+; ROOT block
+.data 0x00 0x00 ; no prev block
+.data fs_kernel_blk
+.data LNFS_BLOCK_FLAG_USED | LNFS_BLOCK_FLAG_IMMOVABLE
+.data 0x00 ; root inode index
+.data 0x00 0x2 ; 2 bytes
+
+.data 1 ; 1 element in this folder
+.data 0x01 ; 1st element is KERNEL
+
+fs_kernel_blk:
+.data fs_root_blk ; prev block is root
+.data free_blk ; next block is free
+.data LNFS_BLOCK_FLAG_USED
+.data 0x01 ; kernel inode index
+.data 0x00 0x01 ; 1 byte size
+; LNXE header
+.data 'LNXE' 0x1 ; 'LNXE' signature and version 1
+hlt
+
+free_blk:
+.data fs_kernel_blk ; prev block is kernel
+.data 0x00 0x00 ; no next block
+.data 0x0
+.data 0x00 ; no inode index
+.data 0x6000 - 256 - free_blk - 8
 
 .section SIGN
     .data 'LNDI' 0x1            ; 'LNDI' signature and version 1

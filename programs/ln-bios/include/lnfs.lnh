@@ -18,28 +18,37 @@
 struct lnfs_superblock {
     char signature[4]; // "LNFS"
     unsigned int version;
+    unsigned int size_pages;
+    unsigned int _reserved;
+    unsigned int max_inodes;
+    unsigned int _reserved2;
+    unsigned int first_free_inode;
     unsigned int flags;
+    unsigned int _magic;
 };
 
-#define LNFS_INODE_FLAG_FREE 0x01
+#define LNFS_INODE_FLAG_USED 0x01
 #define LNFS_INODE_FLAG_DIR 0x02
 #define LNFS_INODE_FLAG_READONLY 0x04
 #define LNFS_INODE_FLAG_HIDDEN 0x08
 #define LNFS_INODE_FLAG_ROOT 0x10
+#define LNFS_INODE_FLAG_EXECUTABLE 0x20
 
 struct lnfs_inode {
     char name[8];
+    unsigned int parent_inode;
     unsigned int flags;
     struct lnfs_block far *block;
 };
 
-#define LNFS_BLOCK_FLAG_FREE 0x01
+#define LNFS_BLOCK_FLAG_USED 0x01
+#define LNFS_BLOCK_FLAG_IMMOVABLE 0x02
 
 struct lnfs_block {
-    struct lnfs_block far *next;
     struct lnfs_block far *prev;
-    struct lnfs_inode far *inode;
+    struct lnfs_block far *next;
     unsigned int flags;
+    unsigned int inode_index;
     unsigned long int size;
 };
 

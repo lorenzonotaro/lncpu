@@ -15,6 +15,8 @@ Overview of the repository:
 
 * [`lncpu-emu`](lncpu-emu) is a simple emulator for the lncpu written in C.
 
+* [`lnfsutils`](lnfsutils) is a utility program for working with the lnfs filesystem, a simple FS designed to work on the lncpu.
+
 * [`Programs`](Programs) contains some sample programs you can assemble and run on the lncpu as well as Notmon, a utility program strongly inspired in its functionality (and name) by Wozmon, made by Steve Wozniak for his Apple I.
 
 * [`extras`](extras) contains some additional tools, such as a VsCode extension for lnasm.
@@ -48,13 +50,13 @@ Overview of the repository:
 - a neat LNCPU debugger
 
 
-If you're on Linux, `make.sh` will build everything for you, including lnc, eeprom-serial-loader and the control unit EEPROMs. Usage:
+If you're on Linux, `make.sh` will build everything for you. Usage:
 
-    ./make.sh [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
+    ./make.sh [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc] [--no-lnfs|--no-lnfs-utils]
 
 If you're on Windows, use `make.bat` instead. Usage:
 
-    ./make.bat [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc]
+    ./make.bat [--no-eeproms] [--no-eeprom-serial-loader|--no-esl] [--no-lnc] [--no-lnfs|--no-lnfs-utils]
 
 These scripts will create an `output` folder containing:
 - `lnc.jar`: the assembler and C compiler along with `lnc.bat`/`lnc.sh` scripts for easy usage

@@ -33,7 +33,7 @@ struct lnfs_inode far *lnfs_get_kernel_inode(struct lnfs_superblock far *sb, uns
 }
 
 unsigned int lnxe_load(struct lnfs_block far *block, void far *load_address){
-    if(block->flags & LNFS_BLOCK_FLAG_FREE){
+    if(block->flags & ~LNFS_BLOCK_FLAG_USED){
         lnfs_error_code = LNFS_ERROR_INVALID_KERNEL_FILE;
         return 1; // Block is marked as free, invalid kernel file
     }
