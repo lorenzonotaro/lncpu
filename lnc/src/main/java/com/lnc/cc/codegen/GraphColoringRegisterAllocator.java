@@ -35,7 +35,10 @@ public class GraphColoringRegisterAllocator {
     private final InterferenceGraph graph;
     private final int K;  // total number of physical “colors”
     private final boolean doCoalesce;
+    private final boolean diagnosticsEnabled;
     private final Set<VirtualRegister> spillEligibleVirtuals;
+    private final IRUnit unit;
+    private final LivenessInfo livenessInfo;
 
     // worklists and stacks
     private Deque<InterferenceGraph.Node> selectStack = new ArrayDeque<>();
@@ -43,20 +46,27 @@ public class GraphColoringRegisterAllocator {
     private final Set<InterferenceGraph.Node> coloredNodes    = new LinkedHashSet<>();
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
-    private final Map<VirtualRegister, Integer> spillCost = new LinkedHashMap<>();
+    private final Map<VirtualRegister, Long> projectedSpillCost = new LinkedHashMap<>();
     private static final long SPILL_SCORE_SCALE = 1024L;
+    private static final long MAX_SPILL_COST = Long.MAX_VALUE / SPILL_SCORE_SCALE;
 
-    // simplify work graph (rebuilt when the interference graph changes via coalescing)
-    private LinkedHashMap<InterferenceGraph.Node, Set<InterferenceGraph.Node>> simplifyWork = new LinkedHashMap<>();
+    // One mutable neighbor view drives simplify, selection, and spill scoring. Removed
+    // nodes retain their removal-time snapshot for reverse-order coloring.
+    private final Map<InterferenceGraph.Node, Set<InterferenceGraph.Node>> decisionNeighbors = new LinkedHashMap<>();
+    private final Set<InterferenceGraph.Node> simplifyNodes = new LinkedHashSet<>();
 
     // aliasing and degree tracking
     private final Map<InterferenceGraph.Node,InterferenceGraph.Node> alias = new HashMap<>();
     private final Set<AbstractMap.SimpleEntry<InterferenceGraph.Node,InterferenceGraph.Node>> worklistMoves = new LinkedHashSet<>();
 
     public GraphColoringRegisterAllocator(InterferenceGraph graph,
-                                          Set<VirtualRegister> spillEligibleVirtuals) {
+                                          Set<VirtualRegister> spillEligibleVirtuals,
+                                          IRUnit unit,
+                                          LivenessInfo livenessInfo) {
         this.graph = graph;
         this.spillEligibleVirtuals = Set.copyOf(spillEligibleVirtuals);
+        this.unit = unit;
+        this.livenessInfo = livenessInfo;
         // count physical nodes (excluding compounds if you treat them specially)
         this.K = graph.getPhysicalNodes().size();
 
@@ -67,33 +77,81 @@ public class GraphColoringRegisterAllocator {
         worklistMoves.addAll(graph.getMoveEdges());
 
         this.doCoalesce = !LNC.settings.get("--reg-alloc-no-coalesce", Boolean.class);
+        this.diagnosticsEnabled = LNC.settings.get("--reg-alloc-diagnostics", Boolean.class);
     }
 
     private void computeSpillCosts() {
-        spillCost.clear();
-        for(var node : graph.getVirtualNodes()){
-            int loopWeight = graph.getLoopWeights().getOrDefault(node.vr, 1);
-            int base = graph.getUses().getOrDefault(node.vr, 0) + 2 * graph.getDefs().getOrDefault(node.vr, 0);
-            LiveRange range = graph.getLiveRanges().get(node.vr);
-            int span = range == null ? 0 : Math.max(0, range.getSpan() / 10);
-            int size = node.vr.getTypeSpecifier().allocSize();
-            int classSize = Math.max(1, node.allowedColors().size());
-            int classWt = Math.max(1, K / classSize);
-            int hotness = Math.max(1, base + span);
-
-            // Copy-related nodes are more expensive to spill because spilling them can
-            // destroy coalescing opportunities and introduce extra reloads.
-            int movePenalty = Math.max(1, node.movePartners.size() + 1);
-
-            long cost = (long) loopWeight + hotness * 5 + size * 2 + classWt * 2 + movePenalty;
-            spillCost.put(node.vr, (int) Math.min(Integer.MAX_VALUE, cost));
+        projectedSpillCost.clear();
+        for (InterferenceGraph.Node node : graph.getVirtualNodes()) {
+            projectedSpillCost.put(node.vr, 1L);
         }
+
+        for (IRBlock block : unit.computeReversePostOrderAndCFG()) {
+            long loopWeight = loopExecutionWeight(block.getLoopDepth());
+            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                Set<VirtualRegister> reads = new LinkedHashSet<>(inst.getReads());
+                Set<VirtualRegister> writes = new LinkedHashSet<>(inst.getWrites());
+                Set<VirtualRegister> touched = new LinkedHashSet<>(reads);
+                touched.addAll(writes);
+
+                for (VirtualRegister vr : touched) {
+                    InterferenceGraph.Node node = getAlias(graph.getNode(vr));
+                    int expectedTraffic = (reads.contains(vr) ? 1 : 0)
+                            + (writes.contains(vr) && livenessInfo.isLiveAfter(vr, inst) ? 1 : 0);
+                    if (expectedTraffic == 0) {
+                        continue;
+                    }
+
+                    int pressureExcess = Math.max(
+                            0,
+                            compatibleLivePressure(node, inst) - effectivePaletteBudget(node) + 1
+                    );
+                    long siteCost = boundedMultiply(loopWeight, expectedTraffic * (long) (pressureExcess + 1));
+                    projectedSpillCost.merge(vr, siteCost, GraphColoringRegisterAllocator::boundedAdd);
+                }
+            }
+        }
+    }
+
+    private int compatibleLivePressure(InterferenceGraph.Node node, IRInstruction inst) {
+        Set<VirtualRegister> liveAtTouch = new LinkedHashSet<>(livenessInfo.getLiveAfter(inst));
+        liveAtTouch.addAll(inst.getReads());
+        liveAtTouch.addAll(inst.getWrites());
+        liveAtTouch.remove(node.vr);
+
+        int pressure = 0;
+        for (VirtualRegister liveVr : liveAtTouch) {
+            InterferenceGraph.Node liveNode = getAlias(graph.getNode(liveVr));
+            if (liveNode != node && palettesOverlap(node, liveNode)) {
+                pressure += overlappingNeighborPressure(node, liveNode);
+            }
+        }
+        return pressure;
+    }
+
+    private static long loopExecutionWeight(int loopDepth) {
+        long weight = 1;
+        for (int i = 0; i < loopDepth; i++) {
+            weight = boundedMultiply(weight, 10);
+        }
+        return weight;
+    }
+
+    private static long boundedMultiply(long left, long right) {
+        if (left <= 0 || right <= 0) {
+            return 0;
+        }
+        return left > MAX_SPILL_COST / right ? MAX_SPILL_COST : left * right;
+    }
+
+    private static long boundedAdd(long left, long right) {
+        return left >= MAX_SPILL_COST - right ? MAX_SPILL_COST : left + right;
     }
 
     public void allocate() {
         spillCandidates.clear();
         // Initialize the simplify work graph
-        buildSimplifyWork();
+        buildDecisionGraph();
         computeSpillCosts();
 
         boolean progress;
@@ -107,7 +165,7 @@ public class GraphColoringRegisterAllocator {
                     merged = coalesce();
                     if (merged) {
                         progress = true;
-                        buildSimplifyWork();
+                        buildDecisionGraph();
                         computeSpillCosts();
                     }
                 } while (merged);
@@ -336,11 +394,12 @@ public class GraphColoringRegisterAllocator {
         x.movePartners.addAll(y.movePartners);
     }
 
-    private void buildSimplifyWork() {
-        simplifyWork.clear();
+    private void buildDecisionGraph() {
+        decisionNeighbors.clear();
+        simplifyNodes.clear();
         for (var n0 : graph.getVirtualNodes()) {
             var n = getAlias(n0); // ensure we consider the current representative
-            if (simplifyWork.containsKey(n))
+            if (decisionNeighbors.containsKey(n))
                 continue;
             Set<InterferenceGraph.Node> nbrs =
                     n.adj.stream()
@@ -348,33 +407,33 @@ public class GraphColoringRegisterAllocator {
                             .collect(Collectors.toCollection(LinkedHashSet::new));
             // remove potential self-edges created by aliasing
             nbrs.remove(n);
-            simplifyWork.put(n, new LinkedHashSet<>(nbrs));
+            decisionNeighbors.put(n, new LinkedHashSet<>(nbrs));
+            simplifyNodes.add(n);
         }
     }
 
     private boolean simplifyStep() {
-        if (simplifyWork.isEmpty()) return false;
+        if (simplifyNodes.isEmpty()) return false;
 
         // Prefer a trivially-colorable node; otherwise choose a spill candidate
         Optional<InterferenceGraph.Node> maybe =
-                simplifyWork.keySet().stream()
-                        .filter(n -> simplifyWork.get(n).size() < n.allowedColors().size())
+                simplifyNodes.stream()
+                        .filter(n -> decisionNeighbors.get(n).size() < n.allowedColors().size())
                         .max(Comparator.comparingInt(n -> n.allowedColors().size()));
 
-        InterferenceGraph.Node n = maybe.orElseGet(() -> simplifyWork.keySet().stream()
+        InterferenceGraph.Node n = maybe.orElseGet(() -> simplifyNodes.stream()
                 .filter(this::isSpillEligible)
                 .min(spillSelectionComparator())
-                .orElseGet(() -> simplifyWork.keySet().stream()
+                .orElseGet(() -> simplifyNodes.stream()
                         .min(Comparator.comparingInt(node -> node.vr.getRegisterNumber()))
                         .orElseThrow()));
 
-        for (var neighbor : simplifyWork.get(n)) {
-            Set<InterferenceGraph.Node> nbrs = simplifyWork.get(neighbor);
-            if (nbrs != null) {               // neighbour still in the graph
-                nbrs.remove(n);               // decrement its degree
+        for (var neighbor : decisionNeighbors.get(n)) {
+            if (simplifyNodes.contains(neighbor)) {
+                decisionNeighbors.get(neighbor).remove(n);
             }
         }
-        simplifyWork.remove(n);               // finally delete n itself
+        simplifyNodes.remove(n);
         selectStack.push(n);
         return true;
     }
@@ -384,7 +443,7 @@ public class GraphColoringRegisterAllocator {
 
             // Collect assigned colors from already-colored neighbors.
             Set<Register> usedNeighborColors = new LinkedHashSet<>();
-            for (var w : n.adj) {
+            for (var w : allocationNeighbors(n)) {
                 w = getAlias(w);
                 if (coloredNodes.contains(w) && w.assigned != null) {
                     usedNeighborColors.add(w.assigned);
@@ -408,28 +467,36 @@ public class GraphColoringRegisterAllocator {
 
     private InterferenceGraph.Node chooseSpillVictim(InterferenceGraph.Node failedNode,
                                                      Set<Register> usedNeighborColors) {
-        Set<InterferenceGraph.Node> blockers = failedNode.adj.stream()
+        Set<InterferenceGraph.Node> blockers = allocationNeighbors(failedNode).stream()
                 .map(this::getAlias)
                 .filter(neighbor -> neighbor != failedNode)
-                .filter(neighbor -> !neighbor.isPhysical())
                 .filter(coloredNodes::contains)
                 .filter(neighbor -> neighbor.assigned != null)
                 .filter(neighbor -> usedNeighborColors.stream().anyMatch(used -> overlaps(used, neighbor.assigned)))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        Comparator<InterferenceGraph.Node> ranking = spillSelectionComparator();
+        Comparator<InterferenceGraph.Node> ranking = blockerSelectionComparator(failedNode, blockers);
+        InterferenceGraph.Node bestBlocker = blockers.stream()
+                .filter(this::isSpillEligible)
+                .min(ranking)
+                .orElse(null);
+
+        InterferenceGraph.Node selected;
         if (!isSpillEligible(failedNode)) {
-            return blockers.stream()
-                    .filter(this::isSpillEligible)
-                    .min(ranking)
-                    .orElseThrow(() -> noEligibleSpillCandidate(failedNode));
+            if (bestBlocker == null) {
+                throw noEligibleSpillCandidate(failedNode);
+            }
+            selected = bestBlocker;
+        } else if (bestBlocker != null
+                && freesTargetCapacity(failedNode, bestBlocker, blockers)
+                && blockerSelectionScore(failedNode, bestBlocker, blockers) < spillSelectionScore(failedNode)) {
+            selected = bestBlocker;
+        } else {
+            selected = failedNode;
         }
 
-        return blockers.stream()
-                .filter(this::isSpillEligible)
-                .filter(neighbor -> ranking.compare(neighbor, failedNode) < 0)
-                .min(ranking)
-                .orElse(failedNode);
+        logSpillDecision(failedNode, blockers, selected);
+        return selected;
     }
 
     private boolean isSpillEligible(InterferenceGraph.Node node) {
@@ -448,10 +515,10 @@ public class GraphColoringRegisterAllocator {
     private Comparator<InterferenceGraph.Node> spillSelectionComparator() {
         return Comparator
                 .comparingLong(this::spillSelectionScore)
-                .thenComparing(Comparator.comparingInt(this::pressureRelief).reversed())
-                .thenComparingInt(n -> spillCost.getOrDefault(n.vr, Integer.MAX_VALUE))
-                .thenComparingInt(n -> n.movePartners.size())
-                .thenComparingInt(n -> n.vr.getRegisterNumber());
+                .thenComparing(Comparator.comparingInt(this::groupPressureRelief).reversed())
+                .thenComparingLong(this::groupSpillCost)
+                .thenComparingInt(this::groupMovePartners)
+                .thenComparingInt(this::groupFirstRegisterNumber);
     }
 
     private long spillSelectionScore(InterferenceGraph.Node n) {
@@ -459,17 +526,53 @@ public class GraphColoringRegisterAllocator {
             return Long.MAX_VALUE;
         }
 
-        long utility = Math.max(1, spillCost.getOrDefault(n.vr, Integer.MAX_VALUE));
-        return Math.max(1L, (utility * SPILL_SCORE_SCALE) / Math.max(1, pressureRelief(n)));
+        return Math.max(
+                1L,
+                boundedMultiply(groupSpillCost(n), SPILL_SCORE_SCALE) / Math.max(1, groupPressureRelief(n))
+        );
     }
 
-    private int pressureRelief(InterferenceGraph.Node n) {
+    private long groupSpillCost(InterferenceGraph.Node n) {
+        long cost = 0;
+        for (InterferenceGraph.Node member : aliasGroup(n)) {
+            cost = boundedAdd(cost, projectedSpillCost.getOrDefault(member.vr, MAX_SPILL_COST));
+        }
+        return Math.max(1, cost);
+    }
+
+    private int groupPressureRelief(InterferenceGraph.Node n) {
+        Set<InterferenceGraph.Node> ranges = aliasGroup(n).stream()
+                .map(this::getAlias)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return ranges.stream().mapToInt(this::rangePressureRelief).sum();
+    }
+
+    private int groupMovePartners(InterferenceGraph.Node n) {
+        return aliasGroup(n).stream().mapToInt(member -> member.movePartners.size()).sum();
+    }
+
+    private int groupFirstRegisterNumber(InterferenceGraph.Node n) {
+        return aliasGroup(n).stream()
+                .mapToInt(member -> member.vr.getRegisterNumber())
+                .min()
+                .orElse(Integer.MAX_VALUE);
+    }
+
+    private List<InterferenceGraph.Node> aliasGroup(InterferenceGraph.Node n) {
+        InterferenceGraph.Node representative = getAlias(n);
+        return graph.getVirtualNodes().stream()
+                .filter(member -> getAlias(member) == representative)
+                .sorted(Comparator.comparingInt(member -> member.vr.getRegisterNumber()))
+                .toList();
+    }
+
+    private int rangePressureRelief(InterferenceGraph.Node n) {
         if (n == null || n.isPhysical()) {
             return 1;
         }
 
         int relief = Math.max(1, ownPaletteExcess(n) * classScarcityWeight(n));
-        for (InterferenceGraph.Node neighbor : activeNeighbors(n)) {
+        for (InterferenceGraph.Node neighbor : allocationNeighbors(n)) {
             neighbor = getAlias(neighbor);
             if (neighbor == n || neighbor.isPhysical() || neighbor.vr == null || !palettesOverlap(n, neighbor)) {
                 continue;
@@ -492,6 +595,139 @@ public class GraphColoringRegisterAllocator {
         return Math.max(1, relief);
     }
 
+    private Comparator<InterferenceGraph.Node> blockerSelectionComparator(
+            InterferenceGraph.Node failedNode,
+            Set<InterferenceGraph.Node> blockers
+    ) {
+        return Comparator
+                .comparingInt(
+                        (InterferenceGraph.Node candidate) -> usableCapacityFreed(failedNode, candidate, blockers)
+                ).reversed()
+                .thenComparing(Comparator.comparingInt(
+                        (InterferenceGraph.Node candidate) -> usableComponentsFreed(failedNode, candidate, blockers)
+                ).reversed())
+                .thenComparingLong(candidate -> blockerSelectionScore(failedNode, candidate, blockers))
+                .thenComparing(spillSelectionComparator());
+    }
+
+    private boolean freesTargetCapacity(InterferenceGraph.Node failedNode,
+                                        InterferenceGraph.Node candidate,
+                                        Set<InterferenceGraph.Node> blockers) {
+        return usableCapacityFreed(failedNode, candidate, blockers) > 0
+                || usableComponentsFreed(failedNode, candidate, blockers) > 0;
+    }
+
+    private long blockerSelectionScore(InterferenceGraph.Node failedNode,
+                                       InterferenceGraph.Node candidate,
+                                       Set<InterferenceGraph.Node> blockers) {
+        int targetRelief = usableCapacityFreed(failedNode, candidate, blockers)
+                * classScarcityWeight(failedNode)
+                + usableComponentsFreed(failedNode, candidate, blockers);
+        int relief = Math.max(1, groupPressureRelief(candidate) + targetRelief);
+        return Math.max(1L, boundedMultiply(groupSpillCost(candidate), SPILL_SCORE_SCALE) / relief);
+    }
+
+    private int usableCapacityFreed(InterferenceGraph.Node failedNode,
+                                    InterferenceGraph.Node candidate,
+                                    Set<InterferenceGraph.Node> blockers) {
+        int before = maxNonOverlappingColors(availableColors(failedNode, null, blockers));
+        int after = maxNonOverlappingColors(availableColors(failedNode, getAlias(candidate), blockers));
+        return Math.max(0, after - before);
+    }
+
+    private Set<Register> availableColors(InterferenceGraph.Node failedNode,
+                                          InterferenceGraph.Node removed,
+                                          Set<InterferenceGraph.Node> blockers) {
+        return failedNode.allowedColors().stream()
+                .filter(color -> blockers.stream()
+                        .filter(blocker -> getAlias(blocker) != removed)
+                        .noneMatch(blocker -> overlaps(color, blocker.assigned)))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private int usableComponentsFreed(InterferenceGraph.Node failedNode,
+                                      InterferenceGraph.Node candidate,
+                                      Set<InterferenceGraph.Node> blockers) {
+        Set<Register> relevantComponents = failedNode.allowedColors().stream()
+                .flatMap(color -> Arrays.stream(color.getComponents()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<Register> blockedBefore = blockedComponents(relevantComponents, null, blockers);
+        Set<Register> blockedAfter = blockedComponents(relevantComponents, getAlias(candidate), blockers);
+        blockedBefore.removeAll(blockedAfter);
+        return blockedBefore.size();
+    }
+
+    private Set<Register> blockedComponents(Set<Register> relevantComponents,
+                                            InterferenceGraph.Node removed,
+                                            Set<InterferenceGraph.Node> blockers) {
+        return blockers.stream()
+                .filter(blocker -> getAlias(blocker) != removed)
+                .flatMap(blocker -> Arrays.stream(blocker.assigned.getComponents()))
+                .filter(relevantComponents::contains)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private void logSpillDecision(InterferenceGraph.Node failedNode,
+                                  Set<InterferenceGraph.Node> blockers,
+                                  InterferenceGraph.Node selected) {
+        if (!diagnosticsEnabled) {
+            return;
+        }
+
+        Logger.out("reg-alloc: failed=%s palette=%s".formatted(formatVirtual(failedNode), formatPalette(failedNode)));
+        Set<InterferenceGraph.Node> candidates = blockers.stream()
+                .filter(this::isSpillEligible)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (isSpillEligible(failedNode)) {
+            candidates.add(failedNode);
+        }
+
+        candidates.stream()
+                .sorted(Comparator.comparingInt(this::groupFirstRegisterNumber))
+                .forEach(candidate -> {
+                    boolean isBlocker = blockers.contains(getAlias(candidate));
+                    int capacity = isBlocker ? usableCapacityFreed(failedNode, candidate, blockers) : 0;
+                    int components = isBlocker ? usableComponentsFreed(failedNode, candidate, blockers) : 0;
+                    int relief = groupPressureRelief(candidate)
+                            + capacity * classScarcityWeight(failedNode)
+                            + components;
+                    long score = isBlocker
+                            ? blockerSelectionScore(failedNode, candidate, blockers)
+                            : spillSelectionScore(candidate);
+                    Logger.out(
+                            "reg-alloc: candidate=%s palette=%s cost=%d relief=%d capacity=%d components=%d score=%d selected=%s"
+                                    .formatted(
+                                            formatAliasGroup(candidate),
+                                            formatPalette(candidate),
+                                            groupSpillCost(candidate),
+                                            relief,
+                                            capacity,
+                                            components,
+                                            score,
+                                            getAlias(candidate) == getAlias(selected)
+                                    )
+                    );
+                });
+        Logger.out("reg-alloc: selected=%s".formatted(formatAliasGroup(selected)));
+    }
+
+    private String formatAliasGroup(InterferenceGraph.Node node) {
+        return aliasGroup(node).stream()
+                .map(GraphColoringRegisterAllocator::formatVirtual)
+                .collect(Collectors.joining(",", "[", "]"));
+    }
+
+    private static String formatVirtual(InterferenceGraph.Node node) {
+        return "r" + node.vr.getRegisterNumber();
+    }
+
+    private static String formatPalette(InterferenceGraph.Node node) {
+        return node.allowedColors().stream()
+                .sorted()
+                .map(Register::name)
+                .collect(Collectors.joining(",", "[", "]"));
+    }
+
     private int ownPaletteExcess(InterferenceGraph.Node n) {
         return Math.max(1, effectivePaletteDegree(n) - effectivePaletteBudget(n) + 1);
     }
@@ -500,7 +736,7 @@ public class GraphColoringRegisterAllocator {
         Set<Register> fixedPressure = new LinkedHashSet<>();
         int virtualPressure = 0;
 
-        for (InterferenceGraph.Node neighbor : activeNeighbors(n)) {
+        for (InterferenceGraph.Node neighbor : allocationNeighbors(n)) {
             neighbor = getAlias(neighbor);
             if (neighbor == n || !palettesOverlap(n, neighbor)) {
                 continue;
@@ -557,13 +793,8 @@ public class GraphColoringRegisterAllocator {
                 .orElse(1);
     }
 
-    private Set<InterferenceGraph.Node> activeNeighbors(InterferenceGraph.Node n) {
-        Set<InterferenceGraph.Node> neighbors = simplifyWork.get(n);
-        if (neighbors == null) {
-            neighbors = n.adj;
-        }
-
-        return neighbors.stream()
+    private Set<InterferenceGraph.Node> allocationNeighbors(InterferenceGraph.Node n) {
+        return decisionNeighbors.getOrDefault(getAlias(n), Collections.emptySet()).stream()
                 .map(this::getAlias)
                 .filter(neighbor -> neighbor != n)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -772,7 +1003,9 @@ public class GraphColoringRegisterAllocator {
             // 1) Build graph & run allocator
             unit.getVirtualRegisterManager().clearAssignedPhysicalRegisters();
             ig = InterferenceGraph.buildInterferenceGraph(unit);
-            InterferenceGraphVisualizer.setGraph(ig.getVirtualNodes());
+            if (LNC.settings.get("--print-ig", Boolean.class)) {
+                InterferenceGraphVisualizer.setGraph(ig.getVirtualNodes());
+            }
 
             String outputRegAllocPath = LNC.settings.get("--output-reg-alloc-iter", String.class);
             if(!outputRegAllocPath.isEmpty()){
@@ -781,7 +1014,12 @@ public class GraphColoringRegisterAllocator {
 
             iterCnt++;
 
-            GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig, spillEligibleVirtuals);
+            GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(
+                    ig,
+                    spillEligibleVirtuals,
+                    unit,
+                    livenessInfo
+            );
             allocator.allocate();
             spillCandidate = allocator.getSpillCandidate();
 
@@ -804,11 +1042,11 @@ public class GraphColoringRegisterAllocator {
                         }
 
                         for (VirtualRegister vr : spilledVirtuals) {
-                            if (!inst.getReads().contains(vr) && !inst.getWrites().contains(vr)) {
+                            if (!vr.equals(mv.getDest())) {
                                 continue;
                             }
 
-                            inst.replaceOperand(vr, new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
+                            mv.setDest(new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
                             spillStores.add(new AbstractMap.SimpleEntry<>(vr, mv));
                         }
                     }

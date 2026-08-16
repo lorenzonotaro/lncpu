@@ -87,9 +87,13 @@
     "help": "Prints the interference graph after of the register allocator.",
     "value": false
   },
+  "--reg-alloc-diagnostics": {
+    "help": "Prints deterministic register-allocation spill candidate diagnostics.",
+    "value": false
+  },
   "--reg-alloc-max-iter": {
     "help": "Sets the maximum number of iterations for the register allocator.",
-    "value": 10
+    "value": 16
   },
   "--output-reg-alloc-iter": {
     "help": "Outputs the register allocation result of each iteration. Must specify a folder in which to store all the RA IR attempts in the form <function name>_<iter number>.intermediate.txt. Element with number 0 will be the first IR passed onto the register allocator.",
