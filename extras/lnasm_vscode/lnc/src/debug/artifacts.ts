@@ -122,7 +122,7 @@ export function emulatorArtifactArgs(artifacts: readonly Artifact[]): readonly s
 }
 
 export function validateEmulatorOptions(options: readonly string[]): void {
-  const managed = new Set(["--debug-server", "--stop-on-entry", "--nopauseonhalt", "--pause"]);
+  const managed = new Set(["--debug-server", "--stop-on-entry", "--nopauseonhalt", "--rom", "--ram", "--d0", "--d1", "--d2", "--d3", "--d4", "--d5", "-p", "--pause"]);
   const conflict = options.find((option) => managed.has(option.split("=", 1)[0] ?? option));
   if (conflict !== undefined) throw new DebugConfigurationError(`${conflict} is managed by the debugger`);
 }
