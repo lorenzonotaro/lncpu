@@ -35,6 +35,7 @@ public class GraphColoringRegisterAllocator {
     private final InterferenceGraph graph;
     private final int K;  // total number of physical “colors”
     private final boolean doCoalesce;
+    private final Set<VirtualRegister> spillEligibleVirtuals;
 
     // worklists and stacks
     private Deque<InterferenceGraph.Node> selectStack = new ArrayDeque<>();
@@ -52,8 +53,10 @@ public class GraphColoringRegisterAllocator {
     private final Map<InterferenceGraph.Node,InterferenceGraph.Node> alias = new HashMap<>();
     private final Set<AbstractMap.SimpleEntry<InterferenceGraph.Node,InterferenceGraph.Node>> worklistMoves = new LinkedHashSet<>();
 
-    public GraphColoringRegisterAllocator(InterferenceGraph graph) {
+    public GraphColoringRegisterAllocator(InterferenceGraph graph,
+                                          Set<VirtualRegister> spillEligibleVirtuals) {
         this.graph = graph;
+        this.spillEligibleVirtuals = Set.copyOf(spillEligibleVirtuals);
         // count physical nodes (excluding compounds if you treat them specially)
         this.K = graph.getPhysicalNodes().size();
 
@@ -134,6 +137,11 @@ public class GraphColoringRegisterAllocator {
             InterferenceGraph.Node x = getAlias(mv.getKey());
             InterferenceGraph.Node y = getAlias(mv.getValue());
             if (x == y) { it.remove(); continue; }
+
+            if (isSpillEligible(x) != isSpillEligible(y) && !x.isPhysical() && !y.isPhysical()) {
+                it.remove();
+                continue;
+            }
 
             if (!x.adj.contains(y) && ok(x, y)) {
                 combine(x, y);
@@ -354,8 +362,11 @@ public class GraphColoringRegisterAllocator {
                         .max(Comparator.comparingInt(n -> n.allowedColors().size()));
 
         InterferenceGraph.Node n = maybe.orElseGet(() -> simplifyWork.keySet().stream()
+                .filter(this::isSpillEligible)
                 .min(spillSelectionComparator())
-                .orElseThrow());
+                .orElseGet(() -> simplifyWork.keySet().stream()
+                        .min(Comparator.comparingInt(node -> node.vr.getRegisterNumber()))
+                        .orElseThrow()));
 
         for (var neighbor : simplifyWork.get(n)) {
             Set<InterferenceGraph.Node> nbrs = simplifyWork.get(neighbor);
@@ -389,7 +400,7 @@ public class GraphColoringRegisterAllocator {
             } else {
                 // Spill one of the colored neighbors that is actually blocking this node.
                 InterferenceGraph.Node spillCandidate = chooseSpillVictim(n, usedNeighborColors);
-                spillCandidates.add(spillCandidate == null ? n : spillCandidate);
+                spillCandidates.add(spillCandidate);
                 return;
             }
         }
@@ -406,14 +417,32 @@ public class GraphColoringRegisterAllocator {
                 .filter(neighbor -> usedNeighborColors.stream().anyMatch(used -> overlaps(used, neighbor.assigned)))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        if (blockers.isEmpty()) {
-            return failedNode.isPhysical() ? null : failedNode;
+        Comparator<InterferenceGraph.Node> ranking = spillSelectionComparator();
+        if (!isSpillEligible(failedNode)) {
+            return blockers.stream()
+                    .filter(this::isSpillEligible)
+                    .min(ranking)
+                    .orElseThrow(() -> noEligibleSpillCandidate(failedNode));
         }
 
         return blockers.stream()
-                .filter(neighbor -> spillSelectionComparator().compare(neighbor, failedNode) < 0)
-                .min(spillSelectionComparator())
+                .filter(this::isSpillEligible)
+                .filter(neighbor -> ranking.compare(neighbor, failedNode) < 0)
+                .min(ranking)
                 .orElse(failedNode);
+    }
+
+    private boolean isSpillEligible(InterferenceGraph.Node node) {
+        return node != null
+                && !node.isPhysical()
+                && node.vr != null
+                && spillEligibleVirtuals.contains(node.vr);
+    }
+
+    private static IllegalStateException noEligibleSpillCandidate(InterferenceGraph.Node failedNode) {
+        return new IllegalStateException(
+                "Register allocation has no eligible spill candidate for uncolorable node " + failedNode
+        );
     }
 
     private Comparator<InterferenceGraph.Node> spillSelectionComparator() {
@@ -684,9 +713,17 @@ public class GraphColoringRegisterAllocator {
     private Set<VirtualRegister> getSpilledVirtualRegisters(InterferenceGraph.Node spillNode) {
         if (spillNode == null) return Collections.emptySet();
         InterferenceGraph.Node rep = getAlias(spillNode);
+        if (!isSpillEligible(rep)) {
+            throw new IllegalStateException("Register allocator selected an ineligible spill candidate " + rep);
+        }
         Set<VirtualRegister> spilled = new LinkedHashSet<>();
         for (InterferenceGraph.Node n : graph.getVirtualNodes()) {
             if (getAlias(n) == rep) {
+                if (!isSpillEligible(n)) {
+                    throw new IllegalStateException(
+                            "Register allocator aliased spill-eligible and protected nodes through " + rep
+                    );
+                }
                 spilled.add(n.vr);
             }
         }
@@ -704,6 +741,10 @@ public class GraphColoringRegisterAllocator {
         clearRegAllocIterFiles(unit);
 
         int maxIter = LNC.settings.get("--reg-alloc-max-iter", Double.class).intValue();
+        Set<VirtualRegister> spillEligibleVirtuals = new LinkedHashSet<>(
+                unit.getVirtualRegisterManager().getAllRegisters()
+        );
+        spillEligibleVirtuals.removeAll(constrainedCallReturnTargets(unit));
 
         InterferenceGraph.Node spillCandidate = null;
         List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores = new ArrayList<>();
@@ -740,7 +781,7 @@ public class GraphColoringRegisterAllocator {
 
             iterCnt++;
 
-            GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig);
+            GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(ig, spillEligibleVirtuals);
             allocator.allocate();
             spillCandidate = allocator.getSpillCandidate();
 
@@ -751,11 +792,11 @@ public class GraphColoringRegisterAllocator {
                 spillStores.clear();
                 spillLoads.clear();
                 Set<VirtualRegister> spilledVirtuals = allocator.getSpilledVirtualRegisters(spillCandidate);
+                spillEligibleVirtuals.removeAll(spilledVirtuals);
 
                 // 2) Insert spill code using conservative same-block live-range splitting.
-                // Load once at the beginning of a merged segment, keep the temporary live
-                // across adjacent touches when liveness and palette pressure allow it, and
-                // store once at the end of the segment.
+                // Each direct touch gets a short-lived temporary so an uncolorable ABI value
+                // is never kept live across unrelated instructions.
                 for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
                     for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
                         if (!(inst instanceof Move mv && mv.isRegParamDemotion())) {
@@ -799,6 +840,26 @@ public class GraphColoringRegisterAllocator {
         unit.setUsedRegisters(usedRegisters);
 
         return new AllocationInfo(ig, livenessInfo);
+    }
+
+    private static Set<VirtualRegister> constrainedCallReturnTargets(IRUnit unit) {
+        Set<VirtualRegister> constrainedReturns = new LinkedHashSet<>();
+        for (IRBlock block : unit.computeReversePostOrderAndCFG()) {
+            for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
+                if (!(inst instanceof Call call) || call.getReturnTarget() == null) {
+                    continue;
+                }
+
+                VirtualRegister returnTarget = call.getReturnTarget();
+                RegisterClass unconstrainedClass = returnTarget.getTypeSpecifier().allocSize() == 1
+                        ? RegisterClass.ANY
+                        : RegisterClass.WORD;
+                if (!returnTarget.getRegisterClass().equals(unconstrainedClass)) {
+                    constrainedReturns.add(returnTarget);
+                }
+            }
+        }
+        return constrainedReturns;
     }
 
     private static void clearRegAllocIterFiles(IRUnit unit) {

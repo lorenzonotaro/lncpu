@@ -648,11 +648,7 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             return castImmediate(immediateOperand, castExpression.targetType);
         }
 
-        if(operand.getTypeSpecifier().allocSize() == castExpression.targetType.allocSize()){
-            return operand;
-        }else{
-            return new SizedCast(operand, castExpression.targetType);
-        }
+        return new SizedCast(operand, castExpression.targetType);
     }
 
     private IROperand castImmediate(ImmediateOperand immediateOperand, TypeSpecifier targetType) {
