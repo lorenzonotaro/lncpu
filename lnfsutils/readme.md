@@ -68,12 +68,13 @@ It is structured as follows:
 > Block flags is a bitmask currently composed of:
 > | Bit | Description |
 > |-----|-------------|
-> | 0 | Block is occupied |
+> | 0 | Block is occupied  |
+> | 1 | Block is immovable |
 
 For files, the data is simply the file contents.
 
 For directories:
-- the first byte contains the number of entries in the directories (`n`).
+- the first byte contains the number of entries in the directory (`n`).
 - the first byte is followed by `n` bytes representing the indices in the inode table of the elements of this directory.
 
 **Note**: the directory content length (including the count byte) must be aligned to 8 bytes (this is to avoid having to move it whenever creating new files).
