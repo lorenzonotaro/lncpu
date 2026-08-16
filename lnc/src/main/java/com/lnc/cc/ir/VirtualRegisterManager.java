@@ -20,6 +20,13 @@ public class VirtualRegisterManager {
         this.virtualRegisters = new HashSet<>();
     }
 
+    void addSnapshotRegister(VirtualRegister register) {
+        if (virtualRegisters.stream().anyMatch(existing -> existing.getRegisterNumber() == register.getRegisterNumber())) {
+            throw new IllegalArgumentException("Duplicate virtual register number " + register.getRegisterNumber());
+        }
+        virtualRegisters.add(register);
+    }
+
 
     public VirtualRegister getRegister(TypeSpecifier typeSpecifier){
         VirtualRegister vr = new VirtualRegister(virtualRegisters.size(), typeSpecifier);

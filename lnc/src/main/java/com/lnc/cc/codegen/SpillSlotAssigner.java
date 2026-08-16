@@ -81,4 +81,18 @@ public class SpillSlotAssigner {
     public int getTotalSlots() {
         return totalSlots;
     }
+
+    public SpillSlotAssigner copyFor(Collection<VirtualRegister> registers) {
+        Map<Integer, VirtualRegister> byNumber = registers.stream().collect(Collectors.toMap(
+                VirtualRegister::getRegisterNumber,
+                register -> register
+        ));
+        SpillSlotAssigner copy = new SpillSlotAssigner();
+        slotOffset.forEach((register, offset) -> {
+            VirtualRegister mapped = byNumber.get(register.getRegisterNumber());
+            if (mapped != null) copy.slotOffset.put(mapped, offset);
+        });
+        copy.totalSlots = totalSlots;
+        return copy;
+    }
 }

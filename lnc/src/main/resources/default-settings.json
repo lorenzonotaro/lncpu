@@ -91,6 +91,22 @@
     "help": "Prints deterministic register-allocation spill candidate diagnostics.",
     "value": false
   },
+  "--reg-alloc-strategy": {
+    "help": "Selects register allocation strategy: greedy or dfs.",
+    "value": "greedy"
+  },
+  "--reg-alloc-dfs-max-depth": {
+    "help": "Maximum number of spill decisions along a DFS register-allocation branch.",
+    "value": 16
+  },
+  "--reg-alloc-dfs-max-states": {
+    "help": "Maximum number of DFS register-allocation states explored before retaining the best incumbent.",
+    "value": 5000
+  },
+  "--reg-alloc-dfs-diagnostics": {
+    "help": "Prints DFS state counts, truncation status, and greedy/chosen terminal metrics.",
+    "value": false
+  },
   "--reg-alloc-max-iter": {
     "help": "Sets the maximum number of iterations for the register allocator.",
     "value": 16

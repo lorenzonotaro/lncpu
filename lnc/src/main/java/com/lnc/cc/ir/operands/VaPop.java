@@ -16,6 +16,10 @@ public class VaPop extends IROperand{
         this.typeSpecifier = typeSpecifier;
     }
 
+    public VirtualRegister getTempVr() {
+        return tempVr;
+    }
+
     @Override
     public <T> T accept(IIROperandVisitor<T> visitor) {
         return visitor.visit(this);

@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class IRBlock implements Iterable<IRInstruction> {
 
-    private final IRUnit unit;
+    private IRUnit unit;
 
     private final int id;
 
@@ -29,6 +29,14 @@ public class IRBlock implements Iterable<IRInstruction> {
         this.unit = unit;
         this.id = id;
         this.loopDepth = loopDepth;
+    }
+
+    public IRUnit getUnit() {
+        return unit;
+    }
+
+    void setUnit(IRUnit unit) {
+        this.unit = Objects.requireNonNull(unit);
     }
 
     /**

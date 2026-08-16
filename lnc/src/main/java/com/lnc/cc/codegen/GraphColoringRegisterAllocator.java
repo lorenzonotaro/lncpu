@@ -43,6 +43,7 @@ public class GraphColoringRegisterAllocator {
     // worklists and stacks
     private Deque<InterferenceGraph.Node> selectStack = new ArrayDeque<>();
     private final List<InterferenceGraph.Node> spillCandidates = new ArrayList<>();
+    private List<SpillChoice> spillChoices = List.of();
     private final Set<InterferenceGraph.Node> coloredNodes    = new LinkedHashSet<>();
     private final Set<Register> usedRegisters = new LinkedHashSet<>();
 
@@ -496,7 +497,25 @@ public class GraphColoringRegisterAllocator {
         }
 
         logSpillDecision(failedNode, blockers, selected);
+        LinkedHashMap<InterferenceGraph.Node, SpillChoice> choices = new LinkedHashMap<>();
+        choices.put(getAlias(selected), spillChoice(selected));
+        List<InterferenceGraph.Node> alternatives = new ArrayList<>(blockers);
+        alternatives.add(failedNode);
+        alternatives.stream()
+                .filter(this::isSpillEligible)
+                .map(this::getAlias)
+                .filter(this::isSpillEligible)
+                .sorted(Comparator.comparingInt(this::groupFirstRegisterNumber))
+                .forEach(candidate -> choices.putIfAbsent(candidate, spillChoice(candidate)));
+        spillChoices = List.copyOf(choices.values());
         return selected;
+    }
+
+    private SpillChoice spillChoice(InterferenceGraph.Node node) {
+        return new SpillChoice(aliasGroup(node).stream()
+                .map(member -> member.vr.getRegisterNumber())
+                .sorted()
+                .toList());
     }
 
     private boolean isSpillEligible(InterferenceGraph.Node node) {
@@ -916,7 +935,7 @@ public class GraphColoringRegisterAllocator {
         // at this point, any node not in coloredNodes ∪ precoloredNodes is spilled
     }
 
-    private Set<Register> getUsedRegisters() {
+    Set<Register> getUsedRegisters() {
         return usedRegisters;
     }
 
@@ -966,121 +985,71 @@ public class GraphColoringRegisterAllocator {
                 spillSelectionComparator()).orElse(null);
     }
 
-
-    public static AllocationInfo run(IRUnit unit){
-
-        clearRegAllocIterFiles(unit);
-
-        int maxIter = LNC.settings.get("--reg-alloc-max-iter", Double.class).intValue();
-        Set<VirtualRegister> spillEligibleVirtuals = new LinkedHashSet<>(
-                unit.getVirtualRegisterManager().getAllRegisters()
-        );
-        spillEligibleVirtuals.removeAll(constrainedCallReturnTargets(unit));
-
-        InterferenceGraph.Node spillCandidate = null;
-        List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores = new ArrayList<>();
-        List<AbstractMap.SimpleEntry<VirtualRegister, Move>>  spillLoads  = new ArrayList<>();
-
-        SpillSlotAssigner slotAssigner = new SpillSlotAssigner();
-
-        Set<Register> usedRegisters = new LinkedHashSet<>();
-
-        InterferenceGraph ig = null;
-        LivenessInfo livenessInfo = LivenessInfo.computeBlockLiveness(unit);
-
-        // Safety reset: stale assignments from a previous allocation pass should never leak
-        // into a fresh run.
-        unit.getVirtualRegisterManager().clearAssignedPhysicalRegisters();
-
-        int iterCnt = 0;
-        do{
-
-            if(iterCnt >= maxIter) {
-                throw new RuntimeException("Exceeded maximum iterations for register allocation for unit " + unit.getFunctionDeclaration().name.lexeme);
-            }
-
-
-            // 1) Build graph & run allocator
-            unit.getVirtualRegisterManager().clearAssignedPhysicalRegisters();
-            ig = InterferenceGraph.buildInterferenceGraph(unit);
-            if (LNC.settings.get("--print-ig", Boolean.class)) {
-                InterferenceGraphVisualizer.setGraph(ig.getVirtualNodes());
-            }
-
-            String outputRegAllocPath = LNC.settings.get("--output-reg-alloc-iter", String.class);
-            if(!outputRegAllocPath.isEmpty()){
-                saveStep(unit, iterCnt, ig, spillCandidate, outputRegAllocPath);
-            }
-
-            iterCnt++;
-
-            GraphColoringRegisterAllocator allocator = new GraphColoringRegisterAllocator(
-                    ig,
-                    spillEligibleVirtuals,
-                    unit,
-                    livenessInfo
-            );
-            allocator.allocate();
-            spillCandidate = allocator.getSpillCandidate();
-
-            usedRegisters = allocator.getUsedRegisters();
-
-            if(spillCandidate != null) {
-
-                spillStores.clear();
-                spillLoads.clear();
-                Set<VirtualRegister> spilledVirtuals = allocator.getSpilledVirtualRegisters(spillCandidate);
-                spillEligibleVirtuals.removeAll(spilledVirtuals);
-
-                // 2) Insert spill code using conservative same-block live-range splitting.
-                // Each direct touch gets a short-lived temporary so an uncolorable ABI value
-                // is never kept live across unrelated instructions.
-                for (IRBlock bb : unit.computeReversePostOrderAndCFG()) {
-                    for (IRInstruction inst = bb.getFirst(); inst != null; inst = inst.getNext()) {
-                        if (!(inst instanceof Move mv && mv.isRegParamDemotion())) {
-                            continue;
-                        }
-
-                        for (VirtualRegister vr : spilledVirtuals) {
-                            if (!vr.equals(mv.getDest())) {
-                                continue;
-                            }
-
-                            mv.setDest(new StackFrameLocation(vr.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
-                            spillStores.add(new AbstractMap.SimpleEntry<>(vr, mv));
-                        }
-                    }
-                }
-
-                Map<VirtualRegister, List<SpillSegment>> spillSegments = planSpillSegments(unit, livenessInfo, ig, spilledVirtuals);
-                for (VirtualRegister vr : spilledVirtuals) {
-                    for (SpillSegment segment : spillSegments.getOrDefault(vr, Collections.emptyList())) {
-                        applySpillSegment(unit, vr, segment, livenessInfo, spillStores, spillLoads);
-                    }
-                }
-
-                Map<VirtualRegister, LiveRange> allRanges = ig.getLiveRanges();
-                Map<VirtualRegister, LiveRange> spillRanges = allRanges.entrySet().stream()
-                        .filter(e -> spilledVirtuals.contains(e.getKey()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                slotAssigner.assignSlots(spillRanges);
-                patchSpillOffsets(spillStores, spillLoads, slotAssigner.slotOffset, unit.getLocalMappingInfo().forcedStackFrameLocalsSize());
-
-                maybeRunPostSpillIROptimizer(unit);
-            }
-
-            livenessInfo = LivenessInfo.computeBlockLiveness(unit);
-
-            // loop back and re-allocate on the new IR (temps + spill code)
-        }while(spillCandidate != null);
-
-        unit.setSpillSpaceSize(slotAssigner.getTotalSlots());
-        unit.setUsedRegisters(usedRegisters);
-
-        return new AllocationInfo(ig, livenessInfo);
+    List<SpillChoice> getSpillChoices() {
+        return spillChoices;
     }
 
-    private static Set<VirtualRegister> constrainedCallReturnTargets(IRUnit unit) {
+    Set<VirtualRegister> getSpilledVirtualRegisters(SpillChoice choice) {
+        if (!spillChoices.contains(choice) || choice.registerNumbers().isEmpty()) {
+            throw new IllegalArgumentException("Spill choice is not eligible for this allocation failure");
+        }
+        VirtualRegister first = graph.getVirtualNodes().stream()
+                .map(node -> node.vr)
+                .filter(Objects::nonNull)
+                .filter(register -> register.getRegisterNumber() == choice.registerNumbers().get(0))
+                .findFirst()
+                .orElseThrow();
+        return getSpilledVirtualRegisters(graph.getNode(first));
+    }
+
+    public record SpillChoice(List<Integer> registerNumbers) {
+        public SpillChoice {
+            registerNumbers = List.copyOf(registerNumbers);
+        }
+    }
+
+
+    public static AllocationInfo run(IRUnit unit){
+        return RegisterAllocationDriver.run(unit);
+    }
+
+    static void applySpillChoice(IRUnit unit,
+                                 LivenessInfo livenessInfo,
+                                 InterferenceGraph graph,
+                                 Set<VirtualRegister> spilledVirtuals,
+                                 SpillSlotAssigner slotAssigner) {
+        List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillStores = new ArrayList<>();
+        List<AbstractMap.SimpleEntry<VirtualRegister, Move>> spillLoads = new ArrayList<>();
+        for (IRBlock block : unit.computeReversePostOrderAndCFG()) {
+            for (IRInstruction instruction = block.getFirst(); instruction != null; instruction = instruction.getNext()) {
+                if (!(instruction instanceof Move move && move.isRegParamDemotion())) continue;
+                for (VirtualRegister register : spilledVirtuals) {
+                    if (!register.equals(move.getDest())) continue;
+                    move.setDest(new StackFrameLocation(register.getTypeSpecifier(), StackFrameLocation.OperandType.LOCAL, 0));
+                    spillStores.add(new AbstractMap.SimpleEntry<>(register, move));
+                }
+            }
+        }
+        Map<VirtualRegister, List<SpillSegment>> segments = planSpillSegments(unit, livenessInfo, graph, spilledVirtuals);
+        for (VirtualRegister register : spilledVirtuals) {
+            for (SpillSegment segment : segments.getOrDefault(register, Collections.emptyList())) {
+                applySpillSegment(unit, register, segment, livenessInfo, spillStores, spillLoads);
+            }
+        }
+        Map<VirtualRegister, LiveRange> spillRanges = graph.getLiveRanges().entrySet().stream()
+                .filter(entry -> spilledVirtuals.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        slotAssigner.assignSlots(spillRanges);
+        patchSpillOffsets(
+                spillStores,
+                spillLoads,
+                slotAssigner.slotOffset,
+                unit.getLocalMappingInfo().forcedStackFrameLocalsSize()
+        );
+        maybeRunPostSpillIROptimizer(unit);
+    }
+
+    static Set<VirtualRegister> constrainedCallReturnTargets(IRUnit unit) {
         Set<VirtualRegister> constrainedReturns = new LinkedHashSet<>();
         for (IRBlock block : unit.computeReversePostOrderAndCFG()) {
             for (IRInstruction inst = block.getFirst(); inst != null; inst = inst.getNext()) {
@@ -1100,7 +1069,7 @@ public class GraphColoringRegisterAllocator {
         return constrainedReturns;
     }
 
-    private static void clearRegAllocIterFiles(IRUnit unit) {
+    static void clearRegAllocIterFiles(IRUnit unit) {
         if(!LNC.settings.get("--output-reg-alloc-iter", String.class).isEmpty()){
             // Clear files matching the unit prefix in the folder;
             Path dir = Path.of(LNC.settings.get("--output-reg-alloc-iter", String.class));
@@ -1114,7 +1083,7 @@ public class GraphColoringRegisterAllocator {
         }
     }
 
-    private static void saveStep(IRUnit unit, int i, InterferenceGraph ig, InterferenceGraph.Node previousSpilledCandidate, String outputRegAllocPath) {
+    static void saveStep(IRUnit unit, int i, InterferenceGraph ig, InterferenceGraph.Node previousSpilledCandidate, String outputRegAllocPath) {
         Path path = Path.of(outputRegAllocPath);
         if(!(Files.exists(path) && Files.isDirectory(path))){
             try {
@@ -1584,7 +1553,57 @@ public class GraphColoringRegisterAllocator {
         }
     }
 
-    public record AllocationInfo(InterferenceGraph interferenceGraph, LivenessInfo livenessInfo) {
+    public record TerminalMetric(boolean feasible,
+                                 long loopWeightedSpillTraffic,
+                                 int spillInstructions,
+                                 int spillSlots,
+                                 int frameSpillSize,
+                                 int spillRounds,
+                                 List<List<Integer>> spillSequence) implements Comparable<TerminalMetric> {
+        public TerminalMetric {
+            spillSequence = spillSequence.stream().map(List::copyOf).toList();
+        }
+
+        @Override
+        public int compareTo(TerminalMetric other) {
+            if (feasible != other.feasible) return feasible ? -1 : 1;
+            int result = Long.compare(loopWeightedSpillTraffic, other.loopWeightedSpillTraffic);
+            if (result != 0) return result;
+            result = Integer.compare(spillInstructions, other.spillInstructions);
+            if (result != 0) return result;
+            result = Integer.compare(spillSlots, other.spillSlots);
+            if (result != 0) return result;
+            result = Integer.compare(frameSpillSize, other.frameSpillSize);
+            if (result != 0) return result;
+            result = Integer.compare(spillRounds, other.spillRounds);
+            if (result != 0) return result;
+            int common = Math.min(spillSequence.size(), other.spillSequence.size());
+            for (int index = 0; index < common; index++) {
+                List<Integer> left = spillSequence.get(index);
+                List<Integer> right = other.spillSequence.get(index);
+                int groupCommon = Math.min(left.size(), right.size());
+                for (int member = 0; member < groupCommon; member++) {
+                    result = Integer.compare(left.get(member), right.get(member));
+                    if (result != 0) return result;
+                }
+                result = Integer.compare(left.size(), right.size());
+                if (result != 0) return result;
+            }
+            return Integer.compare(spillSequence.size(), other.spillSequence.size());
+        }
+    }
+
+    public record SearchDiagnostics(int statesExplored,
+                                    boolean truncatedByDepth,
+                                    boolean truncatedByStates,
+                                    TerminalMetric greedyMetric,
+                                    TerminalMetric chosenMetric) {
+    }
+
+    public record AllocationInfo(InterferenceGraph interferenceGraph,
+                                 LivenessInfo livenessInfo,
+                                 TerminalMetric terminalMetric,
+                                 SearchDiagnostics searchDiagnostics) {
     }
 }
 

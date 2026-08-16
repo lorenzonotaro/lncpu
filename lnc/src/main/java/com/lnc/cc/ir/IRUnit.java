@@ -32,7 +32,7 @@ public class IRUnit implements Iterable<IRBlock>{
 
     private int blockCounter = 1;
 
-    private final VirtualRegisterManager vrManager;
+    private VirtualRegisterManager vrManager;
 
     private final ArrayDeque<LoopInfo> loopStack;
     private int spillSpaceSize;
@@ -49,6 +49,85 @@ public class IRUnit implements Iterable<IRBlock>{
         this.functionType = FunctionType.of(functionDeclaration);
         vrManager = new VirtualRegisterManager();
         this.startBlock = currentBlock = new IRBlock(this, blockCounter++, getCurrentLoopDepth());
+    }
+
+    private IRUnit(IRUnit source) {
+        this.functionDeclaration = source.functionDeclaration;
+        this.functionType = source.functionType;
+        this.symbolTable = source.symbolTable;
+        this.loopStack = new ArrayDeque<>();
+        this.vrManager = new VirtualRegisterManager();
+    }
+
+    public IRUnit snapshotForRegisterAllocation() {
+        return IRUnitSnapshot.copyOf(this);
+    }
+
+    public void commitRegisterAllocationSnapshot(IRUnit snapshot) {
+        if (snapshot.functionDeclaration != functionDeclaration) {
+            throw new IllegalArgumentException("Cannot commit a snapshot from another function");
+        }
+        for (IRBlock block : snapshot.allAllocationBlocks()) {
+            block.setUnit(this);
+        }
+        startBlock = snapshot.startBlock;
+        currentBlock = snapshot.currentBlock;
+        blockCounter = snapshot.blockCounter;
+        vrManager = snapshot.vrManager;
+        loopStack.clear();
+        loopStack.addAll(snapshot.loopStack);
+        spillSpaceSize = snapshot.spillSpaceSize;
+        usedRegisters = snapshot.usedRegisters == null ? null : new LinkedHashSet<>(snapshot.usedRegisters);
+        frameInfo = snapshot.frameInfo;
+        localMappingInfo = snapshot.localMappingInfo;
+        functionDeclaration.unit = this;
+    }
+
+    static IRUnit emptySnapshotShell(IRUnit source) {
+        return new IRUnit(source);
+    }
+
+    void restoreSnapshotState(IRBlock startBlock,
+                              IRBlock currentBlock,
+                              int blockCounter,
+                              VirtualRegisterManager vrManager,
+                              Collection<LoopInfo> loops,
+                              int spillSpaceSize,
+                              Set<Register> usedRegisters,
+                              FrameInfo frameInfo,
+                              LocalMappingInfo localMappingInfo) {
+        this.startBlock = startBlock;
+        this.currentBlock = currentBlock;
+        this.blockCounter = blockCounter;
+        this.vrManager = vrManager;
+        loopStack.clear();
+        loopStack.addAll(loops);
+        this.spillSpaceSize = spillSpaceSize;
+        this.usedRegisters = usedRegisters;
+        this.frameInfo = frameInfo;
+        this.localMappingInfo = localMappingInfo;
+    }
+
+    private List<IRBlock> allAllocationBlocks() {
+        List<IRBlock> blocks = new ArrayList<>();
+        Set<IRBlock> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        Deque<IRBlock> pending = new ArrayDeque<>();
+        pending.addLast(startBlock);
+        if (currentBlock != null) pending.addLast(currentBlock);
+        for (LoopInfo loop : loopStack) {
+            pending.addLast(loop.continueTarget());
+            pending.addLast(loop.breakTarget());
+        }
+        while (!pending.isEmpty()) {
+            IRBlock block = pending.pop();
+            if (!visited.add(block)) continue;
+            blocks.add(block);
+            for (IRBlock target : block.getLastInstructionTargets()) pending.push(target);
+            if (block.getLast() instanceof CondJump jump && jump.getContinueTo() != null) {
+                pending.push(jump.getContinueTo());
+            }
+        }
+        return blocks;
     }
 
     public FunctionType getFunctionType() {
@@ -211,6 +290,14 @@ public class IRUnit implements Iterable<IRBlock>{
 
     public LocalMappingInfo getLocalMappingInfo() {
         return localMappingInfo ;
+    }
+
+    int snapshotBlockCounter() {
+        return blockCounter;
+    }
+
+    List<LoopInfo> snapshotLoopStack() {
+        return List.copyOf(loopStack);
     }
 
     public void prependEntryBlock(List<IRInstruction> list) {
