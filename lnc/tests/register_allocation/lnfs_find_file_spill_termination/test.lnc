@@ -69,3 +69,7 @@ struct lnfs_inode far *lnfs_find_file(struct lnfs_inode far *dir, const char far
     lnfs_error_code = LNFS_ERROR_FILE_NOT_FOUND;
     return (struct lnfs_inode far *) 0; // File not found
 }
+
+void main(){
+    
+}

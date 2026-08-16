@@ -118,6 +118,9 @@ def run_case(jar: Path, emulator: Path, tests_root: Path, case_dir: Path, timeou
             if not requires_match and matched:
                 return CaseResult(name, "FAILED", f"assembly matched forbidden pattern: {pattern}")
 
+        if kind == "compile":
+            return CaseResult(name, "PASSED")
+
         pass_file = case_dir / "pass.txt"
         if not pass_file.exists():
             return CaseResult(name, "FAILED", "missing pass.txt")
