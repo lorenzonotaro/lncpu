@@ -16,6 +16,6 @@ public record LabelInfo(Token token, String name) implements Serializable {
      * */
     public String extractSubLabelName() {
         int subIndex = token.lexeme.indexOf(LnasmParser.SUBLABEL_SEPARATOR);
-        return subIndex == -1 ? token.lexeme : token.lexeme.substring(subIndex);
+        return subIndex == -1 ? token.lexeme : token.lexeme.substring(subIndex + 1);
     }
 }

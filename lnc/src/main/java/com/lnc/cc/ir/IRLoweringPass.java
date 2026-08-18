@@ -180,15 +180,14 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
     public Void visit(Call call) {
         IROperand[] args = call.getArguments();
 
-        for (int i = 0; i < args.length; i++) {
-            args[i] = args[i].accept(this);
-        }
-
         var funType = (FunctionType) call.getCallee().getTypeSpecifier();
 
         record StackArg(IROperand operand, int offset){}
 
+        record RegArg(IROperand operand, RegisterClass regClass){}
+
         List<StackArg> stackArgs = new ArrayList<>();
+        List<RegArg> regArgs = new ArrayList<>();
 
         int i;
         for (i = 0; i < funType.parameterTypes.length; i++) {
@@ -196,7 +195,7 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             if (loc.onStack()) {
                 stackArgs.add(new StackArg(args[i], loc.stackOffset()));
             } else {
-                args[i] = moveOrLoadIntoVR(args[i], loc.regClass());
+                regArgs.add(new RegArg(args[i], loc.regClass()));
             }
         }
 
@@ -208,13 +207,11 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             throw new IllegalStateException("Incorrect number of arguments passed to function: " + call.getCallee() + " expected " + funType.parameterTypes.length + " but got " + args.length);
         }
 
-        call.setArguments(args);
-
         // Sort descending by stack offset to ensure we push the highest offset first
         stackArgs.sort((a, b) -> Integer.compare(b.offset, a.offset));
 
         for(StackArg sa : stackArgs) {
-            var operand = sa.operand;
+            var operand = sa.operand.accept(this);
             if(operand instanceof StackFrameLocation){
                 operand = moveOrLoadIntoVR(operand);
             }
@@ -222,6 +219,15 @@ public class IRLoweringPass extends GraphicalIRVisitor implements IIROperandVisi
             push.setSourceToken(call.getSourceToken());
             call.insertBefore(push);
         }
+
+        List<IROperand> regArgOperands = new ArrayList<>();
+
+        for (RegArg arg : regArgs){
+            regArgOperands.add(move(arg.operand.accept(this), arg.regClass));
+        }
+
+        // for RA purposes, the only reads of the call instructions are the ones still in physical registers
+        call.setArguments(regArgOperands.toArray(new IROperand[0]));
 
         if(funType.returnType.type != TypeSpecifier.Type.VOID){
             RegisterClass retRC = CallingConvention.returnRegisterFor(call.getReturnTarget().getTypeSpecifier());

@@ -60,12 +60,12 @@ public class Scope {
     }
 
     public void define(BaseSymbol symbol){
-        BaseSymbol existing = symbols.get(symbol.getName());
+        BaseSymbol existing = resolve(symbol.getName());
 
         symbol.setScope(this);
 
         if(existing != null && !existing.getStorageQualifier().isExtern() && !symbol.getStorageQualifier().isExtern()){
-            throw new RuntimeException("symbol '%s' already defined here: '%s'".formatted(existing.getName(), existing.getToken().formatLocation()));
+            throw new CompileException("symbol '%s' already defined here: '%s'".formatted(existing.getName(), existing.getToken().formatLocation()), symbol.getToken());
         }
 
         symbols.put(symbol.getName(), symbol);

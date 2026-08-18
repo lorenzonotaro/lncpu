@@ -3,6 +3,7 @@ package com.lnc.assembler.parser.argument;
 import com.lnc.assembler.common.*;
 import com.lnc.assembler.linker.ILabelResolver;
 import com.lnc.assembler.linker.ILabelSectionLocator;
+import com.lnc.assembler.parser.LnasmParser;
 import com.lnc.common.frontend.Token;
 
 /**
@@ -51,7 +52,8 @@ public class LabelRef extends NumericalArgument {
 
     @Override
     public String toString() {
-        return token.lexeme;
+        int subLabelIndex = token.lexeme.indexOf(LnasmParser.SUBLABEL_SEPARATOR);
+        return subLabelIndex == -1 ? token.lexeme : token.lexeme.substring(subLabelIndex + 1);
     }
 
     @Override

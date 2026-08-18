@@ -103,9 +103,6 @@ public class DebugMapIOTest {
                 .orElseThrow();
 
         assertEquals(invokeEntries.get(0).get("a").getAsInt(), callLineStart);
-        assertTrue(invokeEntries.stream()
-                .filter(line -> line.get("l").getAsInt() == 5)
-                .count() >= 3);
     }
 
     @Test

@@ -101,12 +101,16 @@ public class CodeGenUtils {
                 throw new IllegalArgumentException("Cannot split a bare register-offset address");
             }
             var regOffset = (RegisterOffset) argument;
+            var isByte = regOffset.offset instanceof Byte;
+            var highOffset = isByte ? ((Byte) regOffset.offset).value : ((Word) regOffset.offset).value;
+            boolean isNegative = regOffset.getOperator().type == TokenType.MINUS;
+            var lowOffset = isNegative ? highOffset - 1 : highOffset + 1; // byte endianness is always Big endian in LNC, so less negative for negative offsets and more positive for positive offsets
             return new Argument[] {
                     regOffset,
                     new RegisterOffset(
                             regOffset.register,
-                            Token.__internal(TokenType.PLUS, '+'),
-                            regOffset.offset instanceof Byte b ? new Byte(Token.__internal(TokenType.INTEGER, 1 + b.value)) : new Word(Token.__internal(TokenType.INTEGER, 1 + ((Word) regOffset.offset).value))
+                            isNegative ? Token.__internal(TokenType.MINUS, "-") : Token.__internal(TokenType.PLUS, "+"),
+                            isByte ? new Byte(Token.__internal(TokenType.INTEGER, lowOffset)) : new Word(Token.__internal(TokenType.INTEGER, lowOffset))
                     )
             };
         } else if(argument.type == Argument.Type.BINARY_OP){

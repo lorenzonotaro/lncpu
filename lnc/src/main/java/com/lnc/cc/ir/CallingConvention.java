@@ -43,7 +43,7 @@ public class CallingConvention {
                     locs.add(new ParamLocation(name, type, RegisterClass.WORDPARAM_1, size, false, -1));
                 } else {
                     // further words → stack (2 bytes)
-                    locs.add(new ParamLocation(name, type, null, size, true, stackOffset));
+                    locs.add(new ParamLocation(name, type, null, size, true, stackOffset + 1));
                     stackOffset += 2;
                 }
 

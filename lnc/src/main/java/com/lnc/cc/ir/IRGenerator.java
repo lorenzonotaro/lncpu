@@ -332,6 +332,10 @@ public class IRGenerator extends ScopedASTVisitor<IROperand> {
             throw new CompileException("assignment to constant lvalue", assignmentExpression.left.token);
         }
 
+        if(value.getTypeSpecifier().typeSize() != dest.getTypeSpecifier().typeSize()){
+            value = new SizedCast(value, dest.getTypeSpecifier());
+        }
+
         emit(new Move(value, dest), assignmentExpression.token);
 
         return dest;
