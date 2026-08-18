@@ -4,7 +4,7 @@
     .data 'LNFS' 0x1            ; 'LNFS' signature and version 1
     .data 31                    ; 31 pages
     .data 0x00                  ; reserved
-    .data 127
+    .data 127                   ; max inodes
     .data 0x00                  ; reserved
     .data 0x00                  ; first free inode
     .data 0x00                  ; flags
@@ -40,9 +40,14 @@ fs_kernel_blk:
 .data free_blk ; next block is free
 .data LNFS_BLOCK_FLAG_USED
 .data 0x01 ; kernel inode index
-.data 0x00 0x01 ; 1 byte size
+.data 0x00 (free_blk - _bios_lnxe)::byte ; size of kernel block in bytes
+_bios_lnxe:
 ; LNXE header
 .data 'LNXE' 0x1 ; 'LNXE' signature and version 1
+.data 0x0 ; no relocation table
+mov (BIOS_OS_GREET_TEST >> 8)::byte, RC
+mov (BIOS_OS_GREET_TEST)::byte, RD
+lcall puts
 hlt
 
 free_blk:

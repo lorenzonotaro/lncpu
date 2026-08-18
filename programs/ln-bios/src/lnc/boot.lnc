@@ -3,6 +3,8 @@
 #include "mem.lnh"
 #include "mem.lnh"
 #include "lnfs.lnh"
+#include "bios_utils.lnh"
+#include "io.lnh"
 
 void find_boot_devices() {
 
@@ -42,13 +44,26 @@ int lnfs_boot(struct ddi_device far *dev){
         return BIOS_STATUS_CRIT_LNFS_MALFORMED_LNFS;
     }
 
-    unsigned int result = lnxe_load(knode->block, LNFS_KERNEL_LOAD_ADDRESS);
+    unsigned long int size = ((struct lnfs_block far *) add_device_offset(knode->block, start_page))->size - sizeof(struct lnxe_header);
+
+    log_prefix_info();
+    printf("Loading kernel to address 0x%x%x (%x%x bytes)...\n", 
+    (unsigned int)((LNFS_KERNEL_LOAD_ADDRESS >> 8) & 0xFF), 
+    (unsigned int)(LNFS_KERNEL_LOAD_ADDRESS),
+    (unsigned int)((size >> 8) & 0xFF),
+    (unsigned int)(size)
+    );
+
+    unsigned int result = lnxe_load(add_device_offset(knode->block, start_page), LNFS_KERNEL_LOAD_ADDRESS);
 
     if(result != 0){
         return BIOS_STATUS_CRIT_LNFS_KERNEL_LOAD_FAILURE;
     }
 
-    // TODO: goto kernel entry point
+    log_prefix_ok();
+    printf("Kernel loaded successfully. Transferring control to OS...\n");
+
+    os_transfer(LNFS_KERNEL_LOAD_ADDRESS);
 
     return 0;
 }

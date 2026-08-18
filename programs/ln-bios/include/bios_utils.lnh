@@ -1,0 +1,10 @@
+#ifndef BIOS_UTILS_LNH
+#define BIOS_UTILS_LNH
+
+extern void log_prefix_ok();
+extern void log_prefix_err();
+extern void log_prefix_warn();
+extern void log_prefix_info();
+extern void log_prefix_crit();
+
+#endif

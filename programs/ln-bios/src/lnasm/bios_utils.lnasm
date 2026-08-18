@@ -56,6 +56,8 @@ log_prefix_ok:
     pop RC
     ret
 
+.export log_prefix_ok
+
 ; lnc compliant
 ;
 ; Prints a log prefix indicating an error.
@@ -74,6 +76,8 @@ log_prefix_err:
     pop RD
     pop RC
     ret
+
+.export log_prefix_err
 
 ; lnc compliant
 ;
@@ -94,6 +98,8 @@ log_prefix_warn:
     pop RC
     ret
 
+.export log_prefix_warn
+
 ; lnc compliant
 ;
 ; Prints a log prefix indicating an informational message.
@@ -113,6 +119,8 @@ log_prefix_info:
     pop RC
     ret
 
+.export log_prefix_info
+
 ; lnc compliant
 ;
 ; Prints a log prefix indicating a critical error.
@@ -131,6 +139,8 @@ log_prefix_crit:
     pop RD
     pop RC
     ret
+
+.export log_prefix_crit
 
 .section BIOS_DATA
 bios_version_major:

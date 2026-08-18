@@ -187,6 +187,8 @@ _ret:
     pop     RB
     ret
 
+.export puts
+
 ; lnc compliant
 ; 
 ; wrtinbuf: (RA = char)

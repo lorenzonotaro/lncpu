@@ -19,4 +19,6 @@ extern void find_boot_devices();
 
 extern int lnfs_boot(struct ddi_device far *dev);
 
+extern void os_transfer(void far *address);
+
 #endif

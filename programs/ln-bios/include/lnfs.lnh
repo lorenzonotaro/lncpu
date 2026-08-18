@@ -63,6 +63,12 @@ extern unsigned int lnfs_error_code;
 
 struct lnfs_block far *lnfs_get_kernel_inode(struct lnfs_superblock far *sb, unsigned int start_page);
 
+struct lnfs_inode far *lnfs_find_file(struct lnfs_inode far *dir, unsigned int start_page);
+
+struct lnfs_inode far *get_inode_by_index(unsigned int index, unsigned int start_page);
+
+void far *add_device_offset(void far *ptr, unsigned int start_page);
+
 unsigned int lnxe_load(struct lnfs_block far *kblock, void far *load_address);
 
 #endif

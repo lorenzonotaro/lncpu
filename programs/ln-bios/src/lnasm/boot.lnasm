@@ -133,6 +133,11 @@ _ret:
     pop RA
     ret
 
+os_transfer:
+    lgoto RC:RD ; jump to the kernel entry point
+
+.export os_transfer
+
 .section BIOS_DATA
 boot_devices_count:
     .res 1 ; Number of bootable devices found during the boot sequence.
@@ -166,5 +171,10 @@ LNFS_BOOT_FAILED_FMT:
 
 BOOT_ATTEMPT_FMT:
     .data "Attempting to boot from device %x.%x (%s, %s mode).\n" 0
+
+BIOS_OS_GREET_TEST:
+    .data "Hello! This is a test OS booted from LNFS.\n" 0
+
+.export BIOS_OS_GREET_TEST
 
 %endif
