@@ -45,31 +45,32 @@ It is structured as follows:
     | `10-11` | inode block offset from the start of the filesystem, in bytes |
     > Inode `flags` is a bitfield currently composed of:
     > 
-    > | Bit | Description          |
-    > |-----|----------------------|
-    > | 0   | inode slot is occupied   |
-    > | 1   | inode is a directory |
-    > | 2   | inode is readonly    |
-    > | 3   | inode is hidden      |
-    > | 4   | inode is root        |
-    > | 5   | inode is executable  |
-    > | 6-7 | reserved/unused      |
+    > | Bit | Description            |
+    > |-----|------------------------|
+    > | 0   | inode slot is occupied |
+    > | 1   | inode is a directory   |
+    > | 2   | inode is readonly      |
+    > | 3   | inode is hidden        |
+    > | 4   | inode is root          |
+    > | 5   | inode is executable    |
+    > | 6-7 | reserved/unused        |
 3. The inode table is followed by a doubly linked list of data blocks. Each data block is variable in size, and is structured as follows:
 
-    | Offset    | Description                                                       |
-    |-----------|-------------------------------------------------------------------|
-    | `0-1`     | pointer to start of previous data block                           |
-    | `2-3`     | pointer to start of next data block                               |
-    | `4`       | block flags                                                       |
+    | Offset    | Description                                                     |
+    |-----------|-----------------------------------------------------------------|
+    | `0-1`     | pointer to start of previous data block                         |
+    | `2-3`     | pointer to start of next data block                             |
+    | `4`       | block flags                                                     |
     | `5`       | index of inode that owns this block (or 0 if the block is free) |
-    | `6-7`     | size of the data block in bytes, excluding the header (`S`)       |
-    | `8-(S+7)` | data (S bytes)                                                    |
+    | `6-7`     | size of the data block in bytes, excluding the header (`S`)     |
+    | `8-(S+7)` | data (S bytes)                                                  |
 
-> Block flags is a bitmask currently composed of:
-> | Bit | Description |
-> |-----|-------------|
-> | 0 | Block is occupied  |
-> | 1 | Block is immovable |
+    >Block flags is a bitmask currently composed of:
+    >
+    >   | Bit | Description        |
+    >   |-----|--------------------|
+    >   | 0   | Block is occupied  |
+    >   | 1   | Block is immovable |
 
 For files, the data is simply the file contents.
 

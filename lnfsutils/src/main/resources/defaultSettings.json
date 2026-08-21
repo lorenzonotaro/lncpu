@@ -19,6 +19,10 @@
     "help": "Sets the maximum number of inodes. Total size of the inode table is max-inodes * 12 bytes.",
     "value": 127
   },
+  "--min-folder-size": {
+    "help": "Sets the minimum size of a folder's data block in bytes.",
+    "value": 16
+  },
   "--readonly": {
     "help": "Sets the FS to be read-only.",
     "value": false
@@ -29,6 +33,14 @@
   },
   "--stdout": {
     "help": "Prints the FS to stdout instead of writing it to a file.",
+    "value": false
+  },
+  "--pack": {
+    "help": "Packs the given source directory into a LNFS filesystem.",
+    "value": false
+  },
+  "--unpack": {
+    "help": "Unpacks the FS from a file instead of creating it.",
     "value": false
   }
 }

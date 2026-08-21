@@ -50,6 +50,13 @@ public class ProgramSettings {
         return prev;
     }
 
+    public Class<?> getArgType(String name){
+        var entry = entries.get(name);
+        if(entry == null)
+            throw  new IllegalArgumentException("invalid option '" + name + "'");
+        return entry.value.getClass();
+    }
+
     public void parseAndSet(String name, String stringValue){
         Entry entry = entries.get(name);
 
@@ -112,7 +119,7 @@ public class ProgramSettings {
                     if (arg.contains("=")) {
                         int index = arg.indexOf('=');
                         parseAndSet(arg.substring(0, index), arg.substring(index + 1));
-                    } else if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
+                    } else if (i + 1 < args.length && !args[i + 1].startsWith("-") && getArgType(arg) != Boolean.class) {
                         parseAndSet(arg, args[++i]);
                     } else set(arg, true);
                 } else if (!arg.isBlank()) {
