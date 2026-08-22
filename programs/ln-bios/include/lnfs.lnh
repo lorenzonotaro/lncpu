@@ -55,9 +55,33 @@ struct lnfs_block {
 struct lnxe_header {
     char signature[4]; // "LNXE"
     unsigned int version;
-    unsigned int reloc_table_size;
+    unsigned long int entry_point; // entry point offset from code_offset
+    unsigned long int code_size;   // size of code section, in bytes
+    unsigned long int code_offset; // offset of code section from start of file
+    unsigned long int data_size;   // size of requested data section, in bytes
+    unsigned long int const_size;  // size of const table section, in bytes
+    unsigned long int reloc_table_size; // size of relocation table, in entries (unsigned long int, 2 bytes each)
+    unsigned int reserved[5];         // reserved to pad the header to 24 bytes
     // follows a relocation table of unsigned int entries, then the actual code/data
 };
+
+#define LNXE_SIGNATURE "LNXE"
+#define LNXE_VERSION 0x01
+
+// Relocation modes are stored in the upper 3 bits of the relocation entry
+#define LNXE_RELOC_MODE_MASK      0b11100000
+
+// No relocation, just load the value as is
+#define LNXE_RELOC_MODE_NONE      0b00000000
+
+// Relocate the value to the load address of the code section
+#define LNXE_RELOC_MODE_LOAD_ADDR 0b00100000
+
+// Relocate the value to its actual address in the device
+#define LNXE_RELOC_MODE_DEVICE    0b01000000
+
+// Relocate the value to point to the allocated data section in memory
+#define LNXE_RELOC_MODE_DATA      0b01100000
 
 extern unsigned int lnfs_error_code;
 
